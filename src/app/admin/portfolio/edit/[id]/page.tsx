@@ -5,22 +5,24 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import UniversalEditor from '../../../../../components/ui/UniversalEditor';
 import PortfolioImageGallery from '../../../../../components/PortfolioImageGallery';
-import { Card, CardHeader, CardTitle, CardBody, Button, Badge, FormSection } from '@/components/ui';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import {
-  TagIcon,
-  CheckIcon,
-  XMarkIcon,
-  HashtagIcon,
-  PhotoIcon,
-  ExclamationTriangleIcon,
-  TrashIcon,
-  ArrowLeftIcon,
-  PencilIcon,
-  CubeIcon,
-  ArrowDownTrayIcon,
-  CalendarIcon,
-  UserIcon
-} from '@heroicons/react/24/outline';
+  Tag,
+  Check,
+  X,
+  Hash,
+  Image as ImageIcon,
+  AlertTriangle,
+  Trash2,
+  ArrowLeft,
+  Pencil,
+  Box,
+  Download,
+  Calendar,
+  User
+} from 'lucide-react';
 import Link from 'next/link';
 import { Category, PortfolioItem } from '../../../../../types/portfolio';
 import slugify from 'slugify';
@@ -424,7 +426,7 @@ export default function EditPortfolioItem({ params }: { params: { id: string } }
             href="/admin/portfolio"
             className="p-2 hover:bg-white hover:shadow-sm rounded-xl transition-all border border-transparent hover:border-border"
           >
-            <ArrowLeftIcon className="w-5 h-5 text-gray-500" />
+            <ArrowLeft className="w-5 h-5 text-gray-500" />
           </Link>
           <div>
             <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Projeyi Düzenle</h1>
@@ -441,8 +443,6 @@ export default function EditPortfolioItem({ params }: { params: { id: string } }
           <Button
             onClick={handleSubmit}
             disabled={submitting}
-            loading={submitting}
-            variant="primary"
             size="lg"
             className="rounded-xl font-semibold"
           >
@@ -450,7 +450,7 @@ export default function EditPortfolioItem({ params }: { params: { id: string } }
               'Güncelleniyor...'
             ) : (
               <>
-                <CheckIcon className="w-5 h-5 mr-2" />
+                <Check className="w-5 h-5 mr-2" />
                 Değişiklikleri Kaydet
               </>
             )}
@@ -460,7 +460,7 @@ export default function EditPortfolioItem({ params }: { params: { id: string } }
 
       {error && (
         <div className="mb-8 bg-red-50 border border-red-200 text-red-800 p-4 rounded-xl flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
-          <ExclamationTriangleIcon className="w-5 h-5 shrink-0" />
+          <AlertTriangle className="w-5 h-5 shrink-0" />
           <span className="font-medium">{error}</span>
         </div>
       )}
@@ -469,17 +469,17 @@ export default function EditPortfolioItem({ params }: { params: { id: string } }
         {/* Left Column - Visual Media (40%) */}
         <div className="lg:col-span-5 space-y-6">
           {/* Image Gallery */}
-          <Card padding="none" className="rounded-2xl overflow-hidden">
-            <div className="p-4 border-b border-border-subtle bg-surface-secondary/50 flex items-center justify-between">
-              <h2 className="font-semibold text-gray-900 flex items-center gap-2">
-                <PhotoIcon className="w-5 h-5 text-brand-500" />
+          <Card className="rounded-2xl overflow-hidden p-0">
+            <CardHeader className="p-4 border-b border-border-subtle bg-surface-secondary/50 flex flex-row items-center justify-between space-y-0">
+              <CardTitle className="font-semibold text-gray-900 flex items-center gap-2">
+                <ImageIcon className="w-5 h-5 text-brand-500" />
                 Medya Galeri
-              </h2>
+              </CardTitle>
               <Badge variant="outline" className="text-xs font-medium">
                 {formData.images.length} Görsel
               </Badge>
-            </div>
-            <CardBody className="p-4">
+            </CardHeader>
+            <CardContent className="p-4">
               <PortfolioImageGallery
                 images={formData.images}
                 coverImage={formData.coverImage}
@@ -490,16 +490,16 @@ export default function EditPortfolioItem({ params }: { params: { id: string } }
               />
               {fieldErrors.images && <p className="mt-2 text-xs text-red-600 font-medium">{fieldErrors.images}</p>}
               {fieldErrors.coverImage && <p className="mt-1 text-xs text-red-600 font-medium">{fieldErrors.coverImage}</p>}
-            </CardBody>
+            </CardContent>
           </Card>
 
           {/* 3D Models */}
-          <Card padding="none" className="rounded-2xl overflow-hidden">
-            <div className="p-4 border-b border-border-subtle bg-surface-secondary/50 flex items-center justify-between">
-              <h2 className="font-semibold text-gray-900 flex items-center gap-2">
-                <CubeIcon className="w-5 h-5 text-blue-500" />
+          <Card className="rounded-2xl overflow-hidden p-0">
+            <CardHeader className="p-4 border-b border-border-subtle bg-surface-secondary/50 flex flex-row items-center justify-between space-y-0">
+              <CardTitle className="font-semibold text-gray-900 flex items-center gap-2">
+                <Box className="w-5 h-5 text-blue-500" />
                 3D Varlıklar
-              </h2>
+              </CardTitle>
               <label className={`cursor-pointer inline-flex items-center px-3 py-1.5 text-xs font-medium bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-lg transition-colors ${uploadingModel ? 'opacity-50 cursor-not-allowed' : ''}`}>
                 <input
                   type="file"
@@ -510,15 +510,15 @@ export default function EditPortfolioItem({ params }: { params: { id: string } }
                 />
                 {uploadingModel ? 'Yükleniyor...' : '+ Model Ekle'}
               </label>
-            </div>
+            </CardHeader>
 
-            <CardBody className="p-4 space-y-3">
+            <CardContent className="p-4 space-y-3">
               {formData.models3D && formData.models3D.length > 0 ? (
                 formData.models3D.map((model, index) => (
                   <div key={index} className="flex items-center justify-between p-3 border border-border-subtle rounded-xl bg-surface-secondary hover:border-gray-300 transition-colors group">
                     <div className="flex items-center gap-3 min-w-0">
                       <div className="w-10 h-10 bg-white border border-border rounded-lg flex items-center justify-center shrink-0">
-                        <CubeIcon className="w-5 h-5 text-gray-400" />
+                        <Box className="w-5 h-5 text-gray-400" />
                       </div>
                       <div className="min-w-0">
                         <p className="text-sm font-medium text-gray-900 truncate" title={model.name}>{model.name}</p>
@@ -532,14 +532,14 @@ export default function EditPortfolioItem({ params }: { params: { id: string } }
                         className={`p-1.5 rounded-lg transition-colors ${model.downloadable ? 'text-success-dark bg-success-light' : 'text-gray-400 hover:bg-white'}`}
                         title={model.downloadable ? 'İndirilebilir' : 'İndirilemez'}
                       >
-                        <ArrowDownTrayIcon className="w-4 h-4" />
+                        <Download className="w-4 h-4" />
                       </button>
                       <button
                         type="button"
                         onClick={() => remove3DModel(index)}
                         className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                       >
-                        <TrashIcon className="w-4 h-4" />
+                        <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
                   </div>
@@ -549,7 +549,7 @@ export default function EditPortfolioItem({ params }: { params: { id: string } }
                   <p className="text-sm text-gray-400">Henüz 3D model eklenmemiş</p>
                 </div>
               )}
-            </CardBody>
+            </CardContent>
           </Card>
         </div>
 
@@ -567,13 +567,13 @@ export default function EditPortfolioItem({ params }: { params: { id: string } }
           )}
 
           {/* Basic Info - Per Language */}
-          <Card className="rounded-2xl" padding="md">
+          <Card className="rounded-2xl p-6">
             <div className="space-y-6">
               <div>
                 <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
                   Proje Başlığı
                   {activeLanguage && (
-                    <Badge variant="primary" className="ml-2 text-xs">
+                    <Badge variant="default" className="ml-2 text-xs">
                       {languages.find(l => l.code === activeLanguage)?.flag} {languages.find(l => l.code === activeLanguage)?.nativeLabel}
                     </Badge>
                   )}
@@ -619,7 +619,7 @@ export default function EditPortfolioItem({ params }: { params: { id: string } }
                       onClick={() => setSlugLocked(!slugLocked)}
                       className="ml-2 text-gray-400 hover:text-brand-600 transition-colors"
                     >
-                      {slugLocked ? <PencilIcon className="w-4 h-4" /> : <CheckIcon className="w-4 h-4" />}
+                      {slugLocked ? <Pencil className="w-4 h-4" /> : <Check className="w-4 h-4" />}
                     </button>
                   </div>
                 </div>
@@ -627,7 +627,7 @@ export default function EditPortfolioItem({ params }: { params: { id: string } }
                 <div>
                   <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Müşteri</label>
                   <div className="relative">
-                    <UserIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                     <input
                       type="text"
                       value={formData.client}
@@ -687,13 +687,13 @@ export default function EditPortfolioItem({ params }: { params: { id: string } }
           </Card>
 
           {/* Metadata & Tech */}
-          <Card className="rounded-2xl" padding="md">
+          <Card className="rounded-2xl p-6">
             <div className="space-y-8">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {/* Categories */}
                 <div>
                   <h3 className="text-sm font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <TagIcon className="w-4 h-4 text-success" />
+                    <Tag className="w-4 h-4 text-success" />
                     Kategoriler
                   </h3>
                   <div className="flex flex-wrap gap-2">
@@ -708,7 +708,7 @@ export default function EditPortfolioItem({ params }: { params: { id: string } }
                           }`}
                       >
                         {cat.name}
-                        {formData.categoryIds.includes(cat._id) && <CheckIcon className="w-3 h-3 inline-block ml-1" />}
+                        {formData.categoryIds.includes(cat._id) && <Check className="w-3 h-3 inline-block ml-1" />}
                       </button>
                     ))}
                   </div>
@@ -718,7 +718,7 @@ export default function EditPortfolioItem({ params }: { params: { id: string } }
                 {/* Date */}
                 <div>
                   <h3 className="text-sm font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <CalendarIcon className="w-4 h-4 text-warning" />
+                    <Calendar className="w-4 h-4 text-warning" />
                     Tamamlanma Tarihi
                   </h3>
                   <input
@@ -733,7 +733,7 @@ export default function EditPortfolioItem({ params }: { params: { id: string } }
               {/* Technologies */}
               <div>
                 <h3 className="text-sm font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <HashtagIcon className="w-4 h-4 text-violet-500" />
+                  <Hash className="w-4 h-4 text-violet-500" />
                   Teknolojiler
                 </h3>
                 <div className="flex flex-wrap gap-2">
@@ -752,7 +752,7 @@ export default function EditPortfolioItem({ params }: { params: { id: string } }
                           onClick={() => removeTechnology(index)}
                           className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
                         >
-                          <XMarkIcon className="w-3 h-3" />
+                          <X className="w-3 h-3" />
                         </button>
                       )}
                     </div>

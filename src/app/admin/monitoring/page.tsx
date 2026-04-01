@@ -4,14 +4,14 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import {
-  ChartBarIcon,
-  ClockIcon,
-  ServerIcon,
-  CheckCircleIcon,
-  XCircleIcon,
-  ArrowTrendingUpIcon,
-  ArrowTrendingDownIcon
-} from '@heroicons/react/24/outline';
+  BarChart,
+  Clock,
+  Server,
+  CheckCircle,
+  XCircle,
+  TrendingUp,
+  TrendingDown
+} from 'lucide-react';
 
 interface SystemMetric {
   name: string;
@@ -85,13 +85,13 @@ export default function AdminMonitoringPage() {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'operational':
-        return CheckCircleIcon;
+        return CheckCircle;
       case 'warning':
-        return ClockIcon;
+        return Clock;
       case 'error':
-        return XCircleIcon;
+        return XCircle;
       default:
-        return ServerIcon;
+        return Server;
     }
   };
 
@@ -121,7 +121,7 @@ export default function AdminMonitoringPage() {
       <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-2xl p-6 border border-emerald-200">
         <div className="flex items-center space-x-4">
           <div className="w-12 h-12 rounded-xl bg-emerald-500 flex items-center justify-center">
-            <CheckCircleIcon className="w-6 h-6 text-white" />
+            <CheckCircle className="w-6 h-6 text-white" />
           </div>
           <div>
             <h3 className="text-lg font-semibold text-slate-900">System Status</h3>
@@ -155,9 +155,9 @@ export default function AdminMonitoringPage() {
                   metric.change >= 0 ? 'text-emerald-600' : 'text-red-600'
                 }`}>
                   {metric.change >= 0 ? (
-                    <ArrowTrendingUpIcon className="w-4 h-4" />
+                    <TrendingUp className="w-4 h-4" />
                   ) : (
-                    <ArrowTrendingDownIcon className="w-4 h-4" />
+                    <TrendingDown className="w-4 h-4" />
                   )}
                   <span>{Math.abs(metric.change)}%</span>
                 </div>
@@ -191,9 +191,9 @@ export default function AdminMonitoringPage() {
                     log.status === 'error' ? 'bg-red-500' :
                     'bg-amber-500'
                   }`}>
-                    {log.status === 'success' && <CheckCircleIcon className="w-4 h-4 text-white" />}
-                    {log.status === 'error' && <XCircleIcon className="w-4 h-4 text-white" />}
-                    {log.status === 'warning' && <ClockIcon className="w-4 h-4 text-white" />}
+                    {log.status === 'success' && <CheckCircle className="w-4 h-4 text-white" />}
+                    {log.status === 'error' && <XCircle className="w-4 h-4 text-white" />}
+                    {log.status === 'warning' && <Clock className="w-4 h-4 text-white" />}
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-slate-900">
@@ -208,7 +208,7 @@ export default function AdminMonitoringPage() {
             ))
           ) : (
             <div className="text-center py-16">
-              <ChartBarIcon className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+              <BarChart className="w-16 h-16 text-slate-300 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-slate-900 mb-2">No activity logs</h3>
               <p className="text-slate-500">
                 Activity will appear here once your system starts logging events

@@ -4,23 +4,24 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-    ShieldCheckIcon,
-    DevicePhoneMobileIcon,
-    CheckCircleIcon,
-    XCircleIcon,
-    UserIcon,
-    KeyIcon,
-    PhotoIcon,
-    EnvelopeIcon
-} from '@heroicons/react/24/outline';
+    ShieldCheck,
+    Smartphone,
+    CheckCircle,
+    XCircle,
+    User,
+    Key,
+    Image as ImageIcon,
+    Mail
+} from 'lucide-react';
 import Image from 'next/image';
 import MediaBrowser from '@/components/MediaBrowser';
 import { InlineLoader } from '@/components/AdminLoader';
-import toast from 'react-hot-toast';
-import Swal from 'sweetalert2';
+import { toast } from 'sonner';
+import { useConfirm } from '@/hooks/use-confirm';
 
 export default function ProfilePage() {
     const router = useRouter();
+    const { confirm } = useConfirm();
 
     // UI State
     const [activeTab, setActiveTab] = useState<'profile' | 'security' | '2fa'>('profile');
@@ -187,18 +188,8 @@ export default function ProfilePage() {
     };
 
     const disable2FA = async () => {
-        const result = await Swal.fire({
-            title: 'Emin misiniz?',
-            text: '2FA\'yı devre dışı bırakmak istediğinize emin misiniz? Hesabınızın güvenliği azalacaktır.',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Evet, devre dışı bırak!',
-            cancelButtonText: 'Vazgeç'
-        });
-
-        if (!result.isConfirmed) return;
+        const confirmed = await confirm({ title: 'Emin misiniz?', description: '2FA\'yı devre dışı bırakmak istediğinize emin misiniz? Hesabınızın güvenliği azalacaktır.' });
+        if (!confirmed) return;
 
         setLoading(true);
         setMessage(null);
@@ -239,7 +230,7 @@ export default function ProfilePage() {
                                 onClick={() => setIsMediaBrowserOpen(true)}
                                 className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
                             >
-                                <PhotoIcon className="w-6 h-6 text-white" />
+                                <ImageIcon className="w-6 h-6 text-white" />
                             </button>
                         </div>
                     </div>
@@ -262,7 +253,7 @@ export default function ProfilePage() {
                         : 'border-transparent text-slate-500 hover:text-slate-700'
                         }`}
                 >
-                    <UserIcon className="w-4 h-4" />
+                    <User className="w-4 h-4" />
                     Profil Bilgileri
                 </button>
                 <button
@@ -272,7 +263,7 @@ export default function ProfilePage() {
                         : 'border-transparent text-slate-500 hover:text-slate-700'
                         }`}
                 >
-                    <KeyIcon className="w-4 h-4" />
+                    <Key className="w-4 h-4" />
                     Şifre Değiştir
                 </button>
                 <button
@@ -282,7 +273,7 @@ export default function ProfilePage() {
                         : 'border-transparent text-slate-500 hover:text-slate-700'
                         }`}
                 >
-                    <ShieldCheckIcon className="w-4 h-4" />
+                    <ShieldCheck className="w-4 h-4" />
                     İki Aşamalı Doğrulama
                 </button>
             </div>
@@ -291,7 +282,7 @@ export default function ProfilePage() {
             {message && (
                 <div className={`p-4 rounded-xl border flex items-center gap-3 animate-in fade-in slide-in-from-top-2 ${message.type === 'success' ? 'bg-green-50 border-green-200 text-green-700' : 'bg-red-50 border-red-200 text-red-700'
                     }`}>
-                    {message.type === 'success' ? <CheckCircleIcon className="w-5 h-5" /> : <XCircleIcon className="w-5 h-5" />}
+                    {message.type === 'success' ? <CheckCircle className="w-5 h-5" /> : <XCircle className="w-5 h-5" />}
                     {message.text}
                 </div>
             )}
@@ -307,7 +298,7 @@ export default function ProfilePage() {
                                 <label className="block text-sm font-medium text-slate-700">Ad Soyad</label>
                                 <div className="relative">
                                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <UserIcon className="h-5 w-5 text-slate-400" />
+                                        <User className="h-5 w-5 text-slate-400" />
                                     </div>
                                     <input
                                         type="text"
@@ -323,7 +314,7 @@ export default function ProfilePage() {
                                 <label className="block text-sm font-medium text-slate-700">E-posta Adresi</label>
                                 <div className="relative">
                                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <EnvelopeIcon className="h-5 w-5 text-slate-400" />
+                                        <Mail className="h-5 w-5 text-slate-400" />
                                     </div>
                                     <input
                                         type="email"
@@ -400,7 +391,7 @@ export default function ProfilePage() {
                         <div className="bg-indigo-50 rounded-xl p-6 mb-8 border border-indigo-100">
                             <div className="flex items-center gap-4">
                                 <div className="p-3 bg-white rounded-full shadow-sm text-indigo-600">
-                                    <ShieldCheckIcon className="w-8 h-8" />
+                                    <ShieldCheck className="w-8 h-8" />
                                 </div>
                                 <div>
                                     <h3 className="text-lg font-bold text-indigo-900">Hesabınızı Koruyun</h3>
@@ -418,7 +409,7 @@ export default function ProfilePage() {
                                     disabled={loading}
                                     className="flex items-center justify-center gap-3 w-full sm:w-auto px-8 py-4 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/40 transform hover:-translate-y-0.5"
                                 >
-                                    <DevicePhoneMobileIcon className="w-6 h-6" />
+                                    <Smartphone className="w-6 h-6" />
                                     <span className="font-semibold text-lg">{loading ? 'Hazırlanıyor...' : '2FA Kurulumunu Başlat'}</span>
                                 </button>
 
@@ -427,7 +418,7 @@ export default function ProfilePage() {
                                         onClick={disable2FA}
                                         className="text-sm text-red-500 hover:text-red-700 font-medium flex items-center gap-2 px-2 py-1 rounded hover:bg-red-50 transition-colors"
                                     >
-                                        <XCircleIcon className="w-4 h-4" />
+                                        <XCircle className="w-4 h-4" />
                                         Mevcut 2FA Kurulumunu Kaldır / Devre Dışı Bırak
                                     </button>
                                 </div>
@@ -490,7 +481,7 @@ export default function ProfilePage() {
                         ) : (
                             <div className="bg-emerald-50 p-8 rounded-2xl border border-emerald-100 text-center">
                                 <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4 text-emerald-600">
-                                    <CheckCircleIcon className="w-8 h-8" />
+                                    <CheckCircle className="w-8 h-8" />
                                 </div>
                                 <h3 className="text-xl font-bold text-emerald-800 mb-2">Kurulum Başarıyla Tamamlandı!</h3>
                                 <p className="text-emerald-700 mb-6 max-w-md mx-auto">

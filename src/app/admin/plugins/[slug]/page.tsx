@@ -8,13 +8,13 @@ import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import {
-  ArrowLeftIcon,
-  Cog6ToothIcon,
-  CheckCircleIcon,
-  ArrowPathIcon,
-  ExclamationTriangleIcon,
-  InformationCircleIcon
-} from '@heroicons/react/24/outline';
+  ArrowLeft,
+  Settings,
+  CheckCircle,
+  RefreshCw,
+  AlertTriangle,
+  Info,
+} from 'lucide-react';
 import Link from 'next/link';
 
 interface Plugin {
@@ -143,7 +143,7 @@ export default function PluginSettingsPage() {
         <div className="flex items-center gap-3">
           {plugin.isActive && (
             <div className="flex items-center px-4 py-2 bg-emerald-100 text-emerald-800 rounded-xl font-medium">
-              <CheckCircleIcon className="w-5 h-5 mr-2" />
+              <CheckCircle className="w-5 h-5 mr-2" />
               Aktif
             </div>
           )}
@@ -153,14 +153,14 @@ export default function PluginSettingsPage() {
       {/* Messages */}
       {success && (
         <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 p-4 rounded-2xl flex items-center space-x-3">
-          <CheckCircleIcon className="w-5 h-5" />
+          <CheckCircle className="w-5 h-5" />
           <span>Ayarlar başarıyla kaydedildi!</span>
         </div>
       )}
 
       {error && (
         <div className="bg-red-50 border border-red-200 text-red-800 p-4 rounded-2xl flex items-center space-x-3">
-          <ExclamationTriangleIcon className="w-5 h-5" />
+          <AlertTriangle className="w-5 h-5" />
           <span>{error}</span>
         </div>
       )}
@@ -169,7 +169,7 @@ export default function PluginSettingsPage() {
       <div className="bg-white rounded-2xl shadow-sm border border-slate-200/60 p-6">
         <div className="flex items-center space-x-3 mb-6">
           <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center">
-            <Cog6ToothIcon className="w-6 h-6 text-white" />
+            <Settings className="w-6 h-6 text-white" />
           </div>
           <div>
             <h2 className="text-xl font-bold text-slate-900">Eklenti Ayarları</h2>
@@ -180,7 +180,7 @@ export default function PluginSettingsPage() {
         {/* Dynamic Settings Form */}
         {Object.keys(settings).length === 0 ? (
           <div className="bg-slate-50 border border-slate-200 rounded-2xl p-8 text-center">
-            <Cog6ToothIcon className="w-12 h-12 text-slate-400 mx-auto mb-3" />
+            <Settings className="w-12 h-12 text-slate-400 mx-auto mb-3" />
             <p className="text-slate-500">Bu eklenti için yapılandırılabilir ayar bulunmuyor.</p>
           </div>
         ) : (
@@ -258,12 +258,12 @@ export default function PluginSettingsPage() {
             >
               {saving ? (
                 <>
-                  <ArrowPathIcon className="w-5 h-5 animate-spin" />
+                  <RefreshCw className="w-5 h-5 animate-spin" />
                   <span>Kaydediliyor...</span>
                 </>
               ) : (
                 <>
-                  <CheckCircleIcon className="w-5 h-5" />
+                  <CheckCircle className="w-5 h-5" />
                   <span>Ayarları Kaydet</span>
                 </>
               )}
@@ -277,7 +277,7 @@ export default function PluginSettingsPage() {
         <div className="bg-white rounded-2xl shadow-sm border border-slate-200/60 p-6">
           <div className="flex items-center space-x-3 mb-6">
             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center">
-              <InformationCircleIcon className="w-6 h-6 text-white" />
+              <Info className="w-6 h-6 text-white" />
             </div>
             <div>
               <h2 className="text-xl font-bold text-slate-900">Bağımlılıklar</h2>
@@ -303,7 +303,7 @@ export default function PluginSettingsPage() {
           href="/admin/plugins"
           className="flex items-center space-x-2 px-6 py-3 border border-slate-200 rounded-xl text-slate-700 hover:bg-slate-50 transition-colors font-medium"
         >
-          <ArrowLeftIcon className="w-5 h-5" />
+          <ArrowLeft className="w-5 h-5" />
           <span>Eklentilere Dön</span>
         </Link>
       </div>

@@ -4,16 +4,16 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import {
-  VideoCameraIcon,
-  PlusIcon,
-  MagnifyingGlassIcon,
-  PencilIcon,
-  TrashIcon,
-  PlayIcon,
-  ClockIcon
-} from '@heroicons/react/24/outline';
-import toast from 'react-hot-toast';
-import Swal from 'sweetalert2';
+  Video as VideoIcon,
+  Plus,
+  Search,
+  Pencil,
+  Trash2,
+  Play,
+  Clock
+} from 'lucide-react';
+import { toast } from 'sonner';
+import { useConfirm } from '@/hooks/use-confirm';
 
 interface Video {
   _id: string;
@@ -30,6 +30,7 @@ interface Video {
 export default function AdminVideosPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const { confirm } = useConfirm();
   const [loading, setLoading] = useState(true);
   const [videos, setVideos] = useState<Video[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -61,17 +62,8 @@ export default function AdminVideosPage() {
   };
 
   const handleDelete = async (videoId: string) => {
-    const result = await Swal.fire({
-      title: 'Are you sure?',
-      text: "Are you sure you want to delete this video?",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!'
-    });
-
-    if (!result.isConfirmed) return;
+    const confirmed = await confirm({ title: 'Are you sure?', description: 'Are you sure you want to delete this video?' });
+    if (!confirmed) return;
 
     try {
       const response = await fetch(`/api/admin/videos/${videoId}`, {
@@ -141,7 +133,7 @@ export default function AdminVideosPage() {
           <p className="text-slate-500 mt-1">Manage your video content</p>
         </div>
         <button className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-200">
-          <PlusIcon className="w-5 h-5 mr-2" />
+          <Plus className="w-5 h-5 mr-2" />
           Add Video
         </button>
       </div>
@@ -150,7 +142,7 @@ export default function AdminVideosPage() {
       <div className="bg-white rounded-2xl shadow-sm border border-slate-200/60 p-4">
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex-1 relative">
-            <MagnifyingGlassIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
             <input
               type="text"
               value={searchQuery}
@@ -208,7 +200,7 @@ export default function AdminVideosPage() {
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
-                  <VideoCameraIcon className="w-16 h-16 text-purple-300" />
+                  <VideoIcon className="w-16 h-16 text-purple-300" />
                 </div>
               )}
               <div className="absolute top-3 right-3">
@@ -232,11 +224,11 @@ export default function AdminVideosPage() {
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center space-x-3 text-xs text-slate-500">
                   <span className="flex items-center">
-                    <ClockIcon className="w-3 h-3 mr-1" />
+                    <Clock className="w-3 h-3 mr-1" />
                     {formatDuration(video.duration)}
                   </span>
                   <span className="flex items-center">
-                    <PlayIcon className="w-3 h-3 mr-1" />
+                    <Play className="w-3 h-3 mr-1" />
                     {formatViews(video.views)} views
                   </span>
                 </div>
@@ -246,13 +238,13 @@ export default function AdminVideosPage() {
               </div>
               <div className="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
                 <button className="p-2 hover:bg-indigo-100 rounded-lg transition-colors">
-                  <PencilIcon className="w-4 h-4 text-slate-600" />
+                  <Pencil className="w-4 h-4 text-slate-600" />
                 </button>
                 <button
                   onClick={() => handleDelete(video._id)}
                   className="p-2 hover:bg-red-100 rounded-lg transition-colors"
                 >
-                  <TrashIcon className="w-4 h-4 text-slate-600" />
+                  <Trash2 className="w-4 h-4 text-slate-600" />
                 </button>
               </div>
             </div>
@@ -263,7 +255,7 @@ export default function AdminVideosPage() {
       {/* Empty State */}
       {filteredVideos.length === 0 && (
         <div className="text-center py-16 bg-white rounded-2xl border border-slate-200/60">
-          <VideoCameraIcon className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+          <VideoIcon className="w-16 h-16 text-slate-300 mx-auto mb-4" />
           <h3 className="text-xl font-semibold text-slate-900 mb-2">No videos found</h3>
           <p className="text-slate-500 mb-6">
             {searchQuery || statusFilter !== 'all'
@@ -273,7 +265,7 @@ export default function AdminVideosPage() {
           </p>
           {!searchQuery && statusFilter === 'all' && (
             <button className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-200">
-              <PlusIcon className="w-5 h-5 mr-2" />
+              <Plus className="w-5 h-5 mr-2" />
               Add Video
             </button>
           )}

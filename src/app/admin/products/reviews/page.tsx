@@ -4,12 +4,12 @@ import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import {
-  StarIcon,
-  CheckIcon,
-  XMarkIcon,
-  ClockIcon,
-  ExclamationTriangleIcon
-} from '@heroicons/react/24/outline';
+  Star,
+  Check,
+  X,
+  Clock,
+  AlertTriangle,
+} from 'lucide-react';
 
 type AdminReview = {
   _id: string;
@@ -70,7 +70,7 @@ export default function AdminProductReviewsPage() {
     return (
       <div className="flex items-center space-x-0.5">
         {[1, 2, 3, 4, 5].map((star) => (
-          <StarIcon
+          <Star
             key={star}
             className={`w-4 h-4 ${
               star <= rating ? 'text-amber-400 fill-amber-400' : 'text-slate-300'
@@ -116,7 +116,7 @@ export default function AdminProductReviewsPage() {
                 </p>
               </div>
               <div className="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center">
-                <ClockIcon className="w-6 h-6 text-amber-600" />
+                <Clock className="w-6 h-6 text-amber-600" />
               </div>
             </div>
           </div>
@@ -130,7 +130,7 @@ export default function AdminProductReviewsPage() {
                 </p>
               </div>
               <div className="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center">
-                <CheckIcon className="w-6 h-6 text-emerald-600" />
+                <Check className="w-6 h-6 text-emerald-600" />
               </div>
             </div>
           </div>
@@ -144,7 +144,7 @@ export default function AdminProductReviewsPage() {
                 </p>
               </div>
               <div className="w-12 h-12 rounded-xl bg-red-100 flex items-center justify-center">
-                <XMarkIcon className="w-6 h-6 text-red-600" />
+                <X className="w-6 h-6 text-red-600" />
               </div>
             </div>
           </div>
@@ -211,7 +211,7 @@ export default function AdminProductReviewsPage() {
                         disabled={updating === r._id}
                         className="flex items-center space-x-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                       >
-                        <CheckIcon className="w-4 h-4" />
+                        <Check className="w-4 h-4" />
                         <span>Onayla</span>
                       </button>
                     )}
@@ -221,7 +221,7 @@ export default function AdminProductReviewsPage() {
                         disabled={updating === r._id}
                         className="flex items-center space-x-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                       >
-                        <XMarkIcon className="w-4 h-4" />
+                        <X className="w-4 h-4" />
                         <span>Reddet</span>
                       </button>
                     )}
@@ -231,7 +231,7 @@ export default function AdminProductReviewsPage() {
                         disabled={updating === r._id}
                         className="flex items-center space-x-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                       >
-                        <ClockIcon className="w-4 h-4" />
+                        <Clock className="w-4 h-4" />
                         <span>Beklemeye Al</span>
                       </button>
                     )}
@@ -242,7 +242,7 @@ export default function AdminProductReviewsPage() {
 
             {items.length === 0 && (
               <div className="flex flex-col items-center justify-center py-16">
-                <ExclamationTriangleIcon className="w-16 h-16 text-slate-300 mb-4" />
+                <AlertTriangle className="w-16 h-16 text-slate-300 mb-4" />
                 <p className="text-slate-500 font-medium">Kayıt bulunamadı</p>
                 <p className="text-sm text-slate-400 mt-1">Bu durumda yorum bulunmuyor</p>
               </div>

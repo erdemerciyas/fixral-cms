@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { CheckIcon, ShieldCheckIcon, CloudArrowUpIcon, XMarkIcon, PhotoIcon } from '@heroicons/react/24/outline';
+import { Check, ShieldCheck, CloudUpload, X, Image as ImageIcon } from 'lucide-react';
 
 interface Settings {
   _id?: string;
@@ -344,7 +344,7 @@ export default function AdminSettingsPage() {
                   />
                 ) : (
                   <div className="flex flex-col items-center space-y-2 text-slate-400">
-                    <PhotoIcon className="w-8 h-8" />
+                    <ImageIcon className="w-8 h-8" />
                     <span className="text-sm">No logo uploaded yet</span>
                   </div>
                 )}
@@ -359,7 +359,7 @@ export default function AdminSettingsPage() {
                 onClick={() => fileInputRef.current?.click()}
                 className="border-2 border-dashed border-slate-300 rounded-xl p-8 text-center hover:border-indigo-500 hover:bg-indigo-50/50 transition-colors cursor-pointer"
               >
-                <CloudArrowUpIcon className="w-12 h-12 text-slate-400 mx-auto mb-4" />
+                <CloudUpload className="w-12 h-12 text-slate-400 mx-auto mb-4" />
                 <p className="text-sm font-medium text-slate-600 mb-2">
                   Click to select a file
                 </p>
@@ -385,7 +385,7 @@ export default function AdminSettingsPage() {
                       onClick={clearLogoPreview}
                       className="text-slate-400 hover:text-red-500 transition-colors"
                     >
-                      <XMarkIcon className="w-5 h-5" />
+                      <X className="w-5 h-5" />
                     </button>
                   </div>
                   <div className="flex items-center space-x-4">
@@ -416,7 +416,7 @@ export default function AdminSettingsPage() {
                       </>
                     ) : (
                       <>
-                        <CloudArrowUpIcon className="w-4 h-4" />
+                        <CloudUpload className="w-4 h-4" />
                         <span>Upload Logo</span>
                       </>
                     )}
@@ -547,7 +547,7 @@ export default function AdminSettingsPage() {
           {settings.maintenanceMode && (
             <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
               <div className="flex items-center space-x-3">
-                <ShieldCheckIcon className="w-6 h-6 text-amber-600" />
+                <ShieldCheck className="w-6 h-6 text-amber-600" />
                 <div>
                   <h3 className="text-base font-semibold text-amber-800">Maintenance Mode Active</h3>
                   <p className="text-sm text-amber-700">Site is not accessible to visitors. Only admin users can access.</p>
@@ -624,7 +624,7 @@ export default function AdminSettingsPage() {
             </>
           ) : (
             <>
-              <CheckIcon className="w-5 h-5" />
+              <Check className="w-5 h-5" />
               <span>Save Settings</span>
             </>
           )}
@@ -641,7 +641,7 @@ export default function AdminSettingsPage() {
                 onClick={handleCloseMediaBrowser}
                 className="p-2 hover:bg-slate-100 rounded-xl transition-colors"
               >
-                <XMarkIcon className="w-6 h-6 text-slate-600" />
+                <X className="w-6 h-6 text-slate-600" />
               </button>
             </div>
             <div className="p-6">

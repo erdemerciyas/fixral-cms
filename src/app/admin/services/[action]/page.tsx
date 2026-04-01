@@ -5,15 +5,15 @@ import { useSession } from 'next-auth/react';
 import { useRouter, useParams } from 'next/navigation';
 import { IService } from '@/models/Service';
 import {
-  DocumentTextIcon,
-  PhotoIcon,
-  ListBulletIcon,
-  PlusIcon,
-  TrashIcon,
-  CheckIcon,
-  ArrowLeftIcon,
-  ExclamationTriangleIcon
-} from '@heroicons/react/24/outline';
+  FileText,
+  Image as ImageIcon,
+  List,
+  Plus,
+  Trash2,
+  Check,
+  ArrowLeft,
+  AlertTriangle,
+} from 'lucide-react';
 import Link from 'next/link';
 
 export default function ServiceFormPage() {
@@ -137,14 +137,14 @@ export default function ServiceFormPage() {
         {/* Success/Error Messages */}
         {success && (
           <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 p-4 rounded-2xl flex items-center space-x-3">
-            <CheckIcon className="w-5 h-5" />
+            <Check className="w-5 h-5" />
             <span>Servis başarıyla kaydedildi! Yönlendiriliyorsunuz...</span>
           </div>
         )}
 
         {error && (
           <div className="bg-red-50 border border-red-200 text-red-800 p-4 rounded-2xl flex items-center space-x-3">
-            <ExclamationTriangleIcon className="w-5 h-5" />
+            <AlertTriangle className="w-5 h-5" />
             <span>{error}</span>
           </div>
         )}
@@ -156,7 +156,7 @@ export default function ServiceFormPage() {
           <div className="bg-white rounded-2xl shadow-sm border border-slate-200/60 p-6">
             <div className="flex items-center space-x-3 mb-6">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center">
-                <DocumentTextIcon className="w-6 h-6 text-white" />
+                <FileText className="w-6 h-6 text-white" />
               </div>
               <div>
                 <h3 className="text-lg font-bold text-slate-900">Temel Bilgiler</h3>
@@ -203,7 +203,7 @@ export default function ServiceFormPage() {
           <div className="bg-white rounded-2xl shadow-sm border border-slate-200/60 p-6">
             <div className="flex items-center space-x-3 mb-6">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
-                <PhotoIcon className="w-6 h-6 text-white" />
+                <ImageIcon className="w-6 h-6 text-white" />
               </div>
               <div>
                 <h3 className="text-lg font-bold text-slate-900">Görsel URL</h3>
@@ -232,7 +232,7 @@ export default function ServiceFormPage() {
           <div className="bg-white rounded-2xl shadow-sm border border-slate-200/60 p-6">
             <div className="flex items-center space-x-3 mb-6">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center">
-                <ListBulletIcon className="w-6 h-6 text-white" />
+                <List className="w-6 h-6 text-white" />
               </div>
               <div>
                 <h3 className="text-lg font-bold text-slate-900">İkon SVG</h3>
@@ -262,7 +262,7 @@ export default function ServiceFormPage() {
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center space-x-3">
                 <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center">
-                  <ListBulletIcon className="w-6 h-6 text-white" />
+                  <List className="w-6 h-6 text-white" />
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-slate-900">Özellikler</h3>
@@ -274,7 +274,7 @@ export default function ServiceFormPage() {
                 onClick={addFeature}
                 className="flex items-center space-x-2 bg-indigo-50 text-indigo-700 px-3 py-2 rounded-xl hover:bg-indigo-100 transition-colors font-medium"
               >
-                <PlusIcon className="w-4 h-4" />
+                <Plus className="w-4 h-4" />
                 <span>Özellik Ekle</span>
               </button>
             </div>
@@ -297,7 +297,7 @@ export default function ServiceFormPage() {
                       onClick={() => removeFeature(index)}
                       className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
                     >
-                      <TrashIcon className="w-5 h-5" />
+                      <Trash2 className="w-5 h-5" />
                     </button>
                   )}
                 </div>
@@ -311,7 +311,7 @@ export default function ServiceFormPage() {
               href="/admin/services"
               className="flex items-center space-x-2 px-6 py-3 border border-slate-200 rounded-xl text-slate-700 hover:bg-slate-50 transition-colors font-medium"
             >
-              <ArrowLeftIcon className="w-5 h-5" />
+              <ArrowLeft className="w-5 h-5" />
               <span>Geri Dön</span>
             </Link>
 
@@ -327,7 +327,7 @@ export default function ServiceFormPage() {
                 </>
               ) : (
                 <>
-                  <CheckIcon className="w-5 h-5" />
+                  <Check className="w-5 h-5" />
                   <span>Kaydet</span>
                 </>
               )}

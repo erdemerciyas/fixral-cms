@@ -5,16 +5,16 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
-  PaintBrushIcon,
-  PlusIcon,
-  StarIcon,
-  EyeIcon,
-  PencilIcon,
-  TrashIcon,
-  ArrowPathIcon
-} from '@heroicons/react/24/outline';
-import toast from 'react-hot-toast';
-import Swal from 'sweetalert2';
+  Paintbrush,
+  Plus,
+  Star,
+  Eye,
+  Pencil,
+  Trash2,
+  RefreshCw
+} from 'lucide-react';
+import { toast } from 'sonner';
+import { useConfirm } from '@/hooks/use-confirm';
 
 interface Theme {
   _id: string;
@@ -30,6 +30,7 @@ interface Theme {
 export default function AdminThemesPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const { confirm } = useConfirm();
   const [loading, setLoading] = useState(true);
   const [themes, setThemes] = useState<Theme[]>([]);
   const [filter, setFilter] = useState<'all' | 'active' | 'inactive'>('all');
@@ -82,18 +83,12 @@ export default function AdminThemesPage() {
   };
 
   const handleDelete = async (themeId: string) => {
-    const result = await Swal.fire({
+    const confirmed = await confirm({
       title: 'Emin misiniz?',
-      text: "Bu temayı silmek istediğinizden emin misiniz?",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Evet, sil!',
-      cancelButtonText: 'Vazgeç'
+      description: 'Bu temayı silmek istediğinizden emin misiniz?',
     });
 
-    if (!result.isConfirmed) return;
+    if (!confirmed) return;
 
     try {
       const response = await fetch(`/api/admin/themes/${themeId}`, {
@@ -144,7 +139,7 @@ export default function AdminThemesPage() {
           href="/admin/themes/create"
           className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-200"
         >
-          <PlusIcon className="w-5 h-5 mr-2" />
+          <Plus className="w-5 h-5 mr-2" />
           Tema Oluştur
         </Link>
       </div>
@@ -197,7 +192,7 @@ export default function AdminThemesPage() {
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
-                  <PaintBrushIcon className="w-16 h-16 text-indigo-300" />
+                  <Paintbrush className="w-16 h-16 text-indigo-300" />
                 </div>
               )}
               {theme.isActive && (
@@ -211,14 +206,14 @@ export default function AdminThemesPage() {
                   className="p-2 bg-white rounded-lg hover:bg-indigo-50 transition-colors"
                   title="Detayları Gör"
                 >
-                  <EyeIcon className="w-5 h-5 text-slate-700" />
+                  <Eye className="w-5 h-5 text-slate-700" />
                 </Link>
                 <Link
                   href={`/admin/themes/${theme._id}/customize`}
                   className="p-2 bg-white rounded-lg hover:bg-indigo-50 transition-colors"
                   title="Özelleştir"
                 >
-                  <PencilIcon className="w-5 h-5 text-slate-700" />
+                  <Pencil className="w-5 h-5 text-slate-700" />
                 </Link>
                 <button
                   onClick={() => handleActivate(theme._id)}
@@ -228,7 +223,7 @@ export default function AdminThemesPage() {
                     }`}
                   title={theme.isActive ? "Yeniden Aktifleştir (Onar)" : "Aktifleştir"}
                 >
-                  <StarIcon className={`w-5 h-5 ${theme.isActive ? 'fill-emerald-700' : ''}`} />
+                  <Star className={`w-5 h-5 ${theme.isActive ? 'fill-emerald-700' : ''}`} />
                 </button>
                 {!theme.isActive && (
                   <button
@@ -236,7 +231,7 @@ export default function AdminThemesPage() {
                     className="p-2 bg-white rounded-lg hover:bg-red-50 transition-colors"
                     title="Sil"
                   >
-                    <TrashIcon className="w-5 h-5 text-red-600" />
+                    <Trash2 className="w-5 h-5 text-red-600" />
                   </button>
                 )}
               </div>
@@ -252,7 +247,7 @@ export default function AdminThemesPage() {
                   <p className="text-sm text-slate-500">v{theme.version} - Geliştirici: {theme.author}</p>
                 </div>
                 {theme.isActive && (
-                  <StarIcon className="w-5 h-5 text-amber-500 fill-amber-500" />
+                  <Star className="w-5 h-5 text-amber-500 fill-amber-500" />
                 )}
               </div>
 
@@ -305,7 +300,7 @@ export default function AdminThemesPage() {
       {/* Empty State */}
       {filteredThemes.length === 0 && (
         <div className="text-center py-16 bg-white rounded-2xl border border-slate-200/60">
-          <PaintBrushIcon className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+          <Paintbrush className="w-16 h-16 text-slate-300 mx-auto mb-4" />
           <h3 className="text-xl font-semibold text-slate-900 mb-2">Tema bulunamadı</h3>
           <p className="text-slate-500 mb-6">
             {filter === 'all'
@@ -318,7 +313,7 @@ export default function AdminThemesPage() {
               href="/admin/themes/create"
               className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-indigo-500/30 transition-all"
             >
-              <PlusIcon className="w-5 h-5 mr-2" />
+              <Plus className="w-5 h-5 mr-2" />
               Tema Oluştur
             </Link>
           )}

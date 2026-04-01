@@ -6,27 +6,29 @@ import { useRouter } from 'next/navigation';
 import UniversalEditor from '../../../../components/ui/UniversalEditor';
 import PortfolioImageGallery from '../../../../components/PortfolioImageGallery';
 import {
-  TagIcon,
-  CheckIcon,
-  XMarkIcon,
-  HashtagIcon,
-  PhotoIcon,
-  ExclamationTriangleIcon,
-  TrashIcon,
-  ArrowLeftIcon,
-  PencilIcon,
-  CubeIcon,
-  ArrowDownTrayIcon,
-  CalendarIcon,
-  UserIcon
-} from '@heroicons/react/24/outline';
+  Tag,
+  Check,
+  X,
+  Hash,
+  Image as ImageIcon,
+  AlertTriangle,
+  Trash2,
+  ArrowLeft,
+  Pencil,
+  Box,
+  Download,
+  Calendar,
+  User
+} from 'lucide-react';
 import Link from 'next/link';
 import { Category } from '../../../../types/portfolio';
 import slugify from 'slugify';
 import { useToast } from '../../../../components/ui/useToast';
 import { useActiveLanguages } from '@/hooks/useActiveLanguages';
 import LanguageTabs from '@/components/admin/LanguageTabs';
-import { Card, CardHeader, CardTitle, CardBody, Button, Badge, FormSection, Alert } from '@/components/ui';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 
 interface TranslationFields {
   title: string;
@@ -371,7 +373,7 @@ export default function NewPortfolioItem() {
             href="/admin/portfolio"
             className="p-2 hover:bg-white hover:shadow-sm rounded-xl transition-all border border-transparent hover:border-border"
           >
-            <ArrowLeftIcon className="w-5 h-5 text-gray-500" />
+            <ArrowLeft className="w-5 h-5 text-gray-500" />
           </Link>
           <div>
             <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Yeni Proje</h1>
@@ -388,38 +390,37 @@ export default function NewPortfolioItem() {
           <Button
             onClick={handleSubmit}
             disabled={submitting}
-            loading={submitting}
-            variant="primary"
             size="lg"
             className="rounded-xl font-semibold"
           >
-            {!submitting && <CheckIcon className="w-5 h-5" />}
+            {!submitting && <Check className="w-5 h-5" />}
             {submitting ? 'Kaydediliyor...' : 'Projeyi Yayınla'}
           </Button>
         </div>
       </div>
 
       {error && (
-        <Alert variant="danger" icon={<ExclamationTriangleIcon className="w-5 h-5" />} className="mb-8">
+        <div className="mb-8 bg-red-50 border border-red-200 text-red-800 p-4 rounded-xl flex items-center gap-3">
+          <AlertTriangle className="w-5 h-5 shrink-0" />
           <span className="font-medium">{error}</span>
-        </Alert>
+        </div>
       )}
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Left Column - Visual Media (40%) */}
         <div className="lg:col-span-5 space-y-6">
           {/* Image Gallery */}
-          <Card padding="none" className="rounded-2xl overflow-hidden">
+          <Card className="rounded-2xl overflow-hidden p-0">
             <div className="p-4 border-b border-border-subtle bg-surface-secondary/50 flex items-center justify-between">
               <CardTitle className="flex items-center gap-2">
-                <PhotoIcon className="w-5 h-5 text-brand-500" />
+                <ImageIcon className="w-5 h-5 text-brand-500" />
                 Medya Galeri
               </CardTitle>
               <Badge variant="outline" className="text-xs">
                 {formData.images.length} Görsel
               </Badge>
             </div>
-            <CardBody className="p-4">
+            <CardContent className="p-4">
               <PortfolioImageGallery
                 images={formData.images}
                 coverImage={formData.coverImage}
@@ -430,14 +431,14 @@ export default function NewPortfolioItem() {
               />
               {fieldErrors.images && <p className="mt-2 text-xs text-red-600 font-medium">{fieldErrors.images}</p>}
               {fieldErrors.coverImage && <p className="mt-1 text-xs text-red-600 font-medium">{fieldErrors.coverImage}</p>}
-            </CardBody>
+            </CardContent>
           </Card>
 
           {/* 3D Models */}
-          <Card padding="none" className="rounded-2xl overflow-hidden">
+          <Card className="rounded-2xl overflow-hidden p-0">
             <div className="p-4 border-b border-border-subtle bg-surface-secondary/50 flex items-center justify-between">
               <CardTitle className="flex items-center gap-2">
-                <CubeIcon className="w-5 h-5 text-blue-500" />
+                <Box className="w-5 h-5 text-blue-500" />
                 3D Varlıklar
               </CardTitle>
               <label className={`cursor-pointer inline-flex items-center px-3 py-1.5 text-xs font-medium bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-lg transition-colors ${uploadingModel ? 'opacity-50 cursor-not-allowed' : ''}`}>
@@ -452,13 +453,13 @@ export default function NewPortfolioItem() {
               </label>
             </div>
 
-            <CardBody className="p-4 space-y-3">
+            <CardContent className="p-4 space-y-3">
               {formData.models3D.length > 0 ? (
                 formData.models3D.map((model, index) => (
                   <div key={index} className="flex items-center justify-between p-3 border border-border-subtle rounded-xl bg-surface-secondary hover:border-gray-300 transition-colors group">
                     <div className="flex items-center gap-3 min-w-0">
                       <div className="w-10 h-10 bg-white border border-border rounded-lg flex items-center justify-center shrink-0">
-                        <CubeIcon className="w-5 h-5 text-gray-400" />
+                        <Box className="w-5 h-5 text-gray-400" />
                       </div>
                       <div className="min-w-0">
                         <p className="text-sm font-medium text-gray-900 truncate" title={model.name}>{model.name}</p>
@@ -472,14 +473,14 @@ export default function NewPortfolioItem() {
                         className={`p-1.5 rounded-lg transition-colors ${model.downloadable ? 'text-success-dark bg-success-light' : 'text-gray-400 hover:bg-white'}`}
                         title={model.downloadable ? 'İndirilebilir' : 'İndirilemez'}
                       >
-                        <ArrowDownTrayIcon className="w-4 h-4" />
+                        <Download className="w-4 h-4" />
                       </button>
                       <button
                         type="button"
                         onClick={() => remove3DModel(index)}
                         className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                       >
-                        <TrashIcon className="w-4 h-4" />
+                        <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
                   </div>
@@ -489,7 +490,7 @@ export default function NewPortfolioItem() {
                   <p className="text-sm text-gray-400">Henüz 3D model eklenmemiş</p>
                 </div>
               )}
-            </CardBody>
+            </CardContent>
           </Card>
         </div>
 
@@ -512,7 +513,7 @@ export default function NewPortfolioItem() {
               <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
                 Proje Başlığı
                 {activeLanguage && (
-                  <Badge variant="primary" className="ml-2">
+                  <Badge variant="default" className="ml-2">
                     {languages.find(l => l.code === activeLanguage)?.flag} {languages.find(l => l.code === activeLanguage)?.nativeLabel}
                   </Badge>
                 )}
@@ -559,7 +560,7 @@ export default function NewPortfolioItem() {
                     onClick={() => setSlugLocked(!slugLocked)}
                     className="ml-2 text-gray-400 hover:text-brand-600 transition-colors"
                   >
-                    {slugLocked ? <PencilIcon className="w-4 h-4" /> : <CheckIcon className="w-4 h-4" />}
+                    {slugLocked ? <Pencil className="w-4 h-4" /> : <Check className="w-4 h-4" />}
                   </button>
                 </div>
               </div>
@@ -567,7 +568,7 @@ export default function NewPortfolioItem() {
               <div>
                 <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Müşteri</label>
                 <div className="relative">
-                  <UserIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                   <input
                     type="text"
                     value={formData.client}
@@ -631,7 +632,7 @@ export default function NewPortfolioItem() {
               {/* Categories */}
               <div>
                 <h3 className="text-sm font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <TagIcon className="w-4 h-4 text-success" />
+                  <Tag className="w-4 h-4 text-success" />
                   Kategoriler
                 </h3>
                 <div className="flex flex-wrap gap-2">
@@ -646,7 +647,7 @@ export default function NewPortfolioItem() {
                         }`}
                     >
                       {cat.name}
-                      {formData.categoryIds.includes(cat._id) && <CheckIcon className="w-3 h-3 inline-block ml-1" />}
+                      {formData.categoryIds.includes(cat._id) && <Check className="w-3 h-3 inline-block ml-1" />}
                     </button>
                   ))}
                 </div>
@@ -656,7 +657,7 @@ export default function NewPortfolioItem() {
               {/* Date */}
               <div>
                 <h3 className="text-sm font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <CalendarIcon className="w-4 h-4 text-warning" />
+                  <Calendar className="w-4 h-4 text-warning" />
                   Tamamlanma Tarihi
                 </h3>
                 <input
@@ -671,7 +672,7 @@ export default function NewPortfolioItem() {
             {/* Technologies */}
             <div>
               <h3 className="text-sm font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <HashtagIcon className="w-4 h-4 text-violet-500" />
+                <Hash className="w-4 h-4 text-violet-500" />
                 Teknolojiler
               </h3>
               <div className="flex flex-wrap gap-2">
@@ -690,7 +691,7 @@ export default function NewPortfolioItem() {
                         onClick={() => removeTechnology(index)}
                         className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
                       >
-                        <XMarkIcon className="w-3 h-3" />
+                        <X className="w-3 h-3" />
                       </button>
                     )}
                   </div>

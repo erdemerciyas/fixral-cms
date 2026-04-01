@@ -4,14 +4,14 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import {
-  CogIcon,
-  CheckIcon,
-  GlobeAltIcon,
-  ServerIcon,
-  BellIcon,
-  ShieldCheckIcon,
-  PhotoIcon
-} from '@heroicons/react/24/outline';
+  Settings,
+  Check,
+  Globe,
+  Server,
+  Bell,
+  ShieldCheck,
+  Image as ImageIcon
+} from 'lucide-react';
 import ImageUpload from '../../../components/ImageUpload';
 
 interface SiteSettings {
@@ -144,7 +144,7 @@ export default function AdminSiteSettingsPage() {
         >
           {saving ? 'Kaydediliyor...' : (
             <>
-              <CheckIcon className="w-5 h-5" />
+              <Check className="w-5 h-5" />
               Kaydet
             </>
           )}
@@ -156,7 +156,7 @@ export default function AdminSiteSettingsPage() {
           ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
           : 'bg-red-50 border-red-200 text-red-800'
           }`}>
-          {message.type === 'success' ? <CheckIcon className="w-5 h-5" /> : <ServerIcon className="w-5 h-5" />}
+          {message.type === 'success' ? <Check className="w-5 h-5" /> : <Server className="w-5 h-5" />}
           {message.text}
         </div>
       )}
@@ -171,7 +171,7 @@ export default function AdminSiteSettingsPage() {
           <div className="bg-white rounded-2xl shadow-sm border border-slate-200/60 p-6">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-lg bg-indigo-100 flex items-center justify-center">
-                <GlobeAltIcon className="w-6 h-6 text-indigo-600" />
+                <Globe className="w-6 h-6 text-indigo-600" />
               </div>
               <div>
                 <h2 className="text-lg font-bold text-slate-900">Temel Ayarlar</h2>
@@ -219,7 +219,7 @@ export default function AdminSiteSettingsPage() {
           <div className="bg-white rounded-2xl shadow-sm border border-slate-200/60 p-6">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center">
-                <PhotoIcon className="w-6 h-6 text-purple-600" />
+                <ImageIcon className="w-6 h-6 text-purple-600" />
               </div>
               <div>
                 <h2 className="text-lg font-bold text-slate-900">Logo & Görseller</h2>

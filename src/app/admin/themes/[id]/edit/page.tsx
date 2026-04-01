@@ -9,12 +9,12 @@ import { useState, useEffect, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import {
-  ArrowLeftIcon,
-  ArrowPathIcon,
-  CheckCircleIcon,
-  PaintBrushIcon,
-  ExclamationTriangleIcon
-} from '@heroicons/react/24/outline';
+  ArrowLeft,
+  RefreshCw,
+  CheckCircle,
+  Paintbrush,
+  AlertTriangle
+} from 'lucide-react';
 import Link from 'next/link';
 
 interface Theme {
@@ -197,12 +197,12 @@ export default function ThemeEditPage() {
             >
               {saving ? (
                 <>
-                  <ArrowPathIcon className="w-5 h-5 animate-spin" />
+                  <RefreshCw className="w-5 h-5 animate-spin" />
                   <span>Kaydediliyor...</span>
                 </>
               ) : (
                 <>
-                  <CheckCircleIcon className="w-5 h-5" />
+                  <CheckCircle className="w-5 h-5" />
                   <span>Kaydet</span>
                 </>
               )}
@@ -213,14 +213,14 @@ export default function ThemeEditPage() {
         {/* Messages */}
         {success && (
           <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 p-4 rounded-2xl flex items-center space-x-3">
-            <CheckCircleIcon className="w-5 h-5" />
+            <CheckCircle className="w-5 h-5" />
             <span>Tema başarıyla güncellendi!</span>
           </div>
         )}
 
         {error && (
           <div className="bg-red-50 border border-red-200 text-red-800 p-4 rounded-2xl flex items-center space-x-3">
-            <ExclamationTriangleIcon className="w-5 h-5" />
+            <AlertTriangle className="w-5 h-5" />
             <span>{error}</span>
           </div>
         )}
@@ -360,7 +360,7 @@ export default function ThemeEditPage() {
             {theme?.isActive && (
               <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-4">
                 <div className="flex items-start space-x-3">
-                  <PaintBrushIcon className="w-6 h-6 text-emerald-600 mt-0.5 flex-shrink-0" />
+                  <Paintbrush className="w-6 h-6 text-emerald-600 mt-0.5 flex-shrink-0" />
                   <div>
                     <p className="font-bold text-emerald-900">Aktif Tema</p>
                     <p className="text-sm text-emerald-700 mt-1">
@@ -376,7 +376,7 @@ export default function ThemeEditPage() {
         {/* Info Box */}
         <div className="bg-indigo-50 border border-indigo-200 rounded-2xl p-6">
           <div className="flex items-start space-x-3">
-            <ExclamationTriangleIcon className="w-6 h-6 text-indigo-600 mt-0.5 flex-shrink-0" />
+            <AlertTriangle className="w-6 h-6 text-indigo-600 mt-0.5 flex-shrink-0" />
             <div>
               <h3 className="font-bold text-indigo-900 mb-2">İpucu</h3>
               <p className="text-sm text-indigo-800">
@@ -392,7 +392,7 @@ export default function ThemeEditPage() {
             href={`/admin/themes/${theme._id}`}
             className="flex items-center space-x-2 px-6 py-3 border border-slate-200 rounded-xl text-slate-700 hover:bg-slate-50 transition-colors font-medium"
           >
-            <ArrowLeftIcon className="w-5 h-5" />
+            <ArrowLeft className="w-5 h-5" />
             <span>Tema Detaylarına Dön</span>
           </Link>
         </div>

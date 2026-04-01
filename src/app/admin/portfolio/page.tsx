@@ -5,19 +5,21 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
-  PhotoIcon,
-  PlusIcon,
-  MagnifyingGlassIcon,
-  PencilIcon,
-  TrashIcon,
-  CalendarIcon,
-  TagIcon,
-  Squares2X2Icon,
-  ListBulletIcon,
-  FunnelIcon,
-  CheckCircleIcon
-} from '@heroicons/react/24/outline';
-import { PageHeader, Card, Badge, Button } from '@/components/ui';
+  Image as ImageIcon,
+  Plus,
+  Search,
+  Pencil,
+  Trash2,
+  Calendar,
+  Tag,
+  LayoutGrid,
+  List,
+  Filter,
+  CheckCircle2
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 
 interface PortfolioItem {
   _id: string;
@@ -156,31 +158,31 @@ export default function AdminPortfolioPage() {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <PageHeader
-        title="Portfolyo"
-        description="Projelerinizi yönetin ve düzenleyin"
-        actions={
-          <div className="flex items-center gap-3">
-            {selectedItems.size > 0 && (
-              <Button variant="danger" size="sm" onClick={handleBulkDelete} className="hidden sm:inline-flex">
-                <TrashIcon className="w-4 h-4" />
-                {selectedItems.size} Sil
-              </Button>
-            )}
-            <Button variant="primary" size="lg" onClick={() => router.push('/admin/portfolio/new')}>
-              <PlusIcon className="w-5 h-5" />
-              Yeni Proje
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Portfolyo</h1>
+          <p className="text-gray-500 mt-1">Projelerinizi yönetin ve düzenleyin</p>
+        </div>
+        <div className="flex items-center gap-3">
+          {selectedItems.size > 0 && (
+            <Button variant="destructive" size="sm" onClick={handleBulkDelete} className="hidden sm:inline-flex">
+              <Trash2 className="w-4 h-4" />
+              {selectedItems.size} Sil
             </Button>
-          </div>
-        }
-      />
+          )}
+          <Button size="lg" onClick={() => router.push('/admin/portfolio/new')}>
+            <Plus className="w-5 h-5" />
+            Yeni Proje
+          </Button>
+        </div>
+      </div>
 
       {/* Toolbar */}
-      <Card padding="sm" className="sticky top-24 z-10">
+      <Card className="sticky top-24 z-10 p-3">
         <div className="flex flex-col lg:flex-row gap-3 items-center justify-between">
           <div className="flex-1 w-full lg:w-auto relative group">
             <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-brand-500 transition-colors">
-              <MagnifyingGlassIcon className="w-5 h-5" />
+              <Search className="w-5 h-5" />
             </div>
             <input
               type="text"
@@ -215,14 +217,14 @@ export default function AdminPortfolioPage() {
                 className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white text-brand-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
                 title="Izgara Görünümü"
               >
-                <Squares2X2Icon className="w-5 h-5" />
+                <LayoutGrid className="w-5 h-5" />
               </button>
               <button
                 onClick={() => setViewMode('list')}
                 className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white text-brand-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
                 title="Liste Görünümü"
               >
-                <ListBulletIcon className="w-5 h-5" />
+                <List className="w-5 h-5" />
               </button>
             </div>
           </div>
@@ -246,7 +248,7 @@ export default function AdminPortfolioPage() {
       {filteredItems.length === 0 ? (
         <Card className="border-dashed py-20 text-center">
           <div className="flex flex-col items-center justify-center">
-            <PhotoIcon className="w-16 h-16 text-gray-300 mb-4" />
+            <ImageIcon className="w-16 h-16 text-gray-300 mb-4" />
             <h3 className="text-xl font-semibold text-gray-900 mb-2">Proje Bulunamadı</h3>
             <p className="text-gray-500 mb-6 text-center max-w-md px-4">
               Aradığınız kriterlere uygun proje bulunamadı veya henüz hiç proje eklemediniz.
@@ -256,7 +258,7 @@ export default function AdminPortfolioPage() {
                 href="/admin/portfolio/new"
                 className="inline-flex items-center px-6 py-3 bg-brand-600 text-white font-semibold rounded-xl hover:bg-brand-700 transition-colors"
               >
-                <PlusIcon className="w-5 h-5 mr-2" />
+                <Plus className="w-5 h-5 mr-2" />
                 İlk Projeyi Ekle
               </Link>
             )}
@@ -296,7 +298,7 @@ export default function AdminPortfolioPage() {
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-gray-300">
-                        <PhotoIcon className="w-16 h-16" />
+                        <ImageIcon className="w-16 h-16" />
                       </div>
                     )}
 
@@ -308,14 +310,14 @@ export default function AdminPortfolioPage() {
                         className="p-2 bg-white/20 backdrop-blur-md text-white rounded-xl hover:bg-white hover:text-gray-900 transition-colors"
                         title="Düzenle"
                       >
-                        <PencilIcon className="w-5 h-5" />
+                        <Pencil className="w-5 h-5" />
                       </Link>
                       <button
                         onClick={(e) => { e.stopPropagation(); handleDelete(item._id); }}
                         className="p-2 bg-white/20 backdrop-blur-md text-white rounded-xl hover:bg-red-500 hover:text-white transition-colors"
                         title="Sil"
                       >
-                        <TrashIcon className="w-5 h-5" />
+                        <Trash2 className="w-5 h-5" />
                       </button>
                     </div>
 
@@ -333,7 +335,7 @@ export default function AdminPortfolioPage() {
                   {/* Content */}
                   <div className="p-5">
                     <div className="flex items-center gap-2 mb-2 text-xs font-medium text-brand-600">
-                      <TagIcon className="w-3.5 h-3.5" />
+                      <Tag className="w-3.5 h-3.5" />
                       <span className="uppercase tracking-wider truncate">{item.category}</span>
                     </div>
                     <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-1 group-hover:text-brand-600 transition-colors" title={item.title}>
@@ -345,7 +347,7 @@ export default function AdminPortfolioPage() {
 
                     <div className="flex items-center justify-between pt-4 border-t border-border-subtle text-xs text-gray-400 font-medium">
                       <div className="flex items-center gap-1.5">
-                        <CalendarIcon className="w-4 h-4" />
+                        <Calendar className="w-4 h-4" />
                         {formatDate(item.createdAt)}
                       </div>
                     </div>
@@ -354,7 +356,7 @@ export default function AdminPortfolioPage() {
               ))}
             </ul>
           ) : (
-            <Card padding="none" className="overflow-hidden">
+            <Card className="overflow-hidden p-0">
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-sm text-gray-600">
                   <thead className="bg-surface-secondary border-b border-border font-semibold text-gray-700 uppercase tracking-wider text-xs">
@@ -403,7 +405,7 @@ export default function AdminPortfolioPage() {
                                 />
                               ) : (
                                 <div className="w-full h-full flex items-center justify-center">
-                                  <PhotoIcon className="w-6 h-6 text-gray-300" />
+                                  <ImageIcon className="w-6 h-6 text-gray-300" />
                                 </div>
                               )}
                             </div>
@@ -415,7 +417,7 @@ export default function AdminPortfolioPage() {
                         </td>
                         <td className="px-6 py-4">
                           <span className="inline-flex items-center px-2.5 py-1 rounded-lg bg-surface-tertiary text-gray-600 text-xs font-medium">
-                            <TagIcon className="w-3 h-3 mr-1.5" />
+                            <Tag className="w-3 h-3 mr-1.5" />
                             {item.category}
                           </span>
                         </td>
@@ -435,14 +437,14 @@ export default function AdminPortfolioPage() {
                               className="p-1.5 text-gray-400 hover:text-brand-600 hover:bg-brand-50 rounded-lg transition-colors"
                               title="Düzenle"
                             >
-                              <PencilIcon className="w-4 h-4" />
+                              <Pencil className="w-4 h-4" />
                             </Link>
                             <button
                               onClick={(e) => { e.stopPropagation(); handleDelete(item._id); }}
                               className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                               title="Sil"
                             >
-                              <TrashIcon className="w-4 h-4" />
+                              <Trash2 className="w-4 h-4" />
                             </button>
                           </div>
                         </td>

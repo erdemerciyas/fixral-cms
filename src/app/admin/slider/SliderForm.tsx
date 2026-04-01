@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeftIcon, CheckIcon } from '@heroicons/react/24/outline';
+import { ArrowLeft, Check } from 'lucide-react';
 
 interface SliderFormProps {
     initialData?: any;
@@ -97,7 +97,7 @@ export default function SliderForm({ initialData, isEditing = false }: SliderFor
                     onClick={() => router.back()}
                     className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
                 >
-                    <ArrowLeftIcon className="w-5 h-5 text-slate-500" />
+                    <ArrowLeft className="w-5 h-5 text-slate-500" />
                 </button>
                 <div>
                     <h1 className="text-2xl font-bold text-slate-900">
@@ -251,7 +251,7 @@ export default function SliderForm({ initialData, isEditing = false }: SliderFor
                         {loading ? (
                             <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                         ) : (
-                            <CheckIcon className="w-5 h-5" />
+                            <Check className="w-5 h-5" />
                         )}
                         <span>{isEditing ? 'Güncelle' : 'Oluştur'}</span>
                     </button>

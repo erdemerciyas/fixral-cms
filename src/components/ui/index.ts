@@ -1,19 +1,19 @@
-// ── Design System: CVA-based Atomic Components ──
-export { Button, buttonVariants } from './Button'
-export type { ButtonProps } from './Button'
-export { Input, inputVariants } from './Input'
-export type { InputProps } from './Input'
-export { Card, CardHeader, CardTitle, CardBody, CardFooter } from './Card'
-export { Badge, badgeVariants } from './Badge'
-export type { BadgeProps } from './Badge'
-export { Alert, alertVariants } from './Alert'
-export { DSkeleton } from './Skeleton/index'
+// ── Legacy CVA-based Atomic Components (will be removed after full migration) ──
+export { Button, buttonVariants } from './_legacy/Button/index'
+export type { ButtonProps } from './_legacy/Button/index'
+export { Input, inputVariants } from './_legacy/Input/index'
+export type { InputProps } from './_legacy/Input/index'
+export { Card, CardHeader, CardTitle, CardBody, CardFooter } from './_legacy/Card/index'
+export { Badge, badgeVariants } from './_legacy/Badge/index'
+export type { BadgeProps } from './_legacy/Badge/index'
+export { Alert, alertVariants } from './_legacy/Alert/index'
+export { DSkeleton } from './_legacy/Skeleton/index'
 
-// ── Design System: UI Patterns ──
-export { PageHeader } from './PageHeader'
-export { DataTable } from './DataTable'
-export type { Column as DataTableColumn } from './DataTable'
-export { FormSection } from './FormSection'
+// ── Legacy UI Patterns (will be removed after full migration) ──
+export { PageHeader } from './_legacy/PageHeader'
+export { DataTable } from './_legacy/DataTable'
+export type { Column as DataTableColumn } from './_legacy/DataTable'
+export { FormSection } from './_legacy/FormSection'
 
 // UI Component exports
 export { default as Select } from './Select';

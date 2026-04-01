@@ -18,26 +18,26 @@ import { createLowlight } from 'lowlight';
 import { useCallback, useState, useEffect, useRef } from 'react';
 import DOMPurify from 'dompurify';
 import {
-  BoldIcon,
-  ItalicIcon,
-  UnderlineIcon,
-  StrikethroughIcon,
-  CommandLineIcon,
-  LinkIcon,
-  PhotoIcon,
-  ListBulletIcon,
-  NumberedListIcon,
-  ChatBubbleLeftIcon,
-  Bars3BottomLeftIcon,
-  Bars3Icon,
-  Bars3BottomRightIcon,
-  PaintBrushIcon as HighlightIcon,
-  TableCellsIcon,
-  EyeIcon,
-  CodeBracketIcon,
-  ArrowUturnLeftIcon,
-  ArrowUturnRightIcon
-} from '@heroicons/react/24/outline';
+  Bold as BoldIcon,
+  Italic as ItalicIcon,
+  Underline as UnderlineIcon,
+  Strikethrough as StrikethroughIcon,
+  Terminal as CommandLineIcon,
+  Link2 as LinkIcon,
+  Image as PhotoIcon,
+  List as ListBulletIcon,
+  ListOrdered as NumberedListIcon,
+  MessageSquareQuote as ChatBubbleLeftIcon,
+  AlignLeft as Bars3BottomLeftIcon,
+  AlignCenter as Bars3Icon,
+  AlignRight as Bars3BottomRightIcon,
+  Highlighter as HighlightIcon,
+  Table2 as TableCellsIcon,
+  Eye as EyeIcon,
+  Code as CodeBracketIcon,
+  Undo2 as ArrowUturnLeftIcon,
+  Redo2 as ArrowUturnRightIcon
+} from 'lucide-react';
 import MediaBrowser from '../MediaBrowser';
 
 // Syntax highlighting için dil desteği

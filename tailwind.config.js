@@ -11,15 +11,66 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        // ── shadcn/ui Token Colors ──
+        background: 'hsl(var(--background))',
+        foreground: 'hsl(var(--foreground))',
+        card: {
+          DEFAULT: 'hsl(var(--card))',
+          foreground: 'hsl(var(--card-foreground))',
+        },
+        popover: {
+          DEFAULT: 'hsl(var(--popover))',
+          foreground: 'hsl(var(--popover-foreground))',
+        },
+        muted: {
+          DEFAULT: 'hsl(var(--muted))',
+          foreground: 'hsl(var(--muted-foreground))',
+        },
+        destructive: {
+          DEFAULT: 'hsl(var(--destructive))',
+          foreground: 'hsl(var(--destructive-foreground))',
+        },
+        input: 'hsl(var(--input))',
+        ring: 'hsl(var(--ring))',
+        chart: {
+          1: 'hsl(var(--chart-1))',
+          2: 'hsl(var(--chart-2))',
+          3: 'hsl(var(--chart-3))',
+          4: 'hsl(var(--chart-4))',
+          5: 'hsl(var(--chart-5))',
+        },
+        sidebar: {
+          DEFAULT: 'hsl(var(--sidebar-background))',
+          foreground: 'hsl(var(--sidebar-foreground))',
+          primary: 'hsl(var(--sidebar-primary))',
+          'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
+          accent: 'hsl(var(--sidebar-accent))',
+          'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
+          border: 'hsl(var(--sidebar-border))',
+          ring: 'hsl(var(--sidebar-ring))',
+        },
+
         // Fixral Design System Colors - Loaded from site.config.js
         fixral: {
           ...siteConfig.theme.colors.brand,
           'primary': 'var(--theme-primary)',
         },
         // Backward compatibility - Use CSS custom properties for dynamic theme colors
-        primary: 'var(--theme-primary)',
-        secondary: 'var(--theme-secondary)',
-        accent: 'var(--theme-accent)',
+        primary: {
+          DEFAULT: 'hsl(var(--primary))',
+          foreground: 'hsl(var(--primary-foreground))',
+          legacy: 'var(--theme-primary)',
+        },
+        secondary: {
+          DEFAULT: 'hsl(var(--secondary))',
+          foreground: 'hsl(var(--secondary-foreground))',
+          legacy: 'var(--theme-secondary)',
+        },
+        accent: {
+          DEFAULT: 'hsl(var(--accent))',
+          foreground: 'hsl(var(--accent-foreground))',
+          legacy: 'var(--theme-accent)',
+        },
 
         // Primary brand colors - Use CSS custom property for the base color
         'brand-primary': {
@@ -133,6 +184,9 @@ module.exports = {
         'atlas-5xl': ['3rem', { lineHeight: '1.1', letterSpacing: '-0.03em' }],
       },
       borderRadius: {
+        lg: 'var(--radius)',
+        md: 'calc(var(--radius) - 2px)',
+        sm: 'calc(var(--radius) - 4px)',
         'fixral': '8px',
         'fixral-lg': '12px',
         'fixral-xl': '16px',
@@ -223,6 +277,7 @@ module.exports = {
     },
   },
   plugins: [
+    require('tailwindcss-animate'),
     require('@tailwindcss/typography'),
     require('@tailwindcss/forms'),
     require('@tailwindcss/aspect-ratio'),

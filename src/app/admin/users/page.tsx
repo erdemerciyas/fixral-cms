@@ -4,16 +4,16 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import {
-  UserGroupIcon,
-  MagnifyingGlassIcon,
-  PencilIcon,
-  TrashIcon,
-  EnvelopeIcon,
-  PlusIcon,
-  MapPinIcon
-} from '@heroicons/react/24/outline';
-import toast from 'react-hot-toast';
-import Swal from 'sweetalert2';
+  Users,
+  Search,
+  Pencil,
+  Trash2,
+  Mail,
+  Plus,
+  MapPin
+} from 'lucide-react';
+import { toast } from 'sonner';
+import { useConfirm } from '@/hooks/use-confirm';
 
 interface User {
   _id: string;
@@ -39,6 +39,7 @@ interface User {
 export default function AdminUsersPage() {
   const { status } = useSession();
   const router = useRouter();
+  const { confirm } = useConfirm();
   const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState<User[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -231,17 +232,12 @@ export default function AdminUsersPage() {
   };
 
   const handleDelete = async (userId: string) => {
-    const result = await Swal.fire({
+    const confirmed = await confirm({
       title: 'Are you sure?',
-      text: "You won't be able to revert this!",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!'
+      description: "You won't be able to revert this!",
     });
 
-    if (!result.isConfirmed) return;
+    if (!confirmed) return;
 
     try {
       const response = await fetch(`/api/admin/users/${userId}`, {
@@ -298,7 +294,7 @@ export default function AdminUsersPage() {
           }}
           className="flex items-center justify-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
         >
-          <PlusIcon className="w-5 h-5" />
+          <Plus className="w-5 h-5" />
           <span>New User</span>
         </button>
       </div>
@@ -307,7 +303,7 @@ export default function AdminUsersPage() {
       <div className="bg-white rounded-2xl shadow-sm border border-slate-200/60 p-4">
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex-1 relative">
-            <MagnifyingGlassIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
             <input
               type="text"
               value={searchQuery}
@@ -375,7 +371,7 @@ export default function AdminUsersPage() {
                       {user.name}
                     </h3>
                     <div className="flex items-center space-x-2 mt-1 text-xs text-slate-500">
-                      <EnvelopeIcon className="w-3 h-3" />
+                      <Mail className="w-3 h-3" />
                       <span className="truncate">{user.email}</span>
                     </div>
                   </div>
@@ -402,14 +398,14 @@ export default function AdminUsersPage() {
                       onClick={() => handleEdit(user)}
                       className="p-2 hover:bg-indigo-100 rounded-lg transition-colors"
                     >
-                      <PencilIcon className="w-4 h-4 text-slate-600" />
+                      <Pencil className="w-4 h-4 text-slate-600" />
                     </button>
                     {user.role !== 'admin' && (
                       <button
                         onClick={() => handleDelete(user._id)}
                         className="p-2 hover:bg-red-100 rounded-lg transition-colors"
                       >
-                        <TrashIcon className="w-4 h-4 text-slate-600" />
+                        <Trash2 className="w-4 h-4 text-slate-600" />
                       </button>
                     )}
                   </div>
@@ -419,7 +415,7 @@ export default function AdminUsersPage() {
           </div>
         ) : (
           <div className="text-center py-16">
-            <UserGroupIcon className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+            <Users className="w-16 h-16 text-slate-300 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-slate-900 mb-2">No users found</h3>
             <p className="text-slate-500">
               {searchQuery || roleFilter !== 'all'
@@ -485,7 +481,7 @@ export default function AdminUsersPage() {
               {editingUser.addresses && editingUser.addresses.length > 0 && (
                 <div className="pt-4 border-t border-slate-100">
                   <h4 className="text-sm font-semibold text-slate-800 mb-3 flex items-center gap-2">
-                    <MapPinIcon className="w-4 h-4 text-indigo-500" />
+                    <MapPin className="w-4 h-4 text-indigo-500" />
                     Saved Addresses ({editingUser.addresses.length})
                   </h4>
                   <div className="space-y-3 max-h-48 overflow-y-auto pr-1">

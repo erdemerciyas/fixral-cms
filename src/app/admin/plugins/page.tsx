@@ -5,14 +5,14 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
-  PuzzlePieceIcon,
-  PlusIcon,
-  StarIcon,
-  ArrowPathIcon,
-  InformationCircleIcon,
-  CheckIcon,
-  XMarkIcon
-} from '@heroicons/react/24/outline';
+  Puzzle,
+  Plus,
+  Star,
+  RefreshCw,
+  Info,
+  Check,
+  X
+} from 'lucide-react';
 
 interface Plugin {
   _id: string;
@@ -160,7 +160,7 @@ export default function AdminPluginsPage() {
               >
                 <div className="flex items-start space-x-4 flex-1">
                   <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center flex-shrink-0">
-                    <PuzzlePieceIcon className="w-6 h-6 text-white" />
+                    <Puzzle className="w-6 h-6 text-white" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center space-x-2 mb-1">
@@ -187,12 +187,12 @@ export default function AdminPluginsPage() {
                 >
                   {plugin.isActive ? (
                     <>
-                      <CheckIcon className="w-4 h-4" />
+                      <Check className="w-4 h-4" />
                       <span>Active</span>
                     </>
                   ) : (
                     <>
-                      <XMarkIcon className="w-4 h-4" />
+                      <X className="w-4 h-4" />
                       <span>Inactive</span>
                     </>
                   )}
@@ -215,7 +215,7 @@ export default function AdminPluginsPage() {
               >
                 <div className="flex items-start space-x-4 flex-1">
                   <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center flex-shrink-0">
-                    <PuzzlePieceIcon className="w-6 h-6 text-white" />
+                    <Puzzle className="w-6 h-6 text-white" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center space-x-2 mb-1">
@@ -223,7 +223,7 @@ export default function AdminPluginsPage() {
                         {plugin.name}
                       </h3>
                       {plugin.isActive && (
-                        <StarIcon className="w-4 h-4 text-amber-500 fill-amber-500" />
+                        <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
                       )}
                     </div>
                     <p className="text-sm text-slate-600 mb-2">{plugin.description}</p>
@@ -242,7 +242,7 @@ export default function AdminPluginsPage() {
                     className="p-2 hover:bg-white rounded-lg transition-colors"
                     title="View Details"
                   >
-                    <InformationCircleIcon className="w-5 h-5 text-slate-600" />
+                    <Info className="w-5 h-5 text-slate-600" />
                   </Link>
                   <button
                     onClick={() => handleToggle(plugin._id)}
@@ -253,12 +253,12 @@ export default function AdminPluginsPage() {
                   >
                     {plugin.isActive ? (
                       <>
-                        <CheckIcon className="w-4 h-4" />
+                        <Check className="w-4 h-4" />
                         <span>Active</span>
                       </>
                     ) : (
                       <>
-                        <XMarkIcon className="w-4 h-4" />
+                        <X className="w-4 h-4" />
                         <span>Inactive</span>
                       </>
                     )}
@@ -273,7 +273,7 @@ export default function AdminPluginsPage() {
       {/* Empty State */}
       {filteredPlugins.length === 0 && (
         <div className="text-center py-16 bg-white rounded-2xl border border-slate-200/60">
-          <PuzzlePieceIcon className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+          <Puzzle className="w-16 h-16 text-slate-300 mx-auto mb-4" />
           <h3 className="text-xl font-semibold text-slate-900 mb-2">No plugins found</h3>
           <p className="text-slate-500">
             {filter === 'all'
@@ -288,7 +288,7 @@ export default function AdminPluginsPage() {
       <div className="bg-gradient-to-r from-indigo-50 to-violet-50 rounded-2xl p-6 border border-indigo-200">
         <div className="flex items-start space-x-4">
           <div className="w-12 h-12 rounded-xl bg-indigo-100 flex items-center justify-center flex-shrink-0">
-            <InformationCircleIcon className="w-6 h-6 text-indigo-600" />
+            <Info className="w-6 h-6 text-indigo-600" />
           </div>
           <div>
             <h3 className="text-lg font-semibold text-slate-900 mb-2">About Plugins</h3>

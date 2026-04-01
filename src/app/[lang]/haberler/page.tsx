@@ -7,8 +7,7 @@ import { NewsItem } from '@/types/news';
 import { logger } from '@/core/lib/logger';
 import PageHero from '@/components/common/PageHero';
 import { SITE_URL, generateAlternates, generateOgImages } from '@/lib/seo-utils';
-import { Badge } from '@/components/ui/Badge';
-import { buttonVariants } from '@/components/ui/Button';
+import { Badge, buttonVariants } from '@/components/ui';
 import { cn } from '@/lib/utils';
 
 interface PageProps {

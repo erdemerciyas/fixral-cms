@@ -5,20 +5,22 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
-  MagnifyingGlassIcon,
-  TrashIcon,
-  ShoppingBagIcon,
-  Squares2X2Icon,
-  ListBulletIcon,
-  PlusIcon,
-  TagIcon,
-  CheckCircleIcon,
-  ChatBubbleLeftRightIcon,
-  XMarkIcon
-} from '@heroicons/react/24/outline';
-import toast from 'react-hot-toast';
-import Swal from 'sweetalert2';
-import { PageHeader, Card, Badge, Button } from '@/components/ui';
+  Search,
+  Trash2,
+  ShoppingBag,
+  LayoutGrid,
+  List,
+  Plus,
+  Tag,
+  CheckCircle,
+  MessageSquare,
+  X
+} from 'lucide-react';
+import { toast } from 'sonner';
+import { useConfirm } from '@/hooks/use-confirm';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 
 interface ProductItem {
   _id: string;
@@ -48,6 +50,7 @@ interface MessageItem {
 export default function AdminProductsPage() {
   const { status } = useSession();
   const router = useRouter();
+  const { confirm } = useConfirm();
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState<ProductItem[]>([]);
   const [total, setTotal] = useState(0);
@@ -110,18 +113,12 @@ export default function AdminProductsPage() {
   };
 
   const handleDelete = async (productId: string) => {
-    const result = await Swal.fire({
+    const confirmed = await confirm({
       title: 'Emin misiniz?',
-      text: "Bu ürünü silmek istediğinizden emin misiniz?",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Evet, sil!',
-      cancelButtonText: 'Vazgeç'
+      description: 'Bu ürünü silmek istediğinizden emin misiniz?',
     });
 
-    if (!result.isConfirmed) return;
+    if (!confirmed) return;
 
     try {
       const response = await fetch(`/api/admin/products/${productId}`, { method: 'DELETE' });
@@ -141,18 +138,12 @@ export default function AdminProductsPage() {
   };
 
   const handleBulkDelete = async () => {
-    const result = await Swal.fire({
+    const confirmed = await confirm({
       title: 'Toplu Silme',
-      text: `${selectedItems.size} ürünü silmek istediğinizden emin misiniz?`,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
-      confirmButtonText: 'Evet, Hepsini Sil!',
-      cancelButtonText: 'Vazgeç'
+      description: `${selectedItems.size} ürünü silmek istediğinizden emin misiniz?`,
     });
 
-    if (!result.isConfirmed) return;
+    if (!confirmed) return;
 
     try {
       await Promise.all(
@@ -213,25 +204,25 @@ export default function AdminProductsPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <PageHeader
-        title="Ürün Yönetimi"
-        description="Mağaza ürünlerinizi ve stok durumunu yönetin"
-        actions={
-          <Button variant="primary" size="lg" onClick={() => router.push('/admin/products/new')}>
-            <PlusIcon className="w-5 h-5" />
-            Yeni Ürün
-          </Button>
-        }
-      />
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900">Ürün Yönetimi</h1>
+          <p className="text-slate-500 mt-1">Mağaza ürünlerinizi ve stok durumunu yönetin</p>
+        </div>
+        <Button onClick={() => router.push('/admin/products/new')}>
+          <Plus className="w-5 h-5" />
+          Yeni Ürün
+        </Button>
+      </div>
 
       {/* Toolbar */}
-      <Card padding="sm" className="sticky top-24 z-30">
+      <Card className="sticky top-24 z-30 p-3">
         <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
 
           {/* Search & Filters */}
           <div className="flex-1 w-full lg:w-auto flex flex-col sm:flex-row gap-3">
             <div className="relative flex-1">
-              <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
               <input
                 type="text"
                 value={searchQuery}
@@ -279,7 +270,7 @@ export default function AdminProductsPage() {
                   onClick={handleBulkDelete}
                   className="flex items-center px-4 py-2.5 bg-red-50 text-red-600 font-medium rounded-xl hover:bg-red-100 transition-colors"
                 >
-                  <TrashIcon className="w-4 h-4 mr-2" />
+                  <Trash2 className="w-4 h-4 mr-2" />
                   Sil
                 </button>
               </div>
@@ -290,13 +281,13 @@ export default function AdminProductsPage() {
                 onClick={() => setViewMode('grid')}
                 className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white text-brand-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
               >
-                <Squares2X2Icon className="w-5 h-5" />
+                <LayoutGrid className="w-5 h-5" />
               </button>
               <button
                 onClick={() => setViewMode('list')}
                 className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white text-brand-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
               >
-                <ListBulletIcon className="w-5 h-5" />
+                <List className="w-5 h-5" />
               </button>
             </div>
           </div>
@@ -305,9 +296,9 @@ export default function AdminProductsPage() {
 
       {/* Content */}
       {products.length === 0 ? (
-        <Card className="border-dashed p-12 text-center">
+        <Card className="border-dashed"><CardContent className="p-12 text-center">
           <div className="w-16 h-16 bg-surface-secondary rounded-full flex items-center justify-center mx-auto mb-4">
-            <ShoppingBagIcon className="w-8 h-8 text-gray-400" />
+            <ShoppingBag className="w-8 h-8 text-gray-400" />
           </div>
           <h3 className="text-lg font-semibold text-gray-900 mb-2">Ürün bulunamadı</h3>
           <p className="text-gray-500 mb-6 max-w-sm mx-auto">
@@ -323,7 +314,7 @@ export default function AdminProductsPage() {
               Filtreleri Temizle
             </button>
           )}
-        </Card>
+        </CardContent></Card>
       ) : (
         <>
           {viewMode === 'grid' ? (
@@ -341,7 +332,7 @@ export default function AdminProductsPage() {
                       <img src={product.coverImage} alt={product.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-gray-400">
-                        <ShoppingBagIcon className="w-12 h-12" />
+                        <ShoppingBag className="w-12 h-12" />
                       </div>
                     )}
 
@@ -355,7 +346,7 @@ export default function AdminProductsPage() {
                       <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center
                               ${selectedItems.has(product._id) ? 'bg-brand-600 border-brand-600 text-white' : 'bg-transparent border-white text-transparent hover:bg-white/20'}
                             `}>
-                        <CheckCircleIcon className="w-5 h-5" />
+                        <CheckCircle className="w-5 h-5" />
                       </div>
                     </div>
 
@@ -390,20 +381,20 @@ export default function AdminProductsPage() {
                           href={`/admin/products/edit/${product._id}`}
                           className="p-2 text-gray-400 hover:text-brand-600 hover:bg-brand-50 rounded-lg transition-colors"
                         >
-                          <TagIcon className="w-4 h-4" />
+                          <Tag className="w-4 h-4" />
                         </Link>
                         <button
                           onClick={() => openMessages(product)}
                           className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                           title="Sorular"
                         >
-                          <ChatBubbleLeftRightIcon className="w-4 h-4" />
+                          <MessageSquare className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => handleDelete(product._id)}
                           className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                         >
-                          <TrashIcon className="w-4 h-4" />
+                          <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
                     </div>
@@ -413,7 +404,7 @@ export default function AdminProductsPage() {
             </ul>
           ) : (
             // List View
-            <Card padding="none" className="overflow-hidden">
+            <Card className="overflow-hidden p-0">
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="bg-surface-secondary border-b border-border text-xs font-semibold text-gray-500 uppercase tracking-wider">
@@ -450,7 +441,7 @@ export default function AdminProductsPage() {
                               <img src={product.coverImage} alt="" className="w-full h-full object-cover" />
                             ) : (
                               <div className="w-full h-full flex items-center justify-center text-gray-400">
-                                <ShoppingBagIcon className="w-6 h-6" />
+                                <ShoppingBag className="w-6 h-6" />
                               </div>
                             )}
                           </div>
@@ -482,20 +473,20 @@ export default function AdminProductsPage() {
                             href={`/admin/products/edit/${product._id}`}
                             className="p-1.5 text-gray-500 hover:text-brand-600 hover:bg-brand-50 rounded-lg transition-colors"
                           >
-                            <TagIcon className="w-4 h-4" />
+                            <Tag className="w-4 h-4" />
                           </Link>
                           <button
                             onClick={() => openMessages(product)}
                             className="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                             title="Sorular"
                           >
-                            <ChatBubbleLeftRightIcon className="w-4 h-4" />
+                            <MessageSquare className="w-4 h-4" />
                           </button>
                           <button
                             onClick={() => handleDelete(product._id)}
                             className="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                           >
-                            <TrashIcon className="w-4 h-4" />
+                            <Trash2 className="w-4 h-4" />
                           </button>
                         </div>
                       </td>
@@ -573,7 +564,7 @@ export default function AdminProductsPage() {
                 onClick={() => setSelectedProductForMessages(null)}
                 className="p-2 hover:bg-gray-200 rounded-full transition-colors"
               >
-                <XMarkIcon className="w-5 h-5 text-gray-500" />
+                <X className="w-5 h-5 text-gray-500" />
               </button>
             </div>
 
@@ -584,7 +575,7 @@ export default function AdminProductsPage() {
                 </div>
               ) : messages.length === 0 ? (
                 <div className="text-center py-12 text-gray-400">
-                  <ChatBubbleLeftRightIcon className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                  <MessageSquare className="w-12 h-12 mx-auto mb-3 opacity-50" />
                   <p>Bu ürün için henüz soru sorulmamış.</p>
                 </div>
               ) : (

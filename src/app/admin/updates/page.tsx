@@ -4,12 +4,12 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import {
-  CloudArrowDownIcon,
-  CheckIcon,
-  ClockIcon,
-  ShieldCheckIcon,
-  ExclamationTriangleIcon
-} from '@heroicons/react/24/outline';
+  CloudDownload,
+  Check,
+  Clock,
+  ShieldCheck,
+  AlertTriangle
+} from 'lucide-react';
 
 interface Update {
   _id: string;
@@ -120,13 +120,13 @@ export default function AdminUpdatesPage() {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'available':
-        return CloudArrowDownIcon;
+        return CloudDownload;
       case 'installed':
-        return CheckIcon;
+        return Check;
       case 'failed':
-        return ExclamationTriangleIcon;
+        return AlertTriangle;
       default:
-        return ShieldCheckIcon;
+        return ShieldCheck;
     }
   };
 
@@ -164,7 +164,7 @@ export default function AdminUpdatesPage() {
             </>
           ) : (
             <>
-              <CloudArrowDownIcon className="w-5 h-5 mr-2" />
+              <CloudDownload className="w-5 h-5 mr-2" />
               Check for Updates
             </>
           )}
@@ -175,7 +175,7 @@ export default function AdminUpdatesPage() {
       <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-2xl p-6 border border-emerald-200">
         <div className="flex items-center space-x-4">
           <div className="w-12 h-12 rounded-xl bg-emerald-500 flex items-center justify-center">
-            <ShieldCheckIcon className="w-6 h-6 text-white" />
+            <ShieldCheck className="w-6 h-6 text-white" />
           </div>
           <div>
             <h3 className="text-lg font-semibold text-slate-900">System Status</h3>
@@ -205,13 +205,13 @@ export default function AdminUpdatesPage() {
                   <div className="flex items-center space-x-4 flex-1">
                     <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${getTypeColor(update.type)}`}>
                       {update.status === 'available' && (
-                        <CloudArrowDownIcon className="w-6 h-6 text-white" />
+                        <CloudDownload className="w-6 h-6 text-white" />
                       )}
                       {update.status === 'installed' && (
-                        <CheckIcon className="w-6 h-6 text-white" />
+                        <Check className="w-6 h-6 text-white" />
                       )}
                       {update.status === 'failed' && (
-                        <ExclamationTriangleIcon className="w-6 h-6 text-white" />
+                        <AlertTriangle className="w-6 h-6 text-white" />
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
@@ -241,7 +241,7 @@ export default function AdminUpdatesPage() {
 
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2 text-sm text-slate-500">
-                    <ClockIcon className="w-4 h-4" />
+                    <Clock className="w-4 h-4" />
                     <span>Released {formatDate(update.releaseDate)}</span>
                   </div>
                   {update.status === 'available' && (
@@ -275,7 +275,7 @@ export default function AdminUpdatesPage() {
       {/* No Updates Available */}
       {updates.length === 0 && (
         <div className="text-center py-16 bg-white rounded-2xl border border-slate-200/60">
-          <ShieldCheckIcon className="w-16 h-16 text-emerald-300 mx-auto mb-4" />
+          <ShieldCheck className="w-16 h-16 text-emerald-300 mx-auto mb-4" />
           <h3 className="text-xl font-semibold text-slate-900 mb-2">No Updates Available</h3>
           <p className="text-slate-500 mb-6">
             Your system is up to date with the latest version
@@ -292,7 +292,7 @@ export default function AdminUpdatesPage() {
               </>
             ) : (
               <>
-                <CloudArrowDownIcon className="w-5 h-5 mr-2" />
+                <CloudDownload className="w-5 h-5 mr-2" />
                 Check for Updates
               </>
             )}

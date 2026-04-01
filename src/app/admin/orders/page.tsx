@@ -6,20 +6,20 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Dialog, Transition } from '@headlessui/react';
 import {
-    MagnifyingGlassIcon,
-    TrashIcon,
-    EnvelopeIcon,
-    CheckIcon,
-    ClockIcon,
-    ShoppingBagIcon,
-    MapPinIcon,
-    PhoneIcon,
-    UserIcon,
-    ArrowPathIcon,
-    FunnelIcon
-} from '@heroicons/react/24/outline';
-import toast from 'react-hot-toast';
-import Swal from 'sweetalert2';
+    Search,
+    Trash2,
+    Mail,
+    Check,
+    Clock,
+    ShoppingBag,
+    MapPin,
+    Phone,
+    User,
+    RefreshCw,
+    Filter
+} from 'lucide-react';
+import { toast } from 'sonner';
+import { useConfirm } from '@/hooks/use-confirm';
 
 interface OrderItem {
     product: string;
@@ -62,6 +62,7 @@ interface Order {
 export default function AdminOrdersPage() {
     const { data: session, status } = useSession();
     const router = useRouter();
+    const { confirm } = useConfirm();
     const [loading, setLoading] = useState(true);
     const [orders, setOrders] = useState<Order[]>([]);
     const [searchQuery, setSearchQuery] = useState('');
@@ -147,18 +148,12 @@ export default function AdminOrdersPage() {
             action === 'soft_delete' ? 'Çöp Kutusuna Taşı' :
                 action === 'restore' ? 'Geri Yükle' : 'Kalıcı Olarak Sil';
 
-        const confirmResult = await Swal.fire({
+        const confirmed = await confirm({
             title: 'Emin misiniz?',
-            text: `${selectedOrders.size} adet siparişi ${actionText}mak üzeresiniz.`,
-            icon: action === 'permanent_delete' ? 'warning' : 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#4F46E5',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Evet, Uygula',
-            cancelButtonText: 'İptal'
+            description: `${selectedOrders.size} adet siparişi ${actionText}mak üzeresiniz.`,
         });
 
-        if (!confirmResult.isConfirmed) return;
+        if (!confirmed) return;
 
         // Map frontend action to API endpoint if needed, or use same naming
         // API expects: 'soft_delete', 'restore', or sending DELETE request for permanent
@@ -309,7 +304,7 @@ export default function AdminOrdersPage() {
             {selectedOrders.size > 0 && (
                 <div className="bg-indigo-50 border border-indigo-100 rounded-xl p-3 flex items-center justify-between animate-in fade-in slide-in-from-top-2">
                     <div className="flex items-center gap-2 text-sm text-indigo-900 font-medium px-2">
-                        <CheckIcon className="w-5 h-5 text-indigo-600" />
+                        <Check className="w-5 h-5 text-indigo-600" />
                         {selectedOrders.size} sipariş seçildi
                     </div>
                     <div className="flex gap-2">
@@ -318,7 +313,7 @@ export default function AdminOrdersPage() {
                                 onClick={() => handleBulkAction('soft_delete')}
                                 className="px-3 py-1.5 bg-white text-red-600 border border-red-200 hover:bg-red-50 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors shadow-sm"
                             >
-                                <TrashIcon className="w-4 h-4" />
+                                <Trash2 className="w-4 h-4" />
                                 Çöpe Taşı
                             </button>
                         ) : (
@@ -327,14 +322,14 @@ export default function AdminOrdersPage() {
                                     onClick={() => handleBulkAction('restore')}
                                     className="px-3 py-1.5 bg-white text-green-600 border border-green-200 hover:bg-green-50 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors shadow-sm"
                                 >
-                                    <ArrowPathIcon className="w-4 h-4" />
+                                    <RefreshCw className="w-4 h-4" />
                                     Geri Yükle
                                 </button>
                                 <button
                                     onClick={() => handleBulkAction('permanent_delete')}
                                     className="px-3 py-1.5 bg-red-600 text-white hover:bg-red-700 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-colors shadow-sm shadow-red-200"
                                 >
-                                    <TrashIcon className="w-4 h-4" />
+                                    <Trash2 className="w-4 h-4" />
                                     Kalıcı Sil
                                 </button>
                             </>
@@ -347,7 +342,7 @@ export default function AdminOrdersPage() {
             <div className="bg-white rounded-2xl shadow-sm border border-slate-200/60 p-4">
                 <div className="flex flex-col sm:flex-row gap-4">
                     <div className="flex-1 relative">
-                        <MagnifyingGlassIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                         <input
                             type="text"
                             value={searchQuery}
@@ -357,7 +352,7 @@ export default function AdminOrdersPage() {
                         />
                     </div>
                     <div className="relative">
-                        <FunnelIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                        <Filter className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                         <select
                             className="pl-12 pr-8 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white appearance-none min-w-[180px]"
                             value={statusFilter}
@@ -412,7 +407,7 @@ export default function AdminOrdersPage() {
                                             <div className="text-xs text-slate-400 font-mono flex items-center gap-1 mb-1">
                                                 <span>#{order._id.slice(-6).toUpperCase()}</span>
                                                 <span className="text-slate-300">•</span>
-                                                <ClockIcon className="w-3 h-3" />
+                                                <Clock className="w-3 h-3" />
                                                 {new Date(order.createdAt).toLocaleDateString('tr-TR')}
                                                 {showTrash && (
                                                     <span className="ml-2 text-red-500 font-bold text-[10px] bg-red-50 px-1 rounded border border-red-100">SILINMIS</span>
@@ -461,19 +456,19 @@ export default function AdminOrdersPage() {
                                     <td className="px-6 py-4 align-top">
                                         <div className="flex flex-col text-sm max-w-[200px]">
                                             <div className="flex items-center gap-1.5 font-medium text-slate-900 mb-0.5">
-                                                <UserIcon className="w-3.5 h-3.5 text-slate-400" />
+                                                <User className="w-3.5 h-3.5 text-slate-400" />
                                                 {order.customerName}
                                             </div>
                                             <div className="flex items-center gap-1.5 text-slate-500 font-mono text-xs">
-                                                <PhoneIcon className="w-3.5 h-3.5" />
+                                                <Phone className="w-3.5 h-3.5" />
                                                 {order.customerPhone}
                                             </div>
                                             <div className="flex items-center gap-1.5 text-slate-500 text-xs mt-0.5 truncate" title={order.customerEmail}>
-                                                <EnvelopeIcon className="w-3.5 h-3.5" />
+                                                <Mail className="w-3.5 h-3.5" />
                                                 {order.customerEmail}
                                             </div>
                                             <div className="flex items-start gap-1.5 text-slate-500 text-xs mt-1 border-t border-slate-100 pt-1" title={order.customerAddress}>
-                                                <MapPinIcon className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" />
+                                                <MapPin className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" />
                                                 <span className="line-clamp-2">{order.customerAddress}</span>
                                             </div>
                                         </div>
@@ -518,7 +513,7 @@ export default function AdminOrdersPage() {
                                                 onClick={() => openEditModal(order)}
                                                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 font-medium text-sm transition-colors"
                                             >
-                                                <ArrowPathIcon className="w-4 h-4" />
+                                                <RefreshCw className="w-4 h-4" />
                                                 Yönet
                                             </button>
                                         </div>
@@ -529,7 +524,7 @@ export default function AdminOrdersPage() {
                                     <td colSpan={7} className="px-6 py-16 text-center">
                                         <div className="flex flex-col items-center justify-center">
                                             <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4">
-                                                <ShoppingBagIcon className="w-8 h-8 text-slate-300" />
+                                                <ShoppingBag className="w-8 h-8 text-slate-300" />
                                             </div>
                                             <h3 className="text-slate-900 font-medium mb-1">
                                                 {showTrash ? 'Çöp Kutusu Boş' : 'Sipariş Bulunamadı'}
@@ -647,7 +642,7 @@ export default function AdminOrdersPage() {
                                         {/* Products Summary in Modal */}
                                         <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 max-h-[200px] overflow-y-auto">
                                             <h4 className="text-sm font-semibold text-slate-900 mb-3 flex items-center gap-2">
-                                                <ShoppingBagIcon className="w-4 h-4 text-indigo-600" />
+                                                <ShoppingBag className="w-4 h-4 text-indigo-600" />
                                                 Sipariş İçeriği
                                             </h4>
                                             <div className="space-y-2">
@@ -689,7 +684,7 @@ export default function AdminOrdersPage() {
                                         {/* Address & Payment Info */}
                                         <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
                                             <h4 className="text-sm font-semibold text-slate-900 mb-3 flex items-center gap-2">
-                                                <MapPinIcon className="w-4 h-4 text-indigo-600" />
+                                                <MapPin className="w-4 h-4 text-indigo-600" />
                                                 Teslimat ve Ödeme Bilgileri
                                             </h4>
                                             <div className="text-sm text-slate-600 space-y-1 mb-3">
@@ -718,7 +713,7 @@ export default function AdminOrdersPage() {
                                                     <option value="completed">Tamamlandı</option>
                                                     <option value="cancelled">İptal</option>
                                                 </select>
-                                                <ArrowPathIcon className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" />
+                                                <RefreshCw className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" />
                                             </div>
                                         </div>
 
@@ -734,7 +729,7 @@ export default function AdminOrdersPage() {
                                         </div>
 
                                         <div className="bg-blue-50 p-4 rounded-xl border border-blue-100 flex gap-3 items-start">
-                                            <EnvelopeIcon className="w-5 h-5 text-blue-600 mt-0.5" />
+                                            <Mail className="w-5 h-5 text-blue-600 mt-0.5" />
                                             <p className="text-sm text-blue-800">
                                                 "Güncelle ve Bildir" butonuna tıkladığınızda müşteriye <strong>{selectedOrder?.customerEmail}</strong> adresinden otomatik bilgilendirme e-postası gönderilecektir.
                                             </p>

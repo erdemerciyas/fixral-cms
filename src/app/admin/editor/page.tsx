@@ -5,12 +5,12 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
-  PencilIcon,
-  DocumentTextIcon,
-  PhotoIcon,
-  CubeIcon,
-  ShoppingBagIcon
-} from '@heroicons/react/24/outline';
+  Pencil,
+  FileText,
+  Image as ImageIcon,
+  Box,
+  ShoppingBag
+} from 'lucide-react';
 
 export default function AdminEditorPage() {
   const { data: session, status } = useSession();
@@ -30,11 +30,11 @@ export default function AdminEditorPage() {
   }, [status, router]);
 
   const contentTypes = [
-    { type: 'news', name: 'News Article', icon: DocumentTextIcon, color: 'from-indigo-500 to-violet-600', href: '/admin/news/create' },
-    { type: 'page', name: 'Page', icon: DocumentTextIcon, color: 'from-emerald-500 to-teal-600', href: '/admin/pages' },
-    { type: 'portfolio', name: 'Portfolio Item', icon: PhotoIcon, color: 'from-amber-500 to-orange-600', href: '/admin/portfolio/new' },
-    { type: 'service', name: 'Service', icon: CubeIcon, color: 'from-rose-500 to-pink-600', href: '/admin/services/new' },
-    { type: 'product', name: 'Product', icon: ShoppingBagIcon, color: 'from-cyan-500 to-blue-600', href: '/admin/products/new' },
+    { type: 'news', name: 'News Article', icon: FileText, color: 'from-indigo-500 to-violet-600', href: '/admin/news/create' },
+    { type: 'page', name: 'Page', icon: FileText, color: 'from-emerald-500 to-teal-600', href: '/admin/pages' },
+    { type: 'portfolio', name: 'Portfolio Item', icon: ImageIcon, color: 'from-amber-500 to-orange-600', href: '/admin/portfolio/new' },
+    { type: 'service', name: 'Service', icon: Box, color: 'from-rose-500 to-pink-600', href: '/admin/services/new' },
+    { type: 'product', name: 'Product', icon: ShoppingBag, color: 'from-cyan-500 to-blue-600', href: '/admin/products/new' },
   ];
 
   if (status === 'loading' || loading) {
@@ -94,28 +94,28 @@ export default function AdminEditorPage() {
             href="/admin/news/create"
             className="flex items-center p-4 rounded-xl bg-indigo-50 hover:bg-indigo-100 transition-colors"
           >
-            <DocumentTextIcon className="w-5 h-5 text-indigo-600 mr-3" />
+            <FileText className="w-5 h-5 text-indigo-600 mr-3" />
             <span className="text-sm font-medium text-slate-900">Create News</span>
           </Link>
           <Link
             href="/admin/portfolio/new"
             className="flex items-center p-4 rounded-xl bg-amber-50 hover:bg-amber-100 transition-colors"
           >
-            <PhotoIcon className="w-5 h-5 text-amber-600 mr-3" />
+            <ImageIcon className="w-5 h-5 text-amber-600 mr-3" />
             <span className="text-sm font-medium text-slate-900">Add Portfolio</span>
           </Link>
           <Link
             href="/admin/services/new"
             className="flex items-center p-4 rounded-xl bg-rose-50 hover:bg-rose-100 transition-colors"
           >
-            <CubeIcon className="w-5 h-5 text-rose-600 mr-3" />
+            <Box className="w-5 h-5 text-rose-600 mr-3" />
             <span className="text-sm font-medium text-slate-900">Add Service</span>
           </Link>
           <Link
             href="/admin/products/new"
             className="flex items-center p-4 rounded-xl bg-cyan-50 hover:bg-cyan-100 transition-colors"
           >
-            <ShoppingBagIcon className="w-5 h-5 text-cyan-600 mr-3" />
+            <ShoppingBag className="w-5 h-5 text-cyan-600 mr-3" />
             <span className="text-sm font-medium text-slate-900">Add Product</span>
           </Link>
         </div>

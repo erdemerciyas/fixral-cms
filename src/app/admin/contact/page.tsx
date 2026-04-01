@@ -4,11 +4,11 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import {
-  ChatBubbleLeftRightIcon,
-  CheckIcon,
-  XMarkIcon,
-  ClockIcon
-} from '@heroicons/react/24/outline';
+  MessageSquare,
+  Check,
+  X,
+  Clock
+} from 'lucide-react';
 
 interface ContactSetting {
   email: string;
@@ -254,7 +254,7 @@ export default function AdminContactPage() {
             </>
           ) : (
             <>
-              <CheckIcon className="w-5 h-5" />
+              <Check className="w-5 h-5" />
               <span>Save Settings</span>
             </>
           )}

@@ -12,12 +12,12 @@ import { logger } from '@/core/lib/logger';
 import { useActiveLanguages } from '@/hooks/useActiveLanguages';
 import LanguageTabs from '@/components/admin/LanguageTabs';
 import {
-  SparklesIcon,
-  CheckIcon,
-  XMarkIcon,
-  PhotoIcon,
-  ArrowUpTrayIcon,
-} from '@heroicons/react/24/outline';
+  Sparkles as SparklesIcon,
+  Check as CheckIcon,
+  X as XMarkIcon,
+  Image as PhotoIcon,
+  Upload as ArrowUpTrayIcon,
+} from 'lucide-react';
 
 interface NewsFormProps {
   initialData?: NewsItem;

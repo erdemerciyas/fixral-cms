@@ -4,17 +4,17 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import {
-  PhotoIcon,
-  PlusIcon,
-  MagnifyingGlassIcon,
-  PencilIcon,
-  TrashIcon,
-  EyeIcon,
-  ArrowUpIcon,
-  ArrowDownIcon
-} from '@heroicons/react/24/outline';
-import toast from 'react-hot-toast';
-import Swal from 'sweetalert2';
+  Image as ImageIcon,
+  Plus,
+  Search,
+  Pencil,
+  Trash2,
+  Eye,
+  ArrowUp,
+  ArrowDown
+} from 'lucide-react';
+import { toast } from 'sonner';
+import { useConfirm } from '@/hooks/use-confirm';
 
 interface SliderItem {
   _id: string;
@@ -30,6 +30,7 @@ interface SliderItem {
 export default function AdminSliderPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const { confirm } = useConfirm();
   const [loading, setLoading] = useState(true);
   const [sliders, setSliders] = useState<SliderItem[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -61,17 +62,8 @@ export default function AdminSliderPage() {
   };
 
   const handleDelete = async (sliderId: string) => {
-    const result = await Swal.fire({
-      title: 'Are you sure?',
-      text: "Are you sure you want to delete this slider?",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!'
-    });
-
-    if (!result.isConfirmed) return;
+    const confirmed = await confirm({ title: 'Are you sure?', description: 'Are you sure you want to delete this slider?' });
+    if (!confirmed) return;
 
     try {
       const response = await fetch(`/api/admin/slider/${sliderId}`, {
@@ -166,7 +158,7 @@ export default function AdminSliderPage() {
           onClick={() => router.push('/admin/slider/new')}
           className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-200"
         >
-          <PlusIcon className="w-5 h-5 mr-2" />
+          <Plus className="w-5 h-5 mr-2" />
           Add Slider
         </button>
       </div>
@@ -175,7 +167,7 @@ export default function AdminSliderPage() {
       <div className="bg-white rounded-2xl shadow-sm border border-slate-200/60 p-4">
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex-1 relative">
-            <MagnifyingGlassIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
             <input
               type="text"
               value={searchQuery}
@@ -233,7 +225,7 @@ export default function AdminSliderPage() {
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
-                  <PhotoIcon className="w-16 h-16 text-indigo-300" />
+                  <ImageIcon className="w-16 h-16 text-indigo-300" />
                 </div>
               )}
               <div className="absolute top-3 left-3">
@@ -265,7 +257,7 @@ export default function AdminSliderPage() {
                     className="p-2 hover:bg-indigo-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     title="Move Up"
                   >
-                    <ArrowUpIcon className="w-4 h-4 text-slate-600" />
+                    <ArrowUp className="w-4 h-4 text-slate-600" />
                   </button>
                   <button
                     onClick={() => handleReorder(slider._id, 'down')}
@@ -273,7 +265,7 @@ export default function AdminSliderPage() {
                     className="p-2 hover:bg-indigo-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     title="Move Down"
                   >
-                    <ArrowDownIcon className="w-4 h-4 text-slate-600" />
+                    <ArrowDown className="w-4 h-4 text-slate-600" />
                   </button>
                   <button
                     onClick={() => handleToggleStatus(slider._id)}
@@ -283,21 +275,21 @@ export default function AdminSliderPage() {
                       }`}
                     title={slider.status === 'active' ? 'Deactivate' : 'Activate'}
                   >
-                    <EyeIcon className="w-4 h-4 text-slate-600" />
+                    <Eye className="w-4 h-4 text-slate-600" />
                   </button>
                   <button
                     onClick={() => router.push(`/admin/slider/${slider._id}/edit`)}
                     className="p-2 hover:bg-indigo-100 rounded-lg transition-colors"
                     title="Edit"
                   >
-                    <PencilIcon className="w-4 h-4 text-slate-600" />
+                    <Pencil className="w-4 h-4 text-slate-600" />
                   </button>
                   <button
                     onClick={() => handleDelete(slider._id)}
                     className="p-2 hover:bg-red-100 rounded-lg transition-colors"
                     title="Delete"
                   >
-                    <TrashIcon className="w-4 h-4 text-slate-600" />
+                    <Trash2 className="w-4 h-4 text-slate-600" />
                   </button>
                 </div>
               </div>
@@ -309,7 +301,7 @@ export default function AdminSliderPage() {
       {/* Empty State */}
       {filteredSliders.length === 0 && (
         <div className="text-center py-16 bg-white rounded-2xl border border-slate-200/60">
-          <PhotoIcon className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+          <ImageIcon className="w-16 h-16 text-slate-300 mx-auto mb-4" />
           <h3 className="text-xl font-semibold text-slate-900 mb-2">No sliders found</h3>
           <p className="text-slate-500">
             {searchQuery || statusFilter !== 'all'

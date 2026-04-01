@@ -9,17 +9,17 @@ import { useState, useEffect, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useActiveTheme } from '@/providers/ActiveThemeProvider';
 import {
-  ArrowLeftIcon,
-  ArrowPathIcon,
-  CheckCircleIcon,
-  PaintBrushIcon,
-  Cog6ToothIcon,
-  XMarkIcon,
-  PhotoIcon,
-  AdjustmentsHorizontalIcon,
-  CubeIcon,
-  ComputerDesktopIcon
-} from '@heroicons/react/24/outline';
+  ArrowLeft,
+  RefreshCw,
+  CheckCircle,
+  Paintbrush,
+  Settings,
+  X,
+  Image as ImageIcon,
+  SlidersHorizontal,
+  Box,
+  Monitor
+} from 'lucide-react';
 
 // --- Interfaces ---
 
@@ -355,16 +355,16 @@ export default function ThemeCustomizePage({ params }: { params: { id: string } 
   }
 
   const tabs = [
-    { id: 'colors', label: 'Renkler', icon: PaintBrushIcon },
-    { id: 'typography', label: 'Tipografi', icon: AdjustmentsHorizontalIcon },
-    { id: 'hero', label: 'Alt Sayfa Hero', icon: PhotoIcon },
-    { id: 'footer', label: 'Footer', icon: CubeIcon },
-    { id: 'buttons', label: 'Butonlar', icon: CubeIcon },
-    { id: 'cards', label: 'Kartlar', icon: CubeIcon },
-    { id: 'navigation', label: 'Navigasyon', icon: CubeIcon },
-    { id: 'spacing', label: 'Boşluklar', icon: AdjustmentsHorizontalIcon },
-    { id: 'forms', label: 'Formlar', icon: CubeIcon },
-    { id: 'layout', label: 'Düzen', icon: Cog6ToothIcon },
+    { id: 'colors', label: 'Renkler', icon: Paintbrush },
+    { id: 'typography', label: 'Tipografi', icon: SlidersHorizontal },
+    { id: 'hero', label: 'Alt Sayfa Hero', icon: ImageIcon },
+    { id: 'footer', label: 'Footer', icon: Box },
+    { id: 'buttons', label: 'Butonlar', icon: Box },
+    { id: 'cards', label: 'Kartlar', icon: Box },
+    { id: 'navigation', label: 'Navigasyon', icon: Box },
+    { id: 'spacing', label: 'Boşluklar', icon: SlidersHorizontal },
+    { id: 'forms', label: 'Formlar', icon: Box },
+    { id: 'layout', label: 'Düzen', icon: Settings },
   ];
 
   return (
@@ -377,7 +377,7 @@ export default function ThemeCustomizePage({ params }: { params: { id: string } 
             onClick={() => router.push(`/admin/themes`)}
             className="flex items-center text-slate-500 hover:text-slate-800 text-sm font-medium transition-colors"
           >
-            <ArrowLeftIcon className="w-4 h-4 mr-1" />
+            <ArrowLeft className="w-4 h-4 mr-1" />
             Temalara Dön
           </button>
         </div>
@@ -416,10 +416,10 @@ export default function ThemeCustomizePage({ params }: { params: { id: string } 
               }`}
           >
             {saving ? (
-              <ArrowPathIcon className="w-5 h-5 animate-spin" />
+              <RefreshCw className="w-5 h-5 animate-spin" />
             ) : (
               <>
-                <CheckCircleIcon className="w-5 h-5 mr-2" />
+                <CheckCircle className="w-5 h-5 mr-2" />
                 Kaydet
               </>
             )}
@@ -430,7 +430,7 @@ export default function ThemeCustomizePage({ params }: { params: { id: string } 
               onClick={resetToDefault}
               className="w-full flex items-center justify-center px-4 py-2 text-slate-600 hover:text-red-600 text-sm font-medium transition-colors"
             >
-              <XMarkIcon className="w-4 h-4 mr-1" />
+              <X className="w-4 h-4 mr-1" />
               Geri Al
             </button>
           )}
@@ -1111,7 +1111,7 @@ export default function ThemeCustomizePage({ params }: { params: { id: string } 
       <div className="w-96 bg-slate-50 border-l border-slate-200 hidden xl:flex flex-col flex-shrink-0 z-10">
         <div className="p-4 border-b border-slate-200 bg-white">
           <h2 className="font-semibold text-slate-800 flex items-center">
-            <ComputerDesktopIcon className="w-5 h-5 mr-2 text-indigo-500" />
+            <Monitor className="w-5 h-5 mr-2 text-indigo-500" />
             Canlı Önizleme
           </h2>
         </div>

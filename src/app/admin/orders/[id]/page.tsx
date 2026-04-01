@@ -5,21 +5,21 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
-    ArrowLeftIcon,
-    CalendarIcon,
-    CreditCardIcon,
-    CurrencyDollarIcon,
-    MapPinIcon,
-    PhoneIcon,
-    UserIcon,
-    TruckIcon,
-    CheckCircleIcon,
-    XCircleIcon,
-    ClockIcon,
-    EnvelopeIcon,
-    ShoppingBagIcon
-} from '@heroicons/react/24/outline';
-import toast from 'react-hot-toast';
+    ArrowLeft,
+    Calendar,
+    CreditCard,
+    DollarSign,
+    MapPin,
+    Phone,
+    User,
+    Truck,
+    CheckCircle,
+    XCircle,
+    Clock,
+    Mail,
+    ShoppingBag
+} from 'lucide-react';
+import { toast } from 'sonner';
 
 interface OrderItem {
     product: string;
@@ -118,12 +118,12 @@ export default function AdminOrderDetailPage({ params }: { params: { id: string 
 
     const getStatusInfo = (s: string) => {
         switch (s) {
-            case 'new': return { label: 'Yeni Sipariş', color: 'bg-blue-100 text-blue-700 border-blue-200', icon: ClockIcon };
-            case 'processing': return { label: 'Hazırlanıyor', color: 'bg-yellow-100 text-yellow-700 border-yellow-200', icon: ArrowLeftIcon }; // Used generic icon for now
-            case 'shipped': return { label: 'Kargolandı', color: 'bg-indigo-100 text-indigo-700 border-indigo-200', icon: TruckIcon };
-            case 'completed': return { label: 'Tamamlandı', color: 'bg-green-100 text-green-700 border-green-200', icon: CheckCircleIcon };
-            case 'cancelled': return { label: 'İptal Edildi', color: 'bg-red-100 text-red-700 border-red-200', icon: XCircleIcon };
-            default: return { label: s, color: 'bg-gray-100 text-gray-700', icon: ClockIcon };
+            case 'new': return { label: 'Yeni Sipariş', color: 'bg-blue-100 text-blue-700 border-blue-200', icon: Clock };
+            case 'processing': return { label: 'Hazırlanıyor', color: 'bg-yellow-100 text-yellow-700 border-yellow-200', icon: ArrowLeft }; // Used generic icon for now
+            case 'shipped': return { label: 'Kargolandı', color: 'bg-indigo-100 text-indigo-700 border-indigo-200', icon: Truck };
+            case 'completed': return { label: 'Tamamlandı', color: 'bg-green-100 text-green-700 border-green-200', icon: CheckCircle };
+            case 'cancelled': return { label: 'İptal Edildi', color: 'bg-red-100 text-red-700 border-red-200', icon: XCircle };
+            default: return { label: s, color: 'bg-gray-100 text-gray-700', icon: Clock };
         }
     };
 
@@ -148,7 +148,7 @@ export default function AdminOrderDetailPage({ params }: { params: { id: string 
                     <div className="flex items-center justify-between h-16">
                         <div className="flex items-center gap-4">
                             <Link href="/admin/orders" className="p-2 -ml-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors">
-                                <ArrowLeftIcon className="w-5 h-5" />
+                                <ArrowLeft className="w-5 h-5" />
                             </Link>
                             <div>
                                 <h1 className="text-lg font-bold text-slate-900 flex items-center gap-2">
@@ -158,14 +158,14 @@ export default function AdminOrderDetailPage({ params }: { params: { id: string 
                                     </span>
                                 </h1>
                                 <p className="text-xs text-slate-500 flex items-center gap-2 mt-0.5">
-                                    <CalendarIcon className="w-3.5 h-3.5" />
+                                    <Calendar className="w-3.5 h-3.5" />
                                     {new Date(order.createdAt).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
                                 </p>
                             </div>
                         </div>
                         <div className="flex items-center gap-3">
                             <a href={`mailto:${order.customerEmail}`} className="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm text-slate-600 hover:text-indigo-600 hover:border-indigo-200 transition-colors">
-                                <EnvelopeIcon className="w-4 h-4" />
+                                <Mail className="w-4 h-4" />
                                 E-posta Gönder
                             </a>
                         </div>
@@ -183,7 +183,7 @@ export default function AdminOrderDetailPage({ params }: { params: { id: string 
                         <div className="bg-white rounded-2xl shadow-sm border border-slate-200/60 overflow-hidden">
                             <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
                                 <h2 className="font-semibold text-slate-900 flex items-center gap-2">
-                                    <ShoppingBagIcon className="w-5 h-5 text-indigo-500" />
+                                    <ShoppingBag className="w-5 h-5 text-indigo-500" />
                                     Sipariş İçeriği
                                 </h2>
                                 <span className="text-sm font-medium text-slate-500">
@@ -255,10 +255,10 @@ export default function AdminOrderDetailPage({ params }: { params: { id: string 
                         {order.note && (
                             <div className="bg-amber-50 rounded-2xl p-6 border border-amber-100 relative overflow-hidden">
                                 <div className="absolute top-0 right-0 p-4 opacity-10">
-                                    <EnvelopeIcon className="w-24 h-24 text-amber-600" />
+                                    <Mail className="w-24 h-24 text-amber-600" />
                                 </div>
                                 <h3 className="text-amber-900 font-semibold mb-2 relative z-10 flex items-center gap-2">
-                                    <EnvelopeIcon className="w-5 h-5" />
+                                    <Mail className="w-5 h-5" />
                                     Müşteri Notu
                                 </h3>
                                 <p className="text-amber-800 text-sm leading-relaxed relative z-10 italic">
@@ -275,7 +275,7 @@ export default function AdminOrderDetailPage({ params }: { params: { id: string 
                         {/* Status Card */}
                         <div className="bg-white rounded-2xl shadow-sm border border-slate-200/60 p-6">
                             <h3 className="font-semibold text-slate-900 mb-4 flex items-center gap-2">
-                                <CheckCircleIcon className="w-5 h-5 text-indigo-500" />
+                                <CheckCircle className="w-5 h-5 text-indigo-500" />
                                 Sipariş Durumu
                             </h3>
 
@@ -329,13 +329,13 @@ export default function AdminOrderDetailPage({ params }: { params: { id: string 
                         {/* Customer Info Card */}
                         <div className="bg-white rounded-2xl shadow-sm border border-slate-200/60 p-6">
                             <h3 className="font-semibold text-slate-900 mb-4 flex items-center gap-2">
-                                <UserIcon className="w-5 h-5 text-indigo-500" />
+                                <User className="w-5 h-5 text-indigo-500" />
                                 Müşteri Bilgileri
                             </h3>
                             <div className="space-y-4">
                                 <div className="flex items-start gap-3">
                                     <div className="p-2 bg-slate-50 rounded-lg text-slate-400">
-                                        <UserIcon className="w-5 h-5" />
+                                        <User className="w-5 h-5" />
                                     </div>
                                     <div>
                                         <div className="text-xs text-slate-500 font-medium uppercase">Ad Soyad</div>
@@ -344,7 +344,7 @@ export default function AdminOrderDetailPage({ params }: { params: { id: string 
                                 </div>
                                 <div className="flex items-start gap-3">
                                     <div className="p-2 bg-slate-50 rounded-lg text-slate-400">
-                                        <EnvelopeIcon className="w-5 h-5" />
+                                        <Mail className="w-5 h-5" />
                                     </div>
                                     <div className="min-w-0 flex-1">
                                         <div className="text-xs text-slate-500 font-medium uppercase">E-Posta</div>
@@ -353,7 +353,7 @@ export default function AdminOrderDetailPage({ params }: { params: { id: string 
                                 </div>
                                 <div className="flex items-start gap-3">
                                     <div className="p-2 bg-slate-50 rounded-lg text-slate-400">
-                                        <PhoneIcon className="w-5 h-5" />
+                                        <Phone className="w-5 h-5" />
                                     </div>
                                     <div>
                                         <div className="text-xs text-slate-500 font-medium uppercase">Telefon</div>
@@ -363,7 +363,7 @@ export default function AdminOrderDetailPage({ params }: { params: { id: string 
                                 <div className="pt-4 border-t border-slate-100 mt-2">
                                     <div className="flex items-start gap-3">
                                         <div className="p-2 bg-slate-50 rounded-lg text-slate-400">
-                                            <MapPinIcon className="w-5 h-5" />
+                                            <MapPin className="w-5 h-5" />
                                         </div>
                                         <div>
                                             <div className="text-xs text-slate-500 font-medium uppercase mb-0.5">Teslimat Adresi</div>

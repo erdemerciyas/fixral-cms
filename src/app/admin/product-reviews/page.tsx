@@ -5,16 +5,15 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
-    MagnifyingGlassIcon,
-    TrashIcon,
-    CheckCircleIcon,
-    XCircleIcon,
-    ChatBubbleBottomCenterTextIcon,
-    StarIcon as StarIconOutline
-} from '@heroicons/react/24/outline';
-import { StarIcon as StarIconSolid } from '@heroicons/react/24/solid';
-import toast from 'react-hot-toast';
-import Swal from 'sweetalert2';
+    Search,
+    Trash2,
+    CheckCircle,
+    XCircle,
+    MessageSquare,
+    Star
+} from 'lucide-react';
+import { toast } from 'sonner';
+import { useConfirm } from '@/hooks/use-confirm';
 
 interface ProductReview {
     _id: string;
@@ -31,6 +30,7 @@ interface ProductReview {
 export default function AdminProductReviewsPage() {
     const { status: sessionStatus } = useSession();
     const router = useRouter();
+    const { confirm } = useConfirm();
     const [loading, setLoading] = useState(true);
     const [reviews, setReviews] = useState<ProductReview[]>([]);
     const [statusFilter, setStatusFilter] = useState('pending');
@@ -83,18 +83,8 @@ export default function AdminProductReviewsPage() {
     };
 
     const handleDelete = async (reviewId: string) => {
-        const result = await Swal.fire({
-            title: 'Emin misiniz?',
-            text: "Bu yorumu silmek istediğinizden emin misiniz?",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Evet, sil!',
-            cancelButtonText: 'Vazgeç'
-        });
-
-        if (!result.isConfirmed) return;
+        const confirmed = await confirm({ title: 'Emin misiniz?', description: 'Bu yorumu silmek istediğinizden emin misiniz?' });
+        if (!confirmed) return;
 
         try {
             const response = await fetch(`/api/admin/product-reviews?id=${reviewId}`, { method: 'DELETE' });
@@ -116,18 +106,8 @@ export default function AdminProductReviewsPage() {
     };
 
     const handleBulkDelete = async () => {
-        const result = await Swal.fire({
-            title: 'Emin misiniz?',
-            text: `${selectedItems.size} yorumu silmek istediğinizden emin misiniz?`,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Evet, sil!',
-            cancelButtonText: 'Vazgeç'
-        });
-
-        if (!result.isConfirmed) return;
+        const confirmed = await confirm({ title: 'Emin misiniz?', description: `${selectedItems.size} yorumu silmek istediğinizden emin misiniz?` });
+        if (!confirmed) return;
 
         try {
             // Naive Promise.all since API supports single ID delete for now
@@ -160,7 +140,7 @@ export default function AdminProductReviewsPage() {
         return (
             <div className="flex text-amber-400">
                 {[...Array(5)].map((_, i) => (
-                    i < rating ? <StarIconSolid key={i} className="w-4 h-4" /> : <StarIconOutline key={i} className="w-4 h-4 text-slate-300" />
+                    i < rating ? <Star key={i} className="w-4 h-4 fill-current" /> : <Star key={i} className="w-4 h-4 text-slate-300" />
                 ))}
             </div>
         );
@@ -211,7 +191,7 @@ export default function AdminProductReviewsPage() {
                                 onClick={handleBulkDelete}
                                 className="flex items-center px-4 py-2.5 bg-red-50 text-red-600 font-medium rounded-xl hover:bg-red-100 transition-colors"
                             >
-                                <TrashIcon className="w-4 h-4 mr-2" />
+                                <Trash2 className="w-4 h-4 mr-2" />
                                 Sil
                             </button>
                         </div>
@@ -223,7 +203,7 @@ export default function AdminProductReviewsPage() {
             {reviews.length === 0 ? (
                 <div className="bg-white rounded-2xl shadow-sm border border-slate-200 border-dashed p-12 text-center">
                     <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <ChatBubbleBottomCenterTextIcon className="w-8 h-8 text-slate-400" />
+                        <MessageSquare className="w-8 h-8 text-slate-400" />
                     </div>
                     <h3 className="text-lg font-semibold text-slate-900 mb-2">Yorum bulunamadı</h3>
                     <p className="text-slate-500 mb-6 max-w-sm mx-auto">
@@ -291,7 +271,7 @@ export default function AdminProductReviewsPage() {
                                                     className="p-1.5 text-slate-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
                                                     title="Onayla"
                                                 >
-                                                    <CheckCircleIcon className="w-5 h-5" />
+                                                    <CheckCircle className="w-5 h-5" />
                                                 </button>
                                             )}
                                             {review.status !== 'rejected' && (
@@ -300,7 +280,7 @@ export default function AdminProductReviewsPage() {
                                                     className="p-1.5 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                                                     title="Reddet"
                                                 >
-                                                    <XCircleIcon className="w-5 h-5" />
+                                                    <XCircle className="w-5 h-5" />
                                                 </button>
                                             )}
                                             <button
@@ -308,7 +288,7 @@ export default function AdminProductReviewsPage() {
                                                 className="p-1.5 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                                                 title="Sil"
                                             >
-                                                <TrashIcon className="w-5 h-5" />
+                                                <Trash2 className="w-5 h-5" />
                                             </button>
                                         </div>
                                     </td>

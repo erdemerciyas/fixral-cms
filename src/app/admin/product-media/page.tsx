@@ -4,21 +4,21 @@ import { useState, useEffect, useMemo } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import {
-    PhotoIcon,
-    MagnifyingGlassIcon,
-    TrashIcon,
-    EyeIcon,
-    FunnelIcon,
-    Squares2X2Icon,
-    ListBulletIcon,
-    ArrowPathIcon,
-    CloudArrowUpIcon,
-    XMarkIcon,
-    DocumentIcon,
-    CheckCircleIcon
-} from '@heroicons/react/24/outline';
-import toast from 'react-hot-toast';
-import Swal from 'sweetalert2';
+    Image as ImageIcon,
+    Search,
+    Trash2,
+    Eye,
+    Filter,
+    LayoutGrid,
+    List,
+    RefreshCw,
+    CloudUpload,
+    X,
+    FileIcon,
+    CheckCircle
+} from 'lucide-react';
+import { toast } from 'sonner';
+import { useConfirm } from '@/hooks/use-confirm';
 
 interface MediaItem {
     _id: string;
@@ -34,6 +34,7 @@ interface MediaItem {
 export default function AdminProductMediaPage() {
     const { status } = useSession();
     const router = useRouter();
+    const { confirm } = useConfirm();
     const [loading, setLoading] = useState(true);
     const [mediaItems, setMediaItems] = useState<MediaItem[]>([]);
     const [searchQuery, setSearchQuery] = useState('');
@@ -87,18 +88,8 @@ export default function AdminProductMediaPage() {
     };
 
     const handleDelete = async (itemsToDelete: string[]) => {
-        const result = await Swal.fire({
-            title: 'Emin misiniz?',
-            text: `${itemsToDelete.length} öğeyi silmek istediğinize emin misiniz?`,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Evet, sil!',
-            cancelButtonText: 'Vazgeç'
-        });
-
-        if (!result.isConfirmed) return;
+        const confirmed = await confirm({ title: 'Emin misiniz?', description: `${itemsToDelete.length} öğeyi silmek istediğinize emin misiniz?` });
+        if (!confirmed) return;
 
         setLoading(true);
         try {
@@ -188,7 +179,7 @@ export default function AdminProductMediaPage() {
                             onClick={() => handleDelete(Array.from(selectedItems))}
                             className="inline-flex items-center px-4 py-2 bg-red-100 text-red-700 rounded-xl hover:bg-red-200 transition-colors font-medium"
                         >
-                            <TrashIcon className="w-5 h-5 mr-2" />
+                            <Trash2 className="w-5 h-5 mr-2" />
                             {selectedItems.size} Sil
                         </button>
                     )}
@@ -196,7 +187,7 @@ export default function AdminProductMediaPage() {
                         onClick={() => setShowUploadModal(true)}
                         className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-200"
                     >
-                        <CloudArrowUpIcon className="w-5 h-5 mr-2" />
+                        <CloudUpload className="w-5 h-5 mr-2" />
                         Dosya Yükle
                     </button>
                 </div>
@@ -206,7 +197,7 @@ export default function AdminProductMediaPage() {
             <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-2 sm:p-3 sticky top-24 z-10 transition-all duration-300">
                 <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
                     <div className="flex-1 w-full lg:w-auto relative">
-                        <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                         <input
                             type="text"
                             value={searchQuery}
@@ -221,13 +212,13 @@ export default function AdminProductMediaPage() {
                             onClick={() => setViewMode('grid')}
                             className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                         >
-                            <Squares2X2Icon className="w-5 h-5" />
+                            <LayoutGrid className="w-5 h-5" />
                         </button>
                         <button
                             onClick={() => setViewMode('list')}
                             className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                         >
-                            <ListBulletIcon className="w-5 h-5" />
+                            <List className="w-5 h-5" />
                         </button>
                     </div>
 
@@ -253,7 +244,7 @@ export default function AdminProductMediaPage() {
             ) : filteredItems.length === 0 ? (
                 <div className="bg-white rounded-2xl shadow-sm border border-slate-200 border-dashed p-12 text-center">
                     <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <PhotoIcon className="w-8 h-8 text-slate-400" />
+                        <ImageIcon className="w-8 h-8 text-slate-400" />
                     </div>
                     <h3 className="text-lg font-semibold text-slate-900 mb-2">Medya Bulunamadı</h3>
                     <p className="text-slate-500 max-w-sm mx-auto">
@@ -297,7 +288,7 @@ export default function AdminProductMediaPage() {
                                                         className="p-1.5 bg-white/10 backdrop-blur-md hover:bg-white text-white hover:text-slate-900 rounded-lg transition-all"
                                                         title="Önizle"
                                                     >
-                                                        <EyeIcon className="w-5 h-5" />
+                                                        <Eye className="w-5 h-5" />
                                                     </button>
                                                     <button
                                                         onClick={(e) => {
@@ -307,7 +298,7 @@ export default function AdminProductMediaPage() {
                                                         className="p-1.5 bg-white/10 backdrop-blur-md hover:bg-red-500 text-white rounded-lg transition-all"
                                                         title="Sil"
                                                     >
-                                                        <TrashIcon className="w-5 h-5" />
+                                                        <Trash2 className="w-5 h-5" />
                                                     </button>
                                                 </div>
                                             </div>
@@ -378,13 +369,13 @@ export default function AdminProductMediaPage() {
                                                         onClick={(e) => { e.stopPropagation(); setSelectedItem(item); }}
                                                         className="text-indigo-600 hover:bg-indigo-50 p-1.5 rounded-lg"
                                                     >
-                                                        <EyeIcon className="w-5 h-5" />
+                                                        <Eye className="w-5 h-5" />
                                                     </button>
                                                     <button
                                                         onClick={(e) => { e.stopPropagation(); handleDelete([item._id]); }}
                                                         className="text-red-500 hover:bg-red-50 p-1.5 rounded-lg"
                                                     >
-                                                        <TrashIcon className="w-5 h-5" />
+                                                        <Trash2 className="w-5 h-5" />
                                                     </button>
                                                 </div>
                                             </td>
@@ -407,7 +398,7 @@ export default function AdminProductMediaPage() {
                                 onClick={() => setShowUploadModal(false)}
                                 className="p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-500"
                             >
-                                <XMarkIcon className="w-6 h-6" />
+                                <X className="w-6 h-6" />
                             </button>
                         </div>
                         <div className="p-8">
@@ -423,7 +414,7 @@ export default function AdminProductMediaPage() {
                                 >
                                     <div className="flex flex-col items-center justify-center pt-5 pb-6">
                                         <div className="w-16 h-16 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                                            <CloudArrowUpIcon className="w-8 h-8" />
+                                            <CloudUpload className="w-8 h-8" />
                                         </div>
                                         <p className="mb-2 text-lg font-medium text-slate-700">Tıklayın veya sürükleyin</p>
                                         <p className="text-sm text-slate-500">PNG, JPG, WEBP (Maks. 5MB)</p>
@@ -450,7 +441,7 @@ export default function AdminProductMediaPage() {
                             <h3 className="font-semibold text-slate-900 truncate pr-4">{selectedItem.name}</h3>
                             <button onClick={() => setSelectedItem(null)} className="p-2 hover:bg-slate-100 rounded-full transition-colors">
                                 <span className="sr-only">Kapat</span>
-                                <XMarkIcon className="w-6 h-6" />
+                                <X className="w-6 h-6" />
                             </button>
                         </div>
                         <div className="flex-1 overflow-auto bg-slate-100 flex items-center justify-center p-6 bg-[url('/img/grid.png')]">

@@ -4,18 +4,18 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import {
-  DocumentTextIcon,
-  CheckIcon,
-  PlusIcon,
-  TrashIcon,
-  ArrowPathIcon,
-  FingerPrintIcon,
-  LinkIcon,
-  PhoneIcon,
-  ShareIcon,
-  EyeIcon,
-  XMarkIcon
-} from '@heroicons/react/24/outline'; // Replaced GlobeAltIcon with XMarkIcon if not used, or just added XMarkIcon
+  FileText,
+  Check,
+  Plus,
+  Trash2,
+  RefreshCw,
+  Fingerprint,
+  Link2,
+  Phone,
+  Share2,
+  Eye,
+  X
+} from 'lucide-react';
 
 // --- Interfaces ---
 
@@ -188,12 +188,12 @@ export default function AdminFooterPage() {
   }
 
   const tabs = [
-    { id: 'general', label: 'Genel & Hakkında', icon: DocumentTextIcon },
-    { id: 'contact', label: 'İletişim', icon: PhoneIcon },
-    { id: 'links', label: 'Hızlı Linkler', icon: LinkIcon },
-    { id: 'social', label: 'Sosyal Medya', icon: ShareIcon },
-    { id: 'developer', label: 'Telif & Geliştirici', icon: FingerPrintIcon },
-    { id: 'visibility', label: 'Görünürlük', icon: EyeIcon },
+    { id: 'general', label: 'Genel & Hakkında', icon: FileText },
+    { id: 'contact', label: 'İletişim', icon: Phone },
+    { id: 'links', label: 'Hızlı Linkler', icon: Link2 },
+    { id: 'social', label: 'Sosyal Medya', icon: Share2 },
+    { id: 'developer', label: 'Telif & Geliştirici', icon: Fingerprint },
+    { id: 'visibility', label: 'Görünürlük', icon: Eye },
   ];
 
   return (
@@ -205,16 +205,16 @@ export default function AdminFooterPage() {
             : 'bg-red-50 border-red-200 text-red-800'
           }`}>
           {notification.type === 'success' ? (
-            <CheckIcon className="w-6 h-6 text-emerald-600" />
+            <Check className="w-6 h-6 text-emerald-600" />
           ) : (
-            <XMarkIcon className="w-6 h-6 text-red-600" />
+            <X className="w-6 h-6 text-red-600" />
           )}
           <div>
             <h4 className="font-semibold">{notification.type === 'success' ? 'Başarılı' : 'Hata'}</h4>
             <p className="text-sm opacity-90">{notification.message}</p>
           </div>
           <button onClick={() => setNotification(null)} className="ml-2 hover:opacity-75">
-            <XMarkIcon className="w-4 h-4" />
+            <X className="w-4 h-4" />
           </button>
         </div>
       )}
@@ -230,9 +230,9 @@ export default function AdminFooterPage() {
           className="flex items-center space-x-2 bg-indigo-600 text-white px-6 py-2.5 rounded-xl hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
         >
           {saving ? (
-            <ArrowPathIcon className="w-5 h-5 animate-spin" />
+            <RefreshCw className="w-5 h-5 animate-spin" />
           ) : (
-            <CheckIcon className="w-5 h-5" />
+            <Check className="w-5 h-5" />
           )}
           <span>{saving ? 'Kaydediliyor...' : 'Kaydet'}</span>
         </button>
@@ -329,14 +329,14 @@ export default function AdminFooterPage() {
                   onClick={addQuickLink}
                   className="flex items-center text-sm font-medium text-indigo-600 hover:text-indigo-700 bg-indigo-50 px-3 py-1.5 rounded-lg transition-colors"
                 >
-                  <PlusIcon className="w-4 h-4 mr-1.5" />
+                  <Plus className="w-4 h-4 mr-1.5" />
                   Yeni Link Ekle
                 </button>
               </div>
 
               {settings.quickLinks.length === 0 ? (
                 <div className="text-center py-12 bg-slate-50 rounded-xl border border-dashed border-slate-300">
-                  <LinkIcon className="w-12 h-12 text-slate-400 mx-auto mb-3" />
+                  <Link2 className="w-12 h-12 text-slate-400 mx-auto mb-3" />
                   <p className="text-slate-500">Henüz link eklenmemiş.</p>
                 </div>
               ) : (
@@ -381,7 +381,7 @@ export default function AdminFooterPage() {
                         className="mt-1 p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
                         title="Sil"
                       >
-                        <TrashIcon className="w-5 h-5" />
+                        <Trash2 className="w-5 h-5" />
                       </button>
                     </div>
                   ))}

@@ -5,20 +5,20 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
-  CubeIcon,
-  PlusIcon,
-  MagnifyingGlassIcon,
-  PencilIcon,
-  TrashIcon,
-  CalendarIcon,
-  TagIcon,
-  Squares2X2Icon,
-  ListBulletIcon,
-  CheckCircleIcon,
-  EyeIcon,
-  FunnelIcon,
-  CurrencyDollarIcon
-} from '@heroicons/react/24/outline';
+  Box,
+  Plus,
+  Search,
+  Pencil,
+  Trash2,
+  Calendar,
+  Tag,
+  LayoutGrid,
+  List,
+  CheckCircle,
+  Eye,
+  Filter,
+  DollarSign
+} from 'lucide-react';
 
 interface ServiceItem {
   _id: string;
@@ -161,8 +161,8 @@ export default function AdminServicesPage() {
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="flex flex-col items-center space-y-4">
           <div className="relative">
-            <div className="w-16 h-16 border-4 border-indigo-200 rounded-full"></div>
-            <div className="absolute top-0 left-0 w-16 h-16 border-4 border-transparent border-t-indigo-600 rounded-full animate-spin"></div>
+            <div className="w-16 h-16 border-4 border-primary/20 rounded-full"></div>
+            <div className="absolute top-0 left-0 w-16 h-16 border-4 border-transparent border-t-primary rounded-full animate-spin"></div>
           </div>
           <p className="text-lg font-medium text-slate-600">Hizmetler yükleniyor...</p>
         </div>
@@ -182,7 +182,7 @@ export default function AdminServicesPage() {
           href="/admin/services/new"
           className="inline-flex items-center px-6 py-3 bg-slate-900 text-white font-semibold rounded-xl hover:bg-slate-800 hover:shadow-lg hover:shadow-slate-900/20 transition-all duration-200"
         >
-          <PlusIcon className="w-5 h-5 mr-2" />
+          <Plus className="w-5 h-5 mr-2" />
           Yeni Hizmet Ekle
         </Link>
       </div>
@@ -193,13 +193,13 @@ export default function AdminServicesPage() {
           {/* Search & Filter Group */}
           <div className="flex-1 w-full lg:w-auto flex flex-col sm:flex-row gap-3">
             <div className="relative flex-1">
-              <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Hizmetlerde ara..."
-                className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 focus:bg-white transition-all shadow-sm"
+                className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary focus:bg-white transition-all shadow-sm"
               />
             </div>
 
@@ -247,7 +247,7 @@ export default function AdminServicesPage() {
                   onClick={handleBulkDelete}
                   className="flex items-center px-4 py-2.5 bg-red-50 text-red-600 font-medium rounded-xl hover:bg-red-100 transition-colors"
                 >
-                  <TrashIcon className="w-4 h-4 mr-2" />
+                  <Trash2 className="w-4 h-4 mr-2" />
                   Sil
                 </button>
               </div>
@@ -256,17 +256,17 @@ export default function AdminServicesPage() {
             <div className="flex bg-slate-100 border border-slate-200/50 rounded-xl p-1 shadow-sm shrink-0">
               <button
                 onClick={() => setViewMode('grid')}
-                className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white text-primary shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                 title="Grid Görünümü"
               >
-                <Squares2X2Icon className="w-5 h-5" />
+                <LayoutGrid className="w-5 h-5" />
               </button>
               <button
                 onClick={() => setViewMode('list')}
-                className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white text-primary shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                 title="Liste Görünümü"
               >
-                <ListBulletIcon className="w-5 h-5" />
+                <List className="w-5 h-5" />
               </button>
             </div>
           </div>
@@ -277,7 +277,7 @@ export default function AdminServicesPage() {
       {filteredServices.length === 0 ? (
         <div className="bg-white rounded-2xl shadow-sm border border-slate-200 border-dashed p-12 text-center">
           <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4">
-            <CubeIcon className="w-8 h-8 text-slate-400" />
+            <Box className="w-8 h-8 text-slate-400" />
           </div>
           <h3 className="text-lg font-semibold text-slate-900 mb-2">Hizmet bulunamadı</h3>
           <p className="text-slate-500 mb-6 max-w-sm mx-auto">
@@ -288,7 +288,7 @@ export default function AdminServicesPage() {
           {(searchQuery || statusFilter !== 'all') ? (
             <button
               onClick={() => { setSearchQuery(''); setStatusFilter('all'); }}
-              className="text-indigo-600 hover:text-indigo-700 font-medium hover:underline"
+              className="text-primary hover:text-primary/80 font-medium hover:underline"
             >
               Filtreleri Temizle
             </button>
@@ -297,7 +297,7 @@ export default function AdminServicesPage() {
               href="/admin/services/new"
               className="inline-flex items-center px-6 py-3 bg-slate-900 text-white font-semibold rounded-xl hover:bg-slate-800 transition-all"
             >
-              <PlusIcon className="w-5 h-5 mr-2" />
+              <Plus className="w-5 h-5 mr-2" />
               Hizmet Ekle
             </Link>
           )}
@@ -310,7 +310,7 @@ export default function AdminServicesPage() {
                 <div
                   key={service._id}
                   className={`group relative bg-white rounded-2xl border transition-all duration-300 hover:shadow-xl overflow-hidden
-                         ${selectedItems.has(service._id) ? 'border-indigo-500 ring-1 ring-indigo-500' : 'border-slate-200 hover:border-slate-300'}
+                         ${selectedItems.has(service._id) ? 'border-primary ring-1 ring-primary' : 'border-slate-200 hover:border-slate-300'}
                       `}
                 >
                   {/* Image / Icon Cover */}
@@ -324,7 +324,7 @@ export default function AdminServicesPage() {
                     ) : (
                       <div className="w-full h-full flex flex-col items-center justify-center text-slate-300 gap-3">
                         <div className={`w-16 h-16 rounded-2xl flex items-center justify-center bg-white shadow-sm border border-slate-100`}>
-                          <CubeIcon className="w-8 h-8 text-indigo-500" />
+                          <Box className="w-8 h-8 text-primary" />
                         </div>
                       </div>
                     )}
@@ -337,9 +337,9 @@ export default function AdminServicesPage() {
                            `}
                     >
                       <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center
-                               ${selectedItems.has(service._id) ? 'bg-indigo-600 border-indigo-600 text-white' : 'bg-transparent border-white text-transparent hover:bg-white/20'}
+                               ${selectedItems.has(service._id) ? 'bg-primary border-primary text-primary-foreground' : 'bg-transparent border-white text-transparent hover:bg-white/20'}
                             `}>
-                        <CheckCircleIcon className="w-5 h-5" />
+                        <CheckCircle className="w-5 h-5" />
                       </div>
                     </div>
 
@@ -356,7 +356,7 @@ export default function AdminServicesPage() {
                   {/* Content */}
                   <div className="p-5">
                     <div className="flex items-center gap-2 text-xs text-slate-400 mb-3">
-                      <CalendarIcon className="w-4 h-4" />
+                      <Calendar className="w-4 h-4" />
                       <span>{formatDate(service.createdAt)}</span>
                       {service.category && (
                         <>
@@ -366,7 +366,7 @@ export default function AdminServicesPage() {
                       )}
                     </div>
 
-                    <h3 className="text-lg font-bold text-slate-900 mb-2 line-clamp-1 group-hover:text-indigo-600 transition-colors">
+                    <h3 className="text-lg font-bold text-slate-900 mb-2 line-clamp-1 group-hover:text-primary transition-colors">
                       {service.title}
                     </h3>
                     <p className="text-sm text-slate-500 line-clamp-2 mb-4 h-10">
@@ -377,7 +377,7 @@ export default function AdminServicesPage() {
                       <div className="flex items-center text-sm font-semibold text-slate-700">
                         {service.price ? (
                           <span className="flex items-center gap-1">
-                            <CurrencyDollarIcon className="w-4 h-4 text-slate-400" />
+                            <DollarSign className="w-4 h-4 text-slate-400" />
                             {service.price}
                           </span>
                         ) : (
@@ -391,13 +391,13 @@ export default function AdminServicesPage() {
                           className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                           title="Sil"
                         >
-                          <TrashIcon className="w-4 h-4" />
+                          <Trash2 className="w-4 h-4" />
                         </button>
                         <Link
                           href={`/admin/services/edit/${service._id}`}
                           className="flex items-center px-3 py-1.5 bg-slate-100 text-slate-700 text-sm font-medium rounded-lg hover:bg-slate-200 transition-colors"
                         >
-                          <PencilIcon className="w-3.5 h-3.5 mr-1.5" />
+                          <Pencil className="w-3.5 h-3.5 mr-1.5" />
                           Düzenle
                         </Link>
                       </div>
@@ -417,7 +417,7 @@ export default function AdminServicesPage() {
                         type="checkbox"
                         checked={selectedItems.size === filteredServices.length}
                         onChange={(e) => handleSelectAll(e.target.checked)}
-                        className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+                        className="rounded border-slate-300 text-primary focus:ring-primary/50"
                       />
                     </th>
                     <th className="px-6 py-4">Hizmet Detayı</th>
@@ -431,14 +431,14 @@ export default function AdminServicesPage() {
                   {filteredServices.map(service => (
                     <tr
                       key={service._id}
-                      className={`group transition-colors ${selectedItems.has(service._id) ? 'bg-indigo-50/50' : 'hover:bg-slate-50'}`}
+                      className={`group transition-colors ${selectedItems.has(service._id) ? 'bg-primary/5' : 'hover:bg-slate-50'}`}
                     >
                       <td className="px-6 py-4">
                         <input
                           type="checkbox"
                           checked={selectedItems.has(service._id)}
                           onChange={() => handleSelectItem(service._id)}
-                          className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+                          className="rounded border-slate-300 text-primary focus:ring-primary/50"
                         />
                       </td>
                       <td className="px-6 py-4">
@@ -447,11 +447,11 @@ export default function AdminServicesPage() {
                             {service.image ? (
                               <img src={service.image} alt="" className="w-full h-full object-cover" />
                             ) : (
-                              <CubeIcon className="w-6 h-6 text-slate-400" />
+                              <Box className="w-6 h-6 text-slate-400" />
                             )}
                           </div>
                           <div>
-                            <h4 className="text-sm font-semibold text-slate-900 group-hover:text-indigo-600 transition-colors">
+                            <h4 className="text-sm font-semibold text-slate-900 group-hover:text-primary transition-colors">
                               {service.title}
                             </h4>
                             <p className="text-xs text-slate-500 mt-0.5 line-clamp-1">
@@ -496,17 +496,17 @@ export default function AdminServicesPage() {
                         <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                           <Link
                             href={`/admin/services/edit/${service._id}`}
-                            className="p-1.5 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                            className="p-1.5 text-slate-500 hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
                             title="Düzenle"
                           >
-                            <PencilIcon className="w-4 h-4" />
+                            <Pencil className="w-4 h-4" />
                           </Link>
                           <button
                             onClick={() => handleDelete(service._id)}
                             className="p-1.5 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                             title="Sil"
                           >
-                            <TrashIcon className="w-4 h-4" />
+                            <Trash2 className="w-4 h-4" />
                           </button>
                         </div>
                       </td>

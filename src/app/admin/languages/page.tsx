@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from 'react';
 import {
-  PlusIcon,
-  PencilIcon,
-  TrashIcon,
-  GlobeAltIcon,
-  CheckCircleIcon,
-} from '@heroicons/react/24/outline';
+  Plus,
+  Pencil,
+  Trash2,
+  Globe,
+  CheckCircle,
+} from 'lucide-react';
 
 interface Language {
   _id: string;
@@ -151,7 +151,7 @@ export default function LanguagesPage() {
           onClick={openNew}
           className="flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700 transition-colors"
         >
-          <PlusIcon className="h-4 w-4" />
+          <Plus className="h-4 w-4" />
           Dil Ekle
         </button>
       </div>
@@ -272,7 +272,7 @@ export default function LanguagesPage() {
           </div>
         ) : languages.length === 0 ? (
           <div className="py-12 text-center">
-            <GlobeAltIcon className="mx-auto h-10 w-10 text-slate-300 mb-3" />
+            <Globe className="mx-auto h-10 w-10 text-slate-300 mb-3" />
             <p className="text-sm text-slate-500">Henüz dil eklenmemiş.</p>
             <button onClick={openNew} className="mt-3 text-sm font-medium text-emerald-600 hover:underline">
               İlk dili ekle
@@ -301,7 +301,7 @@ export default function LanguagesPage() {
                       </div>
                       {lang.isDefault && (
                         <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700">
-                          <CheckCircleIcon className="h-3 w-3" />
+                          <CheckCircle className="h-3 w-3" />
                           Varsayılan
                         </span>
                       )}
@@ -328,7 +328,7 @@ export default function LanguagesPage() {
                         className="rounded p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition-colors"
                         title="Düzenle"
                       >
-                        <PencilIcon className="h-4 w-4" />
+                        <Pencil className="h-4 w-4" />
                       </button>
                       <button
                         onClick={() => handleDelete(lang._id, lang.isDefault)}
@@ -336,7 +336,7 @@ export default function LanguagesPage() {
                         className="rounded p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-600 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                         title="Sil"
                       >
-                        <TrashIcon className="h-4 w-4" />
+                        <Trash2 className="h-4 w-4" />
                       </button>
                     </div>
                   </td>

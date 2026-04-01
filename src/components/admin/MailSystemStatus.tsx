@@ -2,12 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import { 
-  EnvelopeIcon, 
-  CheckCircleIcon, 
-  XCircleIcon, 
-  ExclamationTriangleIcon,
-  ArrowPathIcon 
-} from '@heroicons/react/24/outline';
+  Mail as EnvelopeIcon, 
+  CheckCircle as CheckCircleIcon, 
+  XCircle as XCircleIcon, 
+  AlertTriangle as ExclamationTriangleIcon,
+  RefreshCw as ArrowPathIcon 
+} from 'lucide-react';
 
 interface MailStatus {
   configured: boolean;

@@ -4,14 +4,14 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import {
-  ArchiveBoxIcon,
-  CloudArrowDownIcon,
-  TrashIcon,
-  ClockIcon,
-  DocumentIcon
-} from '@heroicons/react/24/outline';
-import toast from 'react-hot-toast';
-import Swal from 'sweetalert2';
+  Archive,
+  CloudDownload,
+  Trash2,
+  Clock,
+  FileIcon
+} from 'lucide-react';
+import { toast } from 'sonner';
+import { useConfirm } from '@/hooks/use-confirm';
 
 interface Backup {
   _id: string;
@@ -23,6 +23,7 @@ interface Backup {
 export default function AdminBackupPage() {
   const { status } = useSession();
   const router = useRouter();
+  const { confirm } = useConfirm();
   const [loading, setLoading] = useState(true);
   const [backups, setBackups] = useState<Backup[]>([]);
   const [creatingBackup, setCreatingBackup] = useState(false);
@@ -74,17 +75,8 @@ export default function AdminBackupPage() {
   };
 
   const handleDelete = async (backupId: string) => {
-    const result = await Swal.fire({
-      title: 'Are you sure?',
-      text: "Are you sure you want to delete this backup?",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!'
-    });
-
-    if (!result.isConfirmed) return;
+    const confirmed = await confirm({ title: 'Are you sure?', description: 'Are you sure you want to delete this backup?' });
+    if (!confirmed) return;
 
     try {
       const response = await fetch(`/api/admin/backup/${backupId}`, {
@@ -153,7 +145,7 @@ export default function AdminBackupPage() {
             </>
           ) : (
             <>
-              <ArchiveBoxIcon className="w-5 h-5 mr-2" />
+              <Archive className="w-5 h-5 mr-2" />
               Create Backup
             </>
           )}
@@ -164,7 +156,7 @@ export default function AdminBackupPage() {
       <div className="bg-gradient-to-r from-indigo-50 to-violet-50 rounded-2xl p-6 border border-indigo-200">
         <div className="flex items-start space-x-4">
           <div className="w-12 h-12 rounded-xl bg-indigo-100 flex items-center justify-center flex-shrink-0">
-            <ArchiveBoxIcon className="w-6 h-6 text-indigo-600" />
+            <Archive className="w-6 h-6 text-indigo-600" />
           </div>
           <div>
             <h3 className="text-lg font-semibold text-slate-900 mb-2">About Backups</h3>
@@ -187,7 +179,7 @@ export default function AdminBackupPage() {
               >
                 <div className="flex items-center space-x-4 flex-1 min-w-0">
                   <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center flex-shrink-0">
-                    <DocumentIcon className="w-6 h-6 text-white" />
+                    <FileIcon className="w-6 h-6 text-white" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="text-sm font-semibold text-slate-900 truncate">
@@ -196,7 +188,7 @@ export default function AdminBackupPage() {
                     <div className="flex items-center space-x-3 mt-1 text-xs text-slate-500">
                       <span>{formatFileSize(backup.size)}</span>
                       <span className="flex items-center">
-                        <ClockIcon className="w-3 h-3 mr-1" />
+                        <Clock className="w-3 h-3 mr-1" />
                         {formatDate(backup.createdAt)}
                       </span>
                     </div>
@@ -204,14 +196,14 @@ export default function AdminBackupPage() {
                 </div>
                 <div className="flex items-center space-x-2">
                   <button className="p-2 hover:bg-indigo-100 rounded-lg transition-colors" title="Download">
-                    <CloudArrowDownIcon className="w-5 h-5 text-slate-600" />
+                    <CloudDownload className="w-5 h-5 text-slate-600" />
                   </button>
                   <button
                     onClick={() => handleDelete(backup._id)}
                     className="p-2 hover:bg-red-100 rounded-lg transition-colors"
                     title="Delete"
                   >
-                    <TrashIcon className="w-5 h-5 text-slate-600" />
+                    <Trash2 className="w-5 h-5 text-slate-600" />
                   </button>
                 </div>
               </div>
@@ -219,7 +211,7 @@ export default function AdminBackupPage() {
           </div>
         ) : (
           <div className="text-center py-16">
-            <ArchiveBoxIcon className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+            <Archive className="w-16 h-16 text-slate-300 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-slate-900 mb-2">No backups found</h3>
             <p className="text-slate-500 mb-6">
               Create your first backup to secure your site data
@@ -229,7 +221,7 @@ export default function AdminBackupPage() {
               disabled={creatingBackup}
               className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-200"
             >
-              <ArchiveBoxIcon className="w-5 h-5 mr-2" />
+              <Archive className="w-5 h-5 mr-2" />
               Create Backup
             </button>
           </div>

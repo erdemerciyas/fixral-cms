@@ -9,18 +9,20 @@ import UniversalEditor from '../../../../../components/ui/UniversalEditor';
 import HTMLContent from '../../../../../components/HTMLContent';
 import LanguageTabs from '../../../../../components/admin/LanguageTabs';
 import { useActiveLanguages } from '../../../../../hooks/useActiveLanguages';
-import { Card, Button, Badge, Alert, PageHeader } from '@/components/ui';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import {
-  WrenchScrewdriverIcon,
-  PhotoIcon,
-  DocumentTextIcon,
-  CheckIcon,
-  PlusIcon,
-  TrashIcon,
-  ListBulletIcon,
-  ExclamationTriangleIcon,
-  ArrowLeftIcon
-} from '@heroicons/react/24/outline';
+  Wrench,
+  ImageIcon,
+  FileText,
+  Check,
+  Plus,
+  Trash2,
+  ListIcon,
+  AlertTriangle,
+  ArrowLeft
+} from 'lucide-react';
 import Link from 'next/link';
 
 interface TranslationFields {
@@ -212,7 +214,7 @@ export default function EditServicePage({ params }: { params: { id: string } }) 
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="relative">
           <div className="w-16 h-16 border-4 border-gray-200 rounded-full"></div>
-          <div className="absolute top-0 left-0 w-16 h-16 border-4 border-transparent border-t-brand-600 rounded-full animate-spin"></div>
+          <div className="absolute top-0 left-0 w-16 h-16 border-4 border-transparent border-t-primary rounded-full animate-spin"></div>
         </div>
       </div>
     );
@@ -230,22 +232,24 @@ export default function EditServicePage({ params }: { params: { id: string } }) 
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <PageHeader
-        title="Edit Service"
-        description={`Edit ${service.title}`}
-      />
+      <div>
+        <h1 className="text-2xl font-bold text-foreground">Edit Service</h1>
+        <p className="text-muted-foreground mt-1">{`Edit ${service.title}`}</p>
+      </div>
 
       {/* Success/Error Messages */}
       {success && (
-        <Alert variant="success" icon={<CheckIcon className="w-5 h-5" />}>
-          Servis başarıyla güncellendi!
-        </Alert>
+        <div className="flex items-center gap-3 rounded-lg border border-emerald-200 bg-emerald-50 p-4 text-emerald-800">
+          <Check className="w-5 h-5 shrink-0" />
+          <span>Servis başarıyla güncellendi!</span>
+        </div>
       )}
 
       {error && (
-        <Alert variant="danger" icon={<ExclamationTriangleIcon className="w-5 h-5" />}>
-          {error}
-        </Alert>
+        <div className="flex items-center gap-3 rounded-lg border border-red-200 bg-red-50 p-4 text-red-800">
+          <AlertTriangle className="w-5 h-5 shrink-0" />
+          <span>{error}</span>
+        </div>
       )}
 
       {/* Form */}
@@ -265,15 +269,15 @@ export default function EditServicePage({ params }: { params: { id: string } }) 
         {/* Basic Information */}
         <Card>
           <div className="flex items-center space-x-3 mb-6">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-brand-500 to-violet-600 flex items-center justify-center">
-              <DocumentTextIcon className="w-6 h-6 text-white" />
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/80 to-primary flex items-center justify-center">
+              <FileText className="w-6 h-6 text-white" />
             </div>
             <div>
               <h3 className="text-lg font-bold text-gray-900">Temel Bilgiler</h3>
               <p className="text-sm text-gray-500">
                 Servis temel bilgilerini güncelleyin
                 {activeLanguage && (
-                  <Badge variant="primary" className="ml-2">
+                  <Badge variant="default" className="ml-2">
                     {languages.find(l => l.code === activeLanguage)?.flag} {activeLanguage.toUpperCase()}
                   </Badge>
                 )}
@@ -291,7 +295,7 @@ export default function EditServicePage({ params }: { params: { id: string } }) 
                 id="title"
                 value={currentTranslation.title}
                 onChange={(e) => updateTranslation('title', e.target.value)}
-                className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all"
+                className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
                 placeholder="Servis başlığı giriniz"
                 disabled={saving}
               />
@@ -317,7 +321,7 @@ export default function EditServicePage({ params }: { params: { id: string } }) 
               <textarea
                 value={currentTranslation.excerpt}
                 onChange={(e) => updateTranslation('excerpt', e.target.value)}
-                className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all"
+                className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
                 placeholder="Kısa açıklama giriniz"
                 rows={2}
                 disabled={saving}
@@ -331,7 +335,7 @@ export default function EditServicePage({ params }: { params: { id: string } }) 
               <textarea
                 value={currentTranslation.metaDescription}
                 onChange={(e) => updateTranslation('metaDescription', e.target.value)}
-                className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all"
+                className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
                 placeholder="SEO meta açıklaması"
                 rows={2}
                 disabled={saving}
@@ -343,8 +347,8 @@ export default function EditServicePage({ params }: { params: { id: string } }) 
         {/* Service Image */}
         <Card>
           <div className="flex items-center space-x-3 mb-6">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
-              <PhotoIcon className="w-6 h-6 text-white" />
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
+              <ImageIcon className="w-6 h-6 text-white" />
             </div>
             <div>
               <h3 className="text-lg font-bold text-gray-900">Servis Görseli</h3>
@@ -370,7 +374,7 @@ export default function EditServicePage({ params }: { params: { id: string } }) 
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center space-x-3">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-warning to-orange-600 flex items-center justify-center">
-                <ListBulletIcon className="w-6 h-6 text-white" />
+                <ListIcon className="w-6 h-6 text-white" />
               </div>
               <div>
                 <h3 className="text-lg font-bold text-gray-900">Servis Özellikleri</h3>
@@ -381,9 +385,9 @@ export default function EditServicePage({ params }: { params: { id: string } }) 
               type="button"
               variant="ghost"
               onClick={addFeature}
-              className="text-brand-700 bg-brand-50 hover:bg-brand-100"
+              className="text-primary bg-primary/10 hover:bg-primary/20"
             >
-              <PlusIcon className="w-4 h-4" />
+              <Plus className="w-4 h-4" />
               <span>Özellik Ekle</span>
             </Button>
           </div>
@@ -400,7 +404,7 @@ export default function EditServicePage({ params }: { params: { id: string } }) 
                     type="text"
                     value={feature}
                     onChange={(e) => updateFeature(index, e.target.value)}
-                    className="flex-1 px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all"
+                    className="flex-1 px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
                     placeholder="Özellik açıklaması"
                     disabled={saving}
                   />
@@ -409,7 +413,7 @@ export default function EditServicePage({ params }: { params: { id: string } }) 
                     onClick={() => removeFeature(index)}
                     className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
                   >
-                    <TrashIcon className="w-5 h-5" />
+                    <Trash2 className="w-5 h-5" />
                   </button>
                 </div>
               ))
@@ -421,7 +425,7 @@ export default function EditServicePage({ params }: { params: { id: string } }) 
         <Card>
           <div className="flex items-center space-x-3 mb-6">
             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-success to-teal-600 flex items-center justify-center">
-              <WrenchScrewdriverIcon className="w-6 h-6 text-white" />
+              <Wrench className="w-6 h-6 text-white" />
             </div>
             <div>
               <h3 className="text-lg font-bold text-gray-900">Önizleme</h3>
@@ -465,7 +469,7 @@ export default function EditServicePage({ params }: { params: { id: string } }) 
                     />
                   ) : (
                     <div className="text-center">
-                      <PhotoIcon className="w-8 h-8 text-gray-400 mx-auto mb-1" />
+                      <ImageIcon className="w-8 h-8 text-gray-400 mx-auto mb-1" />
                       <p className="text-xs text-gray-500">Görsel yüklenmemiş</p>
                     </div>
                   )}
@@ -481,18 +485,17 @@ export default function EditServicePage({ params }: { params: { id: string } }) 
             href="/admin/services"
             className="flex items-center space-x-2 px-6 py-3 border border-border rounded-xl text-gray-700 hover:bg-surface-secondary transition-colors font-medium"
           >
-            <ArrowLeftIcon className="w-5 h-5" />
+            <ArrowLeft className="w-5 h-5" />
             <span>Geri Dön</span>
           </Link>
 
           <Button
             type="submit"
-            variant="primary"
             size="lg"
-            loading={saving}
+            disabled={saving}
             className="px-8 font-semibold"
           >
-            {!saving && <CheckIcon className="w-5 h-5" />}
+            {!saving && <Check className="w-5 h-5" />}
             <span>{saving ? 'Güncelleniyor...' : 'Servisi Güncelle'}</span>
           </Button>
         </div>

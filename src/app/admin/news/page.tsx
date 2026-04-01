@@ -5,23 +5,25 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
-  DocumentTextIcon,
-  PlusIcon,
-  MagnifyingGlassIcon,
-  PencilIcon,
-  TrashIcon,
-  CalendarIcon,
-  TagIcon,
-  FunnelIcon,
-  Squares2X2Icon,
-  ListBulletIcon,
-  CheckCircleIcon,
-  EyeIcon,
-  UserIcon
-} from '@heroicons/react/24/outline';
-import toast from 'react-hot-toast';
-import Swal from 'sweetalert2';
-import { PageHeader, Card, Badge, Button } from '@/components/ui';
+  FileText,
+  Plus,
+  Search,
+  Pencil,
+  Trash2,
+  Calendar,
+  Tag,
+  Filter,
+  LayoutGrid,
+  List,
+  CheckCircle,
+  Eye,
+  User
+} from 'lucide-react';
+import { toast } from 'sonner';
+import { useConfirm } from '@/hooks/use-confirm';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 
 interface NewsItem {
   _id: string;
@@ -41,6 +43,7 @@ interface NewsItem {
 export default function AdminNewsPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const { confirm } = useConfirm();
   const [loading, setLoading] = useState(true);
   const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -91,18 +94,12 @@ export default function AdminNewsPage() {
   };
 
   const handleDelete = async (itemId: string) => {
-    const result = await Swal.fire({
+    const confirmed = await confirm({
       title: 'Emin misiniz?',
-      text: "Bu haberi silmek istediğinizden emin misiniz?",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Evet, sil!',
-      cancelButtonText: 'Vazgeç'
+      description: 'Bu haberi silmek istediğinizden emin misiniz?',
     });
 
-    if (!result.isConfirmed) return;
+    if (!confirmed) return;
 
     try {
       const response = await fetch(`/api/admin/news/${itemId}`, {
@@ -125,18 +122,12 @@ export default function AdminNewsPage() {
   };
 
   const handleBulkDelete = async () => {
-    const result = await Swal.fire({
+    const confirmed = await confirm({
       title: 'Toplu Silme',
-      text: `${selectedItems.size} haberi silmek istediğinizden emin misiniz?`,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
-      confirmButtonText: 'Evet, Hepsini Sil!',
-      cancelButtonText: 'Vazgeç'
+      description: `${selectedItems.size} haberi silmek istediğinizden emin misiniz?`,
     });
 
-    if (!result.isConfirmed) return;
+    if (!confirmed) return;
 
     try {
       await Promise.all(
@@ -193,8 +184,8 @@ export default function AdminNewsPage() {
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="flex flex-col items-center space-y-4">
           <div className="relative">
-            <div className="w-16 h-16 border-4 border-brand-200 rounded-full"></div>
-            <div className="absolute top-0 left-0 w-16 h-16 border-4 border-transparent border-t-brand-600 rounded-full animate-spin"></div>
+            <div className="w-16 h-16 border-4 border-primary/20 rounded-full"></div>
+            <div className="absolute top-0 left-0 w-16 h-16 border-4 border-transparent border-t-primary rounded-full animate-spin"></div>
           </div>
           <p className="text-lg font-medium text-gray-600">Haberler yükleniyor...</p>
         </div>
@@ -205,30 +196,30 @@ export default function AdminNewsPage() {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <PageHeader
-        title="Haber Yönetimi"
-        description="Blog yazılarını ve haberleri düzenleyin"
-        actions={
-          <Button variant="primary" size="lg" onClick={() => router.push('/admin/news/create')}>
-            <PlusIcon className="w-5 h-5" />
-            Yeni Haber Ekle
-          </Button>
-        }
-      />
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-foreground">Haber Yönetimi</h1>
+          <p className="text-muted-foreground mt-1">Blog yazılarını ve haberleri düzenleyin</p>
+        </div>
+        <Button size="lg" onClick={() => router.push('/admin/news/create')}>
+          <Plus className="w-5 h-5" />
+          Yeni Haber Ekle
+        </Button>
+      </div>
 
       {/* Sticky Toolbar */}
-      <Card padding="sm" className="sticky top-24 z-10">
+      <Card className="sticky top-24 z-10 p-3">
         <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
           {/* Search & Filter Group */}
           <div className="flex-1 w-full lg:w-auto flex flex-col sm:flex-row gap-3">
             <div className="relative flex-1">
-              <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Haber başlığı veya özet ara..."
-                className="w-full pl-10 pr-4 py-2.5 bg-surface-secondary border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500 focus:bg-white transition-all shadow-sm"
+                className="w-full pl-10 pr-4 py-2.5 bg-surface-secondary border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary focus:bg-white transition-all shadow-sm"
               />
             </div>
 
@@ -276,7 +267,7 @@ export default function AdminNewsPage() {
                   onClick={handleBulkDelete}
                   className="flex items-center px-4 py-2.5 bg-red-50 text-red-600 font-medium rounded-xl hover:bg-red-100 transition-colors"
                 >
-                  <TrashIcon className="w-4 h-4 mr-2" />
+                  <Trash2 className="w-4 h-4 mr-2" />
                   Sil
                 </button>
               </div>
@@ -285,17 +276,17 @@ export default function AdminNewsPage() {
             <div className="flex bg-surface-tertiary border border-border/50 rounded-xl p-1 shadow-sm shrink-0">
               <button
                 onClick={() => setViewMode('grid')}
-                className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white text-brand-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white text-primary shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
                 title="Grid Görünümü"
               >
-                <Squares2X2Icon className="w-5 h-5" />
+                <LayoutGrid className="w-5 h-5" />
               </button>
               <button
                 onClick={() => setViewMode('list')}
-                className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white text-brand-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white text-primary shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
                 title="Liste Görünümü"
               >
-                <ListBulletIcon className="w-5 h-5" />
+                <List className="w-5 h-5" />
               </button>
             </div>
           </div>
@@ -306,7 +297,7 @@ export default function AdminNewsPage() {
       {filteredItems.length === 0 ? (
         <Card className="border-dashed p-12 text-center">
           <div className="w-16 h-16 bg-surface-secondary rounded-full flex items-center justify-center mx-auto mb-4">
-            <DocumentTextIcon className="w-8 h-8 text-gray-400" />
+            <FileText className="w-8 h-8 text-gray-400" />
           </div>
           <h3 className="text-lg font-semibold text-gray-900 mb-2">Haber bulunamadı</h3>
           <p className="text-gray-500 mb-6 max-w-sm mx-auto">
@@ -317,7 +308,7 @@ export default function AdminNewsPage() {
           {(searchQuery || statusFilter !== 'all') ? (
             <button
               onClick={() => { setSearchQuery(''); setStatusFilter('all'); }}
-              className="text-brand-600 hover:text-brand-700 font-medium hover:underline"
+              className="text-primary hover:text-primary/80 font-medium hover:underline"
             >
               Filtreleri Temizle
             </button>
@@ -326,7 +317,7 @@ export default function AdminNewsPage() {
               href="/admin/news/create"
               className="inline-flex items-center px-6 py-3 bg-gray-900 text-white font-semibold rounded-xl hover:bg-gray-800 transition-all"
             >
-              <PlusIcon className="w-5 h-5 mr-2" />
+              <Plus className="w-5 h-5 mr-2" />
               Haber Ekle
             </Link>
           )}
@@ -339,7 +330,7 @@ export default function AdminNewsPage() {
                 <li
                   key={item._id}
                   className={`group relative bg-white rounded-2xl border transition-all duration-300 hover:shadow-xl overflow-hidden
-                         ${selectedItems.has(item._id) ? 'border-brand-500 ring-1 ring-brand-500' : 'border-border hover:border-gray-300'}
+                         ${selectedItems.has(item._id) ? 'border-primary ring-1 ring-primary' : 'border-border hover:border-gray-300'}
                       `}
                 >
                   {/* Image / Cover */}
@@ -352,7 +343,7 @@ export default function AdminNewsPage() {
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-gray-300">
-                        <DocumentTextIcon className="w-12 h-12" />
+                        <FileText className="w-12 h-12" />
                       </div>
                     )}
 
@@ -364,9 +355,9 @@ export default function AdminNewsPage() {
                            `}
                     >
                       <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center
-                               ${selectedItems.has(item._id) ? 'bg-brand-600 border-brand-600 text-white' : 'bg-transparent border-white text-transparent hover:bg-white/20'}
+                               ${selectedItems.has(item._id) ? 'bg-primary border-primary text-primary-foreground' : 'bg-transparent border-white text-transparent hover:bg-white/20'}
                             `}>
-                        <CheckCircleIcon className="w-5 h-5" />
+                        <CheckCircle className="w-5 h-5" />
                       </div>
                     </div>
 
@@ -383,7 +374,7 @@ export default function AdminNewsPage() {
                   {/* Content */}
                   <div className="p-5">
                     <div className="flex items-center gap-2 text-xs text-gray-400 mb-3">
-                      <CalendarIcon className="w-4 h-4" />
+                      <Calendar className="w-4 h-4" />
                       <span>{formatDate(item.createdAt)}</span>
                       {item.category && (
                         <>
@@ -393,7 +384,7 @@ export default function AdminNewsPage() {
                       )}
                     </div>
 
-                    <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-1 group-hover:text-brand-600 transition-colors">
+                    <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-1 group-hover:text-primary transition-colors">
                       {item.title}
                     </h3>
                     <p className="text-sm text-gray-500 line-clamp-2 mb-4 h-10">
@@ -404,7 +395,7 @@ export default function AdminNewsPage() {
                       <div className="flex items-center text-xs text-gray-500">
                         {item.views !== undefined && (
                           <span className="flex items-center gap-1">
-                            <EyeIcon className="w-3.5 h-3.5" />
+                            <Eye className="w-3.5 h-3.5" />
                             {item.views}
                           </span>
                         )}
@@ -416,13 +407,13 @@ export default function AdminNewsPage() {
                           className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                           title="Sil"
                         >
-                          <TrashIcon className="w-4 h-4" />
+                          <Trash2 className="w-4 h-4" />
                         </button>
                         <Link
                           href={`/admin/news/${item._id}/edit`}
                           className="flex items-center px-3 py-1.5 bg-surface-tertiary text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-200 transition-colors"
                         >
-                          <PencilIcon className="w-3.5 h-3.5 mr-1.5" />
+                          <Pencil className="w-3.5 h-3.5 mr-1.5" />
                           Düzenle
                         </Link>
                       </div>
@@ -433,7 +424,7 @@ export default function AdminNewsPage() {
             </ul>
           ) : (
             // LIST VIEW
-            <Card padding="none" className="overflow-hidden">
+            <Card className="overflow-hidden p-0">
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="bg-surface-secondary border-b border-border text-xs font-semibold text-gray-500 uppercase tracking-wider">
@@ -442,7 +433,7 @@ export default function AdminNewsPage() {
                         type="checkbox"
                         checked={selectedItems.size === filteredItems.length}
                         onChange={(e) => handleSelectAll(e.target.checked)}
-                        className="rounded border-gray-300 text-brand-600 focus:ring-brand-500"
+                        className="rounded border-gray-300 text-primary focus:ring-primary/50"
                       />
                     </th>
                     <th className="px-6 py-4">Haber Detayı</th>
@@ -455,14 +446,14 @@ export default function AdminNewsPage() {
                   {filteredItems.map(item => (
                     <tr
                       key={item._id}
-                      className={`group transition-colors ${selectedItems.has(item._id) ? 'bg-brand-50/50' : 'hover:bg-surface-secondary'}`}
+                      className={`group transition-colors ${selectedItems.has(item._id) ? 'bg-primary/5' : 'hover:bg-surface-secondary'}`}
                     >
                       <td className="px-6 py-4">
                         <input
                           type="checkbox"
                           checked={selectedItems.has(item._id)}
                           onChange={() => handleSelectItem(item._id)}
-                          className="rounded border-gray-300 text-brand-600 focus:ring-brand-500"
+                          className="rounded border-gray-300 text-primary focus:ring-primary/50"
                         />
                       </td>
                       <td className="px-6 py-4">
@@ -472,12 +463,12 @@ export default function AdminNewsPage() {
                               <img src={item.featuredImage} alt="" className="w-full h-full object-cover" />
                             ) : (
                               <div className="w-full h-full flex items-center justify-center text-gray-300">
-                                <DocumentTextIcon className="w-6 h-6" />
+                                <FileText className="w-6 h-6" />
                               </div>
                             )}
                           </div>
                           <div>
-                            <h4 className="text-sm font-semibold text-gray-900 group-hover:text-brand-600 transition-colors">
+                            <h4 className="text-sm font-semibold text-gray-900 group-hover:text-primary transition-colors">
                               {item.title}
                             </h4>
                             <p className="text-xs text-gray-500 mt-0.5 line-clamp-1">
@@ -491,7 +482,7 @@ export default function AdminNewsPage() {
                               )}
                               {item.views !== undefined && (
                                 <span className="flex items-center gap-1 text-[10px] text-gray-400">
-                                  <EyeIcon className="w-3 h-3" /> {item.views}
+                                  <Eye className="w-3 h-3" /> {item.views}
                                 </span>
                               )}
                             </div>
@@ -516,17 +507,17 @@ export default function AdminNewsPage() {
                         <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                           <Link
                             href={`/admin/news/${item._id}/edit`}
-                            className="p-1.5 text-gray-500 hover:text-brand-600 hover:bg-brand-50 rounded-lg transition-colors"
+                            className="p-1.5 text-gray-500 hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
                             title="Düzenle"
                           >
-                            <PencilIcon className="w-4 h-4" />
+                            <Pencil className="w-4 h-4" />
                           </Link>
                           <button
                             onClick={() => handleDelete(item._id)}
                             className="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                             title="Sil"
                           >
-                            <TrashIcon className="w-4 h-4" />
+                            <Trash2 className="w-4 h-4" />
                           </button>
                         </div>
                       </td>

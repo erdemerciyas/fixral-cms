@@ -8,18 +8,20 @@ import ImageUpload from '../../../../components/ImageUpload';
 import UniversalEditor from '../../../../components/ui/UniversalEditor';
 import LanguageTabs from '../../../../components/admin/LanguageTabs';
 import { useActiveLanguages } from '../../../../hooks/useActiveLanguages';
-import { Card, CardHeader, CardBody, Button, Badge, Alert } from '@/components/ui';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import {
-  PlusIcon,
-  CheckIcon,
-  ExclamationTriangleIcon,
-  DocumentTextIcon,
-  PhotoIcon,
-  ListBulletIcon,
-  WrenchScrewdriverIcon,
-  TrashIcon,
-  ArrowLeftIcon
-} from '@heroicons/react/24/outline';
+  Plus,
+  Check,
+  AlertTriangle,
+  FileText,
+  ImageIcon,
+  ListIcon,
+  Wrench,
+  Trash2,
+  ArrowLeft
+} from 'lucide-react';
 import Link from 'next/link';
 
 interface TranslationFields {
@@ -151,7 +153,7 @@ export default function NewServicePage() {
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="relative">
           <div className="w-16 h-16 border-4 border-gray-200 rounded-full"></div>
-          <div className="absolute top-0 left-0 w-16 h-16 border-4 border-transparent border-t-brand-600 rounded-full animate-spin"></div>
+          <div className="absolute top-0 left-0 w-16 h-16 border-4 border-transparent border-t-primary rounded-full animate-spin"></div>
         </div>
       </div>
     );
@@ -175,15 +177,17 @@ export default function NewServicePage() {
 
       {/* Success/Error Messages */}
       {success && (
-        <Alert variant="success" icon={<CheckIcon className="w-5 h-5" />}>
-          Servis başarıyla eklendi! Yönlendiriliyorsunuz...
-        </Alert>
+        <div className="flex items-center gap-3 rounded-lg border border-emerald-200 bg-emerald-50 p-4 text-emerald-800">
+          <Check className="w-5 h-5 shrink-0" />
+          <span>Servis başarıyla eklendi! Yönlendiriliyorsunuz...</span>
+        </div>
       )}
 
       {error && (
-        <Alert variant="danger" icon={<ExclamationTriangleIcon className="w-5 h-5" />}>
-          {error}
-        </Alert>
+        <div className="flex items-center gap-3 rounded-lg border border-red-200 bg-red-50 p-4 text-red-800">
+          <AlertTriangle className="w-5 h-5 shrink-0" />
+          <span>{error}</span>
+        </div>
       )}
 
       {/* Form */}
@@ -204,15 +208,15 @@ export default function NewServicePage() {
         <Card>
           <CardHeader>
             <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-brand-500 to-violet-600 flex items-center justify-center">
-                <DocumentTextIcon className="w-6 h-6 text-white" />
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/80 to-primary flex items-center justify-center">
+                <FileText className="w-6 h-6 text-white" />
               </div>
               <div>
                 <h3 className="text-lg font-bold text-gray-900">Temel Bilgiler</h3>
                 <p className="text-sm text-gray-500">
                   Servis temel bilgilerini girin
                   {activeLanguage && (
-                    <Badge variant="primary" className="ml-2">
+                    <Badge variant="default" className="ml-2">
                       {languages.find(l => l.code === activeLanguage)?.flag} {activeLanguage.toUpperCase()}
                     </Badge>
                   )}
@@ -221,7 +225,7 @@ export default function NewServicePage() {
             </div>
           </CardHeader>
 
-          <CardBody>
+          <CardContent>
             <div className="space-y-4">
               <div>
                 <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
@@ -232,7 +236,7 @@ export default function NewServicePage() {
                   id="title"
                   value={currentTranslation.title}
                   onChange={(e) => updateTranslation('title', e.target.value)}
-                  className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all"
+                  className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
                   placeholder="Servis başlığı giriniz"
                   disabled={loading}
                 />
@@ -258,7 +262,7 @@ export default function NewServicePage() {
                 <textarea
                   value={currentTranslation.excerpt}
                   onChange={(e) => updateTranslation('excerpt', e.target.value)}
-                  className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all"
+                  className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
                   placeholder="Kısa açıklama giriniz"
                   rows={2}
                   disabled={loading}
@@ -272,22 +276,22 @@ export default function NewServicePage() {
                 <textarea
                   value={currentTranslation.metaDescription}
                   onChange={(e) => updateTranslation('metaDescription', e.target.value)}
-                  className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all"
+                  className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
                   placeholder="SEO meta açıklaması"
                   rows={2}
                   disabled={loading}
                 />
               </div>
             </div>
-          </CardBody>
+          </CardContent>
         </Card>
 
         {/* Service Image */}
         <Card>
           <CardHeader>
             <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
-                <PhotoIcon className="w-6 h-6 text-white" />
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
+                <ImageIcon className="w-6 h-6 text-white" />
               </div>
               <div>
                 <h3 className="text-lg font-bold text-gray-900">Servis Görseli</h3>
@@ -296,7 +300,7 @@ export default function NewServicePage() {
             </div>
           </CardHeader>
 
-          <CardBody>
+          <CardContent>
             <ImageUpload
               label="Hizmet Görseli"
               value={serviceImage}
@@ -308,7 +312,7 @@ export default function NewServicePage() {
               showUrlInput={true}
               disabled={loading}
             />
-          </CardBody>
+          </CardContent>
         </Card>
 
         {/* Features */}
@@ -316,7 +320,7 @@ export default function NewServicePage() {
           <CardHeader>
             <div className="flex items-center space-x-3">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-warning to-orange-600 flex items-center justify-center">
-                <ListBulletIcon className="w-6 h-6 text-white" />
+                <ListIcon className="w-6 h-6 text-white" />
               </div>
               <div>
                 <h3 className="text-lg font-bold text-gray-900">Servis Özellikleri</h3>
@@ -329,12 +333,12 @@ export default function NewServicePage() {
               size="sm"
               onClick={addFeature}
             >
-              <PlusIcon className="w-4 h-4" />
+              <Plus className="w-4 h-4" />
               <span>Özellik Ekle</span>
             </Button>
           </CardHeader>
 
-          <CardBody>
+          <CardContent>
             <div className="space-y-3">
               {features.length === 0 ? (
                 <p className="text-gray-500 text-sm py-4 text-center">
@@ -347,7 +351,7 @@ export default function NewServicePage() {
                       type="text"
                       value={feature}
                       onChange={(e) => updateFeature(index, e.target.value)}
-                      className="flex-1 px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all"
+                      className="flex-1 px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
                       placeholder="Özellik açıklaması"
                       disabled={loading}
                     />
@@ -358,13 +362,13 @@ export default function NewServicePage() {
                       onClick={() => removeFeature(index)}
                       className="text-red-500 hover:text-red-700 hover:bg-red-50"
                     >
-                      <TrashIcon className="w-5 h-5" />
+                      <Trash2 className="w-5 h-5" />
                     </Button>
                   </div>
                 ))
               )}
             </div>
-          </CardBody>
+          </CardContent>
         </Card>
 
         {/* Preview */}
@@ -372,7 +376,7 @@ export default function NewServicePage() {
           <CardHeader>
             <div className="flex items-center space-x-3">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-success to-teal-600 flex items-center justify-center">
-                <WrenchScrewdriverIcon className="w-6 h-6 text-white" />
+                <Wrench className="w-6 h-6 text-white" />
               </div>
               <div>
                 <h3 className="text-lg font-bold text-gray-900">Önizleme</h3>
@@ -381,7 +385,7 @@ export default function NewServicePage() {
             </div>
           </CardHeader>
 
-          <CardBody>
+          <CardContent>
             <div className="bg-surface-secondary rounded-2xl p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
@@ -418,7 +422,7 @@ export default function NewServicePage() {
                       />
                     ) : (
                       <div className="text-center">
-                        <PhotoIcon className="w-8 h-8 text-gray-400 mx-auto mb-1" />
+                        <ImageIcon className="w-8 h-8 text-gray-400 mx-auto mb-1" />
                         <p className="text-xs text-gray-500">Görsel yüklenmemiş</p>
                       </div>
                     )}
@@ -426,7 +430,7 @@ export default function NewServicePage() {
                 </div>
               </div>
             </div>
-          </CardBody>
+          </CardContent>
         </Card>
 
         {/* Submit Buttons */}
@@ -435,22 +439,21 @@ export default function NewServicePage() {
             href="/admin/services"
             className="flex items-center space-x-2 px-6 py-3 border border-border rounded-xl text-gray-700 hover:bg-surface-secondary transition-colors font-medium"
           >
-            <ArrowLeftIcon className="w-5 h-5" />
+            <ArrowLeft className="w-5 h-5" />
             <span>Geri Dön</span>
           </Link>
 
           <Button
             type="submit"
-            variant="primary"
             size="lg"
-            loading={loading}
+            disabled={loading}
             className="px-8 font-semibold"
           >
             {loading ? (
               <span>Ekleniyor...</span>
             ) : (
               <>
-                <CheckIcon className="w-5 h-5" />
+                <Check className="w-5 h-5" />
                 <span>Servis Ekle</span>
               </>
             )}

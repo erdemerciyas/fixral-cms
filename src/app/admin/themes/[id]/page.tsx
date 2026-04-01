@@ -9,15 +9,15 @@ import { useState, useEffect, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import {
-  ArrowLeftIcon,
-  PaintBrushIcon,
-  CheckCircleIcon,
-  SparklesIcon,
-  PencilIcon,
-  Cog6ToothIcon,
-  DocumentTextIcon,
-  PhotoIcon
-} from '@heroicons/react/24/outline';
+  ArrowLeft,
+  Paintbrush,
+  CheckCircle,
+  Sparkles,
+  Pencil,
+  Settings,
+  FileText,
+  Image as ImageIcon
+} from 'lucide-react';
 import Link from 'next/link';
 
 interface Theme {
@@ -156,7 +156,7 @@ export default function ThemeDetailPage() {
           <div className="flex items-center gap-3">
             {theme.isActive ? (
               <div className="flex items-center px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-xl font-semibold shadow-lg shadow-emerald-500/30">
-                <CheckCircleIcon className="w-6 h-6 mr-3" />
+                <CheckCircle className="w-6 h-6 mr-3" />
                 AKTİF TEMA
               </div>
             ) : (
@@ -172,7 +172,7 @@ export default function ThemeDetailPage() {
                   </>
                 ) : (
                   <>
-                    <SparklesIcon className="w-6 h-6" />
+                    <Sparkles className="w-6 h-6" />
                     <span>TEMAYI AKTİFLEŞTİR</span>
                   </>
                 )}
@@ -196,7 +196,7 @@ export default function ThemeDetailPage() {
                   />
                 ) : (
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <PaintBrushIcon className="w-32 h-32 text-slate-300" />
+                    <Paintbrush className="w-32 h-32 text-slate-300" />
                   </div>
                 )}
               </div>
@@ -211,7 +211,7 @@ export default function ThemeDetailPage() {
               <div className="bg-white rounded-2xl shadow-sm border border-slate-200/60 p-6">
                 <div className="flex items-center space-x-3 mb-6">
                   <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center">
-                    <DocumentTextIcon className="w-6 h-6 text-white" />
+                    <FileText className="w-6 h-6 text-white" />
                   </div>
                   <div>
                     <h2 className="text-2xl font-bold text-slate-900">ŞABLONLAR</h2>
@@ -231,7 +231,7 @@ export default function ThemeDetailPage() {
                           {template.type}
                         </span>
                         {template.screenshot && (
-                          <PhotoIcon className="w-5 h-5 text-slate-400" />
+                          <ImageIcon className="w-5 h-5 text-slate-400" />
                         )}
                       </div>
                     </div>
@@ -244,7 +244,7 @@ export default function ThemeDetailPage() {
             <div className="bg-white rounded-2xl shadow-sm border border-slate-200/60 p-6">
               <div className="flex items-center space-x-3 mb-6">
                 <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
-                  <Cog6ToothIcon className="w-6 h-6 text-white" />
+                  <Settings className="w-6 h-6 text-white" />
                 </div>
                 <div>
                   <h2 className="text-2xl font-bold text-slate-900">YAPILANDIRMA</h2>
@@ -392,25 +392,25 @@ export default function ThemeDetailPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {theme.config.features.heroSlider !== undefined && (
                       <div className="flex items-center space-x-3 border-2 border-indigo-200 bg-indigo-50 px-4 py-3 rounded-xl">
-                        <CheckCircleIcon className="w-6 h-6 text-indigo-600" />
+                        <CheckCircle className="w-6 h-6 text-indigo-600" />
                         <span className="text-base font-bold text-slate-900">Hero Slider</span>
                       </div>
                     )}
                     {theme.config.features.portfolioGrid !== undefined && (
                       <div className="flex items-center space-x-3 border-2 border-indigo-200 bg-indigo-50 px-4 py-3 rounded-xl">
-                        <CheckCircleIcon className="w-6 h-6 text-indigo-600" />
+                        <CheckCircle className="w-6 h-6 text-indigo-600" />
                         <span className="text-base font-bold text-slate-900">Portfolio Grid</span>
                       </div>
                     )}
                     {theme.config.features.blogList !== undefined && (
                       <div className="flex items-center space-x-3 border-2 border-indigo-200 bg-indigo-50 px-4 py-3 rounded-xl">
-                        <CheckCircleIcon className="w-6 h-6 text-indigo-600" />
+                        <CheckCircle className="w-6 h-6 text-indigo-600" />
                         <span className="text-base font-bold text-slate-900">Blog Listesi</span>
                       </div>
                     )}
                     {theme.config.features.contactForm !== undefined && (
                       <div className="flex items-center space-x-3 border-2 border-indigo-200 bg-indigo-50 px-4 py-3 rounded-xl">
-                        <CheckCircleIcon className="w-6 h-6 text-indigo-600" />
+                        <CheckCircle className="w-6 h-6 text-indigo-600" />
                         <span className="text-base font-bold text-slate-900">İletişim Formu</span>
                       </div>
                     )}
@@ -426,7 +426,7 @@ export default function ThemeDetailPage() {
             <div className="bg-white rounded-2xl shadow-sm border border-slate-200/60 p-6">
               <div className="flex items-center space-x-3 mb-6">
                 <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center">
-                  <SparklesIcon className="w-6 h-6 text-white" />
+                  <Sparkles className="w-6 h-6 text-white" />
                 </div>
                 <div>
                   <h2 className="text-xl font-bold text-slate-900">HIZLI İŞLEMLER</h2>
@@ -438,14 +438,14 @@ export default function ThemeDetailPage() {
                   href={`/admin/themes/${theme._id}/edit`}
                   className="w-full flex items-center justify-center space-x-2 px-6 py-4 bg-gradient-to-r from-indigo-500 to-violet-600 hover:shadow-lg hover:shadow-indigo-500/30 text-white rounded-xl font-bold text-lg transition-all"
                 >
-                  <PencilIcon className="w-6 h-6" />
+                  <Pencil className="w-6 h-6" />
                   <span>TEMAYI DÜZENLE</span>
                 </Link>
                 <Link
                   href={`/admin/themes/${theme._id}/customize`}
                   className="w-full flex items-center justify-center space-x-2 px-6 py-4 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold text-lg transition-all"
                 >
-                  <Cog6ToothIcon className="w-6 h-6" />
+                  <Settings className="w-6 h-6" />
                   <span>ÖZELLEŞTİR</span>
                 </Link>
               </div>
@@ -455,7 +455,7 @@ export default function ThemeDetailPage() {
             <div className="bg-white rounded-2xl shadow-sm border border-slate-200/60 p-6">
               <div className="flex items-center space-x-3 mb-6">
                 <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center">
-                  <DocumentTextIcon className="w-6 h-6 text-white" />
+                  <FileText className="w-6 h-6 text-white" />
                 </div>
                 <div>
                   <h2 className="text-xl font-bold text-slate-900">BİLGİLER</h2>

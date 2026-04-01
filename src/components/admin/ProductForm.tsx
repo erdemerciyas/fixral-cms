@@ -3,23 +3,22 @@
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-    PhotoIcon,
-    CloudArrowUpIcon,
-    StarIcon as StarOutlineIcon,
-    TrashIcon,
-    PaperClipIcon,
-    TagIcon,
-    CheckIcon,
-    ArrowLeftIcon,
-    ExclamationTriangleIcon,
-    CubeIcon,
-    SwatchIcon,
-    CurrencyDollarIcon,
-    QueueListIcon,
-    PlusIcon,
-    FolderIcon
-} from '@heroicons/react/24/outline';
-import { StarIcon as StarSolidIcon } from '@heroicons/react/24/solid';
+    Image as PhotoIcon,
+    CloudUpload as CloudArrowUpIcon,
+    Star,
+    Trash2 as TrashIcon,
+    Paperclip as PaperClipIcon,
+    Tag as TagIcon,
+    Check as CheckIcon,
+    ArrowLeft as ArrowLeftIcon,
+    AlertTriangle as ExclamationTriangleIcon,
+    Box as CubeIcon,
+    Palette as SwatchIcon,
+    DollarSign as CurrencyDollarIcon,
+    ListOrdered as QueueListIcon,
+    Plus as PlusIcon,
+    Folder as FolderIcon,
+} from 'lucide-react';
 import MediaBrowser from '@/components/MediaBrowser';
 import { useActiveLanguages } from '@/hooks/useActiveLanguages';
 import LanguageTabs from '@/components/admin/LanguageTabs';
@@ -492,7 +491,7 @@ export default function ProductForm({ initialData, isEditing = false }: ProductF
                                                     className={`p-2 rounded-lg backdrop-blur-md transition-colors ${form.coverImage === img ? 'bg-yellow-400 text-yellow-900' : 'bg-white/90 text-slate-600 hover:bg-yellow-400 hover:text-yellow-900'}`}
                                                     title="Kapak Resmi Yap"
                                                 >
-                                                    {form.coverImage === img ? <StarSolidIcon className="w-4 h-4" /> : <StarOutlineIcon className="w-4 h-4" />}
+                                                    {form.coverImage === img ? <Star className="w-4 h-4" fill="currentColor" /> : <Star className="w-4 h-4" />}
                                                 </button>
                                                 <button
                                                     onClick={() => {

@@ -5,20 +5,20 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { Dialog, Transition } from '@headlessui/react';
 import {
-  ChatBubbleLeftRightIcon,
-  MagnifyingGlassIcon,
-  TrashIcon,
-  EnvelopeIcon,
-  CheckIcon,
-  ClockIcon,
-  PaperAirplaneIcon,
-  BuildingOfficeIcon,
-  CurrencyDollarIcon,
-  FireIcon,
-  BriefcaseIcon
-} from '@heroicons/react/24/outline';
-import toast from 'react-hot-toast';
-import Swal from 'sweetalert2';
+  MessageSquare,
+  Search,
+  Trash2,
+  Mail,
+  Check,
+  Clock,
+  Send,
+  Building,
+  DollarSign,
+  Flame,
+  Briefcase
+} from 'lucide-react';
+import { toast } from 'sonner';
+import { useConfirm } from '@/hooks/use-confirm';
 
 interface Message {
   _id: string;
@@ -44,6 +44,7 @@ interface Message {
 export default function AdminMessagesPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const { confirm } = useConfirm();
   const [loading, setLoading] = useState(true);
   const [messages, setMessages] = useState<Message[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -82,18 +83,12 @@ export default function AdminMessagesPage() {
   };
 
   const handleDelete = async (messageId: string) => {
-    const result = await Swal.fire({
+    const confirmed = await confirm({
       title: 'Mesajı Sil',
-      text: "Bu mesajı silmek istediğinize emin misiniz?",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
-      confirmButtonText: 'Evet, sil!',
-      cancelButtonText: 'İptal'
+      description: 'Bu mesajı silmek istediğinize emin misiniz?',
     });
 
-    if (!result.isConfirmed) return;
+    if (!confirmed) return;
 
     try {
       const response = await fetch(`/api/admin/messages/${messageId}`, {
@@ -113,18 +108,12 @@ export default function AdminMessagesPage() {
   };
 
   const handleBulkDelete = async () => {
-    const result = await Swal.fire({
+    const confirmed = await confirm({
       title: 'Toplu Silme',
-      text: `${selectedMessages.size} mesajı silmek istediğinize emin misiniz?`,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
-      confirmButtonText: 'Evet, sil!',
-      cancelButtonText: 'İptal'
+      description: `${selectedMessages.size} mesajı silmek istediğinize emin misiniz?`,
     });
 
-    if (!result.isConfirmed) return;
+    if (!confirmed) return;
 
     try {
       await Promise.all(
@@ -274,7 +263,7 @@ export default function AdminMessagesPage() {
       <div className="bg-white rounded-2xl shadow-sm border border-slate-200/60 p-4">
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex-1 relative">
-            <MagnifyingGlassIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
             <input
               type="text"
               value={searchQuery}
@@ -324,7 +313,7 @@ export default function AdminMessagesPage() {
               onClick={handleBulkDelete}
               className="flex items-center px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors text-sm font-medium"
             >
-              <TrashIcon className="w-4 h-4 mr-2" />
+              <Trash2 className="w-4 h-4 mr-2" />
               Seçilenleri Sil
             </button>
           </div>
@@ -384,19 +373,19 @@ export default function AdminMessagesPage() {
                           </h3>
                           {message.company && (
                             <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-600 border border-slate-200">
-                              <BuildingOfficeIcon className="w-3 h-3 mr-1" />
+                              <Building className="w-3 h-3 mr-1" />
                               {message.company}
                             </span>
                           )}
                           {message.projectType && (
                             <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-blue-50 text-blue-700 border border-blue-100">
-                              <BriefcaseIcon className="w-3 h-3 mr-1" />
+                              <Briefcase className="w-3 h-3 mr-1" />
                               {message.projectType}
                             </span>
                           )}
                         </div>
                         <span className="text-xs text-slate-500 whitespace-nowrap flex items-center gap-1">
-                          <ClockIcon className="w-3 h-3" />
+                          <Clock className="w-3 h-3" />
                           {formatDate(message.createdAt)}
                         </span>
                       </div>
@@ -410,7 +399,7 @@ export default function AdminMessagesPage() {
                         )}
                         {message.status === 'replied' && (
                           <span className="text-xs text-green-600 flex items-center gap-0.5 bg-green-50 px-1.5 py-0.5 rounded">
-                            <CheckIcon className="w-3 h-3" />
+                            <Check className="w-3 h-3" />
                             Yanıtlandı
                           </span>
                         )}
@@ -430,7 +419,7 @@ export default function AdminMessagesPage() {
                         className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                         title="Sil"
                       >
-                        <TrashIcon className="w-5 h-5" />
+                        <Trash2 className="w-5 h-5" />
                       </button>
                     </div>
                   </div>
@@ -441,7 +430,7 @@ export default function AdminMessagesPage() {
         ) : (
           <div className="text-center py-20">
             <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4">
-              <ChatBubbleLeftRightIcon className="w-8 h-8 text-slate-300" />
+              <MessageSquare className="w-8 h-8 text-slate-300" />
             </div>
             <h3 className="text-lg font-medium text-slate-900 mb-1">Mesaj Bulunamadı</h3>
             <p className="text-slate-500 text-sm">
@@ -530,7 +519,7 @@ export default function AdminMessagesPage() {
                               )}
                               {viewMessage.company && (
                                 <div className="flex items-center gap-2">
-                                  <BriefcaseIcon className="w-4 h-4 text-slate-400" />
+                                  <Briefcase className="w-4 h-4 text-slate-400" />
                                   {viewMessage.company}
                                 </div>
                               )}
@@ -545,13 +534,13 @@ export default function AdminMessagesPage() {
                             <div className="flex flex-wrap gap-4 text-sm">
                               {viewMessage.projectType && (
                                 <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg border border-blue-100 shadow-sm text-blue-900">
-                                  <FireIcon className="w-4 h-4 text-orange-500" />
+                                  <Flame className="w-4 h-4 text-orange-500" />
                                   <span className="font-medium">{viewMessage.projectType}</span>
                                 </div>
                               )}
                               {viewMessage.budget && (
                                 <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg border border-blue-100 shadow-sm text-blue-900">
-                                  <CurrencyDollarIcon className="w-4 h-4 text-green-500" />
+                                  <DollarSign className="w-4 h-4 text-green-500" />
                                   <span className="font-medium">Bütçe: {viewMessage.budget}</span>
                                 </div>
                               )}
@@ -571,7 +560,7 @@ export default function AdminMessagesPage() {
                         {viewMessage.adminReply && (
                           <div className="pl-4 border-l-4 border-green-500 bg-green-50 rounded-r-xl p-4">
                             <h4 className="text-xs font-bold text-green-700 uppercase tracking-wider mb-2 flex items-center gap-2">
-                              <CheckIcon className="w-4 h-4" />
+                              <Check className="w-4 h-4" />
                               Gönderilen Yanıt
                               <span className="text-green-600/70 font-normal lowercase ml-auto">{viewMessage.repliedAt && formatDate(viewMessage.repliedAt)}</span>
                             </h4>
@@ -585,7 +574,7 @@ export default function AdminMessagesPage() {
                       {/* Reply Form */}
                       <div className="p-6 bg-slate-50 border-t border-slate-200">
                         <h4 className="text-sm font-semibold text-slate-900 mb-3 flex items-center gap-2">
-                          <PaperAirplaneIcon className="w-4 h-4 text-indigo-600" />
+                          <Send className="w-4 h-4 text-indigo-600" />
                           Yanıt Gönder
                         </h4>
                         <textarea
@@ -616,7 +605,7 @@ export default function AdminMessagesPage() {
                               </>
                             ) : (
                               <>
-                                <PaperAirplaneIcon className="w-4 h-4 mr-2" />
+                                <Send className="w-4 h-4 mr-2" />
                                 Yanıtla ve E-posta Gönder
                               </>
                             )}

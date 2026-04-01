@@ -4,14 +4,14 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import {
-  TagIcon,
-  PlusIcon,
-  MagnifyingGlassIcon,
-  PencilIcon,
-  TrashIcon
-} from '@heroicons/react/24/outline';
-import toast from 'react-hot-toast';
-import Swal from 'sweetalert2';
+  Tag,
+  Plus,
+  Search,
+  Pencil,
+  Trash2
+} from 'lucide-react';
+import { toast } from 'sonner';
+import { useConfirm } from '@/hooks/use-confirm';
 
 interface Category {
   _id: string;
@@ -25,6 +25,7 @@ interface Category {
 export default function AdminCategoriesPage() {
   const { status } = useSession();
   const router = useRouter();
+  const { confirm } = useConfirm();
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState<Category[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -59,17 +60,12 @@ export default function AdminCategoriesPage() {
   };
 
   const handleDelete = async (categoryId: string) => {
-    const result = await Swal.fire({
+    const confirmed = await confirm({
       title: 'Are you sure?',
-      text: "Are you sure you want to delete this category?",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!'
+      description: 'Are you sure you want to delete this category?',
     });
 
-    if (!result.isConfirmed) return;
+    if (!confirmed) return;
 
     try {
       const response = await fetch(`/api/admin/categories/${categoryId}`, {
@@ -115,7 +111,7 @@ export default function AdminCategoriesPage() {
           <p className="text-slate-500 mt-1">Manage your content categories</p>
         </div>
         <button className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-200">
-          <PlusIcon className="w-5 h-5 mr-2" />
+          <Plus className="w-5 h-5 mr-2" />
           Add Category
         </button>
       </div>
@@ -123,7 +119,7 @@ export default function AdminCategoriesPage() {
       {/* Search Bar */}
       <div className="bg-white rounded-2xl shadow-sm border border-slate-200/60 p-4">
         <div className="relative">
-          <MagnifyingGlassIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
           <input
             type="text"
             value={searchQuery}
@@ -143,17 +139,17 @@ export default function AdminCategoriesPage() {
           >
             <div className="flex items-start justify-between mb-4">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center">
-                <TagIcon className="w-6 h-6 text-white" />
+                <Tag className="w-6 h-6 text-white" />
               </div>
               <div className="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
                 <button className="p-2 hover:bg-indigo-100 rounded-lg transition-colors">
-                  <PencilIcon className="w-4 h-4 text-slate-600" />
+                  <Pencil className="w-4 h-4 text-slate-600" />
                 </button>
                 <button
                   onClick={() => handleDelete(category._id)}
                   className="p-2 hover:bg-red-100 rounded-lg transition-colors"
                 >
-                  <TrashIcon className="w-4 h-4 text-slate-600" />
+                  <Trash2 className="w-4 h-4 text-slate-600" />
                 </button>
               </div>
             </div>
@@ -178,7 +174,7 @@ export default function AdminCategoriesPage() {
       {/* Empty State */}
       {filteredCategories.length === 0 && (
         <div className="text-center py-16 bg-white rounded-2xl border border-slate-200/60">
-          <TagIcon className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+          <Tag className="w-16 h-16 text-slate-300 mx-auto mb-4" />
           <h3 className="text-xl font-semibold text-slate-900 mb-2">No categories found</h3>
           <p className="text-slate-500">
             {searchQuery

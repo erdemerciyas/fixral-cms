@@ -2,11 +2,11 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { 
-  CheckCircleIcon, 
-  ExclamationTriangleIcon, 
-  InformationCircleIcon,
-  XMarkIcon 
-} from '@heroicons/react/24/outline';
+  CheckCircle as CheckCircleIcon, 
+  AlertTriangle as ExclamationTriangleIcon, 
+  Info as InformationCircleIcon,
+  X as XMarkIcon 
+} from 'lucide-react';
 
 export interface ToastProps {
   id: string;

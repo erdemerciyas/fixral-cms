@@ -4,15 +4,15 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import {
-  TagIcon,
-  PlusIcon,
-  MagnifyingGlassIcon,
-  PencilIcon,
-  TrashIcon,
-  XMarkIcon
-} from '@heroicons/react/24/outline';
-import toast from 'react-hot-toast';
-import Swal from 'sweetalert2';
+  Tag,
+  Plus,
+  Search,
+  Pencil,
+  Trash2,
+  X
+} from 'lucide-react';
+import { toast } from 'sonner';
+import { useConfirm } from '@/hooks/use-confirm';
 
 interface ProductCategory {
   _id: string;
@@ -29,6 +29,7 @@ interface ProductCategory {
 export default function AdminProductCategoriesPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const { confirm } = useConfirm();
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState<ProductCategory[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -65,18 +66,8 @@ export default function AdminProductCategoriesPage() {
   };
 
   const handleDelete = async (categoryId: string) => {
-    const result = await Swal.fire({
-      title: 'Emin misiniz?',
-      text: "Bu kategoriyi silmek istediğinizden emin misiniz?",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Evet, sil!',
-      cancelButtonText: 'Vazgeç'
-    });
-
-    if (!result.isConfirmed) return;
+    const confirmed = await confirm({ title: 'Emin misiniz?', description: 'Bu kategoriyi silmek istediğinizden emin misiniz?' });
+    if (!confirmed) return;
 
     try {
       const response = await fetch(`/api/admin/product-categories/${categoryId}`, {
@@ -190,7 +181,7 @@ export default function AdminProductCategoriesPage() {
           onClick={() => openModal()}
           className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-200"
         >
-          <PlusIcon className="w-5 h-5 mr-2" />
+          <Plus className="w-5 h-5 mr-2" />
           Kategori Ekle
         </button>
       </div>
@@ -209,7 +200,7 @@ export default function AdminProductCategoriesPage() {
         {categories.length === 0 ? (
           <div className="text-center py-12 px-4">
             <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-slate-100 mb-3">
-              <TagIcon className="w-6 h-6 text-slate-400" />
+              <Tag className="w-6 h-6 text-slate-400" />
             </div>
             <h3 className="text-lg font-medium text-slate-900">Henüz kategori yok</h3>
             <p className="text-slate-500 mt-1 max-w-sm mx-auto">Kategoriler oluşturarak ürünlerinizi düzenlemeye başlayın.</p>
@@ -281,7 +272,7 @@ export default function AdminProductCategoriesPage() {
                             className="p-1.5 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
                             title="Alt Kategori Ekle"
                           >
-                            <PlusIcon className="w-4 h-4" />
+                            <Plus className="w-4 h-4" />
                           </button>
                         )}
                         <button
@@ -289,14 +280,14 @@ export default function AdminProductCategoriesPage() {
                           className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
                           title="Düzenle"
                         >
-                          <PencilIcon className="w-4 h-4" />
+                          <Pencil className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => handleDelete(category._id)}
                           className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                           title="Sil"
                         >
-                          <TrashIcon className="w-4 h-4" />
+                          <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
                     </div>
@@ -331,7 +322,7 @@ export default function AdminProductCategoriesPage() {
                 onClick={closeModal}
                 className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
               >
-                <XMarkIcon className="w-5 h-5 text-slate-500" />
+                <X className="w-5 h-5 text-slate-500" />
               </button>
             </div>
 

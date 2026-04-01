@@ -5,18 +5,18 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
-    ChatBubbleLeftRightIcon,
-    MagnifyingGlassIcon,
-    TrashIcon,
-    EnvelopeIcon,
-    CheckIcon,
-    ClockIcon,
-    ShoppingBagIcon,
-    ArrowTopRightOnSquareIcon,
-    PaperAirplaneIcon
-} from '@heroicons/react/24/outline';
-import toast from 'react-hot-toast';
-import Swal from 'sweetalert2';
+    MessageSquare,
+    Search,
+    Trash2,
+    Mail,
+    Check,
+    Clock,
+    ShoppingBag,
+    ExternalLink,
+    Send
+} from 'lucide-react';
+import { toast } from 'sonner';
+import { useConfirm } from '@/hooks/use-confirm';
 
 interface Message {
     _id: string;
@@ -55,6 +55,7 @@ const slugify = (text: string) => {
 export default function AdminProductQuestionsPage() {
     const { data: session, status } = useSession();
     const router = useRouter();
+    const { confirm } = useConfirm();
     const [loading, setLoading] = useState(true);
     const [messages, setMessages] = useState<Message[]>([]);
     const [searchQuery, setSearchQuery] = useState('');
@@ -95,17 +96,12 @@ export default function AdminProductQuestionsPage() {
     };
 
     const handleDelete = async (messageId: string) => {
-        const result = await Swal.fire({
+        const confirmed = await confirm({
             title: 'Emin misiniz?',
-            text: "Bu soruyu silmek istediğinize emin misiniz?",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Evet, sil!'
+            description: 'Bu soruyu silmek istediğinize emin misiniz?',
         });
 
-        if (!result.isConfirmed) return;
+        if (!confirmed) return;
 
         try {
             const response = await fetch(`/api/admin/messages/${messageId}`, {
@@ -125,17 +121,12 @@ export default function AdminProductQuestionsPage() {
     };
 
     const handleBulkDelete = async () => {
-        const result = await Swal.fire({
+        const confirmed = await confirm({
             title: 'Emin misiniz?',
-            text: `${selectedMessages.size} soruyu silmek istediğinize emin misiniz?`,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Evet, seçilenleri sil!'
+            description: `${selectedMessages.size} soruyu silmek istediğinize emin misiniz?`,
         });
 
-        if (!result.isConfirmed) return;
+        if (!confirmed) return;
 
         try {
             await Promise.all(
@@ -274,7 +265,7 @@ export default function AdminProductQuestionsPage() {
             <div className="bg-white rounded-2xl shadow-sm border border-slate-200/60 p-4">
                 <div className="flex flex-col sm:flex-row gap-4">
                     <div className="flex-1 relative">
-                        <MagnifyingGlassIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                         <input
                             type="text"
                             value={searchQuery}
@@ -333,7 +324,7 @@ export default function AdminProductQuestionsPage() {
                             onClick={handleBulkDelete}
                             className="flex items-center px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors"
                         >
-                            <TrashIcon className="w-4 h-4 mr-2" />
+                            <Trash2 className="w-4 h-4 mr-2" />
                             Seçilenleri Sil
                         </button>
                     </div>
@@ -401,7 +392,7 @@ export default function AdminProductQuestionsPage() {
                                                             {message.name}
                                                         </h3>
                                                         <div className="flex items-center gap-2 text-xs text-slate-500 mt-0.5">
-                                                            <EnvelopeIcon className="w-3 h-3" />
+                                                            <Mail className="w-3 h-3" />
                                                             {message.email}
                                                         </div>
                                                     </div>
@@ -419,7 +410,7 @@ export default function AdminProductQuestionsPage() {
                                                         </span>
                                                     )}
                                                     <div className="flex items-center gap-1 text-xs text-slate-400 font-medium bg-slate-50 px-2 py-1 rounded border border-slate-100">
-                                                        <ClockIcon className="w-3.5 h-3.5" />
+                                                        <Clock className="w-3.5 h-3.5" />
                                                         {formatDate(message.createdAt)}
                                                     </div>
                                                 </div>
@@ -430,7 +421,7 @@ export default function AdminProductQuestionsPage() {
                                                 <div className="mb-4 bg-slate-50 rounded-xl border border-slate-200/60 p-3 flex items-center justify-between group-hover:border-indigo-200 transition-colors">
                                                     <div className="flex items-center gap-3">
                                                         <div className="p-2 bg-white rounded-lg border border-slate-100 text-slate-400">
-                                                            {message.orderId ? <ShoppingBagIcon className="w-5 h-5" /> : <ShoppingBagIcon className="w-5 h-5" />}
+                                                            {message.orderId ? <ShoppingBag className="w-5 h-5" /> : <ShoppingBag className="w-5 h-5" />}
                                                         </div>
                                                         <div>
                                                             <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">
@@ -447,7 +438,7 @@ export default function AdminProductQuestionsPage() {
                                                             onClick={(e) => e.stopPropagation()}
                                                             className="text-xs font-medium text-indigo-600 hover:text-indigo-800 hover:underline flex items-center gap-1"
                                                         >
-                                                            Siparişe Git <ArrowTopRightOnSquareIcon className="w-3 h-3" />
+                                                            Siparişe Git <ExternalLink className="w-3 h-3" />
                                                         </Link>
                                                     )}
                                                     {message.productName && !message.orderId && (
@@ -456,7 +447,7 @@ export default function AdminProductQuestionsPage() {
                                                             onClick={(e) => e.stopPropagation()}
                                                             className="text-xs font-medium text-indigo-600 hover:text-indigo-800 hover:underline flex items-center gap-1"
                                                         >
-                                                            Ürüne Git <ArrowTopRightOnSquareIcon className="w-3 h-3" />
+                                                            Ürüne Git <ExternalLink className="w-3 h-3" />
                                                         </Link>
                                                     )}
                                                 </div>
@@ -506,7 +497,7 @@ export default function AdminProductQuestionsPage() {
                                                 className="p-2.5 bg-indigo-50 text-indigo-600 rounded-xl hover:bg-indigo-100 hover:shadow-sm hover:scale-105 transition-all text-sm font-medium flex items-center justify-center gap-2 w-full sm:w-auto"
                                                 title="Yanıtla"
                                             >
-                                                <PaperAirplaneIcon className="w-4 h-4" />
+                                                <Send className="w-4 h-4" />
                                                 <span className="sm:hidden">Yanıtla</span>
                                             </button>
                                             <button
@@ -517,7 +508,7 @@ export default function AdminProductQuestionsPage() {
                                                 className="p-2.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all text-sm font-medium flex items-center justify-center gap-2 w-full sm:w-auto"
                                                 title="Sil"
                                             >
-                                                <TrashIcon className="w-4 h-4" />
+                                                <Trash2 className="w-4 h-4" />
                                                 <span className="sm:hidden">Sil</span>
                                             </button>
                                         </div>
@@ -528,7 +519,7 @@ export default function AdminProductQuestionsPage() {
                     </>
                 ) : (
                     <div className="text-center py-16">
-                        <ChatBubbleLeftRightIcon className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+                        <MessageSquare className="w-16 h-16 text-slate-300 mx-auto mb-4" />
                         <h3 className="text-xl font-semibold text-slate-900 mb-2">Soru bulunamadı</h3>
                         <p className="text-slate-500">
                             {searchQuery || statusFilter !== 'all'
@@ -606,7 +597,7 @@ export default function AdminProductQuestionsPage() {
                                         </>
                                     ) : (
                                         <>
-                                            <PaperAirplaneIcon className="w-4 h-4" />
+                                            <Send className="w-4 h-4" />
                                             Yanıtı Gönder
                                         </>
                                     )}

@@ -5,17 +5,17 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import {
-  PlusIcon,
-  MagnifyingGlassIcon,
-  TrashIcon,
-  LinkIcon,
-  PhotoIcon,
-  DocumentIcon,
-  ExclamationTriangleIcon,
-  CheckIcon
-} from '@heroicons/react/24/outline';
-import toast from 'react-hot-toast';
-import Swal from 'sweetalert2';
+  Plus,
+  Search,
+  Trash2,
+  Link as LinkIcon,
+  ImageIcon,
+  FileIcon,
+  AlertTriangle,
+  Check
+} from 'lucide-react';
+import { toast } from 'sonner';
+import { useConfirm } from '@/hooks/use-confirm';
 
 type MediaItem = {
   _id: string;
@@ -32,6 +32,7 @@ type MediaItem = {
 export default function AdminProductMediaPage() {
   const { status } = useSession();
   const router = useRouter();
+  const { confirm } = useConfirm();
 
   const [mediaItems, setMediaItems] = useState<MediaItem[]>([]);
   const [loading, setLoading] = useState(false);
@@ -58,18 +59,8 @@ export default function AdminProductMediaPage() {
   }
 
   async function deleteItem(mediaId: string) {
-    const result = await Swal.fire({
-      title: 'Emin misiniz?',
-      text: "Bu dosyayı silmek istediğinize emin misiniz?",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Evet, sil!',
-      cancelButtonText: 'Vazgeç'
-    });
-
-    if (!result.isConfirmed) return;
+    const confirmed = await confirm({ title: 'Emin misiniz?', description: 'Bu dosyayı silmek istediğinize emin misiniz?' });
+    if (!confirmed) return;
 
     try {
       const res = await fetch('/api/admin/media', {
@@ -121,7 +112,7 @@ export default function AdminProductMediaPage() {
           title="Ürün medyası, ilgili ürün sayfalarındaki yükleme alanlarından eklenmelidir"
           className="flex items-center space-x-2 px-6 py-3 rounded-xl font-semibold transition-all duration-200 shadow-sm bg-slate-200 text-slate-500 cursor-not-allowed"
         >
-          <PlusIcon className="w-5 h-5" />
+          <Plus className="w-5 h-5" />
           <span>Dosya Yükle</span>
         </button>
       </div>
@@ -135,9 +126,9 @@ export default function AdminProductMediaPage() {
             }`}
         >
           {message.type === 'success' ? (
-            <CheckIcon className="w-5 h-5" />
+            <Check className="w-5 h-5" />
           ) : (
-            <ExclamationTriangleIcon className="w-5 h-5" />
+            <AlertTriangle className="w-5 h-5" />
           )}
           <span>{message.text}</span>
         </div>
@@ -146,7 +137,7 @@ export default function AdminProductMediaPage() {
       {/* Filters */}
       <div className="bg-white rounded-2xl shadow-sm border border-slate-200/60 p-4 flex flex-col md:flex-row gap-3">
         <div className="relative flex-1">
-          <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
           <input
             type="text"
             placeholder="Dosya ara..."
@@ -188,7 +179,7 @@ export default function AdminProductMediaPage() {
                   />
                 ) : (
                   <div className="flex flex-col items-center justify-center p-4 text-slate-400">
-                    <DocumentIcon className="w-12 h-12 mb-2" />
+                    <FileIcon className="w-12 h-12 mb-2" />
                     <div className="text-xs font-medium">{item.mimeType}</div>
                   </div>
                 )}
@@ -215,7 +206,7 @@ export default function AdminProductMediaPage() {
                     className="text-xs font-medium text-red-600 hover:text-red-700 hover:bg-red-50 inline-flex items-center justify-center gap-1 px-2 py-1.5 rounded-lg transition-all"
                     onClick={() => deleteItem(item._id)}
                   >
-                    <TrashIcon className="w-4 h-4" /> Sil
+                    <Trash2 className="w-4 h-4" /> Sil
                   </button>
                 </div>
               </div>
@@ -223,7 +214,7 @@ export default function AdminProductMediaPage() {
           ))}
           {filtered.length === 0 && (
             <div className="col-span-full flex flex-col items-center justify-center py-16">
-              <PhotoIcon className="w-16 h-16 text-slate-300 mb-4" />
+              <ImageIcon className="w-16 h-16 text-slate-300 mb-4" />
               <p className="text-slate-500 font-medium">Kayıt bulunamadı</p>
               <p className="text-sm text-slate-400 mt-1">Arama kriterlerinize uygun medya dosyası yok</p>
             </div>

@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import type { Language } from '@/types/language';
-import { ExclamationTriangleIcon, LanguageIcon } from '@heroicons/react/24/outline';
+import { AlertTriangle as ExclamationTriangleIcon, Languages as LanguageIcon } from 'lucide-react';
 
 interface LanguageTabsProps {
   languages: Language[];

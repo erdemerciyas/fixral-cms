@@ -4,13 +4,7 @@ import { useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import {
-  EnvelopeIcon,
-  LockClosedIcon,
-  EyeIcon,
-  EyeSlashIcon,
-  ArrowLeftIcon
-} from '@heroicons/react/24/outline';
+import { ArrowLeft, Eye, EyeOff, Lock, Mail } from 'lucide-react';
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -128,7 +122,7 @@ export default function AdminLoginPage() {
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <EnvelopeIcon className="h-5 w-5 text-slate-400" />
+                    <Mail className="h-5 w-5 text-slate-400" />
                   </div>
                   <input
                     id="email"
@@ -148,7 +142,7 @@ export default function AdminLoginPage() {
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <LockClosedIcon className="h-5 w-5 text-slate-400" />
+                    <Lock className="h-5 w-5 text-slate-400" />
                   </div>
                   <input
                     id="password"
@@ -165,9 +159,9 @@ export default function AdminLoginPage() {
                     className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
                   >
                     {showPassword ? (
-                      <EyeSlashIcon className="h-5 w-5" />
+                      <EyeOff className="h-5 w-5" />
                     ) : (
-                      <EyeIcon className="h-5 w-5" />
+                      <Eye className="h-5 w-5" />
                     )}
                   </button>
                 </div>
@@ -212,7 +206,7 @@ export default function AdminLoginPage() {
               href="/"
               className="flex items-center justify-center text-sm text-slate-600 hover:text-indigo-600 transition-colors"
             >
-              <ArrowLeftIcon className="w-4 h-4 mr-2" />
+              <ArrowLeft className="w-4 h-4 mr-2" />
               Back to website
             </Link>
           </div>

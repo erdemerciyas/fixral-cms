@@ -8,7 +8,7 @@ import HeroSlider from '@/components/home/HeroSlider';
 import ServicesGrid from '@/components/home/ServicesGrid';
 import HomePortfolioSection from '@/components/portfolio/HomePortfolioSection';
 import NewsCarousel from '@/components/NewsCarousel';
-import { buttonVariants } from '@/components/ui/Button';
+import { buttonVariants } from '@/components/ui';
 import { cn } from '@/lib/utils';
 
 interface HomeTemplateProps {

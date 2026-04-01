@@ -5,17 +5,17 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
-  CubeIcon,
-  MagnifyingGlassIcon,
-  TrashIcon,
-  CalendarIcon,
-  Squares2X2Icon,
-  ListBulletIcon,
-  CheckCircleIcon,
-  ArrowDownTrayIcon
-} from '@heroicons/react/24/outline';
-import toast from 'react-hot-toast';
-import Swal from 'sweetalert2';
+  Box,
+  Search,
+  Trash2,
+  Calendar,
+  LayoutGrid,
+  List,
+  CheckCircle2,
+  Download
+} from 'lucide-react';
+import { toast } from 'sonner';
+import { useConfirm } from '@/hooks/use-confirm';
 
 interface Model3D {
   _id: string;
@@ -32,6 +32,7 @@ interface Model3D {
 export default function AdminModelsPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const { confirm } = useConfirm();
   const [loading, setLoading] = useState(true);
   const [models, setModels] = useState<Model3D[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -77,18 +78,12 @@ export default function AdminModelsPage() {
   };
 
   const handleDelete = async (modelId: string) => {
-    const result = await Swal.fire({
+    const confirmed = await confirm({
       title: 'Emin misiniz?',
-      text: "Bu 3D modeli silmek istediğinizden emin misiniz?",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Evet, sil!',
-      cancelButtonText: 'Vazgeç'
+      description: 'Bu 3D modeli silmek istediğinizden emin misiniz?',
     });
 
-    if (!result.isConfirmed) return;
+    if (!confirmed) return;
 
     try {
       const response = await fetch(`/api/admin/models/${modelId}`, {
@@ -113,18 +108,12 @@ export default function AdminModelsPage() {
   };
 
   const handleBulkDelete = async () => {
-    const result = await Swal.fire({
+    const confirmed = await confirm({
       title: 'Emin misiniz?',
-      text: `${selectedItems.size} modeli silmek istediğinizden emin misiniz?`,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Evet, sil!',
-      cancelButtonText: 'Vazgeç'
+      description: `${selectedItems.size} modeli silmek istediğinizden emin misiniz?`,
     });
 
-    if (!result.isConfirmed) return;
+    if (!confirmed) return;
 
     try {
       await Promise.all(
@@ -211,7 +200,7 @@ export default function AdminModelsPage() {
           href="/admin/portfolio/new"
           className="inline-flex items-center px-6 py-3 bg-slate-900 text-white font-semibold rounded-xl hover:bg-slate-800 hover:shadow-lg hover:shadow-slate-900/20 transition-all duration-200"
         >
-          <ArrowDownTrayIcon className="w-5 h-5 mr-2" />
+          <Download className="w-5 h-5 mr-2" />
           Model Yükle
         </Link>
       </div>
@@ -222,7 +211,7 @@ export default function AdminModelsPage() {
           {/* Search & Filter Group */}
           <div className="flex-1 w-full lg:w-auto flex flex-col sm:flex-row gap-3">
             <div className="relative flex-1">
-              <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
               <input
                 type="text"
                 value={searchQuery}
@@ -268,7 +257,7 @@ export default function AdminModelsPage() {
                   onClick={handleBulkDelete}
                   className="flex items-center px-4 py-2.5 bg-red-50 text-red-600 font-medium rounded-xl hover:bg-red-100 transition-colors"
                 >
-                  <TrashIcon className="w-4 h-4 mr-2" />
+                  <Trash2 className="w-4 h-4 mr-2" />
                   Sil
                 </button>
               </div>
@@ -280,14 +269,14 @@ export default function AdminModelsPage() {
                 className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                 title="Grid Görünümü"
               >
-                <Squares2X2Icon className="w-5 h-5" />
+                <LayoutGrid className="w-5 h-5" />
               </button>
               <button
                 onClick={() => setViewMode('list')}
                 className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                 title="Liste Görünümü"
               >
-                <ListBulletIcon className="w-5 h-5" />
+                <List className="w-5 h-5" />
               </button>
             </div>
           </div>
@@ -298,7 +287,7 @@ export default function AdminModelsPage() {
       {filteredModels.length === 0 ? (
         <div className="bg-white rounded-2xl shadow-sm border border-slate-200 border-dashed p-12 text-center">
           <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4">
-            <CubeIcon className="w-8 h-8 text-slate-400" />
+            <Box className="w-8 h-8 text-slate-400" />
           </div>
           <h3 className="text-lg font-semibold text-slate-900 mb-2">3D Model bulunamadı</h3>
           <p className="text-slate-500 mb-6 max-w-sm mx-auto">
@@ -329,7 +318,7 @@ export default function AdminModelsPage() {
                   {/* Icon Cover */}
                   <div className="aspect-[4/3] bg-slate-50 relative overflow-hidden group-hover:bg-slate-100 transition-colors flex items-center justify-center p-8">
                     <div className="relative z-0">
-                      <CubeIcon className="w-24 h-24 text-indigo-200 group-hover:text-indigo-300 transition-colors" strokeWidth={1} />
+                      <Box className="w-24 h-24 text-indigo-200 group-hover:text-indigo-300 transition-colors" strokeWidth={1} />
                       <div className="absolute inset-0 flex items-center justify-center">
                         <span className="text-sm font-bold text-indigo-600 uppercase tracking-wider">{model.format}</span>
                       </div>
@@ -345,7 +334,7 @@ export default function AdminModelsPage() {
                       <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center
                                ${selectedItems.has(model._id) ? 'bg-indigo-600 border-indigo-600 text-white' : 'bg-transparent border-white text-transparent hover:bg-white/20'}
                             `}>
-                        <CheckCircleIcon className="w-5 h-5" />
+                        <CheckCircle2 className="w-5 h-5" />
                       </div>
                     </div>
                   </div>
@@ -353,7 +342,7 @@ export default function AdminModelsPage() {
                   {/* Content */}
                   <div className="p-5">
                     <div className="flex items-center gap-2 text-xs text-slate-400 mb-3">
-                      <CalendarIcon className="w-4 h-4" />
+                      <Calendar className="w-4 h-4" />
                       <span>{formatDate(model.createdAt)}</span>
                       <span className="w-1 h-1 bg-slate-300 rounded-full" />
                       <span className="text-slate-600 font-medium">{formatFileSize(model.fileSize)}</span>
@@ -372,7 +361,7 @@ export default function AdminModelsPage() {
                         download
                         className="flex items-center text-xs font-medium text-indigo-600 hover:text-indigo-800"
                       >
-                        <ArrowDownTrayIcon className="w-3.5 h-3.5 mr-1" />
+                        <Download className="w-3.5 h-3.5 mr-1" />
                         İndir
                       </a>
 
@@ -381,7 +370,7 @@ export default function AdminModelsPage() {
                         className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                         title="Sil"
                       >
-                        <TrashIcon className="w-4 h-4" />
+                        <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
                   </div>
@@ -426,7 +415,7 @@ export default function AdminModelsPage() {
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-4">
                           <div className="w-10 h-10 bg-indigo-50 rounded-lg flex items-center justify-center flex-shrink-0 text-indigo-600">
-                            <CubeIcon className="w-6 h-6" />
+                            <Box className="w-6 h-6" />
                           </div>
                           <div>
                             <h4 className="text-sm font-semibold text-slate-900 group-hover:text-indigo-600 transition-colors">
@@ -462,14 +451,14 @@ export default function AdminModelsPage() {
                             className="p-1.5 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
                             title="İndir"
                           >
-                            <ArrowDownTrayIcon className="w-4 h-4" />
+                            <Download className="w-4 h-4" />
                           </a>
                           <button
                             onClick={() => handleDelete(model._id)}
                             className="p-1.5 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                             title="Sil"
                           >
-                            <TrashIcon className="w-4 h-4" />
+                            <Trash2 className="w-4 h-4" />
                           </button>
                         </div>
                       </td>

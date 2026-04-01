@@ -5,20 +5,20 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import {
-  PhotoIcon,
-  CloudArrowUpIcon,
-  MagnifyingGlassIcon,
-  TrashIcon,
-  EyeIcon,
-  DocumentIcon,
-  XMarkIcon,
-  CheckCircleIcon,
-  FunnelIcon,
-  Squares2X2Icon,
-  ListBulletIcon
-} from '@heroicons/react/24/outline';
-import toast from 'react-hot-toast';
-import Swal from 'sweetalert2';
+  Image as ImageIcon,
+  CloudUpload,
+  Search,
+  Trash2,
+  Eye,
+  FileText,
+  X,
+  CheckCircle2,
+  Filter,
+  LayoutGrid,
+  List
+} from 'lucide-react';
+import { toast } from 'sonner';
+import { useConfirm } from '@/hooks/use-confirm';
 
 interface MediaItem {
   _id: string;
@@ -35,6 +35,7 @@ interface MediaItem {
 export default function AdminMediaPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const { confirm } = useConfirm();
   const [loading, setLoading] = useState(true);
   const [mediaItems, setMediaItems] = useState<MediaItem[]>([]);
   const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
@@ -123,18 +124,8 @@ export default function AdminMediaPage() {
   };
 
   const handleDelete = async (itemIds: string[]) => {
-    const result = await Swal.fire({
-      title: 'Emin misiniz?',
-      text: `${itemIds.length} öğeyi silmek istediğinizden emin misiniz?`,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Evet, sil!',
-      cancelButtonText: 'Vazgeç'
-    });
-
-    if (!result.isConfirmed) return;
+    const confirmed = await confirm({ title: 'Emin misiniz?', description: `${itemIds.length} öğeyi silmek istediğinizden emin misiniz?` });
+    if (!confirmed) return;
 
     try {
       setLoading(true);
@@ -237,7 +228,7 @@ export default function AdminMediaPage() {
               onClick={() => handleDelete(Array.from(selectedItems))}
               className="hidden sm:inline-flex items-center px-4 py-2 bg-red-100 text-red-700 rounded-xl hover:bg-red-200 transition-colors font-medium"
             >
-              <TrashIcon className="w-5 h-5 mr-2" />
+              <Trash2 className="w-5 h-5 mr-2" />
               {selectedItems.size} Sil
             </button>
           )}
@@ -245,7 +236,7 @@ export default function AdminMediaPage() {
             onClick={() => setShowUploadModal(true)}
             className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-200"
           >
-            <CloudArrowUpIcon className="w-5 h-5 mr-2" />
+            <CloudUpload className="w-5 h-5 mr-2" />
             Dosya Yükle
           </button>
         </div>
@@ -257,7 +248,7 @@ export default function AdminMediaPage() {
           {/* Left: Search & Filter */}
           <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto flex-1">
             <div className="relative flex-1 min-w-[240px]">
-              <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
               <input
                 type="text"
                 value={searchQuery}
@@ -291,14 +282,14 @@ export default function AdminMediaPage() {
                 className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                 title="Izgara Görünümü"
               >
-                <Squares2X2Icon className="w-5 h-5" />
+                <LayoutGrid className="w-5 h-5" />
               </button>
               <button
                 onClick={() => setViewMode('list')}
                 className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                 title="Liste Görünümü"
               >
-                <ListBulletIcon className="w-5 h-5" />
+                <List className="w-5 h-5" />
               </button>
             </div>
 
@@ -324,7 +315,7 @@ export default function AdminMediaPage() {
               onClick={() => handleDelete(Array.from(selectedItems))}
               className="inline-flex items-center px-4 py-2 bg-red-100 text-red-700 rounded-lg text-sm font-medium"
             >
-              <TrashIcon className="w-4 h-4 mr-2" />
+              <Trash2 className="w-4 h-4 mr-2" />
               Sil
             </button>
           </div>
@@ -365,7 +356,7 @@ export default function AdminMediaPage() {
                         {item.type.startsWith('video/') ? (
                           <VideoIcon className="w-12 h-12 mb-2" />
                         ) : (
-                          <DocumentIcon className="w-12 h-12 mb-2" />
+                          <FileText className="w-12 h-12 mb-2" />
                         )}
                         <span className="text-xs text-center font-medium opacity-0 group-hover:opacity-100 transition-opacity text-slate-600 truncate w-full px-2">
                           {item.type.split('/')[1] || 'File'}
@@ -384,7 +375,7 @@ export default function AdminMediaPage() {
                           className="p-1.5 bg-white/10 backdrop-blur-md hover:bg-white text-white hover:text-slate-900 rounded-lg transition-all"
                           title="Önizle"
                         >
-                          <EyeIcon className="w-5 h-5" />
+                          <Eye className="w-5 h-5" />
                         </button>
                         <button
                           onClick={(e) => {
@@ -394,7 +385,7 @@ export default function AdminMediaPage() {
                           className="p-1.5 bg-white/10 backdrop-blur-md hover:bg-red-500 text-white rounded-lg transition-all"
                           title="Sil"
                         >
-                          <TrashIcon className="w-5 h-5" />
+                          <Trash2 className="w-5 h-5" />
                         </button>
                       </div>
                     </div>
@@ -416,7 +407,7 @@ export default function AdminMediaPage() {
                   {/* Cloudinary Badge - Absolute Top Right */}
                   {item.source === 'cloudinary' && (
                     <div className="absolute top-2 right-2 z-20 opacity-75 group-hover:opacity-100 transition-opacity">
-                      <CloudArrowUpIcon className="w-5 h-5 text-white drop-shadow-md" />
+                      <CloudUpload className="w-5 h-5 text-white drop-shadow-md" />
                     </div>
                   )}
                 </div>
@@ -466,7 +457,7 @@ export default function AdminMediaPage() {
                             {item.type.startsWith('image/') ? (
                               <Image src={item.url} alt={item.name} fill className="object-cover" />
                             ) : (
-                              <DocumentIcon className="w-6 h-6 m-2 text-slate-400" />
+                              <FileText className="w-6 h-6 m-2 text-slate-400" />
                             )}
                           </div>
                           <div className="flex flex-col max-w-[200px] sm:max-w-xs">
@@ -484,13 +475,13 @@ export default function AdminMediaPage() {
                             onClick={(e) => { e.stopPropagation(); handlePreview(item); }}
                             className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
                           >
-                            <EyeIcon className="w-5 h-5" />
+                            <Eye className="w-5 h-5" />
                           </button>
                           <button
                             onClick={(e) => { e.stopPropagation(); handleDelete([item._id]); }}
                             className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                           >
-                            <TrashIcon className="w-5 h-5" />
+                            <Trash2 className="w-5 h-5" />
                           </button>
                         </div>
                       </td>
@@ -504,7 +495,7 @@ export default function AdminMediaPage() {
       ) : (
         <div className="flex flex-col items-center justify-center py-20 bg-white rounded-2xl shadow-sm border border-slate-200 border-dashed">
           <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-4">
-            <PhotoIcon className="w-10 h-10 text-slate-300" />
+            <ImageIcon className="w-10 h-10 text-slate-300" />
           </div>
           <h3 className="text-xl font-semibold text-slate-900 mb-2">Medya bulunamadı</h3>
           <p className="text-slate-500 mb-6 text-center max-w-md">
@@ -518,7 +509,7 @@ export default function AdminMediaPage() {
               onClick={() => setShowUploadModal(true)}
               className="inline-flex items-center px-6 py-3 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 transition-colors"
             >
-              <CloudArrowUpIcon className="w-5 h-5 mr-2" />
+              <CloudUpload className="w-5 h-5 mr-2" />
               Dosya Yükle
             </button>
           )}
@@ -535,7 +526,7 @@ export default function AdminMediaPage() {
                 onClick={() => setShowUploadModal(false)}
                 className="p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-500"
               >
-                <XMarkIcon className="w-6 h-6" />
+                <X className="w-6 h-6" />
               </button>
             </div>
             <div className="p-8">
@@ -544,7 +535,7 @@ export default function AdminMediaPage() {
               >
                 <div className="flex flex-col items-center justify-center pt-5 pb-6">
                   <div className="w-16 h-16 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <CloudArrowUpIcon className="w-8 h-8" />
+                    <CloudUpload className="w-8 h-8" />
                   </div>
                   <p className="mb-2 text-lg font-medium text-slate-700">Tıklayın veya sürükleyin</p>
                   <p className="text-sm text-slate-500">PNG, JPG, GIF veya PDF (Maks. 10MB)</p>
@@ -601,7 +592,7 @@ export default function AdminMediaPage() {
                 </div>
               ) : (
                 <div className="flex flex-col items-center text-white/80">
-                  <DocumentIcon className="w-24 h-24 mb-4" />
+                  <FileText className="w-24 h-24 mb-4" />
                   <p className="text-xl font-medium">Önizleme yok</p>
                 </div>
               )}
@@ -612,7 +603,7 @@ export default function AdminMediaPage() {
               <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
                 <h3 className="font-bold text-slate-900 truncate pr-4" title={previewItem.name}>{previewItem.name}</h3>
                 <button onClick={() => setShowPreviewModal(false)} className="text-slate-400 hover:text-slate-600">
-                  <XMarkIcon className="w-6 h-6" />
+                  <X className="w-6 h-6" />
                 </button>
               </div>
 
@@ -668,7 +659,7 @@ export default function AdminMediaPage() {
                   }}
                   className="w-full flex items-center justify-center px-4 py-2.5 bg-red-50 text-red-600 font-medium rounded-xl hover:bg-red-100 transition-colors"
                 >
-                  <TrashIcon className="w-5 h-5 mr-2" />
+                  <Trash2 className="w-5 h-5 mr-2" />
                   Dosyayı Sil
                 </button>
               </div>
