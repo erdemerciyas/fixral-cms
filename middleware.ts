@@ -33,16 +33,17 @@ async function getPageSettings(): Promise<PageSetting[]> {
   }
 
   try {
-    const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';
-    const response = await fetch(`${baseUrl}/api/admin/page-settings`, {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
+    const { prisma } = await import('@/lib/prisma');
+    const rows = await prisma.pageSettingRow.findMany({
+      select: { pageId: true, path: true, isActive: true },
     });
-
-    if (!response.ok) throw new Error('Failed to fetch page settings');
-    const pages = await response.json();
-    pageSettingsCache = { data: pages || [], timestamp: now };
-    return pages || [];
+    const pages: PageSetting[] = rows.map((r) => ({
+      pageId: r.pageId,
+      path: r.path,
+      isActive: r.isActive,
+    }));
+    pageSettingsCache = { data: pages, timestamp: now };
+    return pages;
   } catch {
     logger.warn('Middleware page settings fetch error', 'MIDDLEWARE');
     return pageSettingsCache?.data || [];
