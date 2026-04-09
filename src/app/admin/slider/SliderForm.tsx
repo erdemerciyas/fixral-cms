@@ -3,6 +3,15 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Check } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { cn } from '@/lib/utils';
+
+const selectInputClass = cn(
+  'flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm'
+);
 
 interface SliderFormProps {
     initialData?: any;
@@ -95,37 +104,37 @@ export default function SliderForm({ initialData, isEditing = false }: SliderFor
             <div className="flex items-center space-x-4 mb-8">
                 <button
                     onClick={() => router.back()}
-                    className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+                    className="p-2 hover:bg-muted rounded-lg transition-colors"
                 >
-                    <ArrowLeft className="w-5 h-5 text-slate-500" />
+                    <ArrowLeft className="w-5 h-5 text-muted-foreground" />
                 </button>
                 <div>
-                    <h1 className="text-2xl font-bold text-slate-900">
+                    <h1 className="text-2xl font-bold text-foreground">
                         {isEditing ? 'Slider Düzenle' : 'Yeni Slider Ekle'}
                     </h1>
-                    <p className="text-slate-500">Slider detaylarını yönet</p>
+                    <p className="text-muted-foreground">Slider detaylarını yönet</p>
                 </div>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="bg-white rounded-2xl shadow-sm border border-slate-200/60 p-6 space-y-6">
+                <div className="bg-card rounded-xl shadow-sm border border-border/60 p-6 space-y-6">
 
                     {/* Image Upload / URL Input */}
                     <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-2">Görsel URL (Zorunlu)</label>
+                        <Label className="block text-sm font-medium text-foreground mb-2">Görsel URL (Zorunlu)</Label>
                         <div className="flex gap-4">
-                            <input
+                            <Input
                                 type="text"
                                 name="imageUrl"
                                 value={formData.imageUrl}
                                 onChange={handleChange}
-                                className="flex-1 px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
+                                className="flex-1 px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
                                 placeholder="https://example.com/image.jpg"
                                 required
                             />
                         </div>
                         {formData.imageUrl && (
-                            <div className="mt-4 relative aspect-video w-full max-w-md rounded-xl overflow-hidden bg-slate-100 border border-slate-200">
+                            <div className="mt-4 relative aspect-video w-full max-w-md rounded-xl overflow-hidden bg-muted border border-border">
                                 <img src={formData.imageUrl} alt="Preview" className="w-full h-full object-cover" />
                             </div>
                         )}
@@ -133,60 +142,60 @@ export default function SliderForm({ initialData, isEditing = false }: SliderFor
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-2">Başlık (Zorunlu)</label>
-                            <input
+                            <Label className="block text-sm font-medium text-foreground mb-2">Başlık (Zorunlu)</Label>
+                            <Input
                                 type="text"
                                 name="title"
                                 value={formData.title}
                                 onChange={handleChange}
-                                className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
+                                className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
                                 required
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-2">Alt Başlık (Subtitle) (Zorunlu)</label>
-                            <input
+                            <Label className="block text-sm font-medium text-foreground mb-2">Alt Başlık (Subtitle) (Zorunlu)</Label>
+                            <Input
                                 type="text"
                                 name="subtitle"
                                 value={formData.subtitle}
                                 onChange={handleChange}
-                                className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
+                                className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
                                 required
                             />
                         </div>
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-2">Açıklama (Zorunlu)</label>
-                        <textarea
+                        <Label className="block text-sm font-medium text-foreground mb-2">Açıklama (Zorunlu)</Label>
+                        <Textarea
                             name="description"
                             value={formData.description}
                             onChange={handleChange}
                             rows={3}
-                            className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
+                            className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
                             required
                         />
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-2">Buton Metni</label>
-                            <input
+                            <Label className="block text-sm font-medium text-foreground mb-2">Buton Metni</Label>
+                            <Input
                                 type="text"
                                 name="buttonText"
                                 value={formData.buttonText}
                                 onChange={handleChange}
-                                className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
+                                className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-2">Buton Link (Opsiyonel)</label>
-                            <input
+                            <Label className="block text-sm font-medium text-foreground mb-2">Buton Link (Opsiyonel)</Label>
+                            <Input
                                 type="text"
                                 name="buttonLink"
                                 value={formData.buttonLink}
                                 onChange={handleChange}
-                                className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
+                                className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
                                 placeholder="/contact"
                             />
                         </div>
@@ -194,45 +203,45 @@ export default function SliderForm({ initialData, isEditing = false }: SliderFor
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-2">Badge (Etiket)</label>
-                            <input
+                            <Label className="block text-sm font-medium text-foreground mb-2">Badge (Etiket)</Label>
+                            <Input
                                 type="text"
                                 name="badge"
                                 value={formData.badge}
                                 onChange={handleChange}
-                                className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
+                                className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-2">Süre (ms)</label>
-                            <input
+                            <Label className="block text-sm font-medium text-foreground mb-2">Süre (ms)</Label>
+                            <Input
                                 type="number"
                                 name="duration"
                                 value={formData.duration}
                                 onChange={handleChange}
-                                className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
+                                className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
                             />
                         </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-2">Sıra (Order)</label>
-                            <input
+                            <Label className="block text-sm font-medium text-foreground mb-2">Sıra (Order)</Label>
+                            <Input
                                 type="number"
                                 name="order"
                                 value={formData.order}
                                 onChange={handleChange}
-                                className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
+                                className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-2">Durum</label>
+                            <Label className="block text-sm font-medium text-foreground mb-2">Durum</Label>
                             <select
                                 name="isActive"
                                 value={formData.isActive ? 'true' : 'false'}
                                 onChange={handleChange}
-                                className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
+                                className={cn(selectInputClass, 'w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none')}
                             >
                                 <option value="true">Aktif</option>
                                 <option value="false">Pasif</option>
@@ -243,7 +252,7 @@ export default function SliderForm({ initialData, isEditing = false }: SliderFor
                 </div>
 
                 <div className="flex justify-end pt-4">
-                    <button
+                    <Button
                         type="submit"
                         disabled={loading}
                         className="flex items-center space-x-2 bg-indigo-600 text-white px-8 py-3 rounded-xl hover:bg-indigo-700 transition-colors disabled:opacity-50"
@@ -254,7 +263,7 @@ export default function SliderForm({ initialData, isEditing = false }: SliderFor
                             <Check className="w-5 h-5" />
                         )}
                         <span>{isEditing ? 'Güncelle' : 'Oluştur'}</span>
-                    </button>
+                    </Button>
                 </div>
 
             </form>

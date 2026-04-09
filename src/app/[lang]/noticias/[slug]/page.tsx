@@ -8,6 +8,7 @@ import { ensureModels } from '@/lib/ensure-models';
 import { NewsItem } from '@/types/news';
 import { logger } from '@/core/lib/logger';
 import PageHero from '@/components/common/PageHero';
+import Breadcrumbs from '@/components/Breadcrumbs';
 import { SITE_URL, getBlogAlternates, generateOgImages } from '@/lib/seo-utils';
 import { Badge, buttonVariants } from '@/components/ui';
 import { cn } from '@/lib/utils';
@@ -82,7 +83,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         card: 'summary_large_image',
         title: translation.title,
         description: translation.metaDescription,
-        images: [ogImages[0].url],
+        images: ogImages[0]?.url ? [ogImages[0].url] : [],
       },
     };
   } catch (error) {
@@ -211,29 +212,11 @@ export default async function NewsDetailPage({ params: paramsPromise }: PageProp
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
 
-        <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-8">
+        <section className="container-content py-4">
+          <Breadcrumbs />
+        </section>
 
-          {/* Custom Breadcrumb matching site style */}
-          <nav className="mb-6 rounded-2xl border border-slate-200 bg-white/80 shadow-sm px-4 py-3 text-sm text-slate-600">
-            <ol className="flex flex-wrap items-center gap-2">
-              <li>
-                <Link href={`/${lang}`} className="hover:text-fixral-primary transition-colors flex items-center gap-1">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
-                    <path fillRule="evenodd" d="M9.293 2.293a1 1 0 011.414 0l7 7A1 1 0 0117.414 11H16v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5H3.293a1 1 0 01-1.414-1.414l7-7z" clipRule="evenodd" />
-                  </svg>
-                  <span>Inicio</span>
-                </Link>
-              </li>
-              <li className="text-slate-300">/</li>
-              <li>
-                <Link href={`/${lang}/noticias`} className="hover:text-fixral-primary transition-colors">
-                  Noticias
-                </Link>
-              </li>
-              <li className="text-slate-300">/</li>
-              <li className="font-medium text-slate-900 line-clamp-1 max-w-[200px] sm:max-w-md">{translation.title}</li>
-            </ol>
-          </nav>
+        <div className="container-content py-8">
 
           {/* Feature Image - Moved Outside */}
           {/* Feature Image - Moved Outside (Render only if exists) */}

@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useConfirm } from '@/hooks/use-confirm';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface Backup {
   _id: string;
@@ -113,13 +114,19 @@ export default function AdminBackupPage() {
 
   if (status === 'loading' || loading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="flex flex-col items-center space-y-4">
-          <div className="relative">
-            <div className="w-16 h-16 border-4 border-indigo-200 rounded-full"></div>
-            <div className="absolute top-0 left-0 w-16 h-16 border-4 border-transparent border-t-indigo-600 rounded-full animate-spin"></div>
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div className="space-y-2">
+            <Skeleton className="h-8 w-48" />
+            <Skeleton className="h-4 w-64" />
           </div>
-          <p className="text-lg font-medium text-slate-600">Loading backups...</p>
+          <Skeleton className="h-10 w-32" />
+        </div>
+        <Skeleton className="h-12 w-full rounded-xl" />
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <Skeleton key={i} className="h-32 rounded-xl" />
+          ))}
         </div>
       </div>
     );
@@ -130,8 +137,8 @@ export default function AdminBackupPage() {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Backup & Restore</h1>
-          <p className="text-slate-500 mt-1">Manage your site backups</p>
+          <h1 className="text-2xl font-bold text-foreground">Backup & Restore</h1>
+          <p className="text-muted-foreground mt-1">Manage your site backups</p>
         </div>
         <button
           onClick={createBackup}
@@ -153,14 +160,14 @@ export default function AdminBackupPage() {
       </div>
 
       {/* Info Card */}
-      <div className="bg-gradient-to-r from-indigo-50 to-violet-50 rounded-2xl p-6 border border-indigo-200">
+      <div className="bg-gradient-to-r from-indigo-50 to-violet-50 rounded-xl p-6 border border-indigo-200">
         <div className="flex items-start space-x-4">
           <div className="w-12 h-12 rounded-xl bg-indigo-100 flex items-center justify-center flex-shrink-0">
             <Archive className="w-6 h-6 text-indigo-600" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-slate-900 mb-2">About Backups</h3>
-            <p className="text-sm text-slate-600">
+            <h3 className="text-lg font-semibold text-foreground mb-2">About Backups</h3>
+            <p className="text-sm text-muted-foreground">
               Backups allow you to save snapshots of your site data. You can create manual backups or restore from existing backups.
               Keep your backups secure and consider downloading them for offline storage.
             </p>
@@ -169,23 +176,23 @@ export default function AdminBackupPage() {
       </div>
 
       {/* Backups List */}
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200/60 overflow-hidden">
+      <div className="bg-card rounded-xl shadow-sm border border-border/60 overflow-hidden">
         {backups.length > 0 ? (
-          <div className="divide-y divide-slate-200">
+          <div className="divide-y divide-border">
             {backups.map((backup) => (
               <div
                 key={backup._id}
-                className="flex items-center justify-between px-6 py-4 hover:bg-slate-50 transition-colors group"
+                className="flex items-center justify-between px-6 py-4 hover:bg-muted/50 transition-colors group"
               >
                 <div className="flex items-center space-x-4 flex-1 min-w-0">
                   <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center flex-shrink-0">
                     <FileIcon className="w-6 h-6 text-white" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-sm font-semibold text-slate-900 truncate">
+                    <h3 className="text-sm font-semibold text-foreground truncate">
                       {backup.name}
                     </h3>
-                    <div className="flex items-center space-x-3 mt-1 text-xs text-slate-500">
+                    <div className="flex items-center space-x-3 mt-1 text-xs text-muted-foreground">
                       <span>{formatFileSize(backup.size)}</span>
                       <span className="flex items-center">
                         <Clock className="w-3 h-3 mr-1" />
@@ -196,14 +203,14 @@ export default function AdminBackupPage() {
                 </div>
                 <div className="flex items-center space-x-2">
                   <button className="p-2 hover:bg-indigo-100 rounded-lg transition-colors" title="Download">
-                    <CloudDownload className="w-5 h-5 text-slate-600" />
+                    <CloudDownload className="w-5 h-5 text-muted-foreground" />
                   </button>
                   <button
                     onClick={() => handleDelete(backup._id)}
                     className="p-2 hover:bg-red-100 rounded-lg transition-colors"
                     title="Delete"
                   >
-                    <Trash2 className="w-5 h-5 text-slate-600" />
+                    <Trash2 className="w-5 h-5 text-muted-foreground" />
                   </button>
                 </div>
               </div>
@@ -211,9 +218,9 @@ export default function AdminBackupPage() {
           </div>
         ) : (
           <div className="text-center py-16">
-            <Archive className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-slate-900 mb-2">No backups found</h3>
-            <p className="text-slate-500 mb-6">
+            <Archive className="w-16 h-16 text-muted-foreground/50 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-foreground mb-2">No backups found</h3>
+            <p className="text-muted-foreground mb-6">
               Create your first backup to secure your site data
             </p>
             <button

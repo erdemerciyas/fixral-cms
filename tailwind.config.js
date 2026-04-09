@@ -87,19 +87,6 @@ module.exports = {
           DEFAULT: 'var(--theme-primary)',
         },
 
-        // Accessibility-focused colors (Derived from primary scale for now, can be customized in config later)
-        'accessible-brand': {
-          50: 'var(--brand-primary-50)',
-          100: 'var(--brand-primary-100)',
-          200: 'var(--brand-primary-200)',
-          300: 'var(--brand-primary-300)',
-          400: 'var(--brand-primary-400)',
-          500: 'var(--brand-primary-500)',
-          600: 'var(--brand-primary-600)',
-          700: 'var(--brand-primary-700)',
-          800: 'var(--brand-primary-800)',
-          900: 'var(--theme-primary)',
-        },
         // Admin specific colors
         admin: {
           bg: 'var(--admin-bg)',
@@ -162,22 +149,11 @@ module.exports = {
         },
       },
       fontFamily: {
-        sans: ['Inter', 'var(--font-inter)', 'system-ui', 'sans-serif'],
-        display: ['Inter', 'var(--font-inter)', 'system-ui', 'sans-serif'],
-        mono: ['ui-monospace', 'SFMono-Regular', 'monospace'],
+        sans: ['var(--font-geist-sans)', 'system-ui', 'sans-serif'],
+        display: ['var(--font-geist-sans)', 'system-ui', 'sans-serif'],
+        mono: ['var(--font-geist-mono)', 'ui-monospace', 'SFMono-Regular', 'monospace'],
       },
       fontSize: {
-        'fixral-xs': ['0.75rem', { lineHeight: '1rem' }],
-        'fixral-sm': ['0.875rem', { lineHeight: '1.25rem' }],
-        'fixral-base': ['1rem', { lineHeight: '1.5rem' }],
-        'fixral-lg': ['1.125rem', { lineHeight: '1.75rem' }],
-        'fixral-xl': ['1.25rem', { lineHeight: '1.75rem' }],
-        'fixral-2xl': ['1.5rem', { lineHeight: '2rem' }],
-        'fixral-3xl': ['1.875rem', { lineHeight: '2.25rem' }],
-        'fixral-4xl': ['2.25rem', { lineHeight: '2.5rem' }],
-        'fixral-5xl': ['3rem', { lineHeight: '1' }],
-        'fixral-6xl': ['3.75rem', { lineHeight: '1' }],
-        // Atlas section heading sizes
         'atlas-2xl': ['1.5rem', { lineHeight: '2rem', letterSpacing: '-0.01em' }],
         'atlas-3xl': ['1.875rem', { lineHeight: '2.25rem', letterSpacing: '-0.01em' }],
         'atlas-4xl': ['2.25rem', { lineHeight: '2.5rem', letterSpacing: '-0.02em' }],
@@ -191,6 +167,9 @@ module.exports = {
         'fixral-lg': '12px',
         'fixral-xl': '16px',
         'fixral-2xl': '20px',
+        '2xl': '1rem',
+        '3xl': '1.5rem',
+        '4xl': '2rem',
       },
       boxShadow: {
         'fixral': '0 2px 6px rgba(0, 0, 0, 0.05)',
@@ -198,6 +177,14 @@ module.exports = {
         'fixral-xl': '0 8px 24px rgba(0, 0, 0, 0.15)',
         'fixral-inner': 'inset 0 2px 4px rgba(0, 0, 0, 0.06)',
         'fixral-glow': '0 0 20px rgba(0, 180, 216, 0.3)',
+        'glass': '0 8px 32px rgba(0, 52, 80, 0.08)',
+        'glass-lg': '0 20px 40px -15px rgba(0, 52, 80, 0.05)',
+        'glass-inner': 'inset 0 1px 1px rgba(255, 255, 255, 0.15)',
+        'glass-border': 'inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+        'premium': '0 1px 2px rgba(0, 52, 80, 0.04), 0 4px 12px rgba(0, 52, 80, 0.06)',
+        'premium-lg': '0 4px 6px rgba(0, 52, 80, 0.04), 0 12px 32px rgba(0, 52, 80, 0.08)',
+        'premium-xl': '0 20px 40px -15px rgba(0, 52, 80, 0.12)',
+        'spotlight': '0 0 0 1px rgba(0, 52, 80, 0.05), 0 20px 40px -15px rgba(0, 52, 80, 0.1)',
       },
       spacing: {
         'fixral-xs': '0.5rem',
@@ -208,18 +195,16 @@ module.exports = {
         'fixral-2xl': '4rem',
       },
       animation: {
-        'fade-in': 'fadeIn 0.5s ease-in-out',
-        'slide-up': 'slideUp 0.6s ease-out',
-        'slide-down': 'slideDown 0.6s ease-out',
-        'scale': 'scale 0.3s ease-in-out',
-        'fixral-fade-in': 'fadeIn 0.5s ease-in-out',
-        'fixral-slide-up': 'slideUp 0.6s ease-out',
-        'fixral-slide-down': 'slideDown 0.6s ease-out',
-        'fixral-scale': 'scale 0.3s ease-in-out',
-        'fixral-pulse': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-        'smooth-bounce': 'bounce 1s ease-in-out infinite',
-        'shimmer': 'shimmer 2.5s ease-in-out infinite',
+        'fade-in': 'fadeIn 0.5s cubic-bezier(0.32, 0.72, 0, 1)',
+        'slide-up': 'slideUp 0.6s cubic-bezier(0.32, 0.72, 0, 1)',
+        'slide-down': 'slideDown 0.6s cubic-bezier(0.32, 0.72, 0, 1)',
+        'scale': 'scale 0.3s cubic-bezier(0.32, 0.72, 0, 1)',
+        'smooth-bounce': 'bounce 1s cubic-bezier(0.32, 0.72, 0, 1) infinite',
+        'shimmer': 'shimmer 2.5s cubic-bezier(0.32, 0.72, 0, 1) infinite',
         'gradient-x': 'gradientX 3s ease infinite',
+        'marquee': 'marquee 30s linear infinite',
+        'float': 'float 6s cubic-bezier(0.32, 0.72, 0, 1) infinite',
+        'mesh-rotate': 'meshRotate 20s linear infinite',
       },
       transitionProperty: {
         'transform-opacity': 'transform, opacity',
@@ -255,6 +240,18 @@ module.exports = {
           '0%, 100%': { backgroundPosition: '0% 50%' },
           '50%': { backgroundPosition: '100% 50%' },
         },
+        marquee: {
+          '0%': { transform: 'translateX(0%)' },
+          '100%': { transform: 'translateX(-100%)' },
+        },
+        float: {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-10px)' },
+        },
+        meshRotate: {
+          '0%': { transform: 'rotate(0deg)' },
+          '100%': { transform: 'rotate(360deg)' },
+        },
       },
       borderColor: {
         DEFAULT: '#cbd5e1', // slate-300
@@ -264,6 +261,11 @@ module.exports = {
         fast: '100ms',
         base: '150ms',
         slow: '300ms',
+        premium: '700ms',
+      },
+      transitionTimingFunction: {
+        'premium': 'cubic-bezier(0.32, 0.72, 0, 1)',
+        'spring': 'cubic-bezier(0.16, 1, 0.3, 1)',
       },
       // ── Design System: Z-Index Scale ──
       zIndex: {

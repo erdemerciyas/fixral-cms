@@ -48,17 +48,7 @@ export const GET = withSecurity(SecurityConfigs.admin)(async (request: NextReque
 
     // 1. Cloudinary'den dosyaları çek
     try {
-      console.log('🔍 Fetching from Cloudinary...');
-      console.log('🔑 Cloudinary config:', {
-        cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-        api_key: process.env.CLOUDINARY_API_KEY ? 'SET' : 'MISSING',
-        api_secret: process.env.CLOUDINARY_API_SECRET ? 'SET' : 'MISSING'
-      });
-
-      // Search API çalışmıyor, direkt Admin API kullan
       let cloudinaryResult = { total_count: 0, resources: [] };
-
-      console.log('🔄 Using Admin API directly...');
 
       try {
         // Admin API ile görselleri çek
@@ -68,24 +58,36 @@ export const GET = withSecurity(SecurityConfigs.admin)(async (request: NextReque
           type: 'upload'
         };
 
-        // PageContext filtresi varsa prefix ekle
-        // 'products' -> sadece ürünler klasörü
-        // 'site' -> tüm site klasörleri (personal-blog/) fakat ürünler hariç (sonradan filtrelenecek)
-        // belirli klasör -> sadece o klasör
+        // Site-level contexts that should browse all site media (not a subfolder)
+        const siteContexts = ['site', 'site-logo', 'favicon', 'general', 'logo', 'hero', 'banner', 'og-image'];
+
         if (pageContextFilter === 'products') {
           resourceOptions.prefix = 'personal-blog/products/';
-        } else if (pageContextFilter !== 'all' && pageContextFilter !== 'site') {
-          resourceOptions.prefix = `personal-blog/${pageContextFilter}/`;
-        } else {
+        } else if (pageContextFilter === 'all') {
           resourceOptions.prefix = 'personal-blog/';
+        } else if (siteContexts.includes(pageContextFilter)) {
+          resourceOptions.prefix = 'personal-blog/';
+        } else {
+          // Try specific subfolder first; fallback handled below
+          resourceOptions.prefix = `personal-blog/${pageContextFilter}/`;
         }
 
-        const adminResult = await cloudinary.api.resources(resourceOptions);
+        let adminResult = await cloudinary.api.resources(resourceOptions);
 
-        console.log('📋 Admin API raw response:', JSON.stringify(adminResult, null, 2));
+        // Fallback: if specific subfolder returned nothing, retry with root prefix
+        if (
+          (!adminResult.resources || adminResult.resources.length === 0) &&
+          resourceOptions.prefix !== 'personal-blog/' &&
+          resourceOptions.prefix !== 'personal-blog/products/'
+        ) {
+          console.log(`📋 No files in ${resourceOptions.prefix}, falling back to personal-blog/`);
+          adminResult = await cloudinary.api.resources({
+            ...resourceOptions,
+            prefix: 'personal-blog/'
+          });
+        }
 
         if (adminResult.resources && adminResult.resources.length > 0) {
-          // Admin API response'unu search API formatına çevir
           cloudinaryResult = {
             total_count: adminResult.resources.length,
             resources: adminResult.resources.map((resource: CloudinaryResource) => ({
@@ -99,17 +101,13 @@ export const GET = withSecurity(SecurityConfigs.admin)(async (request: NextReque
             }))
           };
 
-          console.log('📋 Admin API files found:', cloudinaryResult.total_count);
         } else {
-          console.log('📋 No files found in Admin API');
+          console.log('[Media] No files found in Cloudinary');
         }
       } catch (adminError) {
-        console.log('❌ Admin API error:', adminError);
+        console.error('[Media] Cloudinary Admin API error:', adminError);
         cloudinaryResult = { total_count: 0, resources: [] };
       }
-
-      console.log('📁 Cloudinary files found:', cloudinaryResult.resources?.length || 0);
-      console.log('📊 Cloudinary response:', JSON.stringify(cloudinaryResult, null, 2));
 
       if (cloudinaryResult.resources) {
         // Ürün medyasını sadece 'site' kapsamındayken hariç tut
@@ -140,14 +138,7 @@ export const GET = withSecurity(SecurityConfigs.admin)(async (request: NextReque
       // Cloudinary hatası olsa bile devam et
     }
 
-    // Only Cloudinary files are supported now
-
-    // Sort by upload date (newest first)
     mediaItems.sort((a, b) => new Date(b.uploadedAt).getTime() - new Date(a.uploadedAt).getTime());
-
-    console.log('📊 Total media items found:', mediaItems.length);
-    console.log('📊 Cloudinary items:', mediaItems.filter(item => item.source === 'cloudinary').length);
-    console.log('📊 Local items:', mediaItems.filter(item => item.source === 'local').length);
 
     return NextResponse.json(mediaItems);
   } catch (error) {

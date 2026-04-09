@@ -2,17 +2,17 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { cn } from '@/lib/utils'
 import {
   LayoutDashboard,
   FileText,
-  ShoppingBag,
   Box,
   Image as ImageIcon,
   Paintbrush,
   Settings,
-  MessageSquare,
   ChevronRight,
-  Plus,
+  Mail,
+  Database,
 } from 'lucide-react'
 import {
   SidebarGroup,
@@ -44,7 +44,7 @@ type NavItem = {
   children?: NavChild[]
 }
 
-const ALERT_PATHS = ['/admin/orders', '/admin/messages', '/admin/products/questions']
+const ALERT_PATHS = ['/admin/messages']
 
 const navigation: NavItem[] = [
   { name: 'Kontrol Paneli', href: '/admin/dashboard', icon: LayoutDashboard },
@@ -55,19 +55,7 @@ const navigation: NavItem[] = [
       { name: 'Haberler', href: '/admin/news' },
       { name: 'Sayfalar', href: '/admin/pages' },
       { name: 'Hizmetler', href: '/admin/services' },
-    ],
-  },
-  {
-    name: 'Ürün Yönetimi',
-    icon: ShoppingBag,
-    children: [
-      { name: 'Tüm Ürünler', href: '/admin/products' },
-      { name: 'Yeni Ekle', href: '/admin/products/new' },
-      { name: 'Kategoriler', href: '/admin/product-categories' },
-      { name: 'Yorumlar', href: '/admin/product-reviews' },
-      { name: 'Ürün Medyası', href: '/admin/product-media' },
-      { name: 'Ürün Mesajları', href: '/admin/products/questions' },
-      { name: 'Siparişler', href: '/admin/orders' },
+      { name: 'Tüm İçerikler', href: '/admin/content' },
     ],
   },
   {
@@ -75,7 +63,6 @@ const navigation: NavItem[] = [
     icon: Box,
     children: [
       { name: 'Tüm Projeler', href: '/admin/portfolio' },
-      { name: 'Yeni Ekle', href: '/admin/portfolio/new' },
       { name: 'Kategoriler', href: '/admin/categories' },
       { name: '3D Modeller', href: '/admin/models' },
     ],
@@ -92,24 +79,42 @@ const navigation: NavItem[] = [
     name: 'Görünüm',
     icon: Paintbrush,
     children: [
-      { name: 'Temalar', href: '/admin/themes' },
+      { name: 'Tema Özelleştir', href: '/admin/theme-customize' },
       { name: 'Slider', href: '/admin/slider' },
-      { name: 'Alt Bilgi (Footer)', href: '/admin/footer' },
+      { name: 'Alt Bilgi', href: '/admin/footer' },
     ],
   },
   {
     name: 'Sistem',
     icon: Settings,
     children: [
-      { name: 'Eklentiler', href: '/admin/plugins' },
-      { name: 'Kullanıcılar', href: '/admin/users' },
       { name: 'Site Ayarları', href: '/admin/site-settings' },
-      { name: 'Sitemap', href: '/admin/sitemap' },
+      { name: 'Genel Ayarlar', href: '/admin/settings' },
+      { name: 'SEO Ayarları', href: '/admin/seo' },
+      { name: 'Analitik', href: '/admin/analytics' },
+      { name: 'Sosyal Medya', href: '/admin/social-media' },
+      { name: 'Kullanıcılar', href: '/admin/users' },
       { name: 'Dil Ayarları', href: '/admin/languages' },
+      { name: 'Sitemap', href: '/admin/sitemap' },
       { name: 'Güncellemeler', href: '/admin/updates' },
     ],
   },
-  { name: 'Mesajlar', href: '/admin/messages', icon: MessageSquare },
+  {
+    name: 'Yedekleme & İzleme',
+    icon: Database,
+    children: [
+      { name: 'Yedekleme', href: '/admin/backup' },
+      { name: 'İzleme', href: '/admin/monitoring' },
+    ],
+  },
+  {
+    name: 'İletişim',
+    icon: Mail,
+    children: [
+      { name: 'Mesajlar', href: '/admin/messages' },
+      { name: 'İletişim Ayarları', href: '/admin/contact' },
+    ],
+  },
 ]
 
 function isActive(pathname: string | null, href: string): boolean {
@@ -152,19 +157,20 @@ export function NavMain() {
                             <SidebarMenuSubButton asChild isActive={active}>
                               <Link href={child.href}>
                                 <span>{child.name}</span>
+                                {count > 0 && (
+                                  <span
+                                    className={cn(
+                                      'ml-auto flex h-5 min-w-5 items-center justify-center rounded-md px-1 text-xs font-medium tabular-nums',
+                                      isAlert
+                                        ? 'bg-destructive text-destructive-foreground'
+                                        : 'text-sidebar-foreground/70'
+                                    )}
+                                  >
+                                    {count}
+                                  </span>
+                                )}
                               </Link>
                             </SidebarMenuSubButton>
-                            {count > 0 && (
-                              <SidebarMenuBadge
-                                className={
-                                  isAlert
-                                    ? 'bg-destructive text-destructive-foreground'
-                                    : ''
-                                }
-                              >
-                                {count}
-                              </SidebarMenuBadge>
-                            )}
                           </SidebarMenuSubItem>
                         )
                       })}

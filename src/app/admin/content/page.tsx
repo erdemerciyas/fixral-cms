@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useConfirm } from '@/hooks/use-confirm';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface ContentItem {
   _id: string;
@@ -115,13 +116,19 @@ export default function AdminContentPage() {
 
   if (status === 'loading' || loading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="flex flex-col items-center space-y-4">
-          <div className="relative">
-            <div className="w-16 h-16 border-4 border-primary/20 rounded-full"></div>
-            <div className="absolute top-0 left-0 w-16 h-16 border-4 border-transparent border-t-primary rounded-full animate-spin"></div>
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div className="space-y-2">
+            <Skeleton className="h-8 w-48" />
+            <Skeleton className="h-4 w-64" />
           </div>
-          <p className="text-lg font-medium text-slate-600">Loading content...</p>
+          <Skeleton className="h-10 w-32" />
+        </div>
+        <Skeleton className="h-12 w-full rounded-xl" />
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <Skeleton key={i} className="h-32 rounded-xl" />
+          ))}
         </div>
       </div>
     );
@@ -132,8 +139,8 @@ export default function AdminContentPage() {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">All Content</h1>
-          <p className="text-slate-500 mt-1">Manage all your site content</p>
+          <h1 className="text-2xl font-bold text-foreground">All Content</h1>
+          <p className="text-muted-foreground mt-1">Manage all your site content</p>
         </div>
         <Link
           href="/admin/news/create"
@@ -145,24 +152,24 @@ export default function AdminContentPage() {
       </div>
 
       {/* Search and Filter Bar */}
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200/60 p-4">
+      <div className="bg-card rounded-xl shadow-sm border border-border/60 p-4">
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex-1 relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search content..."
-              className="w-full pl-12 pr-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all"
+              className="w-full pl-12 pr-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all"
             />
           </div>
-          <div className="flex space-x-2 bg-slate-100 p-1 rounded-xl overflow-x-auto">
+          <div className="flex space-x-2 bg-muted p-1 rounded-xl overflow-x-auto">
             <button
               onClick={() => setTypeFilter('all')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${typeFilter === 'all'
-                ? 'bg-white text-primary shadow-sm'
-                : 'text-slate-600 hover:text-slate-900'
+                ? 'bg-card text-primary shadow-sm'
+                : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
               All ({content.length})
@@ -170,8 +177,8 @@ export default function AdminContentPage() {
             <button
               onClick={() => setTypeFilter('news')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${typeFilter === 'news'
-                ? 'bg-white text-primary shadow-sm'
-                : 'text-slate-600 hover:text-slate-900'
+                ? 'bg-card text-primary shadow-sm'
+                : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
               News ({content.filter(c => c.type === 'news').length})
@@ -179,8 +186,8 @@ export default function AdminContentPage() {
             <button
               onClick={() => setTypeFilter('page')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${typeFilter === 'page'
-                ? 'bg-white text-primary shadow-sm'
-                : 'text-slate-600 hover:text-slate-900'
+                ? 'bg-card text-primary shadow-sm'
+                : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
               Pages ({content.filter(c => c.type === 'page').length})
@@ -188,8 +195,8 @@ export default function AdminContentPage() {
             <button
               onClick={() => setTypeFilter('portfolio')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${typeFilter === 'portfolio'
-                ? 'bg-white text-primary shadow-sm'
-                : 'text-slate-600 hover:text-slate-900'
+                ? 'bg-card text-primary shadow-sm'
+                : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
               Portfolio ({content.filter(c => c.type === 'portfolio').length})
@@ -197,8 +204,8 @@ export default function AdminContentPage() {
             <button
               onClick={() => setTypeFilter('service')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${typeFilter === 'service'
-                ? 'bg-white text-primary shadow-sm'
-                : 'text-slate-600 hover:text-slate-900'
+                ? 'bg-card text-primary shadow-sm'
+                : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
               Services ({content.filter(c => c.type === 'service').length})
@@ -206,8 +213,8 @@ export default function AdminContentPage() {
             <button
               onClick={() => setTypeFilter('product')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${typeFilter === 'product'
-                ? 'bg-white text-primary shadow-sm'
-                : 'text-slate-600 hover:text-slate-900'
+                ? 'bg-card text-primary shadow-sm'
+                : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
               Products ({content.filter(c => c.type === 'product').length})
@@ -217,23 +224,23 @@ export default function AdminContentPage() {
       </div>
 
       {/* Content List */}
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200/60 overflow-hidden">
+      <div className="bg-card rounded-xl shadow-sm border border-border/60 overflow-hidden">
         {filteredContent.length > 0 ? (
-          <div className="divide-y divide-slate-200">
+          <div className="divide-y divide-border">
             {filteredContent.map((item) => (
               <div
                 key={item._id}
-                className="flex items-center justify-between px-6 py-4 hover:bg-slate-50 transition-colors group"
+                className="flex items-center justify-between px-6 py-4 hover:bg-muted/50 transition-colors group"
               >
                 <div className="flex items-center space-x-4 flex-1 min-w-0">
                   <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${getTypeColor(item.type)} flex items-center justify-center flex-shrink-0 text-xl`}>
                     {getTypeIcon(item.type)}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-sm font-semibold text-slate-900 group-hover:text-primary transition-colors truncate">
+                    <h3 className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors truncate">
                       {item.title}
                     </h3>
-                    <div className="flex items-center space-x-2 mt-1 text-xs text-slate-500">
+                    <div className="flex items-center space-x-2 mt-1 text-xs text-muted-foreground">
                       <span className={`px-2 py-0.5 rounded-full font-medium ${item.status === 'published'
                         ? 'bg-emerald-100 text-emerald-700'
                         : 'bg-amber-100 text-amber-700'
@@ -251,14 +258,14 @@ export default function AdminContentPage() {
                     className="p-2 hover:bg-primary/10 rounded-lg transition-colors"
                     title="Edit"
                   >
-                    <Pencil className="w-4 h-4 text-slate-600" />
+                    <Pencil className="w-4 h-4 text-muted-foreground" />
                   </Link>
                   <button
                     onClick={() => handleDelete(item._id)}
                     className="p-2 hover:bg-red-100 rounded-lg transition-colors"
                     title="Delete"
                   >
-                    <Trash2 className="w-4 h-4 text-slate-600" />
+                    <Trash2 className="w-4 h-4 text-muted-foreground" />
                   </button>
                 </div>
               </div>
@@ -266,9 +273,9 @@ export default function AdminContentPage() {
           </div>
         ) : (
           <div className="text-center py-16">
-            <FileText className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-slate-900 mb-2">No content found</h3>
-            <p className="text-slate-500">
+            <FileText className="w-16 h-16 text-muted-foreground/50 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-foreground mb-2">No content found</h3>
+            <p className="text-muted-foreground">
               {searchQuery || typeFilter !== 'all'
                 ? 'Try adjusting your search or filter'
                 : 'Create your first content to get started'

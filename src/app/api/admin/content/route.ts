@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import Video from "@/models/Video";
-import mongoose from "mongoose";
+import connectDB from "@/lib/mongoose";
 
 // Function to extract video ID from YouTube URL
 function extractVideoId(url: string): string | null {
@@ -93,7 +93,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    await mongoose.connect(process.env.MONGODB_URI!);
+    await connectDB();
 
     const { content } = await req.json();
     
@@ -118,7 +118,7 @@ export async function POST(req: Request) {
 
     let addedCount = 0;
     let skippedCount = 0;
-    const addedVideos = [];
+    const addedVideos: string[] = [];
 
     // Process videos (single or multiple)
     const videosToProcess = analysis.type === 'single_video' 

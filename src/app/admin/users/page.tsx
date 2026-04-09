@@ -14,6 +14,17 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useConfirm } from '@/hooks/use-confirm';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface User {
   _id: string;
@@ -267,13 +278,19 @@ export default function AdminUsersPage() {
 
   if (status === 'loading' || loading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="flex flex-col items-center space-y-4">
-          <div className="relative">
-            <div className="w-16 h-16 border-4 border-indigo-200 rounded-full"></div>
-            <div className="absolute top-0 left-0 w-16 h-16 border-4 border-transparent border-t-indigo-600 rounded-full animate-spin"></div>
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div className="space-y-2">
+            <Skeleton className="h-8 w-48" />
+            <Skeleton className="h-4 w-64" />
           </div>
-          <p className="text-lg font-medium text-slate-600">Loading users...</p>
+          <Skeleton className="h-10 w-32" />
+        </div>
+        <Skeleton className="h-12 w-full rounded-xl" />
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <Skeleton key={i} className="h-32 rounded-xl" />
+          ))}
         </div>
       </div>
     );
@@ -284,10 +301,10 @@ export default function AdminUsersPage() {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Users</h1>
-          <p className="text-slate-500 mt-1">Manage user accounts</p>
+          <h1 className="text-2xl font-bold text-foreground">Users</h1>
+          <p className="text-muted-foreground mt-1">Manage user accounts</p>
         </div>
-        <button
+        <Button
           onClick={() => {
             setFormData({ name: '', email: '', role: 'user', status: 'active', password: '' });
             setIsAddUserOpen(true);
@@ -296,28 +313,28 @@ export default function AdminUsersPage() {
         >
           <Plus className="w-5 h-5" />
           <span>New User</span>
-        </button>
+        </Button>
       </div>
 
       {/* Search and Filter Bar */}
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200/60 p-4">
+      <div className="bg-card rounded-xl shadow-sm border border-border/60 p-4">
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex-1 relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-            <input
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+            <Input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search users..."
-              className="w-select pl-12 pr-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+              className="w-select pl-12 pr-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
             />
           </div>
-          <div className="flex space-x-2 bg-slate-100 p-1 rounded-xl">
+          <div className="flex space-x-2 bg-muted p-1 rounded-xl">
             <button
               onClick={() => setRoleFilter('all')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${roleFilter === 'all'
-                ? 'bg-white text-indigo-600 shadow-sm'
-                : 'text-slate-600 hover:text-slate-900'
+                ? 'bg-card text-indigo-600 shadow-sm'
+                : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
               All ({users.length})
@@ -325,8 +342,8 @@ export default function AdminUsersPage() {
             <button
               onClick={() => setRoleFilter('admin')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${roleFilter === 'admin'
-                ? 'bg-white text-indigo-600 shadow-sm'
-                : 'text-slate-600 hover:text-slate-900'
+                ? 'bg-card text-indigo-600 shadow-sm'
+                : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
               Admin ({users.filter(u => u.role === 'admin').length})
@@ -334,8 +351,8 @@ export default function AdminUsersPage() {
             <button
               onClick={() => setRoleFilter('editor')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${roleFilter === 'editor'
-                ? 'bg-white text-indigo-600 shadow-sm'
-                : 'text-slate-600 hover:text-slate-900'
+                ? 'bg-card text-indigo-600 shadow-sm'
+                : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
               Editor ({users.filter(u => u.role === 'editor').length})
@@ -343,8 +360,8 @@ export default function AdminUsersPage() {
             <button
               onClick={() => setRoleFilter('user')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${roleFilter === 'user'
-                ? 'bg-white text-indigo-600 shadow-sm'
-                : 'text-slate-600 hover:text-slate-900'
+                ? 'bg-card text-indigo-600 shadow-sm'
+                : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
               User ({users.filter(u => u.role === 'user').length})
@@ -354,23 +371,23 @@ export default function AdminUsersPage() {
       </div>
 
       {/* Users List */}
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200/60 overflow-hidden">
+      <div className="bg-card rounded-xl shadow-sm border border-border/60 overflow-hidden">
         {filteredUsers.length > 0 ? (
-          <div className="divide-y divide-slate-200">
+          <div className="divide-y divide-border">
             {filteredUsers.map((user) => (
               <div
                 key={user._id}
-                className="flex items-center justify-between px-6 py-4 hover:bg-slate-50 transition-colors group"
+                className="flex items-center justify-between px-6 py-4 hover:bg-muted/50 transition-colors group"
               >
                 <div className="flex items-center space-x-4 flex-1 min-w-0">
                   <div className="w-12 h-12 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center flex-shrink-0 text-white font-semibold text-lg">
                     {user.name.charAt(0).toUpperCase()}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-sm font-semibold text-slate-900 group-hover:text-indigo-600 transition-colors truncate">
+                    <h3 className="text-sm font-semibold text-foreground group-hover:text-indigo-600 transition-colors truncate">
                       {user.name}
                     </h3>
-                    <div className="flex items-center space-x-2 mt-1 text-xs text-slate-500">
+                    <div className="flex items-center space-x-2 mt-1 text-xs text-muted-foreground">
                       <Mail className="w-3 h-3" />
                       <span className="truncate">{user.email}</span>
                     </div>
@@ -382,7 +399,7 @@ export default function AdminUsersPage() {
                       ? 'bg-indigo-100 text-indigo-700'
                       : user.role === 'editor'
                         ? 'bg-emerald-100 text-emerald-700'
-                        : 'bg-slate-100 text-slate-700'
+                        : 'bg-muted text-foreground'
                       }`}>
                       {user.role}
                     </span>
@@ -394,19 +411,21 @@ export default function AdminUsersPage() {
                     </span>
                   </div>
                   <div className="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button
+                    <Button
+                      type="button"
                       onClick={() => handleEdit(user)}
                       className="p-2 hover:bg-indigo-100 rounded-lg transition-colors"
                     >
-                      <Pencil className="w-4 h-4 text-slate-600" />
-                    </button>
+                      <Pencil className="w-4 h-4 text-muted-foreground" />
+                    </Button>
                     {user.role !== 'admin' && (
-                      <button
+                      <Button
+                        type="button"
                         onClick={() => handleDelete(user._id)}
                         className="p-2 hover:bg-red-100 rounded-lg transition-colors"
                       >
-                        <Trash2 className="w-4 h-4 text-slate-600" />
-                      </button>
+                        <Trash2 className="w-4 h-4 text-muted-foreground" />
+                      </Button>
                     )}
                   </div>
                 </div>
@@ -415,9 +434,9 @@ export default function AdminUsersPage() {
           </div>
         ) : (
           <div className="text-center py-16">
-            <Users className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-slate-900 mb-2">No users found</h3>
-            <p className="text-slate-500">
+            <Users className="w-16 h-16 text-muted-foreground/50 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-foreground mb-2">No users found</h3>
+            <p className="text-muted-foreground">
               {searchQuery || roleFilter !== 'all'
                 ? 'Try adjusting your search or filter'
                 : 'No users registered yet'
@@ -428,37 +447,44 @@ export default function AdminUsersPage() {
       </div>
 
       {/* Edit User Modal */}
-      {editingUser && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl w-full max-w-md p-6 shadow-xl">
-            <h3 className="text-lg font-bold text-slate-900 mb-4">Edit User</h3>
+      <Dialog
+        open={!!editingUser}
+        onOpenChange={(open) => {
+          if (!open) setEditingUser(null);
+        }}
+      >
+        <DialogContent className="max-w-md rounded-xl bg-card p-6 shadow-xl sm:rounded-xl">
+          <DialogHeader>
+            <DialogTitle className="text-lg font-bold text-foreground">Edit User</DialogTitle>
+          </DialogHeader>
+          {editingUser && (
             <form onSubmit={handleUpdate} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Name</label>
-                <input
+                <Label className="block text-sm font-medium text-foreground mb-1">Name</Label>
+                <Input
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Email</label>
-                <input
+                <Label className="block text-sm font-medium text-foreground mb-1">Email</Label>
+                <Input
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Role</label>
+                <Label className="block text-sm font-medium text-foreground mb-1">Role</Label>
                 <select
                   value={formData.role}
                   onChange={(e) => setFormData({ ...formData, role: e.target.value as any })}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="flex h-9 w-full rounded-md border border-border bg-card px-3 py-1 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-ring"
                 >
                   <option value="user">User</option>
                   <option value="editor">Editor</option>
@@ -466,11 +492,11 @@ export default function AdminUsersPage() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Status</label>
+                <Label className="block text-sm font-medium text-foreground mb-1">Status</Label>
                 <select
                   value={formData.status}
                   onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="flex h-9 w-full rounded-md border border-border bg-card px-3 py-1 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-ring"
                 >
                   <option value="active">Active</option>
                   <option value="inactive">Inactive</option>
@@ -480,20 +506,20 @@ export default function AdminUsersPage() {
               {/* Saved Addresses Section */}
               {editingUser.addresses && editingUser.addresses.length > 0 && (
                 <div className="pt-4 border-t border-slate-100">
-                  <h4 className="text-sm font-semibold text-slate-800 mb-3 flex items-center gap-2">
+                  <h4 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
                     <MapPin className="w-4 h-4 text-indigo-500" />
                     Saved Addresses ({editingUser.addresses.length})
                   </h4>
                   <div className="space-y-3 max-h-48 overflow-y-auto pr-1">
                     {editingUser.addresses.map((addr, idx) => (
-                      <div key={idx} className="bg-slate-50 p-3 rounded-lg border border-slate-200 text-sm">
+                      <div key={idx} className="bg-muted/50 p-3 rounded-lg border border-border text-sm">
                         <div className="flex items-center justify-between mb-1">
-                          <span className="font-semibold text-slate-700">{addr.title}</span>
+                          <span className="font-semibold text-foreground">{addr.title}</span>
                           {addr.isPrimary && (
                             <span className="px-1.5 py-0.5 bg-indigo-100 text-indigo-700 text-[10px] rounded-md font-medium">Primary</span>
                           )}
                         </div>
-                        <div className="text-slate-600 text-xs space-y-0.5">
+                        <div className="text-muted-foreground text-xs space-y-0.5">
                           <div>{addr.fullName} • {addr.phone}</div>
                           <div>{addr.address}</div>
                           <div>{addr.district}, {addr.city} / {addr.country}</div>
@@ -503,169 +529,183 @@ export default function AdminUsersPage() {
                   </div>
                 </div>
               )}
-              <div className="flex gap-2 justify-end pt-4">
-                <button
+              <DialogFooter className="flex flex-row gap-2 justify-end pt-4 sm:space-x-0">
+                <Button
                   type="button"
                   onClick={() => setEditingUser(null)}
-                  className="px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
+                  className="px-4 py-2 text-sm font-medium text-foreground hover:bg-muted rounded-lg transition-colors"
                 >
                   Cancel
-                </button>
-                <button
+                </Button>
+                <Button
                   type="submit"
                   className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors"
                 >
                   Save Changes
-                </button>
-              </div>
+                </Button>
+              </DialogFooter>
             </form>
-          </div>
-        </div>
-      )}
+          )}
+        </DialogContent>
+      </Dialog>
 
       {/* Add User Modal */}
-      {isAddUserOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl w-full max-w-md p-6 shadow-xl">
-            <h3 className="text-lg font-bold text-slate-900 mb-4">Add New User</h3>
-            <form onSubmit={handleAddUser} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Name</label>
-                <input
-                  type="text"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Email</label>
-                <input
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Password</label>
-                <input
-                  type="password"
-                  value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  required
-                  minLength={6}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Role</label>
-                <select
-                  value={formData.role}
-                  onChange={(e) => setFormData({ ...formData, role: e.target.value as any })}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                >
-                  <option value="user">User</option>
-                  <option value="editor">Editor</option>
-                  <option value="admin">Admin</option>
-                </select>
-              </div>
-              <div className="flex gap-2 justify-end pt-4">
-                <button
-                  type="button"
-                  onClick={() => setIsAddUserOpen(false)}
-                  className="px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors"
-                >
-                  Create User
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      <Dialog
+        open={isAddUserOpen}
+        onOpenChange={(open) => {
+          if (!open) setIsAddUserOpen(false);
+        }}
+      >
+        <DialogContent className="max-w-md rounded-xl bg-card p-6 shadow-xl sm:rounded-xl">
+          <DialogHeader>
+            <DialogTitle className="text-lg font-bold text-foreground">Add New User</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleAddUser} className="space-y-4">
+            <div>
+              <Label className="block text-sm font-medium text-foreground mb-1">Name</Label>
+              <Input
+                type="text"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                required
+              />
+            </div>
+            <div>
+              <Label className="block text-sm font-medium text-foreground mb-1">Email</Label>
+              <Input
+                type="email"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                required
+              />
+            </div>
+            <div>
+              <Label className="block text-sm font-medium text-foreground mb-1">Password</Label>
+              <Input
+                type="password"
+                value={formData.password}
+                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                required
+                minLength={6}
+              />
+            </div>
+            <div>
+              <Label className="block text-sm font-medium text-foreground mb-1">Role</Label>
+              <select
+                value={formData.role}
+                onChange={(e) => setFormData({ ...formData, role: e.target.value as any })}
+                className="flex h-9 w-full rounded-md border border-border bg-card px-3 py-1 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-ring"
+              >
+                <option value="user">User</option>
+                <option value="editor">Editor</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
+            <DialogFooter className="flex flex-row gap-2 justify-end pt-4 sm:space-x-0">
+              <Button
+                type="button"
+                onClick={() => setIsAddUserOpen(false)}
+                className="px-4 py-2 text-sm font-medium text-foreground hover:bg-muted rounded-lg transition-colors"
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors"
+              >
+                Create User
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
 
       {/* Change Password Modal */}
-      {passwordModalUser && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl w-full max-w-md p-6 shadow-xl">
-            <h3 className="text-lg font-bold text-slate-900 mb-4">Change Password</h3>
-            <p className="text-sm text-slate-500 mb-4">
-              Changing password for <span className="font-medium text-slate-900">{passwordModalUser.name}</span>
-            </p>
-            <div className="mb-4 bg-blue-50 p-3 rounded-lg border border-blue-100">
-              <p className="text-sm text-blue-700 mb-2">
-                This process requires email verification.
+      <Dialog
+        open={!!passwordModalUser}
+        onOpenChange={(open) => {
+          if (!open) setPasswordModalUser(null);
+        }}
+      >
+        <DialogContent className="max-w-md rounded-xl bg-card p-6 shadow-xl sm:rounded-xl">
+          <DialogHeader>
+            <DialogTitle className="text-lg font-bold text-foreground">Change Password</DialogTitle>
+          </DialogHeader>
+          {passwordModalUser && (
+            <>
+              <p className="text-sm text-muted-foreground mb-4">
+                Changing password for <span className="font-medium text-foreground">{passwordModalUser.name}</span>
               </p>
-              <button
-                type="button"
-                onClick={handleSendVerificationCode}
-                className="text-sm font-medium text-blue-600 hover:text-blue-800 underline"
-              >
-                Send Verification Code to {passwordModalUser.email}
-              </button>
-            </div>
-
-            <form onSubmit={handlePasswordChange} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Verification Code</label>
-                <input
-                  type="text"
-                  value={passwordData.verificationCode}
-                  onChange={(e) => setPasswordData({ ...passwordData, verificationCode: e.target.value })}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  placeholder="Enter 6-digit code"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">New Password</label>
-                <input
-                  type="password"
-                  value={passwordData.newPassword}
-                  onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  required
-                  minLength={6}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Confirm Password</label>
-                <input
-                  type="password"
-                  value={passwordData.confirmPassword}
-                  onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  required
-                  minLength={6}
-                />
-              </div>
-              <div className="flex gap-2 justify-end pt-4">
-                <button
+              <div className="mb-4 bg-blue-50 p-3 rounded-lg border border-blue-100">
+                <p className="text-sm text-blue-700 mb-2">
+                  This process requires email verification.
+                </p>
+                <Button
                   type="button"
-                  onClick={() => setPasswordModalUser(null)}
-                  className="px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
+                  onClick={handleSendVerificationCode}
+                  className="h-auto p-0 text-sm font-medium text-blue-600 hover:text-blue-800 underline"
                 >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors"
-                >
-                  Update Password
-                </button>
+                  Send Verification Code to {passwordModalUser.email}
+                </Button>
               </div>
-            </form>
-          </div>
-        </div>
-      )}
+
+              <form onSubmit={handlePasswordChange} className="space-y-4">
+                <div>
+                  <Label className="block text-sm font-medium text-foreground mb-1">Verification Code</Label>
+                  <Input
+                    type="text"
+                    value={passwordData.verificationCode}
+                    onChange={(e) => setPasswordData({ ...passwordData, verificationCode: e.target.value })}
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    placeholder="Enter 6-digit code"
+                    required
+                  />
+                </div>
+                <div>
+                  <Label className="block text-sm font-medium text-foreground mb-1">New Password</Label>
+                  <Input
+                    type="password"
+                    value={passwordData.newPassword}
+                    onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    required
+                    minLength={6}
+                  />
+                </div>
+                <div>
+                  <Label className="block text-sm font-medium text-foreground mb-1">Confirm Password</Label>
+                  <Input
+                    type="password"
+                    value={passwordData.confirmPassword}
+                    onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    required
+                    minLength={6}
+                  />
+                </div>
+                <DialogFooter className="flex flex-row gap-2 justify-end pt-4 sm:space-x-0">
+                  <Button
+                    type="button"
+                    onClick={() => setPasswordModalUser(null)}
+                    className="px-4 py-2 text-sm font-medium text-foreground hover:bg-muted rounded-lg transition-colors"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors"
+                  >
+                    Update Password
+                  </Button>
+                </DialogFooter>
+              </form>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

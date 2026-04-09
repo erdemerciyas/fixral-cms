@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 import Video from "@/models/Video";
-import mongoose from "mongoose";
+import connectDB from "@/lib/mongoose";
 
 export async function GET() {
   try {
-    // Connect to MongoDB
-    await mongoose.connect(process.env.MONGODB_URI!);
+    // Connect to database
+    await connectDB();
     
     // Check if we can access the Video collection
     const videoCount = await Video.countDocuments();

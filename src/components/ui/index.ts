@@ -1,15 +1,15 @@
-// ── Legacy CVA-based Atomic Components (will be removed after full migration) ──
-export { Button, buttonVariants } from './_legacy/Button/index'
-export type { ButtonProps } from './_legacy/Button/index'
+// ── Core UI Primitives (shadcn-based) ──
+export { Button, buttonVariants } from './button'
+export type { ButtonProps } from './button'
+export { Badge, badgeVariants } from './badge'
+export type { BadgeProps } from './badge'
+
+// ── Legacy re-exports for backward compatibility ──
 export { Input, inputVariants } from './_legacy/Input/index'
 export type { InputProps } from './_legacy/Input/index'
 export { Card, CardHeader, CardTitle, CardBody, CardFooter } from './_legacy/Card/index'
-export { Badge, badgeVariants } from './_legacy/Badge/index'
-export type { BadgeProps } from './_legacy/Badge/index'
 export { Alert, alertVariants } from './_legacy/Alert/index'
 export { DSkeleton } from './_legacy/Skeleton/index'
-
-// ── Legacy UI Patterns (will be removed after full migration) ──
 export { PageHeader } from './_legacy/PageHeader'
 export { DataTable } from './_legacy/DataTable'
 export type { Column as DataTableColumn } from './_legacy/DataTable'

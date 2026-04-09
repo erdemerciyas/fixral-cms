@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useConfirm } from '@/hooks/use-confirm';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface MediaItem {
   _id: string;
@@ -200,13 +201,19 @@ export default function AdminMediaPage() {
 
   if (status === 'loading' || loading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="flex flex-col items-center space-y-4">
-          <div className="relative">
-            <div className="w-16 h-16 border-4 border-indigo-200 rounded-full"></div>
-            <div className="absolute top-0 left-0 w-16 h-16 border-4 border-transparent border-t-indigo-600 rounded-full animate-spin"></div>
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div className="space-y-2">
+            <Skeleton className="h-8 w-48" />
+            <Skeleton className="h-4 w-64" />
           </div>
-          <p className="text-lg font-medium text-slate-600">Medya yükleniyor...</p>
+          <Skeleton className="h-10 w-32" />
+        </div>
+        <Skeleton className="h-12 w-full rounded-xl" />
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <Skeleton key={i} className="h-32 rounded-xl" />
+          ))}
         </div>
       </div>
     );
@@ -217,8 +224,8 @@ export default function AdminMediaPage() {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Medya Kütüphanesi</h1>
-          <p className="text-slate-500 mt-1">
+          <h1 className="text-2xl font-bold text-foreground">Medya Kütüphanesi</h1>
+          <p className="text-muted-foreground mt-1">
             Toplam {mediaItems.length} dosya, {formatFileSize(mediaItems.reduce((acc, item) => acc + item.size, 0))}
           </p>
         </div>
@@ -243,29 +250,29 @@ export default function AdminMediaPage() {
       </div>
 
       {/* Toolbar */}
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200/60 p-4 sticky top-4 z-20 backdrop-blur-xl bg-white/90">
+      <div className="bg-card rounded-xl shadow-sm border border-border p-4 sticky top-4 z-20 backdrop-blur-xl bg-card/90">
         <div className="flex flex-col lg:flex-row gap-4 justify-between items-center">
           {/* Left: Search & Filter */}
           <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto flex-1">
             <div className="relative flex-1 min-w-[240px]">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Dosya ara..."
-                className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all"
+                className="w-full pl-10 pr-4 py-2.5 bg-muted/50 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-card transition-all"
               />
             </div>
 
-            <div className="flex items-center bg-slate-100 p-1 rounded-xl shrink-0 overflow-x-auto max-w-full">
+            <div className="flex items-center bg-muted p-1 rounded-xl shrink-0 overflow-x-auto max-w-full">
               {(['all', 'images', 'videos', 'documents'] as const).map((f) => (
                 <button
                   key={f}
                   onClick={() => setFilter(f)}
                   className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${filter === f
-                    ? 'bg-white text-indigo-600 shadow-sm'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50'
+                    ? 'bg-card text-indigo-600 shadow-sm'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-slate-200/50'
                     }`}
                 >
                   {f === 'all' ? 'Tümü' : f === 'images' ? 'Görseller' : f === 'videos' ? 'Videolar' : 'Belgeler'}
@@ -276,17 +283,17 @@ export default function AdminMediaPage() {
 
           {/* Right: View & Actions */}
           <div className="flex items-center gap-3 w-full lg:w-auto justify-end">
-            <div className="flex items-center bg-slate-100 p-1 rounded-xl">
+            <div className="flex items-center bg-muted p-1 rounded-xl">
               <button
                 onClick={() => setViewMode('grid')}
-                className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-card text-indigo-600 shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
                 title="Izgara Görünümü"
               >
                 <LayoutGrid className="w-5 h-5" />
               </button>
               <button
                 onClick={() => setViewMode('list')}
-                className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-card text-indigo-600 shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
                 title="Liste Görünümü"
               >
                 <List className="w-5 h-5" />
@@ -295,22 +302,22 @@ export default function AdminMediaPage() {
 
             <div className="h-8 w-px bg-slate-200 mx-1 hidden sm:block"></div>
 
-            <label className="flex items-center gap-2 cursor-pointer select-none px-3 py-2 hover:bg-slate-50 rounded-lg transition-colors">
+            <label className="flex items-center gap-2 cursor-pointer select-none px-3 py-2 hover:bg-muted/50 rounded-lg transition-colors">
               <input
                 type="checkbox"
                 checked={selectedItems.size === filteredItems.length && filteredItems.length > 0}
                 onChange={handleSelectAll}
-                className="w-5 h-5 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500 transition-all"
+                className="w-5 h-5 text-indigo-600 border-border rounded focus:ring-indigo-500 transition-all"
               />
-              <span className="text-sm font-medium text-slate-700 hidden sm:inline">Tümünü Seç</span>
+              <span className="text-sm font-medium text-foreground hidden sm:inline">Tümünü Seç</span>
             </label>
           </div>
         </div>
 
         {/* Mobile Bulk Actions */}
         {selectedItems.size > 0 && (
-          <div className="sm:hidden mt-4 pt-4 border-t border-slate-200 flex justify-between items-center animate-in fade-in slide-in-from-top-2">
-            <span className="text-sm font-medium text-slate-600">{selectedItems.size} seçildi</span>
+          <div className="sm:hidden mt-4 pt-4 border-t border-border flex justify-between items-center animate-in fade-in slide-in-from-top-2">
+            <span className="text-sm font-medium text-muted-foreground">{selectedItems.size} seçildi</span>
             <button
               onClick={() => handleDelete(Array.from(selectedItems))}
               className="inline-flex items-center px-4 py-2 bg-red-100 text-red-700 rounded-lg text-sm font-medium"
@@ -329,9 +336,9 @@ export default function AdminMediaPage() {
             {filteredItems.map((item) => (
               <div
                 key={item._id}
-                className={`group relative w-full bg-white rounded-xl shadow-sm border overflow-hidden cursor-pointer transition-all duration-200 ${selectedItems.has(item._id)
+                className={`group relative w-full bg-card rounded-xl shadow-sm border overflow-hidden cursor-pointer transition-all duration-200 ${selectedItems.has(item._id)
                   ? 'ring-2 ring-indigo-500 border-transparent shadow-indigo-100'
-                  : 'border-slate-200 hover:shadow-md hover:border-indigo-300'
+                  : 'border-border hover:shadow-md hover:border-indigo-300'
                   }`}
                 onClick={() => handleSelectItem(item._id)}
               >
@@ -352,13 +359,13 @@ export default function AdminMediaPage() {
                         />
                       </div>
                     ) : (
-                      <div className="w-full h-full flex flex-col items-center justify-center bg-slate-50 p-4 text-slate-400">
+                      <div className="w-full h-full flex flex-col items-center justify-center bg-muted/50 p-4 text-muted-foreground">
                         {item.type.startsWith('video/') ? (
                           <VideoIcon className="w-12 h-12 mb-2" />
                         ) : (
                           <FileText className="w-12 h-12 mb-2" />
                         )}
-                        <span className="text-xs text-center font-medium opacity-0 group-hover:opacity-100 transition-opacity text-slate-600 truncate w-full px-2">
+                        <span className="text-xs text-center font-medium opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground truncate w-full px-2">
                           {item.type.split('/')[1] || 'File'}
                         </span>
                       </div>
@@ -372,7 +379,7 @@ export default function AdminMediaPage() {
                             e.stopPropagation();
                             handlePreview(item);
                           }}
-                          className="p-1.5 bg-white/10 backdrop-blur-md hover:bg-white text-white hover:text-slate-900 rounded-lg transition-all"
+                          className="p-1.5 bg-card/10 backdrop-blur-md hover:bg-card text-white hover:text-foreground rounded-lg transition-all"
                           title="Önizle"
                         >
                           <Eye className="w-5 h-5" />
@@ -382,7 +389,7 @@ export default function AdminMediaPage() {
                             e.stopPropagation();
                             handleDelete([item._id]);
                           }}
-                          className="p-1.5 bg-white/10 backdrop-blur-md hover:bg-red-500 text-white rounded-lg transition-all"
+                          className="p-1.5 bg-card/10 backdrop-blur-md hover:bg-red-500 text-white rounded-lg transition-all"
                           title="Sil"
                         >
                           <Trash2 className="w-5 h-5" />
@@ -393,12 +400,12 @@ export default function AdminMediaPage() {
 
                   {/* Checkbox - Absolute Top Left */}
                   <div className={`absolute top-2 left-2 z-30 transition-all duration-200 ${selectedItems.has(item._id) ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
-                    <div className="bg-white rounded-md shadow-sm p-0.5">
+                    <div className="bg-card rounded-md shadow-sm p-0.5">
                       <input
                         type="checkbox"
                         checked={selectedItems.has(item._id)}
                         onChange={() => handleSelectItem(item._id)}
-                        className="w-5 h-5 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500 cursor-pointer block"
+                        className="w-5 h-5 text-indigo-600 border-border rounded focus:ring-indigo-500 cursor-pointer block"
                         onClick={(e) => e.stopPropagation()}
                       />
                     </div>
@@ -416,17 +423,17 @@ export default function AdminMediaPage() {
             ))}
           </div>
         ) : (
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+          <div className="bg-card rounded-xl shadow-sm border border-border overflow-hidden">
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm text-slate-600">
-                <thead className="bg-slate-50 text-xs uppercase font-semibold text-slate-500">
+              <table className="w-full text-left text-sm text-muted-foreground">
+                <thead className="bg-muted/50 text-xs uppercase font-semibold text-muted-foreground">
                   <tr>
                     <th className="px-4 py-3 w-10">
                       <input
                         type="checkbox"
                         checked={selectedItems.size === filteredItems.length && filteredItems.length > 0}
                         onChange={handleSelectAll}
-                        className="w-4 h-4 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500"
+                        className="w-4 h-4 text-indigo-600 border-border rounded focus:ring-indigo-500"
                       />
                     </th>
                     <th className="px-4 py-3">Dosya</th>
@@ -440,7 +447,7 @@ export default function AdminMediaPage() {
                   {filteredItems.map((item) => (
                     <tr
                       key={item._id}
-                      className={`hover:bg-slate-50 transition-colors cursor-pointer ${selectedItems.has(item._id) ? 'bg-indigo-50/50' : ''}`}
+                      className={`hover:bg-muted/50 transition-colors cursor-pointer ${selectedItems.has(item._id) ? 'bg-indigo-50/50' : ''}`}
                       onClick={() => handleSelectItem(item._id)}
                     >
                       <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
@@ -448,21 +455,21 @@ export default function AdminMediaPage() {
                           type="checkbox"
                           checked={selectedItems.has(item._id)}
                           onChange={() => handleSelectItem(item._id)}
-                          className="w-4 h-4 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500"
+                          className="w-4 h-4 text-indigo-600 border-border rounded focus:ring-indigo-500"
                         />
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-lg bg-slate-100 shrink-0 overflow-hidden relative border border-slate-200">
+                          <div className="w-10 h-10 rounded-lg bg-muted shrink-0 overflow-hidden relative border border-border">
                             {item.type.startsWith('image/') ? (
                               <Image src={item.url} alt={item.name} fill className="object-cover" />
                             ) : (
-                              <FileText className="w-6 h-6 m-2 text-slate-400" />
+                              <FileText className="w-6 h-6 m-2 text-muted-foreground" />
                             )}
                           </div>
                           <div className="flex flex-col max-w-[200px] sm:max-w-xs">
-                            <span className="font-medium text-slate-900 truncate" title={item.name}>{item.name}</span>
-                            <span className="text-xs text-slate-500 sm:hidden">{formatFileSize(item.size)}</span>
+                            <span className="font-medium text-foreground truncate" title={item.name}>{item.name}</span>
+                            <span className="text-xs text-muted-foreground sm:hidden">{formatFileSize(item.size)}</span>
                           </div>
                         </div>
                       </td>
@@ -473,13 +480,13 @@ export default function AdminMediaPage() {
                         <div className="flex items-center justify-end gap-2">
                           <button
                             onClick={(e) => { e.stopPropagation(); handlePreview(item); }}
-                            className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                            className="p-1.5 text-muted-foreground hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
                           >
                             <Eye className="w-5 h-5" />
                           </button>
                           <button
                             onClick={(e) => { e.stopPropagation(); handleDelete([item._id]); }}
-                            className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                            className="p-1.5 text-muted-foreground hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                           >
                             <Trash2 className="w-5 h-5" />
                           </button>
@@ -493,12 +500,12 @@ export default function AdminMediaPage() {
           </div>
         )
       ) : (
-        <div className="flex flex-col items-center justify-center py-20 bg-white rounded-2xl shadow-sm border border-slate-200 border-dashed">
-          <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-4">
-            <ImageIcon className="w-10 h-10 text-slate-300" />
+        <div className="flex flex-col items-center justify-center py-20 bg-card rounded-xl shadow-sm border border-border border-dashed">
+          <div className="w-20 h-20 bg-muted/50 rounded-full flex items-center justify-center mb-4">
+            <ImageIcon className="w-10 h-10 text-muted-foreground/50" />
           </div>
-          <h3 className="text-xl font-semibold text-slate-900 mb-2">Medya bulunamadı</h3>
-          <p className="text-slate-500 mb-6 text-center max-w-md">
+          <h3 className="text-xl font-semibold text-foreground mb-2">Medya bulunamadı</h3>
+          <p className="text-muted-foreground mb-6 text-center max-w-md">
             {searchQuery || filter !== 'all'
               ? 'Arama kriterlerinize uygun dosya bulunamadı. Filtreleri temizlemeyi deneyin.'
               : 'Görsellerinizi ve dosyalarınızı buraya yükleyerek <br/> kütüphanenizi oluşturmaya başlayın.'
@@ -519,26 +526,26 @@ export default function AdminMediaPage() {
       {/* Upload Modal */}
       {showUploadModal && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[9999] p-4 animate-in fade-in duration-200">
-          <div className="bg-white rounded-2xl max-w-2xl w-full shadow-2xl overflow-hidden scale-100 animate-in zoom-in-95 duration-200">
+          <div className="bg-card rounded-xl max-w-2xl w-full shadow-2xl overflow-hidden scale-100 animate-in zoom-in-95 duration-200">
             <div className="flex items-center justify-between p-6 border-b border-slate-100">
-              <h3 className="text-xl font-bold text-slate-900">Dosya Yükle</h3>
+              <h3 className="text-xl font-bold text-foreground">Dosya Yükle</h3>
               <button
                 onClick={() => setShowUploadModal(false)}
-                className="p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-500"
+                className="p-2 hover:bg-muted rounded-full transition-colors text-muted-foreground"
               >
                 <X className="w-6 h-6" />
               </button>
             </div>
             <div className="p-8">
               <label
-                className="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed border-indigo-200 rounded-2xl bg-indigo-50/30 hover:bg-indigo-50 hover:border-indigo-400 transition-all cursor-pointer group"
+                className="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed border-indigo-200 rounded-xl bg-indigo-50/30 hover:bg-indigo-50 hover:border-indigo-400 transition-all cursor-pointer group"
               >
                 <div className="flex flex-col items-center justify-center pt-5 pb-6">
                   <div className="w-16 h-16 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                     <CloudUpload className="w-8 h-8" />
                   </div>
-                  <p className="mb-2 text-lg font-medium text-slate-700">Tıklayın veya sürükleyin</p>
-                  <p className="text-sm text-slate-500">PNG, JPG, GIF veya PDF (Maks. 10MB)</p>
+                  <p className="mb-2 text-lg font-medium text-foreground">Tıklayın veya sürükleyin</p>
+                  <p className="text-sm text-muted-foreground">PNG, JPG, GIF veya PDF (Maks. 10MB)</p>
                 </div>
                 <input
                   type="file"
@@ -581,7 +588,7 @@ export default function AdminMediaPage() {
           <div className="relative max-w-6xl w-full max-h-[90vh] flex flex-col md:flex-row gap-6 bg-transparent" onClick={e => e.stopPropagation()}>
             {/* Image Container */}
             {/* Image Container */}
-            <div className="flex-1 flex items-center justify-center bg-black/40 rounded-2xl overflow-hidden relative group min-h-[300px]">
+            <div className="flex-1 flex items-center justify-center bg-black/40 rounded-xl overflow-hidden relative group min-h-[300px]">
               {previewItem.type.startsWith('image/') ? (
                 <div className="relative w-full h-full flex items-center justify-center p-4">
                   <img
@@ -599,10 +606,10 @@ export default function AdminMediaPage() {
             </div>
 
             {/* Sidebar Details */}
-            <div className="w-full md:w-80 bg-white rounded-2xl shadow-2xl overflow-hidden shrink-0 flex flex-col">
-              <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-                <h3 className="font-bold text-slate-900 truncate pr-4" title={previewItem.name}>{previewItem.name}</h3>
-                <button onClick={() => setShowPreviewModal(false)} className="text-slate-400 hover:text-slate-600">
+            <div className="w-full md:w-80 bg-card rounded-xl shadow-2xl overflow-hidden shrink-0 flex flex-col">
+              <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-muted/50">
+                <h3 className="font-bold text-foreground truncate pr-4" title={previewItem.name}>{previewItem.name}</h3>
+                <button onClick={() => setShowPreviewModal(false)} className="text-muted-foreground hover:text-muted-foreground">
                   <X className="w-6 h-6" />
                 </button>
               </div>
@@ -610,30 +617,30 @@ export default function AdminMediaPage() {
               <div className="p-6 space-y-6 overflow-y-auto flex-1">
                 <div className="space-y-4">
                   <div>
-                    <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Dosya Türü</label>
-                    <p className="text-sm font-medium text-slate-700 mt-1 font-mono bg-slate-100 px-2 py-1 rounded w-fit">{previewItem.type}</p>
+                    <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Dosya Türü</label>
+                    <p className="text-sm font-medium text-foreground mt-1 font-mono bg-muted px-2 py-1 rounded w-fit">{previewItem.type}</p>
                   </div>
                   <div>
-                    <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Boyut</label>
-                    <p className="text-sm font-medium text-slate-700 mt-1">{formatFileSize(previewItem.size)}</p>
+                    <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Boyut</label>
+                    <p className="text-sm font-medium text-foreground mt-1">{formatFileSize(previewItem.size)}</p>
                   </div>
                   <div>
-                    <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Yükleme Tarihi</label>
-                    <p className="text-sm font-medium text-slate-700 mt-1">{formatDate(previewItem.createdAt)}</p>
+                    <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Yükleme Tarihi</label>
+                    <p className="text-sm font-medium text-foreground mt-1">{formatDate(previewItem.createdAt)}</p>
                   </div>
                   {previewItem.width && previewItem.height && (
                     <div>
-                      <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Boyutlar</label>
-                      <p className="text-sm font-medium text-slate-700 mt-1">{previewItem.width} × {previewItem.height} px</p>
+                      <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Boyutlar</label>
+                      <p className="text-sm font-medium text-foreground mt-1">{previewItem.width} × {previewItem.height} px</p>
                     </div>
                   )}
                   <div>
-                    <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">URL</label>
+                    <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">URL</label>
                     <div className="flex gap-2 mt-1">
                       <input
                         readOnly
                         value={previewItem.url}
-                        className="text-xs bg-slate-50 border border-slate-200 rounded px-2 py-1.5 w-full text-slate-600"
+                        className="text-xs bg-muted/50 border border-border rounded px-2 py-1.5 w-full text-muted-foreground"
                       />
                       <button
                         onClick={() => {
@@ -652,7 +659,7 @@ export default function AdminMediaPage() {
                 </div>
               </div>
 
-              <div className="p-4 bg-slate-50 border-t border-slate-100">
+              <div className="p-4 bg-muted/50 border-t border-slate-100">
                 <button
                   onClick={() => {
                     handleDelete([previewItem._id]);

@@ -6,7 +6,6 @@ import { logger } from '@/core/lib/logger';
 
 // Import All Models
 import News from '@/models/News';
-import Product from '@/models/Product';
 import SiteSettings from '@/models/SiteSettings';
 import Portfolio from '@/models/Portfolio';
 import Service from '@/models/Service';
@@ -16,8 +15,6 @@ import Contact from '@/models/Contact';
 import FooterSettings from '@/models/FooterSettings';
 import ContentSettings from '@/models/ContentSettings';
 import Category from '@/models/Category';
-import ProductCategory from '@/models/ProductCategory';
-import ProductReview from '@/models/ProductReview';
 import Video from '@/models/Video';
 import User from '@/models/User';
 import Settings from '@/models/Settings';
@@ -42,16 +39,16 @@ export async function POST(req: NextRequest) {
         await connectDB();
 
         const {
-            news, products, siteSettings, portfolios, services,
+            news, siteSettings, portfolios, services,
             sliders, about, contact, footer, contentSettings,
-            categories, productCategories, reviews, videos,
+            categories, videos,
             users, settings, messages, pageSettings
         } = body.content;
 
         const stats = {
-            news: 0, products: 0, portfolios: 0, services: 0,
-            sliders: 0, categories: 0, productCategories: 0,
-            users: 0, messages: 0, videos: 0, reviews: 0,
+            news: 0, portfolios: 0, services: 0,
+            sliders: 0, categories: 0,
+            users: 0, messages: 0, videos: 0,
             pageSettings: 0,
             siteSettings: 0, footer: 0, contentSettings: 0,
             about: 0, contact: 0, settings: 0,
@@ -118,19 +115,16 @@ export async function POST(req: NextRequest) {
 
         // 1. Lists with Slugs/Unique Keys
         await importCollection(News, news, 'slug', 'news');
-        await importCollection(Product, products, 'slug', 'products');
         await importCollection(Portfolio, portfolios, 'slug', 'portfolios');
         await importCollection(Category, categories, 'slug', 'categories');
-        await importCollection(ProductCategory, productCategories, 'slug', 'productCategories');
-        await importCollection(PageSetting, pageSettings, 'pageId', 'pageSettings'); // pageId verified
+        await importCollection(PageSetting, pageSettings, 'pageId', 'pageSettings');
         await importCollection(User, users, 'email', 'users');
 
         // 2. Lists with only IDs (no reliable slug)
-        await importCollection(Service, services, '_id', 'services'); // No slug in schema
+        await importCollection(Service, services, '_id', 'services');
         await importCollection(Slider, sliders, '_id', 'sliders');
         await importCollection(Video, videos, '_id', 'videos');
         await importCollection(Message, messages, '_id', 'messages');
-        await importCollection(ProductReview, reviews, '_id', 'reviews');
 
         // 3. Singletons
         await importSingleton(SiteSettings, siteSettings, 'siteSettings');

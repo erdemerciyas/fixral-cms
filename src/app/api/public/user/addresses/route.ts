@@ -1,33 +1,44 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import connectDB from '@/lib/mongoose';
-import User from '@/models/User';
+import { prisma } from '@/lib/prisma';
 
-export async function GET(req: NextRequest) {
+interface Address {
+    id: string;
+    title: string;
+    fullName: string;
+    phone: string;
+    country: string;
+    city: string;
+    district: string;
+    address: string;
+    zipCode: string;
+    isPrimary: boolean;
+}
+
+async function getUserRow(email: string) {
+    return prisma.userRow.findFirst({ where: { email } });
+}
+
+export async function GET() {
     try {
         const session = await getServerSession(authOptions);
         if (!session?.user?.email) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        await connectDB();
-
-        // We use findOne to get the subdocument array
-        const user = await User.findOne({ email: session.user.email }).select('addresses');
-
+        const user = await getUserRow(session.user.email);
         if (!user) {
-            return NextResponse.json({ error: 'User not found' }, { status: 404 });
+            return NextResponse.json({ success: true, data: [] });
         }
 
-        // Sort: Primary first, then others
-        const sortedAddresses = user.addresses?.sort((a: any, b: any) =>
-            (b.isPrimary === a.isPrimary) ? 0 : b.isPrimary ? 1 : -1
-        ) || [];
+        const addresses = (user.addresses as unknown as Address[]) || [];
+        const sorted = [...addresses].sort((a, b) =>
+            a.isPrimary === b.isPrimary ? 0 : a.isPrimary ? -1 : 1
+        );
 
-        return NextResponse.json({ success: true, data: sortedAddresses });
-
-    } catch (error: any) {
+        return NextResponse.json({ success: true, data: sorted });
+    } catch (error) {
         console.error('Fetch Addresses Error:', error);
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
     }
@@ -47,30 +58,52 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'Zorunlu alanları doldurunuz.' }, { status: 400 });
         }
 
-        await connectDB();
-        const user = await User.findOne({ email: session.user.email });
-
+        let user = await getUserRow(session.user.email);
         if (!user) {
-            return NextResponse.json({ error: 'User not found' }, { status: 404 });
+            // Auto-create UserRow for users who authenticated via MongoDB
+            user = await prisma.userRow.create({
+                data: {
+                    email: session.user.email,
+                    name: session.user.name || '',
+                    password: '',
+                    role: (session.user as any).role || 'user',
+                    addresses: [],
+                },
+            });
         }
 
-        // If making this primary, unset others
-        if (isPrimary) {
-            user.addresses.forEach((addr: any) => addr.isPrimary = false);
-        } else if (!user.addresses || user.addresses.length === 0) {
-            // First address is always primary
-            body.isPrimary = true;
+        const addresses = (user.addresses as unknown as Address[]) || [];
+
+        const newAddress: Address = {
+            id: crypto.randomUUID(),
+            title,
+            fullName,
+            phone: phone || '',
+            country: country || 'Türkiye',
+            city,
+            district: district || '',
+            address,
+            zipCode: zipCode || '',
+            isPrimary: isPrimary || addresses.length === 0,
+        };
+
+        if (newAddress.isPrimary) {
+            addresses.forEach((a) => (a.isPrimary = false));
         }
 
-        user.addresses.push({
-            title, fullName, phone, country, city, district, address, zipCode, isPrimary: body.isPrimary
+        addresses.push(newAddress);
+
+        const updated = await prisma.userRow.update({
+            where: { id: user.id },
+            data: { addresses: addresses as any },
         });
 
-        await user.save();
-
-        return NextResponse.json({ success: true, data: user.addresses, message: 'Adres eklendi.' });
-
-    } catch (error: any) {
+        return NextResponse.json({
+            success: true,
+            data: updated.addresses as unknown as Address[],
+            message: 'Adres eklendi.',
+        });
+    } catch (error) {
         console.error('Add Address Error:', error);
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
     }

@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useConfirm } from '@/hooks/use-confirm';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface SliderItem {
   _id: string;
@@ -134,13 +135,19 @@ export default function AdminSliderPage() {
 
   if (status === 'loading' || loading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="flex flex-col items-center space-y-4">
-          <div className="relative">
-            <div className="w-16 h-16 border-4 border-indigo-200 rounded-full"></div>
-            <div className="absolute top-0 left-0 w-16 h-16 border-4 border-transparent border-t-indigo-600 rounded-full animate-spin"></div>
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div className="space-y-2">
+            <Skeleton className="h-8 w-48" />
+            <Skeleton className="h-4 w-64" />
           </div>
-          <p className="text-lg font-medium text-slate-600">Loading sliders...</p>
+          <Skeleton className="h-10 w-32" />
+        </div>
+        <Skeleton className="h-12 w-full rounded-xl" />
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <Skeleton key={i} className="h-32 rounded-xl" />
+          ))}
         </div>
       </div>
     );
@@ -151,8 +158,8 @@ export default function AdminSliderPage() {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Slider</h1>
-          <p className="text-slate-500 mt-1">Manage your homepage slider</p>
+          <h1 className="text-2xl font-bold text-foreground">Slider</h1>
+          <p className="text-muted-foreground mt-1">Manage your homepage slider</p>
         </div>
         <button
           onClick={() => router.push('/admin/slider/new')}
@@ -164,24 +171,24 @@ export default function AdminSliderPage() {
       </div>
 
       {/* Search and Filter Bar */}
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200/60 p-4">
+      <div className="bg-card rounded-xl shadow-sm border border-border/60 p-4">
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex-1 relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search sliders..."
-              className="w-full pl-12 pr-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+              className="w-full pl-12 pr-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
             />
           </div>
-          <div className="flex space-x-2 bg-slate-100 p-1 rounded-xl">
+          <div className="flex space-x-2 bg-muted p-1 rounded-xl">
             <button
               onClick={() => setStatusFilter('all')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${statusFilter === 'all'
-                ? 'bg-white text-indigo-600 shadow-sm'
-                : 'text-slate-600 hover:text-slate-900'
+                ? 'bg-card text-indigo-600 shadow-sm'
+                : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
               All ({sliders.length})
@@ -189,8 +196,8 @@ export default function AdminSliderPage() {
             <button
               onClick={() => setStatusFilter('active')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${statusFilter === 'active'
-                ? 'bg-white text-indigo-600 shadow-sm'
-                : 'text-slate-600 hover:text-slate-900'
+                ? 'bg-card text-indigo-600 shadow-sm'
+                : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
               Active ({sliders.filter(s => s.status === 'active').length})
@@ -198,8 +205,8 @@ export default function AdminSliderPage() {
             <button
               onClick={() => setStatusFilter('inactive')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${statusFilter === 'inactive'
-                ? 'bg-white text-indigo-600 shadow-sm'
-                : 'text-slate-600 hover:text-slate-900'
+                ? 'bg-card text-indigo-600 shadow-sm'
+                : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
               Inactive ({sliders.filter(s => s.status === 'inactive').length})
@@ -213,7 +220,7 @@ export default function AdminSliderPage() {
         {filteredSliders.map((slider, index) => (
           <div
             key={slider._id}
-            className="bg-white rounded-2xl shadow-sm border border-slate-200/60 overflow-hidden hover:shadow-lg transition-all duration-300 group"
+            className="bg-card rounded-xl shadow-sm border border-border/60 overflow-hidden hover:shadow-lg transition-all duration-300 group"
           >
             {/* Image */}
             <div className="relative aspect-video bg-gradient-to-br from-indigo-100 to-violet-100">
@@ -231,7 +238,7 @@ export default function AdminSliderPage() {
               <div className="absolute top-3 left-3">
                 <span className={`px-2 py-1 text-xs font-semibold rounded-full ${slider.status === 'active'
                   ? 'bg-emerald-500 text-white'
-                  : 'bg-slate-500 text-white'
+                  : 'bg-muted/500 text-white'
                   }`}>
                   {slider.status}
                 </span>
@@ -240,14 +247,14 @@ export default function AdminSliderPage() {
 
             {/* Content */}
             <div className="p-5">
-              <h3 className="text-lg font-bold text-slate-900 mb-2 group-hover:text-indigo-600 transition-colors">
+              <h3 className="text-lg font-bold text-foreground mb-2 group-hover:text-indigo-600 transition-colors">
                 {slider.title}
               </h3>
-              <p className="text-sm text-slate-600 mb-4 line-clamp-2">
+              <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
                 {slider.description}
               </p>
               <div className="flex items-center justify-between">
-                <span className="text-xs text-slate-500">
+                <span className="text-xs text-muted-foreground">
                   Order: {slider.order + 1}
                 </span>
                 <div className="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -257,7 +264,7 @@ export default function AdminSliderPage() {
                     className="p-2 hover:bg-indigo-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     title="Move Up"
                   >
-                    <ArrowUp className="w-4 h-4 text-slate-600" />
+                    <ArrowUp className="w-4 h-4 text-muted-foreground" />
                   </button>
                   <button
                     onClick={() => handleReorder(slider._id, 'down')}
@@ -265,7 +272,7 @@ export default function AdminSliderPage() {
                     className="p-2 hover:bg-indigo-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     title="Move Down"
                   >
-                    <ArrowDown className="w-4 h-4 text-slate-600" />
+                    <ArrowDown className="w-4 h-4 text-muted-foreground" />
                   </button>
                   <button
                     onClick={() => handleToggleStatus(slider._id)}
@@ -275,21 +282,21 @@ export default function AdminSliderPage() {
                       }`}
                     title={slider.status === 'active' ? 'Deactivate' : 'Activate'}
                   >
-                    <Eye className="w-4 h-4 text-slate-600" />
+                    <Eye className="w-4 h-4 text-muted-foreground" />
                   </button>
                   <button
                     onClick={() => router.push(`/admin/slider/${slider._id}/edit`)}
                     className="p-2 hover:bg-indigo-100 rounded-lg transition-colors"
                     title="Edit"
                   >
-                    <Pencil className="w-4 h-4 text-slate-600" />
+                    <Pencil className="w-4 h-4 text-muted-foreground" />
                   </button>
                   <button
                     onClick={() => handleDelete(slider._id)}
                     className="p-2 hover:bg-red-100 rounded-lg transition-colors"
                     title="Delete"
                   >
-                    <Trash2 className="w-4 h-4 text-slate-600" />
+                    <Trash2 className="w-4 h-4 text-muted-foreground" />
                   </button>
                 </div>
               </div>
@@ -300,10 +307,10 @@ export default function AdminSliderPage() {
 
       {/* Empty State */}
       {filteredSliders.length === 0 && (
-        <div className="text-center py-16 bg-white rounded-2xl border border-slate-200/60">
-          <ImageIcon className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-          <h3 className="text-xl font-semibold text-slate-900 mb-2">No sliders found</h3>
-          <p className="text-slate-500">
+        <div className="text-center py-16 bg-card rounded-xl border border-border/60">
+          <ImageIcon className="w-16 h-16 text-muted-foreground/50 mx-auto mb-4" />
+          <h3 className="text-xl font-semibold text-foreground mb-2">No sliders found</h3>
+          <p className="text-muted-foreground">
             {searchQuery || statusFilter !== 'all'
               ? 'Try adjusting your search or filter'
               : 'Add your first slider to showcase on homepage'

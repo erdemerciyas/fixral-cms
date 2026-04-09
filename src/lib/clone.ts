@@ -2,15 +2,12 @@
  * Content Cloning Utility
  *
  * Mevcut içerikleri kopyalayarak "Kopya — <başlık>" adıyla yeni taslak oluşturur.
- * News, Portfolio, Product, Page desteklenir.
- *
- * Kullanım:
- *   const newDoc = await cloneContent('news', '6641abc...');
+ * News, Portfolio desteklenir.
  */
 
 import connectDB from '@/lib/mongoose';
 
-export type CloneableType = 'news' | 'portfolio' | 'product' | 'page';
+export type CloneableType = 'news' | 'portfolio';
 
 interface CloneResult {
   success: boolean;
@@ -19,11 +16,6 @@ interface CloneResult {
   error?: string;
 }
 
-/**
- * Verilen tip ve ID'ye göre içeriği klonlar.
- * Slug benzersizliği için timestamp eklenir.
- * Status her zaman 'draft' olarak ayarlanır.
- */
 export async function cloneContent(
   type: CloneableType,
   id: string
@@ -31,15 +23,12 @@ export async function cloneContent(
   await connectDB();
 
   switch (type) {
-    case 'news':    return cloneNews(id);
+    case 'news':      return cloneNews(id);
     case 'portfolio': return clonePortfolio(id);
-    case 'product': return cloneProduct(id);
     default:
       return { success: false, error: `Bilinmeyen içerik tipi: ${type}` };
   }
 }
-
-// ─── News ─────────────────────────────────────────────────────────────────────
 
 async function cloneNews(id: string): Promise<CloneResult> {
   const NewsModel = (await import('@/models/News')).default;
@@ -58,15 +47,12 @@ async function cloneNews(id: string): Promise<CloneResult> {
     views: 0,
     createdAt: undefined,
     updatedAt: undefined,
-    // translations başlıklarına "Kopya — " prefix
     translations: prefixTranslationTitles(doc.translations as Record<string, { title?: string }> | undefined),
   });
 
   await cloned.save();
   return { success: true, id: String(cloned._id), slug: cloned.slug };
 }
-
-// ─── Portfolio ────────────────────────────────────────────────────────────────
 
 async function clonePortfolio(id: string): Promise<CloneResult> {
   const PortfolioModel = (await import('@/models/Portfolio')).default;
@@ -90,43 +76,13 @@ async function clonePortfolio(id: string): Promise<CloneResult> {
   return { success: true, id: String(cloned._id), slug: cloned.slug };
 }
 
-// ─── Product ──────────────────────────────────────────────────────────────────
-
-async function cloneProduct(id: string): Promise<CloneResult> {
-  const ProductModel = (await import('@/models/Product')).default;
-  const original = await ProductModel.findById(id).lean();
-  if (!original) return { success: false, error: 'Ürün bulunamadı.' };
-
-  const ts = Date.now();
-  const doc = original as Record<string, unknown>;
-
-  const cloned = new ProductModel({
-    ...doc,
-    _id: undefined,
-    title: `Kopya — ${doc.title}`,
-    slug: `${doc.slug}-kopya-${ts}`,
-    status: 'draft',
-    reviews: [],
-    createdAt: undefined,
-    updatedAt: undefined,
-  });
-
-  await cloned.save();
-  return { success: true, id: String(cloned._id), slug: cloned.slug };
-}
-
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
 function prefixTranslationTitles(
   translations?: Record<string, { title?: string }>
 ): Record<string, { title?: string }> | undefined {
   if (!translations) return undefined;
   const result: Record<string, { title?: string }> = {};
   for (const [lang, t] of Object.entries(translations)) {
-    result[lang] = {
-      ...t,
-      title: t.title ? `Kopya — ${t.title}` : t.title,
-    };
+    result[lang] = { ...t, title: t.title ? `Kopya — ${t.title}` : t.title };
   }
   return result;
 }

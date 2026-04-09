@@ -4,15 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import {
-  Bars3Icon,
-  HomeIcon,
-  WrenchScrewdriverIcon,
-  FolderOpenIcon,
-  PhoneIcon,
-  FilmIcon,
-  NewspaperIcon
-} from '@heroicons/react/24/outline';
+import { List, X, MagnifyingGlass, PaperPlaneTilt, User, SignOut, GearSix } from '@phosphor-icons/react';
 import { resolveIcon, getIconForPage } from '../lib/icons';
 import DesktopNav from './layout/DesktopNav';
 import TopBar from './layout/TopBar';
@@ -20,6 +12,8 @@ import MobileNav from './layout/MobileNav';
 import SearchModal from './layout/SearchModal';
 import ProjectModal from './features/ProjectModal';
 import { locales } from '@/i18n';
+import { useAppTranslations } from '@/hooks/useAppTranslations';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface SiteSettings {
   siteName: string;
@@ -46,13 +40,12 @@ interface PageSetting {
 
 function getDefaultNavLinks() {
   return [
-    { href: '/', label: 'Anasayfa', icon: HomeIcon },
-    { href: '/haberler', label: 'Haberler', icon: NewspaperIcon },
-    { href: '/services', label: 'Hizmetler', icon: WrenchScrewdriverIcon },
-    { href: '/portfolio', label: 'Portfolyo', icon: FolderOpenIcon },
-    { href: '/videos', label: 'Videolar', icon: FilmIcon },
-    { href: '/products', label: 'Ürünler', icon: FolderOpenIcon },
-    { href: '/contact', label: 'İletişim', icon: PhoneIcon },
+    { href: '/', label: 'Anasayfa', icon: null },
+    { href: '/haberler', label: 'Haberler', icon: null },
+    { href: '/services', label: 'Hizmetler', icon: null },
+    { href: '/portfolio', label: 'Portfolyo', icon: null },
+    { href: '/videos', label: 'Videolar', icon: null },
+    { href: '/contact', label: 'Iletisim', icon: null },
   ];
 }
 
@@ -64,21 +57,24 @@ const Header: React.FC = () => {
   const [navLinks, setNavLinks] = useState<Array<{ href: string; label: string; icon: any; isExternal?: boolean }>>([]);
   const [navLoaded, setNavLoaded] = useState(false);
   const [siteSettings, setSiteSettings] = useState<SiteSettings | null>(null);
+  const { t: tHeader } = useAppTranslations('header');
 
   const pathname = usePathname() || '';
 
-  const isTransparentPage = pathname === '/' ||
+  const isHomePage = pathname === '/' ||
+    /^\/[a-z]{2}\/?$/.test(pathname);
+
+  const isTransparentPage = isHomePage ||
     pathname.includes('/haberler') ||
     pathname.includes('/noticias') ||
     pathname.includes('/portfolio') ||
     pathname.includes('/services') ||
     pathname.includes('/contact') ||
-    pathname.includes('/videos') ||
-    pathname.includes('/products');
+    pathname.includes('/videos');
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 80);
+      setIsScrolled(window.scrollY > 40);
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
@@ -219,7 +215,7 @@ const Header: React.FC = () => {
     return { ...link, href: newHref };
   });
 
-  const isTransparent = !isScrolled && isTransparentPage;
+  const showFloatingPill = isScrolled || !isTransparentPage;
 
   return (
     <>
@@ -227,42 +223,50 @@ const Header: React.FC = () => {
         href="#main-content"
         className="sr-only focus:not-sr-only focus:fixed focus:top-0 focus:left-0 focus:z-[9999] focus:bg-brand-primary-600 focus:text-white focus:px-4 focus:py-2 focus:rounded-br-lg"
       >
-        Ana içeriğe atla
+        {tHeader('skipToContent')}
       </a>
 
       <header className="fixed top-0 left-0 right-0 z-50" role="banner">
-        {/* Utility Top Bar */}
         <TopBar
           currentLang={currentLang}
           isTransparentPage={isTransparentPage}
           visible={!isScrolled}
         />
 
-        {/* Main Navigation */}
-        <div
-          className={`relative transition-all duration-400 ${
-            isScrolled
-              ? 'bg-white/90 backdrop-blur-2xl shadow-[0_1px_3px_rgba(0,0,0,0.05),0_8px_24px_rgba(0,0,0,0.04)]'
-              : isTransparentPage
-                ? 'bg-transparent'
-                : 'bg-white/90 backdrop-blur-2xl shadow-[0_1px_3px_rgba(0,0,0,0.05)]'
-          }`}
+        <motion.div
+          animate={{
+            backgroundColor: showFloatingPill ? 'rgba(255, 255, 255, 0.85)' : 'rgba(255, 255, 255, 0)',
+            backdropFilter: showFloatingPill ? 'blur(20px)' : 'blur(0px)',
+          }}
+          transition={{ duration: 0.5, ease: [0.32, 0.72, 0, 1] }}
+          className="relative"
+          style={{
+            borderBottom: showFloatingPill ? '1px solid rgba(0, 52, 80, 0.06)' : '1px solid transparent',
+          }}
         >
-          {/* Bottom accent */}
-          <div className={`absolute bottom-0 left-0 right-0 h-px transition-opacity duration-400 ${isScrolled || !isTransparentPage ? 'opacity-100' : 'opacity-0'}`}>
-            <div className="h-full bg-gradient-to-r from-transparent via-brand-primary-500/20 to-transparent" />
-          </div>
-
-          <div className="container mx-auto px-6">
-            <div className={`flex items-center transition-all duration-400 ${isScrolled ? 'h-[56px]' : 'h-[68px]'}`}>
+          <div className="max-w-[1400px] mx-auto px-6">
+            <div
+              className="flex items-center"
+              style={{
+                height: isScrolled ? '56px' : '64px',
+                transition: 'height 500ms cubic-bezier(0.32, 0.72, 0, 1)',
+              }}
+            >
               {/* Logo */}
               <Link
                 href={`/${currentLang}`}
                 className="flex items-center gap-2.5 group shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary-600 focus-visible:ring-offset-2 rounded-lg"
-                aria-label="Anasayfaya git"
+                aria-label={tHeader('goToHome')}
               >
                 {siteSettings?.logo?.url && (
-                  <div className={`relative rounded-lg overflow-hidden transition-all duration-400 ${isScrolled ? 'w-9 h-9' : 'w-11 h-11'}`}>
+                  <div
+                    className="relative rounded-xl overflow-hidden"
+                    style={{
+                      width: isScrolled ? '32px' : '38px',
+                      height: isScrolled ? '32px' : '38px',
+                      transition: 'all 500ms cubic-bezier(0.32, 0.72, 0, 1)',
+                    }}
+                  >
                     <Image
                       src={siteSettings.logo.url}
                       alt={siteSettings.logo.alt}
@@ -274,9 +278,15 @@ const Header: React.FC = () => {
                   </div>
                 )}
                 {siteSettings?.logoText && (
-                  <span className={`font-bold tracking-tight transition-all duration-400 ${isScrolled ? 'text-sm' : 'text-base'} ${
-                    isTransparent ? 'text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.3)]' : 'text-slate-900'
-                  }`}>
+                  <span
+                    className="font-semibold tracking-tight"
+                    style={{
+                      fontSize: isScrolled ? '14px' : '16px',
+                      color: !showFloatingPill ? '#ffffff' : '#18181b',
+                      textShadow: !showFloatingPill ? '0 1px 3px rgba(0,0,0,0.3)' : 'none',
+                      transition: 'all 500ms cubic-bezier(0.32, 0.72, 0, 1)',
+                    }}
+                  >
                     {siteSettings.logoText}
                   </span>
                 )}
@@ -298,19 +308,41 @@ const Header: React.FC = () => {
               {/* Mobile Hamburger */}
               <button
                 onClick={toggleMobileMenu}
-                aria-label="Mobil menüyü aç"
+                aria-label={tHeader('openMenu')}
                 aria-expanded={isMobileMenuOpen}
-                className={`lg:hidden ml-auto p-2 rounded-lg transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary-600 ${
-                  isTransparent
-                    ? 'text-white hover:bg-white/10'
-                    : 'text-slate-700 hover:bg-slate-100'
-                }`}
+                className="lg:hidden ml-auto p-2 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary-600"
+                style={{
+                  color: !showFloatingPill ? '#ffffff' : '#3f3f46',
+                  transition: 'color 500ms cubic-bezier(0.32, 0.72, 0, 1)',
+                }}
               >
-                <Bars3Icon className="w-6 h-6" />
+                <AnimatePresence mode="wait">
+                  {isMobileMenuOpen ? (
+                    <motion.div
+                      key="close"
+                      initial={{ rotate: -90, opacity: 0 }}
+                      animate={{ rotate: 0, opacity: 1 }}
+                      exit={{ rotate: 90, opacity: 0 }}
+                      transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+                    >
+                      <X size={24} weight="light" />
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key="menu"
+                      initial={{ rotate: 90, opacity: 0 }}
+                      animate={{ rotate: 0, opacity: 1 }}
+                      exit={{ rotate: -90, opacity: 0 }}
+                      transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+                    >
+                      <List size={24} weight="light" />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </button>
             </div>
           </div>
-        </div>
+        </motion.div>
       </header>
 
       <MobileNav

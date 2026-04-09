@@ -6,16 +6,23 @@ import Image from 'next/image';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { useActiveTheme } from '../providers/ActiveThemeProvider';
+import { useAppTranslations } from '@/hooks/useAppTranslations';
 import {
-  EnvelopeIcon,
-  PhoneIcon,
-  MapPinIcon,
-  HeartIcon
-} from '@heroicons/react/24/outline'; // Removed static logo usage
+  Envelope,
+  Phone,
+  MapPin,
+  ArrowUp,
+  LinkedinLogo,
+  TwitterLogo,
+  InstagramLogo,
+  FacebookLogo,
+  GithubLogo,
+  YoutubeLogo,
+} from '@phosphor-icons/react';
 
 const Version = dynamic(() => import('./Version'), {
   ssr: false,
-  loading: () => <span aria-hidden className="inline-block h-5" />
+  loading: () => <span aria-hidden className="inline-block h-5" />,
 });
 
 interface FooterSettings {
@@ -66,16 +73,27 @@ interface SiteSettingsMinimal {
   };
 }
 
+const TRANSITION = 'cubic-bezier(0.32, 0.72, 0, 1)';
+const DURATION = '700ms';
+
+const socialIconMap: Record<string, React.ElementType> = {
+  linkedin: LinkedinLogo,
+  twitter: TwitterLogo,
+  instagram: InstagramLogo,
+  facebook: FacebookLogo,
+  github: GithubLogo,
+  youtube: YoutubeLogo,
+};
+
 const ConditionalFooter: React.FC = () => {
   const pathname = usePathname();
   const [settings, setSettings] = useState<FooterSettings | null>(null);
   const [loading, setLoading] = useState(true);
   const [site, setSite] = useState<SiteSettingsMinimal | null>(null);
   const { theme } = useActiveTheme();
+  const { t, locale } = useAppTranslations('footer');
 
-  // Footer config from theme
   const footerConfig = theme?.footer;
-
   const isAdminPage = pathname?.startsWith('/admin');
 
   useEffect(() => {
@@ -84,13 +102,15 @@ const ConditionalFooter: React.FC = () => {
         const response = await fetch('/api/public/footer-settings');
         if (response.ok) {
           const data = await response.json();
-          // Sanitize links to ensure absolute paths
           if (data && data.quickLinks) {
             data.quickLinks = data.quickLinks.map((link: any) => ({
               ...link,
-              url: link.isExternal || link.url.startsWith('http') || link.url.startsWith('/')
-                ? link.url
-                : `/${link.url}`
+              url:
+                link.isExternal ||
+                link.url.startsWith('http') ||
+                link.url.startsWith('/')
+                  ? link.url
+                  : `/${link.url}`,
             }));
           }
           setSettings(data);
@@ -98,20 +118,24 @@ const ConditionalFooter: React.FC = () => {
       } catch (error) {
         console.error('Footer settings fetch error:', error);
         setSettings({
-          mainDescription: 'Mühendislik ve teknoloji alanında yenilikçi çözümler sunarak projelerinizi hayata geçiriyoruz.',
+          mainDescription:
+            'Mühendislik ve teknoloji alanında yenilikçi çözümler sunarak projelerinizi hayata geçiriyoruz.',
           contactInfo: {
             email: 'erdem.erciyas@gmail.com',
             phone: '+90 (500) 123 45 67',
-            address: 'Teknoloji Vadisi, Ankara, Türkiye'
+            address: 'Teknoloji Vadisi, Ankara, Türkiye',
           },
           quickLinks: [
             { title: 'Anasayfa', url: '/', isExternal: false },
             { title: 'Hizmetler', url: '/services', isExternal: false },
             { title: 'Projeler', url: '/portfolio', isExternal: false },
-            { title: 'İletişim', url: '/contact', isExternal: false }
-          ].map(link => ({
+            { title: 'İletişim', url: '/contact', isExternal: false },
+          ].map((link) => ({
             ...link,
-            url: link.isExternal || link.url.startsWith('/') ? link.url : `/${link.url}`
+            url:
+              link.isExternal || link.url.startsWith('/')
+                ? link.url
+                : `/${link.url}`,
           })),
           socialLinks: {
             linkedin: '',
@@ -119,24 +143,24 @@ const ConditionalFooter: React.FC = () => {
             instagram: '',
             facebook: '',
             github: '',
-            youtube: ''
+            youtube: '',
           },
           copyrightInfo: {
             companyName: 'FIXRAL',
             year: new Date().getFullYear(),
-            additionalText: 'Tüm Hakları Saklıdır.'
+            additionalText: 'Tüm Hakları Saklıdır.',
           },
           developerInfo: {
             name: 'Erdem Erciyas',
             website: 'https://www.erdemerciyas.com.tr',
-            companyName: 'Erciyas Engineering'
+            companyName: 'Erciyas Engineering',
           },
           visibility: {
             showQuickLinks: true,
             showSocialLinks: true,
             showContactInfo: true,
-            showDeveloperInfo: true
-          }
+            showDeveloperInfo: true,
+          },
         });
       } finally {
         setLoading(false);
@@ -150,17 +174,21 @@ const ConditionalFooter: React.FC = () => {
     }
   }, [isAdminPage]);
 
-  // Fetch public site settings for dynamic logo and name
   useEffect(() => {
     const fetchSiteSettings = async () => {
       try {
-        const res = await fetch('/api/public/settings', { cache: 'no-store' });
+        const res = await fetch('/api/public/settings', {
+          cache: 'no-store',
+        });
         if (res.ok) {
           const data = await res.json();
           setSite({
             siteName: data?.siteName || '',
             logo: {
-              url: typeof data?.logo === 'string' ? data.logo : (data?.logo?.url || ''),
+              url:
+                typeof data?.logo === 'string'
+                  ? data.logo
+                  : data?.logo?.url || '',
               alt: 'Logo',
               width: 200,
               height: 60,
@@ -179,239 +207,374 @@ const ConditionalFooter: React.FC = () => {
     return null;
   }
 
-  // Sosyal bağlantıları aktif olanlarıyla hazırla
   const socialEntries = [
     { key: 'linkedin', label: 'LinkedIn', url: settings.socialLinks.linkedin },
     { key: 'twitter', label: 'Twitter', url: settings.socialLinks.twitter },
-    { key: 'instagram', label: 'Instagram', url: settings.socialLinks.instagram },
+    {
+      key: 'instagram',
+      label: 'Instagram',
+      url: settings.socialLinks.instagram,
+    },
     { key: 'facebook', label: 'Facebook', url: settings.socialLinks.facebook },
     { key: 'github', label: 'GitHub', url: settings.socialLinks.github },
     { key: 'youtube', label: 'YouTube', url: settings.socialLinks.youtube },
-  ].filter(item => item.url && item.url.trim().length > 0);
+  ].filter((item) => item.url && item.url.trim().length > 0);
 
   const scrollToTop = () => {
-    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    window.scrollTo({ top: 0, behavior: prefersReduced ? 'auto' : 'smooth' });
+    const prefersReduced = window.matchMedia(
+      '(prefers-reduced-motion: reduce)'
+    ).matches;
+    window.scrollTo({
+      top: 0,
+      behavior: prefersReduced ? 'auto' : 'smooth',
+    });
   };
 
-  // Dynamic Styles
-  const footerStyle = {
-    backgroundColor: footerConfig?.backgroundColor || '#0f1b26',
-    color: footerConfig?.textColor || '#94a3b8',
-  };
-
-  const headingStyle = {
-    color: footerConfig?.headingColor || '#FFFFFF',
-  };
-
-  const descStyle = {
-    color: footerConfig?.descriptionColor || '#cbd5e1',
-  };
-
-  const linkStyle = {
-    color: footerConfig?.linkColor || '#cbd5e1',
-  };
-
-  const borderStyle = {
-    borderColor: footerConfig?.borderColor || 'rgba(255,255,255,0.1)',
-  };
-
-  const accentStyle = {
-    color: footerConfig?.accentColor || '#3B82F6',
-  };
-
-  const dotStyle = {
-    backgroundColor: footerConfig?.accentColor || '#3B82F6',
-  };
-
-  const bottomStyle = {
-    backgroundColor: footerConfig?.bottomBackgroundColor || 'transparent',
-    color: footerConfig?.bottomTextColor || footerConfig?.textColor || '#94a3b8',
-    borderColor: footerConfig?.borderColor || 'rgba(255,255,255,0.1)',
-  };
+  const bgColor = footerConfig?.backgroundColor || '#09141d';
+  const textColor = footerConfig?.textColor || 'rgba(255,255,255,0.4)';
+  const headingColor = footerConfig?.headingColor || 'rgba(255,255,255,0.9)';
+  const linkColor = footerConfig?.linkColor || 'rgba(255,255,255,0.6)';
+  const accentColor = footerConfig?.accentColor || '#003450';
+  const borderColor =
+    footerConfig?.borderColor || 'rgba(255,255,255,0.06)';
+  const bottomTextColor =
+    footerConfig?.bottomTextColor || 'rgba(255,255,255,0.4)';
 
   return (
-    <footer style={footerStyle} className="relative overflow-hidden transition-colors duration-300" role="contentinfo">
-      <div className="container-main section-sm relative z-10">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 md:gap-12 mb-12 md:mb-16">
-          {/* About Section */}
+    <footer
+      style={{
+        backgroundColor: bgColor,
+        fontFamily: 'var(--font-geist-sans)',
+        transition: `background-color ${DURATION} ${TRANSITION}`,
+      }}
+      className="relative overflow-hidden"
+      role="contentinfo"
+    >
+      {/* ── Top section: brand + quick links ── */}
+      <div className="mx-auto max-w-[1400px] px-6 pt-16 pb-10 sm:px-10 lg:px-16">
+        <div className="grid grid-cols-1 gap-12 md:grid-cols-2 md:gap-16">
+          {/* Left column: brand + description + contact */}
           <section aria-labelledby="footer-about">
-            <div className="mb-6 flex items-center space-x-3 min-h-[56px]">
+            <h2 id="footer-about" className="sr-only">
+              {t('aboutTitle')}
+            </h2>
+
+            {/* Logo & site name */}
+            <div className="mb-6 flex items-center gap-3">
               {site?.logo?.url && (
-                <div className="relative w-14 h-14 rounded-xl overflow-hidden bg-white/10 backdrop-blur-sm p-1">
+                <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-lg bg-white/[0.06]">
                   <Image
                     src={site.logo.url}
                     alt={site.logo.alt}
                     fill
-                    className="object-contain"
-                    sizes="56px"
+                    className="object-contain p-1"
+                    sizes="40px"
                     priority={false}
                   />
                 </div>
               )}
               {site?.siteName && (
-                <h2 style={headingStyle} className="text-2xl font-bold transition-colors duration-300">{site.siteName}</h2>
+                <span
+                  style={{
+                    color: headingColor,
+                    transition: `color ${DURATION} ${TRANSITION}`,
+                  }}
+                  className="text-lg font-semibold tracking-tight"
+                >
+                  {site.siteName}
+                </span>
               )}
             </div>
-            <h2 id="footer-about" className="sr-only">Hakkında</h2>
-            <p style={descStyle} className="leading-relaxed text-lg mb-4 transition-colors duration-300">
+
+            {/* Description */}
+            <p
+              style={{
+                color: linkColor,
+                transition: `color ${DURATION} ${TRANSITION}`,
+              }}
+              className="max-w-md text-[15px] leading-relaxed"
+            >
               {settings.mainDescription}
             </p>
-            <p style={{ color: footerConfig?.textColor || '#94a3b8' }} className="text-sm transition-colors duration-300">
-              Modern mühendislik çözümleri ile projelerinizi hayata geçiriyoruz.
-            </p>
 
-            {/* Social Links */}
-            {settings.visibility.showSocialLinks && socialEntries.length > 0 && (
-              <nav aria-label="Sosyal medya" className="mt-6">
-                <ul className="flex flex-wrap gap-3">
-                  {socialEntries.map(item => (
-                    <li key={item.key}>
-                      <a
-                        href={item.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label={`${item.label} sayfamız`}
-                        className="inline-flex items-center justify-center min-h-[44px] px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-brand-primary-500/50 transition-colors duration-200"
-                        style={{ color: footerConfig?.linkColor || '#cbd5e1' }}
-                      >
-                        <span className="sr-only">{item.label}</span>
-                        <span aria-hidden className="font-medium">{item.label}</span>
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </nav>
+            {/* Contact info */}
+            {settings.visibility.showContactInfo && (
+              <div className="mt-8 flex flex-col gap-3">
+                {settings.contactInfo.email && (
+                  <a
+                    href={`mailto:${settings.contactInfo.email}`}
+                    className="group inline-flex items-center gap-2.5"
+                    style={{
+                      color: textColor,
+                      transition: `color ${DURATION} ${TRANSITION}`,
+                    }}
+                  >
+                    <Envelope
+                      weight="light"
+                      className="h-4 w-4 shrink-0"
+                      style={{ color: accentColor }}
+                    />
+                    <span
+                      className="text-sm"
+                      style={{
+                        transition: `color ${DURATION} ${TRANSITION}`,
+                      }}
+                      onMouseEnter={(e) =>
+                        (e.currentTarget.style.color = 'rgba(255,255,255,0.9)')
+                      }
+                      onMouseLeave={(e) =>
+                        (e.currentTarget.style.color = textColor)
+                      }
+                    >
+                      {settings.contactInfo.email}
+                    </span>
+                  </a>
+                )}
+                {settings.contactInfo.phone && (
+                  <a
+                    href={`tel:${settings.contactInfo.phone.replace(/\s/g, '')}`}
+                    className="group inline-flex items-center gap-2.5"
+                    style={{
+                      color: textColor,
+                      transition: `color ${DURATION} ${TRANSITION}`,
+                    }}
+                  >
+                    <Phone
+                      weight="light"
+                      className="h-4 w-4 shrink-0"
+                      style={{ color: accentColor }}
+                    />
+                    <span
+                      className="text-sm"
+                      style={{
+                        transition: `color ${DURATION} ${TRANSITION}`,
+                      }}
+                      onMouseEnter={(e) =>
+                        (e.currentTarget.style.color = 'rgba(255,255,255,0.9)')
+                      }
+                      onMouseLeave={(e) =>
+                        (e.currentTarget.style.color = textColor)
+                      }
+                    >
+                      {settings.contactInfo.phone}
+                    </span>
+                  </a>
+                )}
+                {settings.contactInfo.address && (
+                  <div
+                    className="inline-flex items-start gap-2.5"
+                    style={{ color: textColor }}
+                  >
+                    <MapPin
+                      weight="light"
+                      className="mt-0.5 h-4 w-4 shrink-0"
+                      style={{ color: accentColor }}
+                    />
+                    <span className="text-sm">
+                      {settings.contactInfo.address}
+                    </span>
+                  </div>
+                )}
+              </div>
             )}
           </section>
 
-          {/* Quick Links */}
-          {settings.visibility.showQuickLinks && settings.quickLinks.length > 0 && (
-            <nav aria-label="Footer navigation" role="navigation">
-              <h3 style={{ ...headingStyle, ...borderStyle }} className="text-xl font-bold mb-6 border-b pb-3 transition-colors duration-300">Hızlı Bağlantılar</h3>
-              <ul className="space-y-4">
-                {settings.quickLinks.map((link, index) => (
-                  <li key={index}>
-                    {link.isExternal ? (
+          {/* Right column: quick links */}
+          {settings.visibility.showQuickLinks &&
+            settings.quickLinks.length > 0 && (
+              <nav aria-label="Footer navigation" role="navigation">
+                <h3
+                  style={{
+                    color: headingColor,
+                    transition: `color ${DURATION} ${TRANSITION}`,
+                  }}
+                  className="mb-6 text-xs font-medium uppercase tracking-[0.15em]"
+                >
+                  {t('quickLinks')}
+                </h3>
+                <ul className="flex flex-col gap-3">
+                  {settings.quickLinks.map((link, index) => {
+                    const linkUrl =
+                      link.isExternal || link.url.startsWith('http')
+                        ? link.url
+                        : link.url.startsWith(`/${locale}`)
+                          ? link.url
+                          : `/${locale}${link.url.startsWith('/') ? link.url : `/${link.url}`}`;
+
+                    const sharedClasses =
+                      'text-[15px] inline-block rounded-md px-0 py-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#003450]/50';
+
+                    return (
+                      <li key={index}>
+                        {link.isExternal ? (
+                          <a
+                            href={linkUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={sharedClasses}
+                            style={{
+                              color: linkColor,
+                              transition: `color ${DURATION} ${TRANSITION}`,
+                            }}
+                            onMouseEnter={(e) =>
+                              (e.currentTarget.style.color =
+                                'rgba(255,255,255,0.9)')
+                            }
+                            onMouseLeave={(e) =>
+                              (e.currentTarget.style.color = linkColor)
+                            }
+                          >
+                            {link.title}
+                          </a>
+                        ) : (
+                          <Link
+                            href={linkUrl}
+                            className={sharedClasses}
+                            style={{
+                              color: linkColor,
+                              transition: `color ${DURATION} ${TRANSITION}`,
+                            }}
+                            onMouseEnter={(e) =>
+                              (e.currentTarget.style.color =
+                                'rgba(255,255,255,0.9)')
+                            }
+                            onMouseLeave={(e) =>
+                              (e.currentTarget.style.color = linkColor)
+                            }
+                          >
+                            {link.title}
+                          </Link>
+                        )}
+                      </li>
+                    );
+                  })}
+                </ul>
+              </nav>
+            )}
+        </div>
+      </div>
+
+      {/* ── Separator ── */}
+      <div className="mx-auto max-w-[1400px] px-6 sm:px-10 lg:px-16">
+        <div
+          className="h-px w-full"
+          style={{ backgroundColor: borderColor }}
+        />
+      </div>
+
+      {/* ── Bottom section: copyright + social + back-to-top ── */}
+      <div className="mx-auto max-w-[1400px] px-6 py-6 sm:px-10 lg:px-16">
+        <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
+          {/* Copyright & meta */}
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+            <p
+              className="font-mono text-[12px]"
+              style={{
+                color: bottomTextColor,
+                transition: `color ${DURATION} ${TRANSITION}`,
+              }}
+            >
+              &copy; {settings.copyrightInfo.year}{' '}
+              {settings.copyrightInfo.companyName}.{' '}
+              {settings.copyrightInfo.additionalText}
+            </p>
+            <Version variant="badge" />
+            {settings.visibility.showDeveloperInfo && (
+              <span
+                className="font-mono text-[12px]"
+                style={{
+                  color: bottomTextColor,
+                  transition: `color ${DURATION} ${TRANSITION}`,
+                }}
+              >
+                {t('developer')}{' '}
+                <a
+                  href={settings.developerInfo.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline decoration-white/10 underline-offset-2"
+                  style={{
+                    color: linkColor,
+                    transition: `color ${DURATION} ${TRANSITION}`,
+                  }}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.style.color = 'rgba(255,255,255,0.9)')
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.color = linkColor)
+                  }
+                >
+                  {settings.developerInfo.name}
+                </a>
+              </span>
+            )}
+          </div>
+
+          {/* Social links + back-to-top */}
+          <div className="flex items-center gap-2">
+            {settings.visibility.showSocialLinks &&
+              socialEntries.length > 0 && (
+                <nav aria-label="Social media" className="flex items-center gap-2">
+                  {socialEntries.map((item) => {
+                    const IconComp = socialIconMap[item.key];
+                    return (
                       <a
-                        href={link.url}
+                        key={item.key}
+                        href={item.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="hover:translate-x-1 transition-all duration-200 text-base focus:outline-none focus:ring-2 focus:ring-brand-primary-500/50 rounded-md px-2 py-1 inline-flex items-center group"
-                        style={linkStyle}
+                        aria-label={item.label}
+                        className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/[0.06] bg-white/[0.05] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#003450]/50"
+                        style={{
+                          color: linkColor,
+                          transition: `all ${DURATION} ${TRANSITION}`,
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.backgroundColor =
+                            'rgba(255,255,255,0.1)';
+                          e.currentTarget.style.color =
+                            'rgba(255,255,255,0.9)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor =
+                            'rgba(255,255,255,0.05)';
+                          e.currentTarget.style.color = linkColor;
+                        }}
                       >
-                        <span style={dotStyle} className="w-2 h-2 rounded-full mr-3 group-hover:bg-white transition-colors duration-200"></span>
-                        {link.title}
+                        {IconComp && (
+                          <IconComp weight="light" className="h-[18px] w-[18px]" />
+                        )}
                       </a>
-                    ) : (
-                      <Link
-                        href={link.url}
-                        className="hover:translate-x-1 transition-all duration-200 text-base focus:outline-none focus:ring-2 focus:ring-brand-primary-500/50 rounded-md px-2 py-1 inline-flex items-center group"
-                        style={linkStyle}
-                      >
-                        <span style={dotStyle} className="w-2 h-2 rounded-full mr-3 group-hover:bg-white transition-colors duration-200"></span>
-                        {link.title}
-                      </Link>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </nav>
-          )}
-
-          {/* Contact Info */}
-          {settings.visibility.showContactInfo && (
-            <section aria-labelledby="footer-contact">
-              <h3 style={{ ...headingStyle, ...borderStyle }} className="text-xl font-bold mb-6 border-b pb-3 transition-colors duration-300">İletişim</h3>
-              <div className="space-y-5">
-                <div className="flex items-center space-x-4 group">
-                  <div className="w-10 h-10 bg-white/5 rounded-lg flex items-center justify-center group-hover:bg-white/10 transition-colors duration-200">
-                    <EnvelopeIcon style={accentStyle} className="w-5 h-5 transition-colors duration-200" />
-                  </div>
-                  <a
-                    href={`mailto:${settings.contactInfo.email}`}
-                    className="hover:text-white transition-colors duration-200 text-base focus:outline-none focus:ring-2 focus:ring-brand-primary-500/50 rounded-md px-2 py-1"
-                    style={linkStyle}
-                  >
-                    {settings.contactInfo.email}
-                  </a>
-                </div>
-                <div className="flex items-center space-x-4 group">
-                  <div className="w-10 h-10 bg-white/5 rounded-lg flex items-center justify-center group-hover:bg-white/10 transition-colors duration-200">
-                    <PhoneIcon style={accentStyle} className="w-5 h-5 transition-colors duration-200" />
-                  </div>
-                  <a
-                    href={`tel:${settings.contactInfo.phone.replace(/\s/g, '')}`}
-                    className="hover:text-white transition-colors duration-200 text-base focus:outline-none focus:ring-2 focus:ring-brand-primary-500/50 rounded-md px-2 py-1"
-                    style={linkStyle}
-                  >
-                    {settings.contactInfo.phone}
-                  </a>
-                </div>
-                <div className="flex items-start space-x-4 group">
-                  <div className="w-10 h-10 bg-white/5 rounded-lg flex items-center justify-center group-hover:bg-white/10 transition-colors duration-200 mt-1">
-                    <MapPinIcon style={accentStyle} className="w-5 h-5 transition-colors duration-200" />
-                  </div>
-                  <span className="text-base pt-2 transition-colors duration-300" style={linkStyle}>
-                    {settings.contactInfo.address}
-                  </span>
-                </div>
-              </div>
-            </section>
-          )}
-        </div>
-
-        {/* Bottom Section */}
-        <article className="pt-8 border-t transition-colors duration-300" style={{ ...bottomStyle, borderTopColor: footerConfig?.borderColor || 'rgba(255,255,255,0.1)' }}>
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            {/* Copyright */}
-            <div className="text-sm transition-colors duration-300" style={{ color: footerConfig?.bottomTextColor || footerConfig?.textColor || '#94a3b8' }}>
-              <p>
-                &copy; {settings.copyrightInfo.year} {settings.copyrightInfo.companyName}.
-                {settings.copyrightInfo.additionalText}
-              </p>
-            </div>
-
-            {/* Version & Developer Info */}
-            <div className="flex items-center space-x-4">
-              <Version variant="badge" />
-              {settings.visibility.showDeveloperInfo && (
-                <div className="flex items-center space-x-2 text-sm" style={{ color: footerConfig?.bottomTextColor || footerConfig?.textColor || '#94a3b8' }}>
-                  <span>Geliştiren:</span>
-                  <a
-                    href={settings.developerInfo.website}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-brand-primary-400 hover:text-brand-primary-300 transition-colors duration-200 font-medium"
-                  >
-                    {settings.developerInfo.name}
-                  </a>
-                </div>
+                    );
+                  })}
+                </nav>
               )}
-            </div>
-          </div>
 
-          {/* Made with love */}
-          <div className="mt-6 text-center">
-            <p className="text-sm flex items-center justify-center space-x-2 transition-colors duration-300" style={{ color: footerConfig?.bottomTextColor || footerConfig?.textColor || '#94a3b8' }}>
-              <span>Made with</span>
-              <HeartIcon className="w-4 h-4 text-red-500" />
-              <span>in Turkey</span>
-            </p>
-          </div>
-
-          {/* Back to top */}
-          <div className="mt-6 flex justify-end">
+            {/* Back to top */}
             <button
               type="button"
               onClick={scrollToTop}
-              className="inline-flex items-center justify-center min-h-[44px] px-4 py-2 rounded-xl bg-brand-primary-600 text-white hover:bg-brand-primary-500 focus:outline-none focus:ring-2 focus:ring-brand-primary-500/50 transition-colors duration-200"
-              aria-label="Sayfa başına dön"
+              aria-label={t('backToTop')}
+              className="ml-1 inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/[0.06] bg-white/[0.05] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#003450]/50"
+              style={{
+                color: linkColor,
+                transition: `all ${DURATION} ${TRANSITION}`,
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor =
+                  'rgba(255,255,255,0.1)';
+                e.currentTarget.style.color = 'rgba(255,255,255,0.9)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor =
+                  'rgba(255,255,255,0.05)';
+                e.currentTarget.style.color = linkColor;
+              }}
             >
-              Yukarı Çık
+              <ArrowUp weight="light" className="h-[18px] w-[18px]" />
             </button>
           </div>
-        </article>
+        </div>
       </div>
     </footer>
   );

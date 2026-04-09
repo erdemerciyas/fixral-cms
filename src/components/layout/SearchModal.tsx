@@ -8,7 +8,6 @@ import {
     XMarkIcon,
     NewspaperIcon,
     FolderOpenIcon,
-    ShoppingBagIcon,
     WrenchScrewdriverIcon,
     ArrowRightIcon,
 } from '@heroicons/react/24/outline';
@@ -30,14 +29,12 @@ interface SearchModalProps {
 const CATEGORY_ICONS: Record<string, React.ElementType> = {
     'Haberler': NewspaperIcon,
     'Portfolyo': FolderOpenIcon,
-    'Ürünler': ShoppingBagIcon,
     'Hizmetler': WrenchScrewdriverIcon,
 };
 
 const CATEGORY_COLORS: Record<string, string> = {
     'Haberler': 'bg-blue-50 text-blue-600',
     'Portfolyo': 'bg-purple-50 text-purple-600',
-    'Ürünler': 'bg-amber-50 text-amber-600',
     'Hizmetler': 'bg-emerald-50 text-emerald-600',
 };
 
@@ -76,10 +73,9 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
         try {
             const searchResults: SearchResult[] = [];
 
-            const [newsRes, portfolioRes, productsRes] = await Promise.allSettled([
+            const [newsRes, portfolioRes] = await Promise.allSettled([
                 fetch(`/api/public/news?search=${encodeURIComponent(q)}&limit=3`),
                 fetch(`/api/public/portfolio?search=${encodeURIComponent(q)}&limit=3`),
-                fetch(`/api/public/products?search=${encodeURIComponent(q)}&limit=3`),
             ]);
 
             if (newsRes.status === 'fulfilled' && newsRes.value.ok) {
@@ -109,19 +105,6 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                 });
             }
 
-            if (productsRes.status === 'fulfilled' && productsRes.value.ok) {
-                const data = await productsRes.value.json();
-                const items = Array.isArray(data) ? data : data.products || data.items || [];
-                items.slice(0, 3).forEach((item: any) => {
-                    searchResults.push({
-                        title: item.title || item.name,
-                        description: item.shortDescription || item.description || '',
-                        href: `/${currentLang}/products/${item.slug}`,
-                        category: 'Ürünler',
-                    });
-                });
-            }
-
             setResults(searchResults);
         } catch {
             setResults([]);
@@ -140,7 +123,8 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (query.trim()) {
-            window.location.href = `/${currentLang}/products?q=${encodeURIComponent(query.trim())}`;
+            const newsRoute = currentLang === 'es' ? 'noticias' : 'haberler';
+            window.location.href = `/${currentLang}/${newsRoute}?q=${encodeURIComponent(query.trim())}`;
             onClose();
         }
     };
@@ -284,7 +268,6 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                                         {[
                                             { label: 'Haberler', href: `/${currentLang}/${currentLang === 'es' ? 'noticias' : 'haberler'}` },
                                             { label: 'Portfolyo', href: `/${currentLang}/portfolio` },
-                                            { label: 'Ürünler', href: `/${currentLang}/products` },
                                             { label: 'Hizmetler', href: `/${currentLang}/services` },
                                         ].map((link) => (
                                             <Link

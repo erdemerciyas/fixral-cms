@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Plus } from 'lucide-react'
+import { Plus, FileText, Image as ImageIcon, Box, Layers } from 'lucide-react'
 import { Separator } from '@/components/ui/separator'
 import { SidebarTrigger } from '@/components/ui/sidebar'
 import {
@@ -14,6 +14,12 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
 import { Button } from '@/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import dynamic from 'next/dynamic'
 
 const ThemeToggle = dynamic(
@@ -61,6 +67,12 @@ const ROUTE_LABELS: Record<string, string> = {
   reviews: 'Yorumlar',
 }
 
+const ID_PATTERN = /^[a-f0-9]{24}$|^[0-9a-f]{8}-[0-9a-f]{4}-/
+
+function isObjectId(segment: string): boolean {
+  return ID_PATTERN.test(segment)
+}
+
 function getBreadcrumbs(pathname: string) {
   const segments = pathname
     .replace('/admin', '')
@@ -70,14 +82,27 @@ function getBreadcrumbs(pathname: string) {
   const crumbs: { label: string; href: string }[] = []
   let currentPath = '/admin'
 
-  for (const segment of segments) {
+  for (let i = 0; i < segments.length; i++) {
+    const segment = segments[i]
     currentPath += `/${segment}`
-    const label = ROUTE_LABELS[segment] || segment
-    crumbs.push({ label, href: currentPath })
+
+    if (isObjectId(segment)) {
+      crumbs.push({ label: '#' + segment.slice(0, 6), href: currentPath })
+    } else {
+      const label = ROUTE_LABELS[segment] || segment
+      crumbs.push({ label, href: currentPath })
+    }
   }
 
   return crumbs
 }
+
+const quickCreateActions = [
+  { name: 'Haber Ekle', href: '/admin/news/create', icon: FileText },
+  { name: 'Portfolyo Ekle', href: '/admin/portfolio/new', icon: ImageIcon },
+  { name: 'Hizmet Ekle', href: '/admin/services/new', icon: Box },
+  { name: 'Sayfa Ekle', href: '/admin/pages', icon: Layers },
+]
 
 export function AdminHeader() {
   const pathname = usePathname()
@@ -114,12 +139,24 @@ export function AdminHeader() {
       </div>
       <div className="ml-auto flex items-center gap-2">
         <ThemeToggle />
-        <Button size="sm" asChild className="hidden md:inline-flex">
-          <Link href="/admin/news/create">
-            <Plus className="mr-1 h-4 w-4" />
-            Yeni İçerik
-          </Link>
-        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button size="sm" className="hidden md:inline-flex">
+              <Plus className="mr-1 h-4 w-4" />
+              Yeni İçerik
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-48">
+            {quickCreateActions.map((action) => (
+              <DropdownMenuItem key={action.href} asChild>
+                <Link href={action.href} className="flex items-center gap-2">
+                  <action.icon className="h-4 w-4 text-muted-foreground" />
+                  {action.name}
+                </Link>
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </header>
   )

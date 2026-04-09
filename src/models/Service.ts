@@ -1,4 +1,5 @@
-import mongoose from 'mongoose';
+import { createPrismaModel } from '@/lib/prisma-model-adapter';
+import { prisma } from '@/lib/prisma';
 
 export interface IServiceTranslation {
   title?: string;
@@ -20,51 +21,4 @@ export interface IService {
   updatedAt: Date;
 }
 
-const serviceSchema = new mongoose.Schema<IService>(
-  {
-    title: {
-      type: String,
-      required: [true, 'Başlık gerekli'],
-      trim: true,
-    },
-    description: {
-      type: String,
-      required: [true, 'Açıklama gerekli'],
-      trim: true,
-    },
-    features: {
-      type: [String],
-      default: [],
-    },
-    image: {
-      type: String,
-      required: [true, 'Görsel URL gerekli'],
-      default: 'https://placehold.co/600x400/cccccc/000000?text=Service+Image',
-    },
-    icon: {
-      type: String,
-      default: '',
-    },
-    translations: {
-      type: Map,
-      of: new mongoose.Schema(
-        {
-          title:           { type: String },
-          description:     { type: String },
-          excerpt:         { type: String },
-          metaDescription: { type: String },
-          keywords:        [{ type: String }],
-        },
-        { _id: false }
-      ),
-      default: {},
-    },
-  },
-  {
-    timestamps: true,
-  }
-);
-
-const Service = mongoose.models.Service || mongoose.model<IService>('Service', serviceSchema);
-
-export default Service;
+export default createPrismaModel('Service', prisma.serviceRow);

@@ -50,7 +50,11 @@ export const PUT = withSecurity(SecurityConfigs.admin)(async (request: NextReque
       'allowRegistration',
       'enableComments',
       'analytics',
-      'system'
+      'system',
+      'themeConfig',
+      'seoConfig',
+      'analyticsConfig',
+      'socialMediaConfig'
     ];
 
     const filteredData: Record<string, unknown> = {};

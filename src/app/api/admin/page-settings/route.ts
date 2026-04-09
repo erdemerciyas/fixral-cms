@@ -12,7 +12,8 @@ export async function GET() {
 
     let pages = await PageSetting.find().sort({ order: 1 });
 
-    // Varsayılan sayfalar
+    // Varsayılan sayfalar — yalnızca koleksiyon tamamen boşken seed edilir.
+    // Mevcut kayıtlar varsa admin tarafından silinmiş/düzenlenmiş olabilir, dokunulmaz.
     const defaultPages = [
       { pageId: 'home', title: 'Ana Sayfa', path: '/', description: 'Mühendislik ve 3D tarama hizmetlerimizi keşfedin', icon: 'HomeIcon', isExternal: false, isActive: true, showInNavigation: true, order: 0 },
       { pageId: 'services', title: 'Hizmetler', path: '/services', description: 'Sunduğum profesyonel hizmetleri inceleyin', icon: 'WrenchScrewdriverIcon', isExternal: false, isActive: true, showInNavigation: true, order: 2 },
@@ -23,19 +24,8 @@ export async function GET() {
       { pageId: 'news', title: 'Haberler', path: '/haberler', description: 'Güncel haberler ve duyurular', icon: 'NewspaperIcon', isExternal: false, isActive: true, showInNavigation: true, order: 1 },
     ];
 
-    // Kayıt yoksa seed et; varsa eksikleri upsert et
     if (pages.length === 0) {
       pages = await PageSetting.insertMany(defaultPages);
-    } else {
-      const existingById = new Map<string, unknown>(pages.map((p: { pageId: string }) => [p.pageId, p]));
-      const upserts: Promise<unknown>[] = [];
-      for (const def of defaultPages) {
-        if (!existingById.has(def.pageId)) {
-          upserts.push(PageSetting.findOneAndUpdate({ pageId: def.pageId }, def, { new: true, upsert: true }));
-        }
-      }
-      if (upserts.length) await Promise.all(upserts);
-      pages = await PageSetting.find().sort({ order: 1 });
     }
 
     // Admin listesinde gösterilmeyecek dahili sayfalar

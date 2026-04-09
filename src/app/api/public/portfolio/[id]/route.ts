@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import { connectToDatabase } from '@/lib/mongoose';
+import connectDB from '@/lib/mongoose';
 import { authOptions } from '@/lib/auth';
-import { ObjectId } from 'mongodb';
+import Portfolio from '@/models/Portfolio';
+import Category from '@/models/Category';
 
 const DEFAULT_IMAGE = 'https://picsum.photos/800/600?grayscale';
 const DEFAULT_DETAIL_IMAGES = [
@@ -17,46 +18,9 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const { db } = await connectToDatabase();
-    
-    // ObjectId kontrolü
-    if (!ObjectId.isValid(params.id)) {
-      return NextResponse.json(
-        { error: 'Geçersiz ID formatı' },
-        { status: 400 }
-      );
-    }
+    await connectDB();
 
-    const portfolio = await db
-      .collection('portfolios')
-      .aggregate([
-        {
-          $match: { _id: new ObjectId(params.id) }
-        },
-        {
-          $lookup: {
-            from: 'categories',
-            localField: 'categoryId',
-            foreignField: '_id',
-            as: 'category'
-          }
-        },
-        {
-          $lookup: {
-            from: 'categories',
-            localField: 'categoryIds',
-            foreignField: '_id',
-            as: 'categories'
-          }
-        },
-        {
-          $unwind: {
-            path: '$category',
-            preserveNullAndEmptyArrays: true
-          }
-        }
-      ])
-      .next();
+    const portfolio = await Portfolio.findById(params.id);
 
     if (!portfolio) {
       return NextResponse.json(
@@ -65,7 +29,14 @@ export async function GET(
       );
     }
 
-    return NextResponse.json(portfolio);
+    // Attach category info if available
+    const result = portfolio.toObject ? portfolio.toObject() : { ...portfolio };
+    if (result.category) {
+      const cat = await Category.findById(result.category);
+      if (cat) result.categoryData = cat;
+    }
+
+    return NextResponse.json(result);
   } catch (error) {
     console.error('Portfolyo detay getirme hatası:', error);
     return NextResponse.json(
@@ -90,38 +61,28 @@ export async function PUT(
       );
     }
 
-    const { db } = await connectToDatabase();
+    await connectDB();
     const data = await request.json();
-    
-    // Zorunlu alanları kontrol et
-    if (!data.title || !data.description || !data.client || !data.completionDate) {
+
+    if (!data.title || !data.description) {
       return NextResponse.json(
-        { error: 'Tüm zorunlu alanları doldurun' },
+        { error: 'Başlık ve açıklama zorunludur' },
         { status: 400 }
       );
     }
 
-    // Çoklu kategori desteği için validation
+    // Validate categories
     if (data.categoryIds && Array.isArray(data.categoryIds) && data.categoryIds.length > 0) {
-      // Kategorilerin geçerli olduğunu kontrol et
-      const categories = await db
-        .collection('categories')
-        .find({ _id: { $in: data.categoryIds.map((id: string) => new ObjectId(id)) } })
-        .toArray();
-      
-      if (categories.length !== data.categoryIds.length) {
+      const catCount = await Category.countDocuments({ _id: { $in: data.categoryIds } });
+      if (catCount !== data.categoryIds.length) {
         return NextResponse.json(
           { error: 'Geçersiz kategori ID\'si bulundu' },
           { status: 400 }
         );
       }
     } else if (data.categoryId) {
-      // Eski tekli kategori desteği (geriye uyumluluk)
-      const category = await db
-        .collection('categories')
-        .findOne({ _id: new ObjectId(data.categoryId) });
-
-      if (!category) {
+      const cat = await Category.findById(data.categoryId);
+      if (!cat) {
         return NextResponse.json(
           { error: 'Geçersiz kategori ID\'si' },
           { status: 400 }
@@ -134,42 +95,37 @@ export async function PUT(
       );
     }
 
-    // Update object'ini hazırla (Mongo doküman alanları için esnek tip)
     const updateData: Record<string, unknown> = {
       title: data.title,
+      slug: data.slug,
       description: data.description,
-      client: data.client,
-      completionDate: new Date(data.completionDate),
-      technologies: data.technologies,
       coverImage: data.coverImage || DEFAULT_IMAGE,
       images: data.images && data.images.length > 0 && data.images[0] ? data.images : DEFAULT_DETAIL_IMAGES,
-      // 3D Model desteği
-      models3D: data.models3D || [],
+      technologies: data.technologies,
+      client: data.client || '',
+      completionDate: data.completionDate || '',
+      models3D: data.models3D || null,
+      order: typeof data.order === 'number' ? data.order : 0,
+      projectUrl: data.projectUrl || '',
+      githubUrl: data.githubUrl || '',
       featured: data.featured,
-      order: data.order,
-      updatedAt: new Date(),
+      externalUrl: data.externalUrl,
     };
 
-    // Çok dilli içerik desteği
     if (data.translations) {
       updateData.translations = data.translations;
     }
 
-    // Çoklu kategori desteği
     if (data.categoryIds && Array.isArray(data.categoryIds) && data.categoryIds.length > 0) {
-      updateData.categoryIds = data.categoryIds.map((id: string) => new ObjectId(id));
-      // Geriye uyumluluk için ilk kategoriyi categoryId olarak da kaydet
-      updateData.categoryId = new ObjectId(data.categoryIds[0]);
-
+      updateData.category = data.categoryIds[0];
+      updateData.categoryIds = data.categoryIds;
     } else if (data.categoryId) {
-      // Eski tekli kategori desteği
-      updateData.categoryId = new ObjectId(data.categoryId);
-      updateData.categoryIds = [new ObjectId(data.categoryId)];
-
+      updateData.category = data.categoryId;
+      updateData.categoryIds = [data.categoryId];
     }
 
-    const result = await db.collection('portfolios').updateOne(
-      { _id: new ObjectId(params.id) },
+    const result = await Portfolio.updateOne(
+      { _id: params.id },
       { $set: updateData }
     );
 
@@ -208,11 +164,9 @@ export async function DELETE(
       );
     }
 
-    const { db } = await connectToDatabase();
+    await connectDB();
 
-    const result = await db.collection('portfolios').deleteOne({
-      _id: new ObjectId(params.id),
-    });
+    const result = await Portfolio.deleteOne({ _id: params.id });
 
     if (result.deletedCount === 0) {
       return NextResponse.json(
@@ -232,4 +186,4 @@ export async function DELETE(
       { status: 500 }
     );
   }
-} 
+}

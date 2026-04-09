@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { PortfolioItem } from '@/types/portfolio';
-import PortfolioDetailHero from '@/components/portfolio/PortfolioDetailHero';
+import PageHero from '@/components/common/PageHero';
 import PortfolioMediaGallery from '@/components/portfolio/PortfolioMediaGallery';
 import Portfolio3DFiles from '@/components/portfolio/Portfolio3DFiles';
 import ModernProjectGrid from '@/components/portfolio/ModernProjectGrid';
@@ -29,12 +29,15 @@ export default function PortfolioDetailClient({ portfolioItem, relatedProjects, 
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <PortfolioDetailHero project={portfolioItem} />
+      <PageHero
+        title={portfolioItem.title}
+        showButton={false}
+        variant="compact"
+        featuredBadge={portfolioItem.featured ? 'Öne Çıkan Proje' : undefined}
+      />
 
-      <section className="py-1">
-        <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
-          <Breadcrumbs />
-        </div>
+      <section className="container-content py-4">
+        <Breadcrumbs />
       </section>
 
       <BreadcrumbsJsonLd
@@ -52,8 +55,8 @@ export default function PortfolioDetailClient({ portfolioItem, relatedProjects, 
         baseUrl={SITE_URL}
       />
 
-      <section className="relative z-10 py-12 md:py-2">
-        <div className="container-main">
+      <section className="relative z-10 py-8">
+        <div className="container-content">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
             <div className="lg:col-span-8 space-y-12">
               <motion.div

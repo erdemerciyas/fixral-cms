@@ -10,6 +10,7 @@ import {
   ShieldCheck,
   AlertTriangle
 } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface Update {
   _id: string;
@@ -113,7 +114,7 @@ export default function AdminUpdatesPage() {
       case 'patch':
         return 'bg-emerald-100 text-emerald-700 border-emerald-200';
       default:
-        return 'bg-slate-100 text-slate-700 border-slate-200';
+        return 'bg-muted text-foreground border-border';
     }
   };
 
@@ -132,13 +133,19 @@ export default function AdminUpdatesPage() {
 
   if (status === 'loading' || loading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="flex flex-col items-center space-y-4">
-          <div className="relative">
-            <div className="w-16 h-16 border-4 border-indigo-200 rounded-full"></div>
-            <div className="absolute top-0 left-0 w-16 h-16 border-4 border-transparent border-t-indigo-600 rounded-full animate-spin"></div>
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div className="space-y-2">
+            <Skeleton className="h-8 w-48" />
+            <Skeleton className="h-4 w-64" />
           </div>
-          <p className="text-lg font-medium text-slate-600">Loading updates...</p>
+          <Skeleton className="h-10 w-32" />
+        </div>
+        <Skeleton className="h-12 w-full rounded-xl" />
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <Skeleton key={i} className="h-32 rounded-xl" />
+          ))}
         </div>
       </div>
     );
@@ -149,8 +156,8 @@ export default function AdminUpdatesPage() {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">System Updates</h1>
-          <p className="text-slate-500 mt-1">Keep your system up to date</p>
+          <h1 className="text-2xl font-bold text-foreground">System Updates</h1>
+          <p className="text-muted-foreground mt-1">Keep your system up to date</p>
         </div>
         <button
           onClick={handleCheckForUpdates}
@@ -172,14 +179,14 @@ export default function AdminUpdatesPage() {
       </div>
 
       {/* System Status */}
-      <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-2xl p-6 border border-emerald-200">
+      <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl p-6 border border-emerald-200">
         <div className="flex items-center space-x-4">
           <div className="w-12 h-12 rounded-xl bg-emerald-500 flex items-center justify-center">
             <ShieldCheck className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-slate-900">System Status</h3>
-            <p className="text-sm text-slate-600">
+            <h3 className="text-lg font-semibold text-foreground">System Status</h3>
+            <p className="text-sm text-muted-foreground">
               Your system is running the latest version
             </p>
           </div>
@@ -188,18 +195,18 @@ export default function AdminUpdatesPage() {
 
       {/* Available Updates */}
       {updates.length > 0 && (
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200/60 overflow-hidden">
-          <div className="px-6 py-4 border-b border-slate-200">
-            <h2 className="text-lg font-bold text-slate-900">Available Updates</h2>
-            <p className="text-sm text-slate-500">
+        <div className="bg-card rounded-xl shadow-sm border border-border/60 overflow-hidden">
+          <div className="px-6 py-4 border-b border-border">
+            <h2 className="text-lg font-bold text-foreground">Available Updates</h2>
+            <p className="text-sm text-muted-foreground">
               {updates.length} update(s) available for installation
             </p>
           </div>
-          <div className="divide-y divide-slate-200">
+          <div className="divide-y divide-border">
             {updates.map((update) => (
               <div
                 key={update._id}
-                className="p-6 hover:bg-slate-50 transition-colors"
+                className="p-6 hover:bg-muted/50 transition-colors"
               >
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center space-x-4 flex-1">
@@ -215,32 +222,32 @@ export default function AdminUpdatesPage() {
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-lg font-bold text-slate-900 mb-1">
+                      <h3 className="text-lg font-bold text-foreground mb-1">
                         {update.title}
                       </h3>
                       <div className="flex items-center space-x-2">
                         <span className={`px-2 py-1 text-xs font-semibold rounded-full ${getTypeColor(update.type)}`}>
                           {update.type}
                         </span>
-                        <span className="text-sm text-slate-500">
+                        <span className="text-sm text-muted-foreground">
                           v{update.version}
                         </span>
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center space-x-2 text-sm text-slate-500">
+                  <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                     <span>{formatFileSize(update.size)}</span>
                     <span>•</span>
                     <span>{formatDate(update.releaseDate)}</span>
                   </div>
                 </div>
 
-                <p className="text-sm text-slate-600 mb-4">
+                <p className="text-sm text-muted-foreground mb-4">
                   {update.description}
                 </p>
 
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2 text-sm text-slate-500">
+                  <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                     <Clock className="w-4 h-4" />
                     <span>Released {formatDate(update.releaseDate)}</span>
                   </div>
@@ -274,10 +281,10 @@ export default function AdminUpdatesPage() {
 
       {/* No Updates Available */}
       {updates.length === 0 && (
-        <div className="text-center py-16 bg-white rounded-2xl border border-slate-200/60">
+        <div className="text-center py-16 bg-card rounded-xl border border-border/60">
           <ShieldCheck className="w-16 h-16 text-emerald-300 mx-auto mb-4" />
-          <h3 className="text-xl font-semibold text-slate-900 mb-2">No Updates Available</h3>
-          <p className="text-slate-500 mb-6">
+          <h3 className="text-xl font-semibold text-foreground mb-2">No Updates Available</h3>
+          <p className="text-muted-foreground mb-6">
             Your system is up to date with the latest version
           </p>
           <button

@@ -8,7 +8,6 @@ import { logger } from '@/core/lib/logger';
 
 // Import All Models
 import News from '@/models/News';
-import Product from '@/models/Product';
 import SiteSettings from '@/models/SiteSettings';
 import Portfolio from '@/models/Portfolio';
 import Service from '@/models/Service';
@@ -18,8 +17,6 @@ import Contact from '@/models/Contact';
 import FooterSettings from '@/models/FooterSettings';
 import ContentSettings from '@/models/ContentSettings';
 import Category from '@/models/Category';
-import ProductCategory from '@/models/ProductCategory';
-import ProductReview from '@/models/ProductReview';
 import Video from '@/models/Video';
 import User from '@/models/User';
 import Settings from '@/models/Settings';
@@ -64,13 +61,11 @@ export async function GET(req: NextRequest) {
 
         // Fetch ALL data
         const [
-            news, products, siteSettings, portfolios, services,
+            news, siteSettings, portfolios, services,
             sliders, about, contact, footer, contentSettings,
-            categories, productCategories, reviews, videos,
-            users, settings, messages, pageSettings
+            categories, videos, users, settings, messages, pageSettings
         ] = await Promise.all([
             News.find({}).lean(),
-            Product.find({}).lean(),
             SiteSettings.find({}).lean(),
             Portfolio.find({}).lean(),
             Service.find({}).lean(),
@@ -80,8 +75,6 @@ export async function GET(req: NextRequest) {
             FooterSettings.find({}).lean(),
             ContentSettings.find({}).lean(),
             Category.find({}).lean(),
-            ProductCategory.find({}).lean(),
-            ProductReview.find({}).lean(),
             Video.find({}).lean(),
             User.find({}).select('-password').lean(),
             Settings.find({}).lean(),
@@ -94,10 +87,9 @@ export async function GET(req: NextRequest) {
             timestamp: new Date().toISOString(),
             source: process.env.NEXTAUTH_URL,
             content: {
-                news, products, siteSettings, portfolios, services,
+                news, siteSettings, portfolios, services,
                 sliders, about, contact, footer, contentSettings,
-                categories, productCategories, reviews, videos,
-                users, settings, messages, pageSettings
+                categories, videos, users, settings, messages, pageSettings
             }
         };
 
@@ -132,18 +124,7 @@ export async function GET(req: NextRequest) {
                 if (item.featuredImage?.url) addMedia(item.featuredImage.url, 'news', `${item.slug}-featured`);
             });
 
-            // 3. Products
-            products.forEach((item: any) => {
-                if (item.coverImage) addMedia(item.coverImage, 'products', `${item.slug}-cover`);
-                if (Array.isArray(item.images)) {
-                    item.images.forEach((url: string, idx: number) => addMedia(url, 'products', `${item.slug}-img-${idx}`));
-                }
-                if (Array.isArray(item.attachments)) {
-                    item.attachments.forEach((att: any, idx: number) => addMedia(att.url, 'products/attachments', `${item.slug}-att-${idx}`));
-                }
-            });
-
-            // 4. Portfolios
+            // 3. Portfolios
             portfolios.forEach((item: any) => {
                 if (item.coverImage) addMedia(item.coverImage, 'portfolio', `${item.slug}-cover`);
                 if (Array.isArray(item.images)) {

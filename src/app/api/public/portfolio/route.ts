@@ -262,9 +262,9 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const session = await getServerSession(authOptions);
-    
-    if (!session?.user?.email) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+    if (!session?.user?.email || (session.user as any).role !== 'admin') {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 
     await connectDB();
@@ -294,7 +294,11 @@ export async function POST(request: Request) {
       }, { status: 400 });
     }
     
-    // createdAt ve updatedAt'i açıkça ayarla
+    // categoryIds → category (ilk kategoriyi ana kategori olarak ata)
+    if (data.categoryIds && Array.isArray(data.categoryIds) && data.categoryIds.length > 0 && !data.category) {
+      data.category = data.categoryIds[0];
+    }
+
     const portfolioData = {
       ...data,
       createdAt: new Date(),

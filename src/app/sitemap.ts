@@ -2,7 +2,6 @@ import { MetadataRoute } from 'next';
 import connectDB from '../lib/mongoose';
 import News from '../models/News';
 import Portfolio from '../models/Portfolio';
-import Product from '../models/Product';
 import { SITE_URL } from '../lib/seo-utils';
 
 export const revalidate = 3600; // Cache sitemap for 1 hour
@@ -32,10 +31,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         { url: `${baseUrl}/tr/haberler`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.8 },
         { url: `${baseUrl}/es/noticias`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.7 },
 
-        // Ürünler
-        { url: `${baseUrl}/tr/products`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.8 },
-        { url: `${baseUrl}/es/products`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.7 },
-
         // Videolar
         { url: `${baseUrl}/tr/videos`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.7 },
         { url: `${baseUrl}/es/videos`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.6 },
@@ -63,16 +58,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             dynamicUrls.push(
                 { url: `${baseUrl}/tr/portfolio/${portfolio.slug}`, lastModified, changeFrequency: 'monthly', priority: 0.6 },
                 { url: `${baseUrl}/es/portfolio/${portfolio.slug}`, lastModified, changeFrequency: 'monthly', priority: 0.5 }
-            );
-        });
-
-        // Ürün URL'leri
-        const products = await Product.find({ isActive: true }).select('slug updatedAt createdAt').lean();
-        products.forEach((product: any) => {
-            const lastModified = product.updatedAt || product.createdAt || new Date();
-            dynamicUrls.push(
-                { url: `${baseUrl}/tr/products/${product.slug}`, lastModified, changeFrequency: 'weekly', priority: 0.8 },
-                { url: `${baseUrl}/es/products/${product.slug}`, lastModified, changeFrequency: 'weekly', priority: 0.7 }
             );
         });
 

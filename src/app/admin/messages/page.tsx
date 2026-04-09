@@ -19,6 +19,10 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useConfirm } from '@/hooks/use-confirm';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface Message {
   _id: string;
@@ -232,13 +236,19 @@ export default function AdminMessagesPage() {
 
   if (status === 'loading' || loading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="flex flex-col items-center space-y-4">
-          <div className="relative">
-            <div className="w-16 h-16 border-4 border-indigo-200 rounded-full"></div>
-            <div className="absolute top-0 left-0 w-16 h-16 border-4 border-transparent border-t-indigo-600 rounded-full animate-spin"></div>
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div className="space-y-2">
+            <Skeleton className="h-8 w-48" />
+            <Skeleton className="h-4 w-64" />
           </div>
-          <p className="text-lg font-medium text-slate-600">Mesajlar yükleniyor...</p>
+          <Skeleton className="h-10 w-32" />
+        </div>
+        <Skeleton className="h-12 w-full rounded-xl" />
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <Skeleton key={i} className="h-32 rounded-xl" />
+          ))}
         </div>
       </div>
     );
@@ -249,35 +259,35 @@ export default function AdminMessagesPage() {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Mesajlar</h1>
-          <p className="text-slate-500 mt-1">Gelen kutusu ve proje başvuruları</p>
+          <h1 className="text-2xl font-bold text-foreground">Mesajlar</h1>
+          <p className="text-muted-foreground mt-1">Gelen kutusu ve proje başvuruları</p>
         </div>
         <div className="flex items-center space-x-2">
-          <span className="text-sm text-slate-600 bg-white px-3 py-1 rounded-full border border-slate-200 shadow-sm">
+          <span className="text-sm text-muted-foreground bg-card px-3 py-1 rounded-full border border-border shadow-sm">
             {unreadCount} okunmamış
           </span>
         </div>
       </div>
 
       {/* Search and Filter Bar */}
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200/60 p-4">
+      <div className="bg-card rounded-xl shadow-sm border border-border/60 p-4">
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex-1 relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-            <input
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+            <Input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Mesajlarda ara..."
-              className="w-full pl-12 pr-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+              className="w-full pl-12 pr-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
             />
           </div>
-          <div className="flex space-x-2 bg-slate-100 p-1 rounded-xl">
+          <div className="flex space-x-2 bg-muted p-1 rounded-xl">
             <button
               onClick={() => setStatusFilter('all')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${statusFilter === 'all'
-                ? 'bg-white text-indigo-600 shadow-sm'
-                : 'text-slate-600 hover:text-slate-900'
+                ? 'bg-card text-indigo-600 shadow-sm'
+                : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
               Tümü
@@ -285,8 +295,8 @@ export default function AdminMessagesPage() {
             <button
               onClick={() => setStatusFilter('unread')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${statusFilter === 'unread'
-                ? 'bg-white text-indigo-600 shadow-sm'
-                : 'text-slate-600 hover:text-slate-900'
+                ? 'bg-card text-indigo-600 shadow-sm'
+                : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
               Okunmamış
@@ -294,8 +304,8 @@ export default function AdminMessagesPage() {
             <button
               onClick={() => setStatusFilter('read')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${statusFilter === 'read'
-                ? 'bg-white text-indigo-600 shadow-sm'
-                : 'text-slate-600 hover:text-slate-900'
+                ? 'bg-card text-indigo-600 shadow-sm'
+                : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
               Okunmuş
@@ -305,26 +315,27 @@ export default function AdminMessagesPage() {
 
         {/* Bulk Actions */}
         {selectedMessages.size > 0 && (
-          <div className="flex items-center justify-between mt-4 pt-4 border-t border-slate-200">
-            <p className="text-sm text-slate-600">
+          <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
+            <p className="text-sm text-muted-foreground">
               {selectedMessages.size} mesaj seçildi
             </p>
-            <button
+            <Button
+              type="button"
               onClick={handleBulkDelete}
               className="flex items-center px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors text-sm font-medium"
             >
               <Trash2 className="w-4 h-4 mr-2" />
               Seçilenleri Sil
-            </button>
+            </Button>
           </div>
         )}
       </div>
 
       {/* Messages List */}
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200/60 overflow-hidden">
+      <div className="bg-card rounded-xl shadow-sm border border-border/60 overflow-hidden">
         {filteredMessages.length > 0 ? (
           <>
-            <div className="px-6 py-3 border-b border-slate-200 bg-slate-50/50 flex items-center">
+            <div className="px-6 py-3 border-b border-border bg-muted/50 flex items-center">
               <input
                 type="checkbox"
                 checked={selectedMessages.size > 0 && selectedMessages.size === filteredMessages.length}
@@ -335,15 +346,15 @@ export default function AdminMessagesPage() {
                     setSelectedMessages(new Set());
                   }
                 }}
-                className="w-4 h-4 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500 mr-4 cursor-pointer"
+                className="w-4 h-4 text-indigo-600 border-border rounded focus:ring-indigo-500 mr-4 cursor-pointer"
               />
-              <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Tümünü Seç</span>
+              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Tümünü Seç</span>
             </div>
             <div className="divide-y divide-slate-100">
               {filteredMessages.map((message) => (
                 <div
                   key={message._id}
-                  className={`group p-6 hover:bg-slate-50 transition-colors cursor-pointer relative ${message.status === 'unread' || message.status === 'new' ? 'bg-indigo-50/40' : ''
+                  className={`group p-6 hover:bg-muted/50 transition-colors cursor-pointer relative ${message.status === 'unread' || message.status === 'new' ? 'bg-indigo-50/40' : ''
                     }`}
                   onClick={() => openMessageDetail(message)}
                 >
@@ -361,18 +372,18 @@ export default function AdminMessagesPage() {
                           }
                           setSelectedMessages(newSelected);
                         }}
-                        className="w-4 h-4 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500 cursor-pointer"
+                        className="w-4 h-4 text-indigo-600 border-border rounded focus:ring-indigo-500 cursor-pointer"
                       />
                     </div>
 
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between mb-1.5">
                         <div className="flex items-center gap-2">
-                          <h3 className={`text-sm font-semibold ${(message.status === 'unread' || message.status === 'new') ? 'text-indigo-900' : 'text-slate-900'}`}>
+                          <h3 className={`text-sm font-semibold ${(message.status === 'unread' || message.status === 'new') ? 'text-indigo-900' : 'text-foreground'}`}>
                             {message.name}
                           </h3>
                           {message.company && (
-                            <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-600 border border-slate-200">
+                            <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-muted text-muted-foreground border border-border">
                               <Building className="w-3 h-3 mr-1" />
                               {message.company}
                             </span>
@@ -384,14 +395,14 @@ export default function AdminMessagesPage() {
                             </span>
                           )}
                         </div>
-                        <span className="text-xs text-slate-500 whitespace-nowrap flex items-center gap-1">
+                        <span className="text-xs text-muted-foreground whitespace-nowrap flex items-center gap-1">
                           <Clock className="w-3 h-3" />
                           {formatDate(message.createdAt)}
                         </span>
                       </div>
 
                       <div className="mb-1 flex items-center gap-2">
-                        <h4 className="text-sm font-medium text-slate-800">
+                        <h4 className="text-sm font-medium text-foreground">
                           {message.subject}
                         </h4>
                         {(message.status === 'unread' || message.status === 'new') && (
@@ -405,22 +416,23 @@ export default function AdminMessagesPage() {
                         )}
                       </div>
 
-                      <p className="text-sm text-slate-600 line-clamp-2">
+                      <p className="text-sm text-muted-foreground line-clamp-2">
                         {message.message}
                       </p>
                     </div>
 
                     <div className="flex-shrink-0 self-center opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button
+                      <Button
+                        type="button"
                         onClick={(e) => {
                           e.stopPropagation();
                           handleDelete(message._id);
                         }}
-                        className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        className="p-2 text-muted-foreground hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                         title="Sil"
                       >
                         <Trash2 className="w-5 h-5" />
-                      </button>
+                      </Button>
                     </div>
                   </div>
                 </div>
@@ -429,11 +441,11 @@ export default function AdminMessagesPage() {
           </>
         ) : (
           <div className="text-center py-20">
-            <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4">
-              <MessageSquare className="w-8 h-8 text-slate-300" />
+            <div className="w-16 h-16 bg-muted/50 rounded-full flex items-center justify-center mx-auto mb-4">
+              <MessageSquare className="w-8 h-8 text-muted-foreground/50" />
             </div>
-            <h3 className="text-lg font-medium text-slate-900 mb-1">Mesaj Bulunamadı</h3>
-            <p className="text-slate-500 text-sm">
+            <h3 className="text-lg font-medium text-foreground mb-1">Mesaj Bulunamadı</h3>
+            <p className="text-muted-foreground text-sm">
               {searchQuery || statusFilter !== 'all'
                 ? 'Arama kriterlerinizi değiştirmeyi deneyin.'
                 : 'Henüz hiç mesajınız yok.'
@@ -469,57 +481,58 @@ export default function AdminMessagesPage() {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="w-full max-w-2xl transform overflow-hidden rounded-2xl bg-white text-left align-middle shadow-xl transition-all">
+                <Dialog.Panel className="w-full max-w-2xl transform overflow-hidden rounded-xl bg-card text-left align-middle shadow-xl transition-all">
                   {viewMessage && (
                     <div className="flex flex-col max-h-[90vh]">
                       {/* Modal Header */}
-                      <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
+                      <div className="px-6 py-4 border-b border-slate-100 bg-muted/50 flex items-center justify-between">
                         <div>
-                          <Dialog.Title as="h3" className="text-lg font-bold text-slate-900">
+                          <Dialog.Title as="h3" className="text-lg font-bold text-foreground">
                             {viewMessage.subject}
                           </Dialog.Title>
-                          <div className="text-xs text-slate-500 mt-1 flex items-center gap-2">
+                          <div className="text-xs text-muted-foreground mt-1 flex items-center gap-2">
                             <span>{formatDate(viewMessage.createdAt)}</span>
                             {viewMessage.urgency && (
                               <span className="ml-2">{getUrgencyBadge(viewMessage.urgency)}</span>
                             )}
                           </div>
                         </div>
-                        <button
+                        <Button
+                          type="button"
                           onClick={() => setIsModalOpen(false)}
-                          className="text-slate-400 hover:text-slate-500"
+                          className="text-muted-foreground hover:text-muted-foreground"
                         >
                           <span className="sr-only">Kapat</span>
                           <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                           </svg>
-                        </button>
+                        </Button>
                       </div>
 
                       <div className="flex-1 overflow-y-auto p-6 space-y-6">
                         {/* Sender Info Card */}
-                        <div className="bg-slate-50 rounded-xl p-4 border border-slate-100">
-                          <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Gönderen Bilgileri</h4>
+                        <div className="bg-muted/50 rounded-xl p-4 border border-slate-100">
+                          <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3">Gönderen Bilgileri</h4>
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div className="flex items-center gap-3">
                               <div className="w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-sm font-bold">
                                 {viewMessage.name.charAt(0).toUpperCase()}
                               </div>
                               <div>
-                                <div className="font-semibold text-slate-900">{viewMessage.name}</div>
-                                <div className="text-xs text-slate-500">{viewMessage.email}</div>
+                                <div className="font-semibold text-foreground">{viewMessage.name}</div>
+                                <div className="text-xs text-muted-foreground">{viewMessage.email}</div>
                               </div>
                             </div>
-                            <div className="space-y-1 text-sm text-slate-600">
+                            <div className="space-y-1 text-sm text-muted-foreground">
                               {viewMessage.phone && (
                                 <div className="flex items-center gap-2">
-                                  <span className="text-slate-400">Tel:</span>
+                                  <span className="text-muted-foreground">Tel:</span>
                                   {viewMessage.phone}
                                 </div>
                               )}
                               {viewMessage.company && (
                                 <div className="flex items-center gap-2">
-                                  <Briefcase className="w-4 h-4 text-slate-400" />
+                                  <Briefcase className="w-4 h-4 text-muted-foreground" />
                                   {viewMessage.company}
                                 </div>
                               )}
@@ -533,13 +546,13 @@ export default function AdminMessagesPage() {
                             <h4 className="text-xs font-bold text-blue-500 uppercase tracking-wider mb-2">Proje Detayları</h4>
                             <div className="flex flex-wrap gap-4 text-sm">
                               {viewMessage.projectType && (
-                                <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg border border-blue-100 shadow-sm text-blue-900">
+                                <div className="flex items-center gap-2 bg-card px-3 py-1.5 rounded-lg border border-blue-100 shadow-sm text-blue-900">
                                   <Flame className="w-4 h-4 text-orange-500" />
                                   <span className="font-medium">{viewMessage.projectType}</span>
                                 </div>
                               )}
                               {viewMessage.budget && (
-                                <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg border border-blue-100 shadow-sm text-blue-900">
+                                <div className="flex items-center gap-2 bg-card px-3 py-1.5 rounded-lg border border-blue-100 shadow-sm text-blue-900">
                                   <DollarSign className="w-4 h-4 text-green-500" />
                                   <span className="font-medium">Bütçe: {viewMessage.budget}</span>
                                 </div>
@@ -550,8 +563,8 @@ export default function AdminMessagesPage() {
 
                         {/* Message Content */}
                         <div>
-                          <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Mesaj İçeriği</h4>
-                          <div className="bg-white p-4 rounded-xl border border-slate-200 text-slate-700 text-sm leading-relaxed whitespace-pre-wrap">
+                          <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Mesaj İçeriği</h4>
+                          <div className="bg-card p-4 rounded-xl border border-border text-foreground text-sm leading-relaxed whitespace-pre-wrap">
                             {viewMessage.message}
                           </div>
                         </div>
@@ -572,25 +585,27 @@ export default function AdminMessagesPage() {
                       </div>
 
                       {/* Reply Form */}
-                      <div className="p-6 bg-slate-50 border-t border-slate-200">
-                        <h4 className="text-sm font-semibold text-slate-900 mb-3 flex items-center gap-2">
+                      <div className="p-6 bg-muted/50 border-t border-border">
+                        <h4 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
                           <Send className="w-4 h-4 text-indigo-600" />
                           Yanıt Gönder
                         </h4>
-                        <textarea
+                        <Textarea
                           value={replyText}
                           onChange={(e) => setReplyText(e.target.value)}
-                          className="w-full rounded-xl border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm p-3 min-h-[100px]"
+                          className="w-full rounded-xl border border-border shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm p-3 min-h-[100px]"
                           placeholder="Müşteriye gönderilecek yanıtınızı buraya yazın..."
-                        ></textarea>
+                        />
                         <div className="mt-3 flex justify-end gap-3">
-                          <button
+                          <Button
+                            type="button"
                             onClick={() => setIsModalOpen(false)}
-                            className="px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-200 rounded-lg transition-colors"
+                            className="px-4 py-2 text-sm font-medium text-foreground hover:bg-slate-200 rounded-lg transition-colors"
                           >
                             Kapat
-                          </button>
-                          <button
+                          </Button>
+                          <Button
+                            type="button"
                             onClick={handleSendReply}
                             disabled={!replyText.trim() || sendingReply}
                             className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -609,7 +624,7 @@ export default function AdminMessagesPage() {
                                 Yanıtla ve E-posta Gönder
                               </>
                             )}
-                          </button>
+                          </Button>
                         </div>
                       </div>
                     </div>

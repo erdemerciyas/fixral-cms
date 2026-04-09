@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import connectDB, { hasValidMongoUri } from '@/lib/mongoose';
 import Portfolio from '@/models/Portfolio';
-import Product from '@/models/Product';
 import Settings from '@/models/Settings';
 
 export const dynamic = 'force-dynamic';
@@ -15,7 +14,6 @@ export async function GET() {
   try {
     let baseUrl = process.env.NEXTAUTH_URL || 'https://erdemerciyas.com.tr';
     let portfolioItems: Array<{ slug: string; updatedAt: Date }> = [];
-    let productItems: Array<{ slug: string; updatedAt: Date }> = [];
 
     if (hasValidMongoUri()) {
       await connectDB();
@@ -24,9 +22,7 @@ export async function GET() {
       if (settingsDoc?.siteUrl) {
         baseUrl = settingsDoc.siteUrl.replace(/\/$/, '');
       }
-      // Get all portfolio and product items for dynamic URLs
       portfolioItems = await Portfolio.find({ isActive: true }).select('slug updatedAt');
-      productItems = await Product.find({ isActive: true }).select('slug updatedAt');
     }
 
     const staticPages = [
@@ -69,14 +65,7 @@ export async function GET() {
       priority: 0.6
     }));
 
-    const productPages = productItems.map(item => ({
-      url: `${baseUrl}/products/${item.slug}`,
-      lastModified: item.updatedAt.toISOString(),
-      changeFrequency: 'weekly',
-      priority: 0.7
-    }));
-
-    const allPages = [...staticPages, ...portfolioPages, ...productPages];
+    const allPages = [...staticPages, ...portfolioPages];
 
     const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

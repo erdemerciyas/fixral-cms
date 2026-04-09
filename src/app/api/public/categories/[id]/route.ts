@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import { connectToDatabase } from '@/lib/mongoose';
+import connectDB from '@/lib/mongoose';
 import { authOptions } from '@/lib/auth';
-import { ObjectId } from 'mongodb';
+import Category from '@/models/Category';
+import Portfolio from '@/models/Portfolio';
 
 // GET - Tekil kategoriyi getir
 export async function GET(
@@ -10,11 +11,9 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const { db } = await connectToDatabase();
-    
-    const category = await db
-      .collection('categories')
-      .findOne({ _id: new ObjectId(params.id) });
+    await connectDB();
+
+    const category = await Category.findById(params.id);
 
     if (!category) {
       return NextResponse.json(
@@ -48,10 +47,9 @@ export async function PUT(
       );
     }
 
-    const { db } = await connectToDatabase();
+    await connectDB();
     const data = await request.json();
-    
-    // Zorunlu alanları kontrol et
+
     if (!data.name || !data.slug) {
       return NextResponse.json(
         { error: 'İsim ve slug alanları zorunludur' },
@@ -59,13 +57,10 @@ export async function PUT(
       );
     }
 
-    // Slug'ın benzersiz olduğunu kontrol et (kendi ID'si hariç)
-    const existingCategory = await db
-      .collection('categories')
-      .findOne({
-        _id: { $ne: new ObjectId(params.id) },
-        slug: data.slug,
-      });
+    const existingCategory = await Category.findOne({
+      _id: { $ne: params.id },
+      slug: data.slug,
+    });
 
     if (existingCategory) {
       return NextResponse.json(
@@ -74,8 +69,8 @@ export async function PUT(
       );
     }
 
-    const result = await db.collection('categories').updateOne(
-      { _id: new ObjectId(params.id) },
+    const result = await Category.updateOne(
+      { _id: params.id },
       {
         $set: {
           name: data.name,
@@ -120,12 +115,9 @@ export async function DELETE(
       );
     }
 
-    const { db } = await connectToDatabase();
+    await connectDB();
 
-    // Kategorinin kullanımda olup olmadığını kontrol et
-    const portfolioCount = await db
-      .collection('portfolios')
-      .countDocuments({ categoryId: new ObjectId(params.id) });
+    const portfolioCount = await Portfolio.countDocuments({ category: params.id });
 
     if (portfolioCount > 0) {
       return NextResponse.json(
@@ -134,9 +126,7 @@ export async function DELETE(
       );
     }
 
-    const result = await db.collection('categories').deleteOne({
-      _id: new ObjectId(params.id),
-    });
+    const result = await Category.deleteOne({ _id: params.id });
 
     if (result.deletedCount === 0) {
       return NextResponse.json(
@@ -156,4 +146,4 @@ export async function DELETE(
       { status: 500 }
     );
   }
-} 
+}

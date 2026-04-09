@@ -23,7 +23,7 @@ export default function LanguageTabs({
   // Show error state
   if (error) {
     return (
-      <div className="bg-red-50 border border-red-200 rounded-2xl p-4 flex items-center space-x-3">
+      <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-center space-x-3">
         <ExclamationTriangleIcon className="w-5 h-5 text-red-500 flex-shrink-0" />
         <div>
           <p className="text-sm font-medium text-red-800">Diller yüklenemedi</p>
@@ -36,7 +36,7 @@ export default function LanguageTabs({
   // Show empty state with link to language settings
   if (languages.length === 0) {
     return (
-      <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex items-start space-x-3">
+      <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-start space-x-3">
         <LanguageIcon className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
         <div>
           <p className="text-sm font-medium text-amber-800">Henüz dil tanımlanmamış</p>
@@ -55,7 +55,7 @@ export default function LanguageTabs({
   }
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200/60 dark:border-slate-700 overflow-hidden">
+    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200/60 dark:border-slate-700 overflow-hidden">
       <div className="flex border-b border-slate-200/60">
         {languages.map((lang) => {
           const isActive = activeLanguage === lang.code;

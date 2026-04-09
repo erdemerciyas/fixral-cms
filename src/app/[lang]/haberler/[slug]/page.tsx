@@ -1,16 +1,12 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import Image from 'next/image';
-import Link from 'next/link';
 import connectDB from '@/lib/mongoose';
 import News from '@/models/News';
 import { ensureModels } from '@/lib/ensure-models';
-import { NewsItem } from '@/types/news';
 import { logger } from '@/core/lib/logger';
-import PageHero from '@/components/common/PageHero';
+
 import { SITE_URL, getBlogAlternates, generateOgImages } from '@/lib/seo-utils';
-import { Badge, buttonVariants } from '@/components/ui';
-import { cn } from '@/lib/utils';
+import NewsDetailClient from '@/components/news/NewsDetailClient';
 
 interface PageProps {
     params: Promise<{
@@ -19,9 +15,6 @@ interface PageProps {
     }>;
 }
 
-/**
- * Generate metadata for news article detail page
- */
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
     try {
         const { slug } = await params;
@@ -75,7 +68,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
                 card: 'summary_large_image',
                 title: translation.title,
                 description: translation.metaDescription,
-                images: [ogImages[0].url],
+                images: ogImages[0]?.url ? [ogImages[0].url] : [],
             },
         };
     } catch (error) {
@@ -87,15 +80,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     }
 }
 
-/**
- * Generate static params for news articles
- */
 export async function generateStaticParams() {
     try {
         await connectDB();
 
-        // Fetch all published news articles without limit
-        // This ensures all articles get static paths generated
         const news = await News.find({ status: 'published' })
             .select('slug')
             .lean();
@@ -112,17 +100,10 @@ export async function generateStaticParams() {
     }
 }
 
-/**
- * Force dynamic rendering - required because next-intl's requestLocale
- * internally calls headers(), which is incompatible with static/ISR rendering.
- * Without this, Next.js throws "Page changed from static to dynamic" error.
- */
 export const dynamic = 'force-dynamic';
 
-// Helper: safely convert Mongoose Map to plain object for translations
 function normalizeTranslations(translations: any): Record<string, any> {
     if (!translations) return {};
-    // Mongoose Map returned from .lean() in Mongoose 9 may still be a Map
     if (translations instanceof Map) {
         const obj: Record<string, any> = {};
         translations.forEach((value: any, key: string) => {
@@ -130,17 +111,14 @@ function normalizeTranslations(translations: any): Record<string, any> {
         });
         return obj;
     }
-    // If it's already a plain object with $__parent (Mongoose internals), extract data
     if (typeof translations === 'object' && !Array.isArray(translations)) {
         return translations;
     }
     return {};
 }
 
-// Helper function to find news with populate fallback
 async function findNewsWithRetry(slug: string): Promise<any | null> {
     await connectDB();
-    // Dynamic imports - bundler CANNOT tree-shake these
     await ensureModels('Portfolio', 'News');
 
     const slugsToTry = [slug];
@@ -151,17 +129,14 @@ async function findNewsWithRetry(slug: string): Promise<any | null> {
 
     for (const trySlug of slugsToTry) {
         try {
-            // First try with populate
             const news = await News.findOne({ slug: trySlug })
                 .populate('relatedPortfolioIds', 'title slug coverImage')
                 .populate('relatedNewsIds', 'slug translations featuredImage')
                 .lean();
 
             if (news) {
-                // Normalize translations from Mongoose Map to plain object
                 const normalized = news as any;
                 normalized.translations = normalizeTranslations(normalized.translations);
-                // Also normalize related news translations
                 if (normalized.relatedNewsIds && Array.isArray(normalized.relatedNewsIds)) {
                     normalized.relatedNewsIds = normalized.relatedNewsIds.map((rn: any) => {
                         if (rn && rn.translations) {
@@ -177,7 +152,6 @@ async function findNewsWithRetry(slug: string): Promise<any | null> {
                 slug: trySlug,
                 error: (populateError as Error).message
             });
-            // Fallback: fetch without populate if model registration fails
             try {
                 const news = await News.findOne({ slug: trySlug }).lean();
                 if (news) {
@@ -198,9 +172,6 @@ async function findNewsWithRetry(slug: string): Promise<any | null> {
     return null;
 }
 
-/**
- * News Detail Page Component
- */
 export default async function NewsDetailPage({ params: paramsPromise }: PageProps) {
     const { lang, slug } = await paramsPromise;
     try {
@@ -221,7 +192,6 @@ export default async function NewsDetailPage({ params: paramsPromise }: PageProp
 
         const translation = news.translations?.tr || { title: '', metaDescription: '', content: '', excerpt: '', keywords: [] };
 
-        // Generate JSON-LD schema
         const jsonLd = {
             '@context': 'https://schema.org',
             '@type': 'NewsArticle',
@@ -249,229 +219,49 @@ export default async function NewsDetailPage({ params: paramsPromise }: PageProp
             },
         };
 
-        return (
-            <div className="min-h-screen bg-slate-50">
-                <PageHero
-                    title={translation.title}
-                    showButton={false}
-                    variant="compact"
-                />
+        const serializedNews = {
+            slug: news.slug,
+            status: news.status,
+            tags: news.tags || [],
+            publishedAt: news.publishedAt ? new Date(news.publishedAt).toISOString() : undefined,
+            createdAt: new Date(news.createdAt).toISOString(),
+            updatedAt: new Date(news.updatedAt).toISOString(),
+            featuredImage: news.featuredImage ? { url: news.featuredImage.url, altText: news.featuredImage.altText } : undefined,
+            author: news.author ? { name: news.author.name, email: news.author.email } : undefined,
+            relatedPortfolioIds: (news.relatedPortfolioIds || []).filter(Boolean).map((p: any) => ({
+                _id: String(p._id),
+                title: p.title,
+                slug: p.slug,
+                coverImage: p.coverImage,
+            })),
+            relatedNewsIds: (news.relatedNewsIds || []).filter(Boolean).map((rn: any) => ({
+                _id: String(rn._id),
+                slug: rn.slug,
+                featuredImage: rn.featuredImage ? { url: rn.featuredImage.url, altText: rn.featuredImage.altText } : undefined,
+                translations: { tr: { title: rn.translations?.tr?.title || '' } },
+            })),
+        };
 
-                {/* JSON-LD Schema */}
+        const serializedTranslation = {
+            title: translation.title || '',
+            excerpt: translation.excerpt || '',
+            content: typeof translation.content === 'string' ? translation.content : (translation.content ? JSON.stringify(translation.content) : ''),
+            metaDescription: translation.metaDescription || '',
+            keywords: translation.keywords || [],
+        };
+
+        return (
+            <div className="min-h-screen">
                 <script
                     type="application/ld+json"
                     dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
                 />
 
-                <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-8">
-
-                    {/* Custom Breadcrumb matching site style */}
-                    <nav className="mb-6 rounded-2xl border border-slate-200 bg-white/80 shadow-sm px-4 py-3 text-sm text-slate-600">
-                        <ol className="flex flex-wrap items-center gap-2">
-                            <li>
-                                <Link href={`/${lang}`} className="hover:text-fixral-primary transition-colors flex items-center gap-1">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
-                                        <path fillRule="evenodd" d="M9.293 2.293a1 1 0 011.414 0l7 7A1 1 0 0117.414 11H16v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5H3.293a1 1 0 01-1.414-1.414l7-7z" clipRule="evenodd" />
-                                    </svg>
-                                    <span>Ana Sayfa</span>
-                                </Link>
-                            </li>
-                            <li className="text-slate-300">/</li>
-                            <li>
-                                <Link href={`/${lang}/haberler`} className="hover:text-fixral-primary transition-colors">
-                                    Haberler
-                                </Link>
-                            </li>
-                            <li className="text-slate-300">/</li>
-                            <li className="font-medium text-slate-900 line-clamp-1 max-w-[200px] sm:max-w-md">{translation.title}</li>
-                        </ol>
-                    </nav>
-
-                    {/* Feature Image - Clean Layout */}
-                    {news.featuredImage?.url && (
-                        <div className="relative w-full mb-8 rounded-2xl overflow-hidden shadow-sm border border-gray-100 bg-slate-100 aspect-[16/9]">
-                            <Image
-                                src={news.featuredImage.url}
-                                alt={news.featuredImage.altText || translation.title}
-                                fill
-                                className="object-contain"
-                                priority
-                            />
-                        </div>
-                    )}
-
-                    <div className="grid grid-cols-1 lg:grid-cols-10 gap-6">
-
-                        {/* Main Content - Left Column */}
-                        <main className="lg:col-span-7 space-y-6">
-
-                            {/* Article Card */}
-                            <article className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-                                <div className="p-6 md:p-8">
-                                    {/* Meta Header */}
-                                    <div className="flex flex-wrap items-center gap-3 text-sm text-slate-500 mb-4">
-                                        {news.tags && news.tags.length > 0 && (
-                                            <Badge variant="primary" className="uppercase tracking-wider">
-                                                {news.tags[0]}
-                                            </Badge>
-                                        )}
-
-                                        <div className="flex items-center gap-1">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
-                                                <path fillRule="evenodd" d="M5.75 2a.75.75 0 01.75.75V4h7V2.75a.75.75 0 011.5 0V4h.25A2.75 2.75 0 0118 6.75v8.5A2.75 2.75 0 0115.25 18H4.75A2.75 2.75 0 012 15.25v-8.5A2.75 2.75 0 014.75 4H5V2.75A.75.75 0 015.75 2zm-1 5.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h10.5c.69 0 1.25-.56 1.25-1.25v-6.5c0-.69-.56-1.25-1.25-1.25H4.75z" clipRule="evenodd" />
-                                            </svg>
-                                            <time dateTime={new Date(news.publishedAt || news.createdAt).toISOString()}>
-                                                {new Date(news.publishedAt || news.createdAt).toLocaleDateString('tr-TR', {
-                                                    year: 'numeric',
-                                                    month: 'long',
-                                                    day: 'numeric',
-                                                })}
-                                            </time>
-                                        </div>
-                                    </div>
-
-                                    {/* Excerpt */}
-                                    {translation.excerpt && (
-                                        <div className="text-lg md:text-xl text-slate-600 italic border-l-4 border-fixral-primary pl-4 mb-8">
-                                            {translation.excerpt}
-                                        </div>
-                                    )}
-
-                                    {/* HTML Content */}
-                                    <div className="prose prose-lg prose-slate max-w-none">
-                                        <div dangerouslySetInnerHTML={{ __html: typeof translation.content === 'string' ? translation.content : (translation.content ? JSON.stringify(translation.content) : '') }} />
-                                    </div>
-                                </div>
-                            </article>
-
-                            {/* Related Portfolio (if any) */}
-                            {news.relatedPortfolioIds && news.relatedPortfolioIds.length > 0 && (
-                                <section>
-                                    <div className="flex items-center gap-2 mb-4">
-                                        <h2 className="text-2xl font-bold text-slate-800">İlgili Projeler</h2>
-                                        <div className="h-px bg-slate-200 flex-grow"></div>
-                                    </div>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        {(news.relatedPortfolioIds as any[]).filter(Boolean).map((portfolio) => (
-                                            <Link
-                                                key={portfolio._id}
-                                                href={`/${lang}/portfolio/${portfolio.slug}`}
-                                                className="group relative h-48 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all"
-                                            >
-                                                <Image
-                                                    src={portfolio.coverImage}
-                                                    alt={portfolio.title}
-                                                    fill
-                                                    className="object-cover group-hover:scale-105 transition-transform duration-500"
-                                                />
-                                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-                                                <div className="absolute bottom-0 left-0 p-4 w-full">
-                                                    <h3 className="text-white font-semibold text-lg line-clamp-1 group-hover:text-fixral-secondary transition-colors">
-                                                        {portfolio.title}
-                                                    </h3>
-                                                </div>
-                                            </Link>
-                                        ))}
-                                    </div>
-                                </section>
-                            )}
-
-                        </main>
-
-                        {/* Sidebar - Right Column */}
-                        <aside className="lg:col-span-3 space-y-6">
-
-                            {/* Author Card */}
-                            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                                <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Yazar</h3>
-                                <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 bg-fixral-primary/10 rounded-full flex items-center justify-center text-fixral-primary font-bold text-xl">
-                                        {(news.author?.name || 'A').charAt(0)}
-                                    </div>
-                                    <div>
-                                        <div className="font-bold text-slate-900">{news.author?.name || 'Anonim'}</div>
-                                        <div className="text-xs text-slate-500">İçerik Editörü</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Tags Cloud */}
-                            {news.tags && news.tags.length > 0 && (
-                                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                                    <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Konular</h3>
-                                    <div className="flex flex-wrap gap-2">
-                                        {news.tags.map((tag: string) => (
-                                            <span key={tag} className="px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg text-sm transition-colors cursor-default">
-                                                #{tag}
-                                            </span>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* Share */}
-                            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 text-center">
-                                <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Bu Haberi Paylaş</h3>
-                                <div className="flex justify-center gap-4">
-                                    <a
-                                        href={`https://twitter.com/intent/tweet?url=${SITE_URL}/tr/haberler/${news.slug}`}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="w-10 h-10 bg-social-twitter text-white rounded-full flex items-center justify-center hover:opacity-90 transition-opacity"
-                                    >
-                                        <svg fill="currentColor" viewBox="0 0 24 24" className="w-5 h-5"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.84 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z" /></svg>
-                                    </a>
-                                    <a
-                                        href={`https://www.facebook.com/sharer/sharer.php?u=${SITE_URL}/tr/haberler/${news.slug}`}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="w-10 h-10 bg-social-facebook text-white rounded-full flex items-center justify-center hover:opacity-90 transition-opacity"
-                                    >
-                                        <svg fill="currentColor" viewBox="0 0 24 24" className="w-5 h-5"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" /></svg>
-                                    </a>
-                                    <a
-                                        href={`https://www.linkedin.com/sharing/share-offsite/?url=${SITE_URL}/tr/haberler/${news.slug}`}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="w-10 h-10 bg-social-linkedin text-white rounded-full flex items-center justify-center hover:opacity-90 transition-opacity"
-                                    >
-                                        <svg fill="currentColor" viewBox="0 0 24 24" className="w-5 h-5"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" /></svg>
-                                    </a>
-                                </div>
-                            </div>
-
-                            {/* Related News Sticky */}
-                            {news.relatedNewsIds && news.relatedNewsIds.length > 0 && (
-                                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 sticky top-24">
-                                    <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">İlginizi Çekebilir</h3>
-                                    <div className="space-y-4">
-                                        {(news.relatedNewsIds as any[]).filter(Boolean).map((relatedNews) => (
-                                            <Link key={relatedNews._id} href={`/${lang}/haberler/${relatedNews.slug}`} className="flex gap-3 group">
-                                                {relatedNews.featuredImage?.url && (
-                                                    <div className="relative w-20 h-16 flex-shrink-0 rounded-lg overflow-hidden">
-                                                        <Image
-                                                            src={relatedNews.featuredImage.url}
-                                                            alt={relatedNews.featuredImage.altText || ''}
-                                                            fill
-                                                            className="object-cover group-hover:scale-110 transition-transform"
-                                                        />
-                                                    </div>
-                                                )}
-                                                <div>
-                                                    <h4 className="text-sm font-medium text-slate-900 group-hover:text-fixral-primary line-clamp-2 leading-snug">
-                                                        {relatedNews.translations?.tr?.title || ''}
-                                                    </h4>
-                                                    <div className="text-xs text-slate-500 mt-1">Okumaya başla →</div>
-                                                </div>
-                                            </Link>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-
-                        </aside>
-                    </div>
-                </div>
+                <NewsDetailClient
+                    lang={lang}
+                    news={serializedNews}
+                    translation={serializedTranslation}
+                />
             </div>
         );
     } catch (error) {
@@ -481,4 +271,3 @@ export default async function NewsDetailPage({ params: paramsPromise }: PageProp
         notFound();
     }
 }
-

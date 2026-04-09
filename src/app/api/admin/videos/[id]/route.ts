@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import Video from "@/models/Video";
-import mongoose from "mongoose";
+import connectDB from "@/lib/mongoose";
 
 export async function DELETE(req: Request, { params }: { params: { id: string } }) {
   try {
@@ -11,7 +11,7 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    await mongoose.connect(process.env.MONGODB_URI!);
+    await connectDB();
 
     const video = await Video.findById(params.id);
     if (!video) {
@@ -44,7 +44,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    await mongoose.connect(process.env.MONGODB_URI!);
+    await connectDB();
 
     const updateData = await req.json();
     

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { GeistSans } from 'geist/font/sans'
+import { GeistMono } from 'geist/font/mono'
 import './globals.css'
 import { config } from '../core/lib/config'
 import Header from '../components/Header'
@@ -8,36 +9,21 @@ import ConditionalFooter from '../components/ConditionalFooter'
 import Providers from '../components/Providers'
 import connectDB, { hasValidMongoUri } from '../lib/mongoose'
 import SiteSettings from '../models/SiteSettings'
-import Plugin from '../models/Plugin'
 import Script from 'next/script'
 import { headers } from 'next/headers'
 import GlobalBreadcrumbsJsonLd from '../components/seo/GlobalBreadcrumbsJsonLd';
 import PageTransitionWrapper from '../components/PageTransitionWrapper';
+import GrainOverlay from '../components/ui/GrainOverlay';
 
-// Force dynamic rendering so metadata reflects latest site settings from DB
 export const dynamic = 'force-dynamic'
 
-// Env fallbacks for Google integrations
 const ENV_GOOGLE_VERIFICATION = process.env.GOOGLE_SITE_VERIFICATION
 const ENV_GA_ID = process.env.NEXT_PUBLIC_GA_ID
 const ENV_GTM_ID = process.env.NEXT_PUBLIC_GTM_ID
 
-const inter = Inter({
-  subsets: ['latin', 'latin-ext'],
-  variable: '--font-inter',
-  display: 'swap',
-  preload: true,
-  fallback: ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
-  adjustFontFallback: true,
-})
+const geistSans = GeistSans
+const geistMono = GeistMono
 
-// Lean Settings sonucu için minimal tip
-interface ISettingsLean {
-  googleAnalyticsId?: string;
-  googleTagManagerId?: string;
-}
-
-// Dynamic metadata function
 export async function generateMetadata(): Promise<Metadata> {
   try {
     if (!hasValidMongoUri()) {
@@ -45,40 +31,31 @@ export async function generateMetadata(): Promise<Metadata> {
     }
     await connectDB();
     const siteSettings = await SiteSettings.getSiteSettings();
-    const seoPlugin = await Plugin.findOne({ slug: 'seo-plugin', isActive: true });
+    const seoConfig = siteSettings.seoConfig || {};
+    const analyticsConfig = siteSettings.analyticsConfig || {};
 
-    // Default SEO from Site Settings
     let title = siteSettings.siteName || 'Personal Blog';
     let description = siteSettings.slogan || siteSettings.description || 'Kişisel blog ve portfolyo sitesi';
     let keywords = siteSettings.seo?.keywords || [];
 
-    // Override/Enhance with Plugin if active
-    if (seoPlugin && seoPlugin.config) {
-      if (seoPlugin.config.metaTitleSuffix && siteSettings.siteName) {
-        title = `${siteSettings.siteName}${seoPlugin.config.metaTitleSuffix}`;
-      }
-      if (seoPlugin.config.globalMetaDescription) {
-        description = seoPlugin.config.globalMetaDescription;
-      }
-      if (seoPlugin.config.globalKeywords && Array.isArray(seoPlugin.config.globalKeywords)) {
-        keywords = [...keywords, ...seoPlugin.config.globalKeywords];
-      }
-    } else {
-      // Fallback to old Site Settings SEO object
+    if (seoConfig.metaTitleSuffix && siteSettings.siteName) {
+      title = `${siteSettings.siteName}${seoConfig.metaTitleSuffix}`;
+    }
+    if (seoConfig.globalMetaDescription) {
+      description = seoConfig.globalMetaDescription;
+    }
+    if (seoConfig.globalKeywords && Array.isArray(seoConfig.globalKeywords)) {
+      keywords = [...keywords, ...seoConfig.globalKeywords];
+    }
+
+    if (!seoConfig.metaTitleSuffix) {
       if (siteSettings.seo?.metaTitle) title = siteSettings.seo.metaTitle;
       if (siteSettings.seo?.metaDescription) description = siteSettings.seo.metaDescription;
     }
 
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.fixral.com';
     const logoUrl = typeof siteSettings.logo === 'string' ? siteSettings.logo : siteSettings.logo?.url;
-    const googleVerification = siteSettings?.analytics?.googleSiteVerification || ENV_GOOGLE_VERIFICATION;
-
-    // Analytics Verification from Plugin?
-    const analyticsPlugin = await Plugin.findOne({ slug: 'analytics-plugin', isActive: true });
-    let finalVerification = googleVerification;
-    if (analyticsPlugin && analyticsPlugin.config?.googleSiteVerification) {
-      finalVerification = analyticsPlugin.config.googleSiteVerification;
-    }
+    const googleVerification = analyticsConfig.googleSiteVerification || siteSettings?.analytics?.googleSiteVerification || ENV_GOOGLE_VERIFICATION;
 
     return {
       title: title,
@@ -103,13 +80,13 @@ export async function generateMetadata(): Promise<Metadata> {
         ],
       },
       twitter: {
-        card: 'summary_large_image', // Could come from plugin config
+        card: 'summary_large_image',
         title: title,
         description: description,
         images: [siteSettings.logo?.url || '/og-image.jpg'],
       },
       verification: {
-        google: finalVerification || undefined,
+        google: googleVerification || undefined,
       },
       alternates: {
         languages: {
@@ -146,7 +123,6 @@ import { LoadingBar } from '../components';
 import { ToastProvider } from '../components/ui/useToast';
 import FixralToastViewport from '../components/ui/FixralToast';
 import { Toaster } from 'react-hot-toast';
-import { pluginManager } from '../plugins/core/PluginManager';
 
 export default async function RootLayout({
   children,
@@ -161,45 +137,27 @@ export default async function RootLayout({
   if (hasValidMongoUri()) {
     try {
       await connectDB();
-      // Use SiteSettings single source of truth
       const siteSettings = await SiteSettings.getSiteSettings();
       siteName = siteSettings.siteName || config.app.name;
       siteUrl = siteSettings.siteUrl || config.app.url;
 
-      // Ensure plugins are loaded on the server
-      try {
-        await pluginManager.loadAllPlugins();
-      } catch (err) {
-        console.error('Failed to initialize plugins:', err);
+      const analyticsConfig = siteSettings.analyticsConfig;
+      if (analyticsConfig && analyticsConfig.enablePageViewTracking) {
+        gaId = analyticsConfig.googleAnalyticsId || undefined;
+        gtmId = analyticsConfig.googleTagManagerId || undefined;
       }
 
-      // Check if analytics plugin is active
-      const analyticsPlugin = await Plugin.findOne({ slug: 'analytics-plugin', isActive: true });
-
-      if (analyticsPlugin && analyticsPlugin.config) {
-        if (analyticsPlugin.config.enablePageViewTracking) {
-          gaId = analyticsPlugin.config.googleAnalyticsId || undefined;
-          gtmId = analyticsPlugin.config.googleTagManagerId || undefined;
-        }
-      } else {
-        // Fallback to SiteSettings (Deprecated path, but kept for safety if plugin logic fails)
-        if (siteSettings?.analytics?.enableAnalytics) {
-          gaId = siteSettings.analytics.googleAnalyticsId || undefined;
-          gtmId = siteSettings.analytics.googleTagManagerId || undefined;
-        }
+      if (!gaId && !gtmId && siteSettings?.analytics?.enableAnalytics) {
+        gaId = siteSettings.analytics.googleAnalyticsId || undefined;
+        gtmId = siteSettings.analytics.googleTagManagerId || undefined;
       }
-
     } catch (e) {
       console.error('Layout settings load error:', e);
     }
   }
 
-  // Only use env fallback if DB didn't provide them AND we want to default to them?
-  // Current logic: DB overrides env if DB exists. 
-  // If DB retrieval failed or returned empty, usage of env is acceptable for dev/fallback.
   if (!gaId) gaId = ENV_GA_ID || undefined;
   if (!gtmId) gtmId = ENV_GTM_ID || undefined;
-
 
   const headersList = await headers();
   const locale = headersList.get('x-locale') || 'tr';
@@ -207,40 +165,32 @@ export default async function RootLayout({
   return (
     <html lang={locale} className="scroll-smooth">
       <head>
-        {/* Performance and SEO meta tags */}
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="theme-color" content="#0f172a" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        {/* apple-mobile-web-app-title is set dynamically via generateMetadata */}
 
-        {/* PWA Manifest */}
         <link rel="manifest" href="/manifest.json" />
 
-        {/* PWA iOS specific */}
         <meta name="apple-touch-fullscreen" content="yes" />
         <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
         <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152x152.png" />
         <link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-192x192.png" />
         <link rel="apple-touch-startup-image" href="/icons/icon-512x512.png" />
 
-        {/* Preconnect to external domains for performance */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://res.cloudinary.com" />
 
-        {/* Favicon and app icons */}
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" href="/favicon.svg" />
 
-        {/* DNS prefetch for better performance */}
         <link rel="dns-prefetch" href="//fonts.googleapis.com" />
         <link rel="dns-prefetch" href="//fonts.gstatic.com" />
         <link rel="dns-prefetch" href="//res.cloudinary.com" />
 
-        {/* JSON-LD: Organization — server-side inline (Google'ın ilk HTML'de görmesi için) */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -258,7 +208,6 @@ export default async function RootLayout({
           }}
         />
 
-        {/* JSON-LD: WebSite with SearchAction — server-side inline */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -275,7 +224,6 @@ export default async function RootLayout({
             })
           }}
         />
-        {/* Google Tag Manager */}
         {gtmId && (
           <Script id="gtm-script" strategy="afterInteractive">
             {`
@@ -287,7 +235,6 @@ export default async function RootLayout({
             `}
           </Script>
         )}
-        {/* Google Analytics */}
         {gaId && (
           <>
             <Script src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} strategy="afterInteractive" />
@@ -302,8 +249,7 @@ export default async function RootLayout({
           </>
         )}
       </head>
-      <body className={`${inter.variable} font-sans min-h-screen bg-page-bg flex flex-col text-fixral-charcoal antialiased`}>
-        {/* GTM noscript */}
+      <body className={`${geistSans.variable} ${geistMono.variable} font-sans min-h-screen bg-page-bg flex flex-col text-zinc-800 antialiased`}>
         {gtmId && (
           <noscript>
             <iframe
@@ -315,8 +261,8 @@ export default async function RootLayout({
             />
           </noscript>
         )}
-        <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[10000] focus:bg-white focus:text-slate-900 focus:px-4 focus:py-2 focus:rounded-lg focus:shadow">
-          İçeriğe atla
+        <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[10000] focus:bg-white focus:text-slate-900 focus:px-4 focus:py-2 focus:rounded-lg focus:shadow" aria-label="Skip to main content">
+          Skip to content
         </a>
         <ThemeProvider>
           <ActiveThemeProvider>
@@ -326,8 +272,6 @@ export default async function RootLayout({
                 <ClientWrapper>
                   <Header />
                   <GlobalBreadcrumbsJsonLd />
-                  {/* FloatingCta removed — CTA now lives in header */}
-                  {/* Main content area with smooth transitions */}
                   <PageTransitionWrapper>
                     <div className="relative flex-grow">
                       <main id="main-content" className="relative z-100">
@@ -337,16 +281,15 @@ export default async function RootLayout({
                   </PageTransitionWrapper>
 
                   <ConditionalFooter />
+                  <GrainOverlay />
                 </ClientWrapper>
               </Providers>
-              {/* Global toast viewport */}
               <FixralToastViewport />
               <Toaster position="top-right" toastOptions={{ duration: 3000 }} />
             </ToastProvider>
           </ActiveThemeProvider>
         </ThemeProvider>
 
-        {/* Development tools - hidden on mobile to avoid UI overlay */}
         {config.isDevelopment && (
           <div id="dev-tools" className="hidden md:block fixed bottom-4 right-4 z-50 opacity-50 hover:opacity-100 transition-opacity pointer-events-none">
             <div className="bg-gray-900 text-white p-2 rounded text-xs">

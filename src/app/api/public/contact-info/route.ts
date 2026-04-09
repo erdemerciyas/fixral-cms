@@ -4,32 +4,21 @@ import { authOptions } from '@/lib/auth';
 import connectDB from '@/lib/mongoose';
 import Contact from '@/models/Contact';
 import SiteSettings from '@/models/SiteSettings';
-import Plugin from '@/models/Plugin';
 
 // GET /api/contact-info - İletişim bilgilerini getir
 export async function GET() {
   try {
     await connectDB();
 
-    // Fetch from central SiteSettings
     const siteSettings = await SiteSettings.getSiteSettings();
-    const socialPlugin = await Plugin.findOne({ slug: 'social-media-plugin', isActive: true });
+    const socialMediaConfig = siteSettings.socialMediaConfig || {};
 
-    let socialLinks = {
-      linkedin: siteSettings.socialMedia?.linkedin || '',
-      twitter: siteSettings.socialMedia?.twitter || '@fixral',
-      instagram: siteSettings.socialMedia?.instagram || '',
-      facebook: '',
+    const socialLinks = {
+      linkedin: socialMediaConfig.linkedin || siteSettings.socialMedia?.linkedin || '',
+      twitter: socialMediaConfig.twitter || siteSettings.socialMedia?.twitter || '',
+      instagram: socialMediaConfig.instagram || siteSettings.socialMedia?.instagram || '',
+      facebook: socialMediaConfig.facebook || '',
     };
-
-    if (socialPlugin && socialPlugin.config) {
-      socialLinks = {
-        linkedin: socialPlugin.config.linkedin || '',
-        twitter: socialPlugin.config.twitter || '@fixral',
-        instagram: socialPlugin.config.instagram || '',
-        facebook: socialPlugin.config.facebook || '',
-      };
-    }
 
     // Map to Contact structure
     const contact = {

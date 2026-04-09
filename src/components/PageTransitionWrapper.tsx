@@ -1,20 +1,19 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 
 interface PageTransitionWrapperProps {
   children: React.ReactNode;
 }
 
-/**
- * Wraps page content with smooth fade transitions and prevents white flash
- * - Maintains layout stability during navigation
- * - Smooth opacity transitions between pages
- * - Prevents jarring content shifts
- */
 export default function PageTransitionWrapper({ children }: PageTransitionWrapperProps) {
   const pathname = usePathname();
+  const prefersReducedMotion = useReducedMotion();
+
+  if (prefersReducedMotion) {
+    return <div className="relative">{children}</div>;
+  }
 
   return (
     <AnimatePresence mode="wait">
@@ -24,8 +23,8 @@ export default function PageTransitionWrapper({ children }: PageTransitionWrappe
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{
-          duration: 0.4,
-          ease: [0.25, 0.46, 0.45, 0.94], // smooth easing
+          duration: 0.3,
+          ease: [0.25, 0.46, 0.45, 0.94],
         }}
         className="relative"
       >

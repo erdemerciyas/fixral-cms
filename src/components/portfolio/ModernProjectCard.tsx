@@ -1,15 +1,15 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
+import { motion, useInView } from 'framer-motion';
 import { usePathname } from 'next/navigation';
-import {
-  PhotoIcon,
-  CubeIcon
-} from '@heroicons/react/24/outline';
+import { Cube, ImageBroken } from '@phosphor-icons/react';
 import { ProjectSummary } from '@/types/portfolio';
 import HTMLContent from '../HTMLContent';
+
+const EASING = [0.32, 0.72, 0, 1] as const;
+const DURATION = 0.7;
 
 interface ModernProjectCardProps {
   project: ProjectSummary & {
@@ -30,159 +30,149 @@ interface ModernProjectCardProps {
   };
   index: number;
   layout?: 'grid' | 'masonry' | 'list';
+  span?: 'sm' | 'md' | 'lg';
 }
 
 export default function ModernProjectCard({
   project,
   index,
-  layout = 'grid'
+  layout = 'grid',
+  span = 'md',
 }: ModernProjectCardProps) {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, margin: '-60px' });
   const pathname = usePathname() || '';
   const currentLang = ['tr', 'es'].includes(pathname.split('/')[1]) ? pathname.split('/')[1] : 'tr';
 
-  const handleImageError = () => {
-    setImageError(true);
-  };
-
-  const cardVariants = {
-    hidden: {
-      opacity: 0,
-      y: 50,
-      scale: 0.95
-    },
-    visible: {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      transition: {
-        duration: 0.6,
-        delay: index * 0.1
-      }
-    }
-  };
-
-  const imageVariants = {
-    hidden: { scale: 1.2, opacity: 0 },
-    visible: {
-      scale: 1,
-      opacity: 1,
-      transition: { duration: 0.8 }
-    }
-  };
+  const aspectClass = span === 'lg' ? 'aspect-[16/9]' : span === 'sm' ? 'aspect-[4/5]' : 'aspect-[3/2]';
 
   return (
     <motion.div
-      variants={cardVariants}
-      initial="hidden"
-      animate="visible"
-      className={`group relative bg-white rounded-3xl shadow hover:shadow-2xl border border-slate-200/70 overflow-hidden transition-all duration-500 flex flex-col h-full hover:-translate-y-1.5 cursor-pointer ${layout === 'masonry' ? 'break-inside-avoid mb-6' : ''
-        }`}
+      ref={ref}
+      initial={{ opacity: 0, y: 40 }}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+      transition={{ duration: DURATION, delay: index * 0.08, ease: EASING }}
+      className="group relative cursor-pointer"
       onClick={() => {
         window.location.href = `/${currentLang}/portfolio/${project.slug}`;
       }}
     >
-      {/* Featured Badge */}
-      {project.featured && (
-        <div className="absolute top-4 left-4 z-20">
-          <span className="inline-flex items-center px-3 py-1 bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-xs font-bold rounded-full shadow-lg">
-            ⭐ Öne Çıkan
-          </span>
-        </div>
-      )}
-
-      {/* 3D Model Badge */}
-      {project.models3D && project.models3D.length > 0 && (
-        <div className={`absolute z-20 ${project.featured ? 'top-16 left-4' : 'top-4 left-4'}`}>
-          <span className="inline-flex items-center px-3 py-1 bg-gradient-to-r from-purple-500 to-indigo-600 text-white text-xs font-bold rounded-full shadow-lg">
-            <CubeIcon className="w-3 h-3 mr-1" />
-            3D Model
-          </span>
-        </div>
-      )}
-
-      {/* Image Container */}
-      <div className="relative aspect-[16/10] overflow-hidden flex-shrink-0">
-        {!imageError ? (
-          <>
-            <motion.div
-              variants={imageVariants}
-              initial="hidden"
-              animate={imageLoaded ? "visible" : "hidden"}
-            >
-              <Image
-                src={project.coverImage || (process.env.NEXT_PUBLIC_DEFAULT_PROJECT_IMAGE_URL || 'https://res.cloudinary.com/demo/image/upload/c_fill,w_1200,h_800,q_auto,f_auto/sample.jpg')}
-                alt={project.title}
-                fill
-                className="object-cover transition-transform duration-700 group-hover:scale-110"
-                onLoad={() => setImageLoaded(true)}
-                onError={handleImageError}
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              />
-            </motion.div>
-
-            {/* Loading Skeleton */}
-            {!imageLoaded && (
-              <div className="absolute inset-0 bg-gradient-to-b from-slate-200 to-slate-300 animate-pulse">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <PhotoIcon className="w-12 h-12 text-slate-400" />
-                </div>
+      {/* Double-Bezel outer shell */}
+      <div className="rounded-3xl border border-zinc-200/60 bg-zinc-100/40 p-1.5">
+        {/* Inner card */}
+        <div className="relative rounded-[20px] overflow-hidden bg-white border border-zinc-100 transition-shadow group-hover:shadow-[0_20px_60px_-12px_rgba(0,52,80,0.15)]"
+          style={{ transitionDuration: '700ms', transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
+        >
+          {/* Image container */}
+          <div className={`relative ${aspectClass} overflow-hidden`}>
+            {!imageError ? (
+              <>
+                <Image
+                  src={project.coverImage || (process.env.NEXT_PUBLIC_DEFAULT_PROJECT_IMAGE_URL || 'https://res.cloudinary.com/demo/image/upload/c_fill,w_1200,h_800,q_auto,f_auto/sample.jpg')}
+                  alt={project.title}
+                  fill
+                  className="object-cover transition-transform group-hover:scale-[1.04]"
+                  style={{ transitionDuration: '700ms', transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
+                  onLoad={() => setImageLoaded(true)}
+                  onError={() => setImageError(true)}
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                />
+                {!imageLoaded && (
+                  <div className="absolute inset-0 bg-zinc-100 animate-pulse" />
+                )}
+              </>
+            ) : (
+              <div className="absolute inset-0 bg-gradient-to-br from-zinc-100 to-zinc-200 flex items-center justify-center">
+                <ImageBroken weight="light" className="w-10 h-10 text-zinc-400" />
               </div>
             )}
-          </>
-        ) : (
-          <div className="absolute inset-0 bg-gradient-to-b from-brand-primary-100 to-blue-100 flex flex-col items-center justify-center">
-            <div className="w-16 h-16 bg-brand-primary-200 rounded-full flex items-center justify-center">
-              <PhotoIcon className="w-8 h-8 text-brand-primary-700" />
+
+            {/* Glassmorphism hover overlay */}
+            <div
+              className="absolute inset-0 flex flex-col justify-end p-5 md:p-6 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0"
+              style={{ transitionDuration: '700ms', transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)', transitionProperty: 'opacity, transform' }}
+            >
+              <div className="absolute inset-0 bg-gradient-to-t from-[#003450]/90 via-[#003450]/50 to-transparent backdrop-blur-sm" />
+
+              <div className="relative z-10">
+                <h3 className="font-[family-name:var(--font-geist-sans)] text-lg md:text-xl font-semibold text-white mb-3 line-clamp-2 tracking-tight">
+                  {project.title}
+                </h3>
+
+                {project.technologies && project.technologies.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5">
+                    {project.technologies.slice(0, 4).map((tech) => (
+                      <span
+                        key={tech}
+                        className="font-[family-name:var(--font-geist-mono)] text-[10px] md:text-[11px] tracking-wide text-white/90 bg-white/15 backdrop-blur-sm border border-white/10 rounded-lg px-2 py-0.5"
+                      >
+                        {tech}
+                      </span>
+                    ))}
+                    {project.technologies.length > 4 && (
+                      <span className="font-[family-name:var(--font-geist-mono)] text-[10px] md:text-[11px] text-white/60 self-center">
+                        +{project.technologies.length - 4}
+                      </span>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Badges */}
+            <div className="absolute top-3 left-3 flex flex-col gap-2 z-10">
+              {project.featured && (
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#003450] text-white text-[10px] font-medium tracking-wide uppercase rounded-lg border border-white/10 backdrop-blur-sm">
+                  One Cikan
+                </span>
+              )}
+              {project.models3D && project.models3D.length > 0 && (
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-white/90 backdrop-blur-sm text-zinc-700 text-[10px] font-medium tracking-wide uppercase rounded-lg border border-zinc-200/50">
+                  <Cube weight="light" className="w-3 h-3" />
+                  3D
+                </span>
+              )}
             </div>
           </div>
-        )}
 
-        {/* Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-500"></div>
-      </div>
+          {/* Content area */}
+          <div className="p-4 md:p-5">
+            <h3 className="font-[family-name:var(--font-geist-sans)] text-base md:text-lg font-semibold text-zinc-800 mb-1.5 line-clamp-1 tracking-tight group-hover:text-[#003450] transition-colors"
+              style={{ transitionDuration: '700ms', transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
+            >
+              {project.title}
+            </h3>
 
-      {/* Content */}
-      <div className="p-6 flex flex-col flex-grow">
-        {/* Title */}
-        <h3 className="text-xl font-bold text-slate-800 mb-3 group-hover:text-brand-primary-700 transition-colors duration-300 line-clamp-2">
-          {project.title}
-        </h3>
+            {project.description && (
+              <div className="text-zinc-500 mb-3 line-clamp-2">
+                <HTMLContent
+                  content={project.description}
+                  className="text-sm leading-relaxed"
+                  truncate={100}
+                />
+              </div>
+            )}
 
-        {/* Description */}
-        {project.description && (
-          <div className="text-slate-600 mb-4 line-clamp-3">
-            <HTMLContent
-              content={project.description}
-              className="text-sm leading-relaxed"
-              truncate={120}
-            />
+            {/* Meta row */}
+            <div className="flex items-center justify-between text-xs text-zinc-400 font-[family-name:var(--font-geist-mono)]">
+              {project.client && (
+                <span className="truncate max-w-[50%]">{project.client}</span>
+              )}
+              {project.completionDate && (
+                <span>{new Date(project.completionDate).toLocaleDateString('tr-TR', { year: 'numeric', month: 'short' })}</span>
+              )}
+            </div>
           </div>
-        )}
 
-        {/* Meta (client / date) - erişilebilir etiketlerle */}
-        <dl className="grid grid-cols-2 gap-2 text-xs text-slate-500 mb-4">
-          {project.client && (
-            <div>
-              <dt className="sr-only">Müşteri</dt>
-              <dd aria-label={`Müşteri: ${project.client}`}>{project.client}</dd>
-            </div>
-          )}
-          {project.completionDate && (
-            <div className="text-right">
-              <dt className="sr-only">Tamamlanma</dt>
-              <dd aria-label={`Tamamlanma tarihi`}>{new Date(project.completionDate).toLocaleDateString('tr-TR')}</dd>
-            </div>
-          )}
-        </dl>
-
-        {/* Spacer to push button to bottom */}
-        <div className="flex-grow"></div>
+          {/* Hover translate effect */}
+          <div
+            className="absolute inset-0 rounded-[20px] pointer-events-none translate-y-0 group-hover:-translate-y-0.5"
+            style={{ transitionDuration: '700ms', transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
+          />
+        </div>
       </div>
-
-      {/* Hover Effect Border */}
-      <div className="absolute inset-0 rounded-3xl border-2 border-transparent group-hover:border-brand-primary-600/20 transition-colors duration-500 pointer-events-none"></div>
     </motion.div>
   );
 }

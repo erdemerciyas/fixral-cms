@@ -1,12 +1,11 @@
 import { getSliderItems, getPortfolioItems, getServices } from '@/lib/data';
-import { ThemeRegistry } from '@/themes/ThemeRegistry';
+import HomeTemplate from '@/templates/HomeTemplate';
 import connectDB from '@/lib/mongoose';
-import Theme from '@/models/Theme';
 import SiteSettings from '@/models/SiteSettings';
 import type { Metadata } from 'next';
 import { SITE_URL, generateAlternates, generateOgImages } from '@/lib/seo-utils';
 
-export const revalidate = 3600; // ISR for 1 hour
+export const revalidate = 3600;
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const { lang } = await params;
@@ -48,20 +47,15 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
 export default async function HomePage({ params }: { params: Promise<{ lang: string }> }) {
   const { lang } = await params;
   await connectDB();
-  const activeThemeRecord = await Theme.findOne({ isActive: true }).lean() as any;
-  const activeThemeFolder = activeThemeRecord?.slug || 'default';
 
-  // Fetch data in parallel
   const [sliderItems, portfolioItems, services] = await Promise.all([
     getSliderItems(),
     getPortfolioItems(6),
     getServices(6)
   ]);
 
-  const TemplateComponent = ThemeRegistry.getTemplate(activeThemeFolder, 'HomeTemplate');
-
   return (
-    <TemplateComponent
+    <HomeTemplate
       sliderItems={sliderItems}
       portfolioItems={portfolioItems}
       services={services}

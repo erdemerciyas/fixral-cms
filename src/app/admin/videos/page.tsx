@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useConfirm } from '@/hooks/use-confirm';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface Video {
   _id: string;
@@ -112,13 +113,19 @@ export default function AdminVideosPage() {
 
   if (status === 'loading' || loading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="flex flex-col items-center space-y-4">
-          <div className="relative">
-            <div className="w-16 h-16 border-4 border-indigo-200 rounded-full"></div>
-            <div className="absolute top-0 left-0 w-16 h-16 border-4 border-transparent border-t-indigo-600 rounded-full animate-spin"></div>
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div className="space-y-2">
+            <Skeleton className="h-8 w-48" />
+            <Skeleton className="h-4 w-64" />
           </div>
-          <p className="text-lg font-medium text-slate-600">Loading videos...</p>
+          <Skeleton className="h-10 w-32" />
+        </div>
+        <Skeleton className="h-12 w-full rounded-xl" />
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <Skeleton key={i} className="h-32 rounded-xl" />
+          ))}
         </div>
       </div>
     );
@@ -129,8 +136,8 @@ export default function AdminVideosPage() {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Videos</h1>
-          <p className="text-slate-500 mt-1">Manage your video content</p>
+          <h1 className="text-2xl font-bold text-foreground">Videos</h1>
+          <p className="text-muted-foreground mt-1">Manage your video content</p>
         </div>
         <button className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-200">
           <Plus className="w-5 h-5 mr-2" />
@@ -139,24 +146,24 @@ export default function AdminVideosPage() {
       </div>
 
       {/* Search and Filter Bar */}
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200/60 p-4">
+      <div className="bg-card rounded-xl shadow-sm border border-border/60 p-4">
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex-1 relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search videos..."
-              className="w-full pl-12 pr-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+              className="w-full pl-12 pr-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
             />
           </div>
-          <div className="flex space-x-2 bg-slate-100 p-1 rounded-xl">
+          <div className="flex space-x-2 bg-muted p-1 rounded-xl">
             <button
               onClick={() => setStatusFilter('all')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${statusFilter === 'all'
-                ? 'bg-white text-indigo-600 shadow-sm'
-                : 'text-slate-600 hover:text-slate-900'
+                ? 'bg-card text-indigo-600 shadow-sm'
+                : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
               All ({videos.length})
@@ -164,8 +171,8 @@ export default function AdminVideosPage() {
             <button
               onClick={() => setStatusFilter('published')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${statusFilter === 'published'
-                ? 'bg-white text-indigo-600 shadow-sm'
-                : 'text-slate-600 hover:text-slate-900'
+                ? 'bg-card text-indigo-600 shadow-sm'
+                : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
               Published ({videos.filter(v => v.status === 'published').length})
@@ -173,8 +180,8 @@ export default function AdminVideosPage() {
             <button
               onClick={() => setStatusFilter('draft')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${statusFilter === 'draft'
-                ? 'bg-white text-indigo-600 shadow-sm'
-                : 'text-slate-600 hover:text-slate-900'
+                ? 'bg-card text-indigo-600 shadow-sm'
+                : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
               Draft ({videos.filter(v => v.status === 'draft').length})
@@ -188,7 +195,7 @@ export default function AdminVideosPage() {
         {filteredVideos.map((video) => (
           <div
             key={video._id}
-            className="bg-white rounded-2xl shadow-sm border border-slate-200/60 overflow-hidden hover:shadow-lg transition-all duration-300 group"
+            className="bg-card rounded-xl shadow-sm border border-border/60 overflow-hidden hover:shadow-lg transition-all duration-300 group"
           >
             {/* Thumbnail */}
             <div className="relative aspect-video bg-gradient-to-br from-purple-100 to-indigo-100">
@@ -215,14 +222,14 @@ export default function AdminVideosPage() {
 
             {/* Content */}
             <div className="p-5">
-              <h3 className="text-lg font-bold text-slate-900 mb-2 group-hover:text-indigo-600 transition-colors line-clamp-1">
+              <h3 className="text-lg font-bold text-foreground mb-2 group-hover:text-indigo-600 transition-colors line-clamp-1">
                 {video.title}
               </h3>
-              <p className="text-sm text-slate-600 mb-4 line-clamp-2">
+              <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
                 {video.description}
               </p>
               <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center space-x-3 text-xs text-slate-500">
+                <div className="flex items-center space-x-3 text-xs text-muted-foreground">
                   <span className="flex items-center">
                     <Clock className="w-3 h-3 mr-1" />
                     {formatDuration(video.duration)}
@@ -232,19 +239,19 @@ export default function AdminVideosPage() {
                     {formatViews(video.views)} views
                   </span>
                 </div>
-                <span className="text-xs text-slate-400">
+                <span className="text-xs text-muted-foreground">
                   {formatDate(video.createdAt)}
                 </span>
               </div>
               <div className="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
                 <button className="p-2 hover:bg-indigo-100 rounded-lg transition-colors">
-                  <Pencil className="w-4 h-4 text-slate-600" />
+                  <Pencil className="w-4 h-4 text-muted-foreground" />
                 </button>
                 <button
                   onClick={() => handleDelete(video._id)}
                   className="p-2 hover:bg-red-100 rounded-lg transition-colors"
                 >
-                  <Trash2 className="w-4 h-4 text-slate-600" />
+                  <Trash2 className="w-4 h-4 text-muted-foreground" />
                 </button>
               </div>
             </div>
@@ -254,10 +261,10 @@ export default function AdminVideosPage() {
 
       {/* Empty State */}
       {filteredVideos.length === 0 && (
-        <div className="text-center py-16 bg-white rounded-2xl border border-slate-200/60">
-          <VideoIcon className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-          <h3 className="text-xl font-semibold text-slate-900 mb-2">No videos found</h3>
-          <p className="text-slate-500 mb-6">
+        <div className="text-center py-16 bg-card rounded-xl border border-border/60">
+          <VideoIcon className="w-16 h-16 text-muted-foreground/50 mx-auto mb-4" />
+          <h3 className="text-xl font-semibold text-foreground mb-2">No videos found</h3>
+          <p className="text-muted-foreground mb-6">
             {searchQuery || statusFilter !== 'all'
               ? 'Try adjusting your search or filter'
               : 'Add your first video to get started'

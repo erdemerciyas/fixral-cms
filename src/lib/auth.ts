@@ -45,8 +45,7 @@ export const authOptions: NextAuthOptions = {
         // ... (logging parts omitted for brevity, keeping simple flow)
 
         await connectDB();
-        // Explicitly select 2fa fields as they might be hidden/excluded
-        const user = await UserModel.findOne({ email }).select('+password +twoFactorSecret +isTwoFactorEnabled');
+        const user = await UserModel.findOne({ email });
 
         if (!user) {
           // Dummy check for timing
@@ -86,7 +85,7 @@ export const authOptions: NextAuthOptions = {
           email: user.email,
           name: user.name,
           role: user.role,
-          image: user.avatar,
+          image: user.avatar ?? undefined,
         };
       }
     }),

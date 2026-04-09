@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React from 'react';
 import { HomeIcon, ChevronRightIcon } from '@heroicons/react/20/solid';
+import { useAppTranslations } from '@/hooks/useAppTranslations';
+import { locales } from '@/i18n';
 
 interface BreadcrumbItem {
   label: string;
@@ -12,53 +14,74 @@ interface BreadcrumbItem {
 
 interface BreadcrumbsProps {
   items?: BreadcrumbItem[];
+  className?: string;
 }
 
-const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items }) => {
+const ROUTE_SEGMENT_MAP: Record<string, string> = {
+  haberler: 'news',
+  noticias: 'news',
+  portfolio: 'portfolio',
+  services: 'services',
+  contact: 'contact',
+  videos: 'videos',
+  account: 'account',
+  login: 'login',
+  register: 'register',
+  products: 'products',
+  offline: 'offline',
+  about: 'about',
+};
+
+const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items, className = '' }) => {
   const pathname = usePathname();
+  const { t, locale } = useAppTranslations('breadcrumb');
   const safePath = pathname ?? '';
+
+  if (safePath === '/' || safePath === `/${locale}` || safePath.startsWith('/admin')) {
+    return null;
+  }
 
   let breadcrumbs: BreadcrumbItem[] = [];
 
   if (items) {
     breadcrumbs = items;
   } else {
-    const pathSegments = safePath.split('/').filter(segment => segment !== '');
-    let currentPath = '';
+    const pathSegments = safePath.split('/').filter(Boolean);
 
-    // Add Home breadcrumb
-    breadcrumbs.push({ label: 'Anasayfa', href: '/' });
+    const startsWithLocale =
+      pathSegments.length > 0 &&
+      (locales as readonly string[]).includes(pathSegments[0]);
 
-    pathSegments.forEach((segment) => {
+    const localePrefix = startsWithLocale ? `/${pathSegments[0]}` : '';
+    const contentSegments = startsWithLocale ? pathSegments.slice(1) : pathSegments;
+
+    breadcrumbs.push({ label: t('home'), href: localePrefix || '/' });
+
+    let currentPath = localePrefix;
+    contentSegments.forEach((segment) => {
       currentPath += `/${segment}`;
 
-      // Basic title mapping (can be expanded for more complex cases)
-      let label = segment.replace(/-/g, ' ');
-      if (label === 'portfolio') label = 'Portfolyo';
-      if (label === 'services') label = 'Hizmetler';
-      if (label === 'about') label = 'Hakkımda';
-      if (label === 'contact') label = 'İletişim';
-      if (label === 'products') label = 'Ürünler';
-      if (label === 'admin') label = 'Yönetim Paneli';
+      const translationKey = ROUTE_SEGMENT_MAP[segment.toLowerCase()];
+      let label: string;
 
-      breadcrumbs.push({ label: capitalizeFirstLetter(label), href: currentPath });
+      if (translationKey) {
+        label = t(translationKey);
+      } else {
+        label = segment
+          .replace(/-/g, ' ')
+          .split(' ')
+          .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+          .join(' ');
+      }
+
+      breadcrumbs.push({ label, href: currentPath });
     });
-  }
-
-  // Helper function to capitalize the first letter of each word
-  function capitalizeFirstLetter(str: string) {
-    return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-  }
-
-  // Don't show breadcrumbs on the home page or admin pages
-  if (safePath === '/' || safePath.startsWith('/admin')) {
-    return null;
   }
 
   return (
     <nav
       aria-label="Breadcrumb"
-      className="relative mt-0 mb-6 rounded-2xl border border-slate-200 bg-white/80 shadow-sm supports-[backdrop-filter]:bg-white/60 backdrop-blur px-4 py-3 text-sm text-slate-600"
+      className={`rounded-2xl border border-slate-200 bg-white/80 shadow-sm supports-[backdrop-filter]:bg-white/60 backdrop-blur px-4 py-3 text-sm text-slate-600 dark:border-slate-700 dark:bg-slate-800/80 dark:text-slate-400 ${className}`}
     >
       <ol className="flex flex-wrap items-center gap-x-2 gap-y-1">
         {breadcrumbs.map((crumb, index) => {
@@ -68,25 +91,30 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items }) => {
               {index === 0 ? (
                 <Link
                   href={crumb.href}
-                  className="inline-flex items-center gap-1 text-slate-600 hover:text-slate-900 transition-colors"
+                  className="inline-flex items-center gap-1 text-slate-500 hover:text-brand-primary-700 transition-colors dark:text-slate-400 dark:hover:text-brand-primary-400"
                 >
                   <HomeIcon className="h-4 w-4" aria-hidden="true" />
-                  <span className="sr-only">Anasayfa</span>
+                  <span className="sr-only">{crumb.label}</span>
                 </Link>
               ) : null}
-              {index > 0 ? (
-                <ChevronRightIcon className="h-4 w-4 mx-2 text-slate-300" aria-hidden="true" />
-              ) : null}
+              {index > 0 && (
+                <ChevronRightIcon
+                  className="h-4 w-4 mx-1.5 text-slate-300 dark:text-slate-600"
+                  aria-hidden="true"
+                />
+              )}
               {index > 0 && !isLast ? (
                 <Link
                   href={crumb.href}
-                  className="text-slate-600 hover:text-slate-900 transition-colors"
+                  className="text-slate-500 hover:text-brand-primary-700 transition-colors dark:text-slate-400 dark:hover:text-brand-primary-400"
                 >
                   {crumb.label}
                 </Link>
               ) : null}
               {isLast && index > 0 ? (
-                <span className="font-medium text-slate-900">{crumb.label}</span>
+                <span className="font-medium text-slate-900 dark:text-slate-100">
+                  {crumb.label}
+                </span>
               ) : null}
             </li>
           );

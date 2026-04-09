@@ -3,7 +3,6 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '../../../../../lib/auth';
 import connectDB from '../../../../../lib/mongoose';
 import Slider from '../../../../../models/Slider';
-import { ObjectId } from 'mongodb';
 
 // GET /api/admin/slider/[id] - Tek slider getir
 export async function GET(
@@ -20,13 +19,6 @@ export async function GET(
     }
 
     const { id } = params;
-    
-    if (!ObjectId.isValid(id)) {
-      return NextResponse.json(
-        { error: 'Geçersiz slider ID' },
-        { status: 400 }
-      );
-    }
 
     await connectDB();
     
@@ -64,15 +56,8 @@ export async function PUT(
 
     const { id } = params;
     const body = await request.json();
-    
-    if (!ObjectId.isValid(id)) {
-      return NextResponse.json(
-        { error: 'Geçersiz slider ID' },
-        { status: 400 }
-      );
-    }
 
-    const { 
+    const {
       title, 
       subtitle, 
       description, 
@@ -154,13 +139,6 @@ export async function DELETE(
 
     const { id } = params;
     
-    if (!ObjectId.isValid(id)) {
-      return NextResponse.json(
-        { error: 'Geçersiz slider ID' },
-        { status: 400 }
-      );
-    }
-
     await connectDB();
     
     const slider = await Slider.findByIdAndDelete(id);

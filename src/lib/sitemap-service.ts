@@ -1,8 +1,7 @@
 
-import { connectToDatabase } from '@/lib/mongoose';
+import connectDB from '@/lib/mongoose';
 import SiteSettings from '@/models/SiteSettings';
 import News from '@/models/News';
-import Product from '@/models/Product';
 import Portfolio from '@/models/Portfolio';
 import fs from 'fs';
 import path from 'path';
@@ -23,13 +22,12 @@ export class SitemapService {
         { path: '/contact', changefreq: 'monthly' as const, priority: 0.8 },
         { path: '/services', changefreq: 'weekly' as const, priority: 0.8 },
         { path: '/portfolio', changefreq: 'weekly' as const, priority: 0.8 },
-        { path: '/products', changefreq: 'daily' as const, priority: 0.8 },
         { path: '/videos', changefreq: 'weekly' as const, priority: 0.7 },
         { path: '/haberler', changefreq: 'daily' as const, priority: 0.8 },
     ];
 
     static async generateSitemapXML(): Promise<string> {
-        await connectToDatabase();
+        await connectDB();
 
         // 1. Get Base URL
         const settings = await SiteSettings.getSiteSettings();
@@ -71,24 +69,7 @@ export class SitemapService {
             console.error('Error fetching news for sitemap:', e);
         }
 
-        // 4. Add Products
-        try {
-            const products = await Product.find({ isActive: true }).select('slug updatedAt').lean();
-            products.forEach((product: any) => {
-                for (const locale of this.SUPPORTED_LOCALES) {
-                    urls.push({
-                        loc: `${baseUrl}/${locale}/products/${product.slug}`,
-                        lastmod: product.updatedAt ? new Date(product.updatedAt).toISOString() : new Date().toISOString(),
-                        changefreq: 'weekly',
-                        priority: 0.8
-                    });
-                }
-            });
-        } catch (e) {
-            console.error('Error fetching products for sitemap:', e);
-        }
-
-        // 5. Add Portfolio
+        // 4. Add Portfolio
         try {
             const projects = await Portfolio.find({ isActive: true }).select('slug updatedAt').lean();
             projects.forEach((project: any) => {

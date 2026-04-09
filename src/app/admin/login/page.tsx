@@ -5,6 +5,9 @@ import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Eye, EyeOff, Lock, Mail } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -67,7 +70,7 @@ export default function AdminLoginPage() {
         <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl shadow-indigo-500/30 p-8">
           {/* Logo */}
           <div className="flex flex-col items-center mb-8">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-lg shadow-indigo-500/30 mb-4">
+            <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-lg shadow-indigo-500/30 mb-4">
               <span className="text-white font-bold text-2xl">A</span>
             </div>
             <h1 className="text-2xl font-bold text-slate-900">Admin Login</h1>
@@ -85,10 +88,10 @@ export default function AdminLoginPage() {
           {error === '2FA_REQUIRED' || error === 'INVALID_2FA' ? (
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
-                <label htmlFor="code" className="block text-sm font-medium text-slate-700 mb-2">
+                <Label htmlFor="code" className="block text-sm font-medium text-slate-700 mb-2">
                   Doğrulama Kodu (2FA)
-                </label>
-                <input
+                </Label>
+                <Input
                   id="code"
                   type="text"
                   value={code} // State needs to be added
@@ -98,33 +101,33 @@ export default function AdminLoginPage() {
                   autoFocus
                 />
               </div>
-              <button
+              <Button
                 type="submit"
                 disabled={loading}
                 className="w-full py-3.5 px-4 bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-200 disabled:opacity-50"
               >
                 {loading ? 'Doğrulanıyor...' : 'Giriş Yap'}
-              </button>
-              <button
+              </Button>
+              <Button
                 type="button"
                 onClick={() => setError('')}
                 className="w-full text-sm text-slate-500 hover:text-indigo-600"
               >
                 Geri Dön
-              </button>
+              </Button>
             </form>
           ) : (
             /* Login Form */
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-2">
+                <Label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-2">
                   Email Address
-                </label>
+                </Label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <Mail className="h-5 w-5 text-slate-400" />
                   </div>
-                  <input
+                  <Input
                     id="email"
                     type="email"
                     value={email}
@@ -137,14 +140,14 @@ export default function AdminLoginPage() {
               </div>
 
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-slate-700 mb-2">
+                <Label htmlFor="password" className="block text-sm font-medium text-slate-700 mb-2">
                   Password
-                </label>
+                </Label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <Lock className="h-5 w-5 text-slate-400" />
                   </div>
-                  <input
+                  <Input
                     id="password"
                     type={showPassword ? 'text' : 'password'}
                     value={password}
@@ -153,7 +156,7 @@ export default function AdminLoginPage() {
                     className="w-full pl-12 pr-12 py-3.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
                     placeholder="••••••••"
                   />
-                  <button
+                  <Button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
@@ -163,18 +166,18 @@ export default function AdminLoginPage() {
                     ) : (
                       <Eye className="h-5 w-5" />
                     )}
-                  </button>
+                  </Button>
                 </div>
               </div>
 
               <div className="flex items-center justify-between">
-                <label className="flex items-center">
+                <Label className="flex items-center">
                   <input
                     type="checkbox"
                     className="w-4 h-4 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500"
                   />
                   <span className="ml-2 text-sm text-slate-600">Remember me</span>
-                </label>
+                </Label>
                 <Link
                   href="/admin/reset-password"
                   className="text-sm font-medium text-indigo-600 hover:text-indigo-700 transition-colors"
@@ -183,7 +186,7 @@ export default function AdminLoginPage() {
                 </Link>
               </div>
 
-              <button
+              <Button
                 type="submit"
                 disabled={loading}
                 className="w-full py-3.5 px-4 bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -196,7 +199,7 @@ export default function AdminLoginPage() {
                 ) : (
                   'Sign In'
                 )}
-              </button>
+              </Button>
             </form>
           )}
 

@@ -1,7 +1,7 @@
 'use client'
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { IThemeConfig } from '../models/Theme';
+import { IThemeConfig } from '../models/SiteSettings';
 
 interface ActiveThemeContextType {
   theme: IThemeConfig | null;

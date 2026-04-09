@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import { connectToDatabase } from '@/lib/mongoose';
+import connectDB from '@/lib/mongoose';
 import { authOptions } from '@/lib/auth';
+import Category from '@/models/Category';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
@@ -9,13 +10,9 @@ export const dynamic = 'force-dynamic';
 // GET - Tüm kategorileri getir
 export async function GET() {
   try {
-    const { db } = await connectToDatabase();
-    
-    const categories = await db
-      .collection('categories')
-      .find({})
-      .sort({ name: 1 })
-      .toArray();
+    await connectDB();
+
+    const categories = await Category.find({}).sort({ name: 1 });
 
     return NextResponse.json(categories, {
       headers: {
@@ -26,7 +23,7 @@ export async function GET() {
     console.error('Kategori getirme hatası:', error);
     return NextResponse.json(
       { error: 'Kategoriler getirilemedi' },
-      { 
+      {
         status: 500,
         headers: {
           'Content-Type': 'application/json; charset=utf-8',
@@ -48,10 +45,9 @@ export async function POST(request: Request) {
       );
     }
 
-    const { db } = await connectToDatabase();
+    await connectDB();
     const data = await request.json();
-    
-    // Zorunlu alanları kontrol et
+
     if (!data.name || !data.slug) {
       return NextResponse.json(
         { error: 'İsim ve slug alanları zorunludur' },
@@ -59,10 +55,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // Slug'ın benzersiz olduğunu kontrol et
-    const existingCategory = await db
-      .collection('categories')
-      .findOne({ slug: data.slug });
+    const existingCategory = await Category.findOne({ slug: data.slug });
 
     if (existingCategory) {
       return NextResponse.json(
@@ -71,13 +64,13 @@ export async function POST(request: Request) {
       );
     }
 
-    const result = await db.collection('categories').insertOne({
+    const created = await Category.create({
       ...data,
       createdAt: new Date(),
     });
 
     return NextResponse.json(
-      { message: 'Kategori başarıyla eklendi', id: result.insertedId },
+      { message: 'Kategori başarıyla eklendi', id: created._id },
       { status: 201 }
     );
   } catch (error) {
