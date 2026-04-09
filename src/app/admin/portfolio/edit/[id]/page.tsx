@@ -16,9 +16,10 @@ export default function EditPortfolioItem({ params }: { params: { id: string } }
 
   const fetchPortfolioItem = useCallback(async () => {
     try {
-      const response = await fetch(`/api/public/portfolio/${params.id}`);
+      const response = await fetch(`/api/admin/portfolio/${params.id}`);
       if (!response.ok) throw new Error('Portfolyo öğesi getirilemedi');
-      const data = await response.json();
+      const result = await response.json();
+      const data = result.data || result;
 
       let formattedDate = '';
       if (data.completionDate) {
@@ -75,7 +76,7 @@ export default function EditPortfolioItem({ params }: { params: { id: string } }
   const handleSubmit = async (data: PortfolioFormData) => {
     setSubmitting(true);
     try {
-      const response = await fetch(`/api/public/portfolio/${params.id}`, {
+      const response = await fetch(`/api/admin/portfolio/${params.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),

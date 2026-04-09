@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import Category from '@/models/Category';
 import { authOptions } from '@/lib/auth';
+import connectDB from '@/lib/mongoose';
 
 /**
  * GET /api/admin/categories/[id] - Get single category
@@ -20,11 +21,13 @@ export async function GET(
       );
     }
 
+    await connectDB();
+
     const category = await Category.findById(params.id);
 
     if (!category) {
       return NextResponse.json(
-        { success: false, error: 'Category not found' },
+        { success: false, error: 'Kategori bulunamadı' },
         { status: 404 }
       );
     }
@@ -33,7 +36,7 @@ export async function GET(
   } catch (error) {
     console.error('Error fetching category:', error);
     return NextResponse.json(
-      { success: false, error: 'Failed to fetch category' },
+      { success: false, error: 'Kategori yüklenirken bir hata oluştu' },
       { status: 500 }
     );
   }
@@ -56,6 +59,8 @@ export async function PUT(
       );
     }
 
+    await connectDB();
+
     const body = await req.json();
     const category = await Category.findByIdAndUpdate(
       params.id,
@@ -65,7 +70,7 @@ export async function PUT(
 
     if (!category) {
       return NextResponse.json(
-        { success: false, error: 'Category not found' },
+        { success: false, error: 'Kategori bulunamadı' },
         { status: 404 }
       );
     }
@@ -74,7 +79,7 @@ export async function PUT(
   } catch (error) {
     console.error('Error updating category:', error);
     return NextResponse.json(
-      { success: false, error: 'Failed to update category' },
+      { success: false, error: 'Kategori güncellenirken bir hata oluştu' },
       { status: 500 }
     );
   }
@@ -97,20 +102,22 @@ export async function DELETE(
       );
     }
 
+    await connectDB();
+
     const category = await Category.findByIdAndDelete(params.id);
 
     if (!category) {
       return NextResponse.json(
-        { success: false, error: 'Category not found' },
+        { success: false, error: 'Kategori bulunamadı' },
         { status: 404 }
       );
     }
 
-    return NextResponse.json({ success: true, data: category });
+    return NextResponse.json({ success: true, message: 'Kategori başarıyla silindi' });
   } catch (error) {
     console.error('Error deleting category:', error);
     return NextResponse.json(
-      { success: false, error: 'Failed to delete category' },
+      { success: false, error: 'Kategori silinirken bir hata oluştu' },
       { status: 500 }
     );
   }

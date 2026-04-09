@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import Category from '@/models/Category';
 import { authOptions } from '@/lib/auth';
+import connectDB from '@/lib/mongoose';
+import slugify from 'slugify';
 
 /**
  * GET /api/admin/categories - List all categories for admin
@@ -17,13 +19,15 @@ export async function GET(_req: NextRequest) {
       );
     }
 
+    await connectDB();
+
     const categories = await Category.find().sort({ name: 1 });
 
     return NextResponse.json(categories);
   } catch (error) {
     console.error('Error fetching categories:', error);
     return NextResponse.json(
-      { success: false, error: 'Failed to fetch categories' },
+      { success: false, error: 'Kategoriler yüklenirken bir hata oluştu' },
       { status: 500 }
     );
   }
@@ -43,7 +47,13 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    await connectDB();
+
     const body = await req.json();
+
+    if (!body.slug && body.name) {
+      body.slug = slugify(body.name, { lower: true, strict: true, replacement: '-' });
+    }
 
     const category = new Category({
       ...body,
@@ -57,10 +67,18 @@ export async function POST(req: NextRequest) {
       { success: true, data: category },
       { status: 201 }
     );
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error creating category:', error);
+
+    if (error?.code === 'P2002' || error?.message?.includes('Unique constraint')) {
+      return NextResponse.json(
+        { success: false, error: 'Bu isimde bir kategori zaten mevcut' },
+        { status: 409 }
+      );
+    }
+
     return NextResponse.json(
-      { success: false, error: 'Failed to create category' },
+      { success: false, error: 'Kategori oluşturulurken bir hata oluştu' },
       { status: 500 }
     );
   }

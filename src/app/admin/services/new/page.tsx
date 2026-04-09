@@ -143,7 +143,7 @@ export default function NewServicePage() {
     const filteredFeatures = features.filter(f => f.trim() !== '');
 
     try {
-      const response = await fetch('/api/public/services', {
+      const response = await fetch('/api/admin/services', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -155,12 +155,15 @@ export default function NewServicePage() {
         }),
       });
 
-      if (!response.ok) throw new Error('Servis eklenirken bir hata oluştu');
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => null);
+        throw new Error(errorData?.error || 'Servis eklenirken bir hata oluştu');
+      }
 
       setSuccess('Servis başarıyla eklendi! Yönlendiriliyorsunuz...');
       setTimeout(() => router.push('/admin/services'), 1500);
-    } catch {
-      setError('Servis eklenirken bir hata oluştu');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Servis eklenirken bir hata oluştu');
     } finally {
       setLoading(false);
     }

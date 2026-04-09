@@ -23,7 +23,7 @@ export default function NewPortfolioItem() {
   const handleSubmit = async (data: PortfolioFormData) => {
     setSubmitting(true);
     try {
-      const response = await fetch('/api/public/portfolio', {
+      const response = await fetch('/api/admin/portfolio', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),

@@ -269,7 +269,7 @@ export default function NewsForm({ initialData, onSubmit, isLoading = false }: N
         translations,
       };
 
-      const url = initialData ? `/api/public/news/${initialData._id}` : '/api/public/news';
+      const url = initialData ? `/api/admin/news/${initialData._id}` : '/api/admin/news';
       const method = initialData ? 'PUT' : 'POST';
 
       const response = await fetch(url, {

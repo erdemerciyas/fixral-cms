@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import connectDB from '@/lib/mongoose';
 import { authOptions } from '@/lib/auth';
 import Service from '@/models/Service';
+import slugify from 'slugify';
 
 // GET /api/services/[id] - Belirli bir servisi getir
 export async function GET(
@@ -50,10 +51,15 @@ export async function PUT(
 
     const imageUrl = body.image || '';
 
-    const updateData = {
+    const updateData: Record<string, any> = {
       ...body,
       image: imageUrl,
     };
+
+    if (body.title && !body.slug) {
+      const slugBase = slugify(body.title, { lower: true, strict: true, replacement: '-' });
+      updateData.slug = `${slugBase}-${Date.now()}`;
+    }
 
     const result = await Service.findByIdAndUpdate(
       params.id,

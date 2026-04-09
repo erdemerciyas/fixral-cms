@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import connectDB from '@/lib/mongoose';
+import slugify from 'slugify';
 
 import { logger } from '@/core/lib/logger';
 import { createError, asyncHandler } from '@/lib/errorHandler';
@@ -67,15 +68,20 @@ export const POST = withSecurity(SecurityConfigs.admin)(asyncHandler(async (requ
 
   await connectDB();
 
-  // Use a default image if none provided
-  const imageUrl = body.image || 'https://placehold.co/600x400/cccccc/000000?text=Service+Image';
+  const imageUrl = body.image || '';
 
   const session = await getServerSession();
+
+  const slugBase = slugify(body.title.trim(), { lower: true, strict: true, replacement: '-' });
+  const slug = body.slug || `${slugBase}-${Date.now()}`;
+
   const serviceData = {
     title: body.title.trim(),
     description: body.description.trim(),
     image: imageUrl,
     features: body.features || [],
+    slug,
+    translations: body.translations || null,
     createdAt: new Date(),
     updatedAt: new Date(),
     createdBy: session?.user?.email

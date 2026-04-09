@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
 import { redirect, notFound } from 'next/navigation';
 
 export const dynamic = 'force-dynamic';
@@ -32,7 +33,7 @@ export const metadata: Metadata = {
 };
 
 export default async function EditNewsPage({ params }: PageProps) {
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
 
   if (!session || !session.user) {
     redirect('/admin/login');

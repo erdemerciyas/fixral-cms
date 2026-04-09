@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import Portfolio from '@/models/Portfolio';
 import connectDB from '@/lib/mongoose';
+import slugify from 'slugify';
 
 /**
  * GET /api/admin/portfolio - List all portfolio items for admin
@@ -21,14 +22,13 @@ export async function GET(_req: NextRequest) {
     await connectDB();
 
     const portfolioItems = await Portfolio.find()
-      .sort({ createdAt: -1 })
       .sort({ createdAt: -1 });
 
     return NextResponse.json(portfolioItems);
   } catch (error) {
     console.error('Error fetching portfolio items:', error);
     return NextResponse.json(
-      { success: false, error: 'Failed to fetch portfolio items' },
+      { success: false, error: 'Portfolyo öğeleri yüklenirken bir hata oluştu' },
       { status: 500 }
     );
   }
@@ -52,6 +52,11 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json();
 
+    if (!body.slug && body.title) {
+      const slugBase = slugify(body.title, { lower: true, strict: true, replacement: '-' });
+      body.slug = `${slugBase}-${Date.now()}`;
+    }
+
     const portfolio = new Portfolio({
       ...body,
       createdAt: new Date(),
@@ -64,10 +69,18 @@ export async function POST(req: NextRequest) {
       { success: true, data: portfolio },
       { status: 201 }
     );
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error creating portfolio item:', error);
+
+    if (error?.code === 'P2002' || error?.message?.includes('Unique constraint')) {
+      return NextResponse.json(
+        { success: false, error: 'Bu isimde bir portfolyo öğesi zaten mevcut' },
+        { status: 409 }
+      );
+    }
+
     return NextResponse.json(
-      { success: false, error: 'Failed to create portfolio item' },
+      { success: false, error: 'Portfolyo öğesi oluşturulurken bir hata oluştu' },
       { status: 500 }
     );
   }

@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import Service from '@/models/Service';
 import connectDB from '@/lib/mongoose';
+import slugify from 'slugify';
 
 /**
  * GET /api/admin/services - List all services for admin
@@ -21,7 +22,6 @@ export async function GET(_req: NextRequest) {
     await connectDB();
 
     const services = await Service.find()
-      .sort({ createdAt: -1 })
       .sort({ createdAt: -1 });
 
     return NextResponse.json(services);
@@ -52,8 +52,19 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json();
 
+    if (!body.title?.trim()) {
+      return NextResponse.json(
+        { success: false, error: 'Başlık alanı zorunludur' },
+        { status: 400 }
+      );
+    }
+
+    const slugBase = slugify(body.title, { lower: true, strict: true, replacement: '-' });
+    const slug = body.slug || `${slugBase}-${Date.now()}`;
+
     const service = new Service({
       ...body,
+      slug,
       createdAt: new Date(),
       updatedAt: new Date(),
     });
@@ -64,10 +75,18 @@ export async function POST(req: NextRequest) {
       { success: true, data: service },
       { status: 201 }
     );
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error creating service:', error);
+
+    if (error?.code === 'P2002' || error?.message?.includes('Unique constraint')) {
+      return NextResponse.json(
+        { success: false, error: 'Bu isimde bir hizmet zaten mevcut' },
+        { status: 409 }
+      );
+    }
+
     return NextResponse.json(
-      { success: false, error: 'Failed to create service' },
+      { success: false, error: 'Hizmet oluşturulurken bir hata oluştu' },
       { status: 500 }
     );
   }

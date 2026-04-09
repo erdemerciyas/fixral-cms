@@ -127,14 +127,17 @@ export default function EditServicePage({ params }: { params: { id: string } }) 
   useEffect(() => {
     const fetchService = async () => {
       try {
-        const response = await fetch(`/api/public/services/${params.id}`);
-        if (!response.ok) throw new Error('Servis yüklenirken bir hata oluştu');
+        const response = await fetch(`/api/admin/services/${params.id}`);
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => null);
+          throw new Error(errorData?.error || 'Servis yüklenirken bir hata oluştu');
+        }
         const data = await response.json();
         setService(data);
         setServiceImage(data.image || '');
         setFeatures(data.features && data.features.length > 0 ? data.features : ['']);
-      } catch {
-        setError('Servis bilgileri yüklenirken bir hata oluştu');
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Servis bilgileri yüklenirken bir hata oluştu');
       } finally {
         setLoading(false);
       }
@@ -213,7 +216,7 @@ export default function EditServicePage({ params }: { params: { id: string } }) 
     const filteredFeatures = features.filter(f => f.trim() !== '');
 
     try {
-      const response = await fetch(`/api/public/services/${params.id}`, {
+      const response = await fetch(`/api/admin/services/${params.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -226,8 +229,8 @@ export default function EditServicePage({ params }: { params: { id: string } }) 
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Servis güncellenirken bir hata oluştu');
+        const errorData = await response.json().catch(() => null);
+        throw new Error(errorData?.error || 'Servis güncellenirken bir hata oluştu');
       }
 
       initialFormRef.current = JSON.stringify({ translations, features, serviceImage });

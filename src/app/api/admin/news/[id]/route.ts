@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import News from '@/models/News';
+import connectDB from '@/lib/mongoose';
+import slugify from 'slugify';
 
 /**
  * GET /api/admin/news/[id] - Get single news article
@@ -20,11 +22,13 @@ export async function GET(
       );
     }
 
+    await connectDB();
+
     const news = await News.findById(params.id);
 
     if (!news) {
       return NextResponse.json(
-        { success: false, error: 'News not found' },
+        { success: false, error: 'Haber bulunamadı' },
         { status: 404 }
       );
     }
@@ -33,7 +37,7 @@ export async function GET(
   } catch (error) {
     console.error('Error fetching news:', error);
     return NextResponse.json(
-      { success: false, error: 'Failed to fetch news' },
+      { success: false, error: 'Haber yüklenirken bir hata oluştu' },
       { status: 500 }
     );
   }
@@ -56,16 +60,26 @@ export async function PUT(
       );
     }
 
+    await connectDB();
+
     const body = await req.json();
+
+    const updateData: Record<string, any> = { ...body, updatedAt: new Date() };
+
+    if (body.title && !body.slug) {
+      const slugBase = slugify(body.title, { lower: true, strict: true, replacement: '-' });
+      updateData.slug = `${slugBase}-${Date.now()}`;
+    }
+
     const news = await News.findByIdAndUpdate(
       params.id,
-      { ...body, updatedAt: new Date() },
+      updateData,
       { new: true }
     );
 
     if (!news) {
       return NextResponse.json(
-        { success: false, error: 'News not found' },
+        { success: false, error: 'Haber bulunamadı' },
         { status: 404 }
       );
     }
@@ -74,7 +88,7 @@ export async function PUT(
   } catch (error) {
     console.error('Error updating news:', error);
     return NextResponse.json(
-      { success: false, error: 'Failed to update news' },
+      { success: false, error: 'Haber güncellenirken bir hata oluştu' },
       { status: 500 }
     );
   }
@@ -97,20 +111,22 @@ export async function DELETE(
       );
     }
 
+    await connectDB();
+
     const news = await News.findByIdAndDelete(params.id);
 
     if (!news) {
       return NextResponse.json(
-        { success: false, error: 'News not found' },
+        { success: false, error: 'Haber bulunamadı' },
         { status: 404 }
       );
     }
 
-    return NextResponse.json({ success: true, data: news });
+    return NextResponse.json({ success: true, message: 'Haber başarıyla silindi' });
   } catch (error) {
     console.error('Error deleting news:', error);
     return NextResponse.json(
-      { success: false, error: 'Failed to delete news' },
+      { success: false, error: 'Haber silinirken bir hata oluştu' },
       { status: 500 }
     );
   }

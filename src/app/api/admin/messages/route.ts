@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
 import Message from '@/models/Message';
 import connectDB from '@/lib/mongoose';
 
@@ -10,7 +11,7 @@ export const dynamic = 'force-dynamic';
  */
 export async function GET(_req: NextRequest) {
   try {
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
 
     if (!session) {
       return NextResponse.json(
@@ -36,7 +37,7 @@ export async function GET(_req: NextRequest) {
   } catch (error) {
     console.error('Error fetching messages:', error);
     return NextResponse.json(
-      { success: false, error: 'Failed to fetch messages' },
+      { success: false, error: 'Mesajlar yüklenirken bir hata oluştu' },
       { status: 500 }
     );
   }
@@ -47,7 +48,16 @@ export async function GET(_req: NextRequest) {
  */
 export async function POST(req: NextRequest) {
   try {
+    await connectDB();
+
     const body = await req.json();
+
+    if (!body.name?.trim() || !body.email?.trim()) {
+      return NextResponse.json(
+        { success: false, error: 'Ad ve e-posta alanları zorunludur' },
+        { status: 400 }
+      );
+    }
 
     const message = new Message({
       ...body,
@@ -65,7 +75,7 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     console.error('Error creating message:', error);
     return NextResponse.json(
-      { success: false, error: 'Failed to create message' },
+      { success: false, error: 'Mesaj oluşturulurken bir hata oluştu' },
       { status: 500 }
     );
   }
