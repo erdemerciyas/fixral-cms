@@ -6,6 +6,10 @@ import { rateLimit, getClientIP } from '@/lib/rate-limit';
 import { RequestValidator, CommonValidationRules } from '@/lib/validation';
 import { logger } from '@/core/lib/logger';
 
+function escapeHtml(str: string): string {
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
 
@@ -61,6 +65,11 @@ export async function POST(request: NextRequest) {
     const messageText = String(message ?? '');
     const emailAddress = String(email ?? '');
 
+    const safeName = escapeHtml(String(name ?? ''));
+    const safeEmail = escapeHtml(String(email ?? ''));
+    const safeSubject = escapeHtml(String(subject ?? ''));
+    const safeMessage = escapeHtml(messageText).replace(/\n/g, '<br>');
+
     // Database'e bağlan
     await connectDB();
 
@@ -90,7 +99,7 @@ export async function POST(request: NextRequest) {
       const notificationMailOptions = {
         from: process.env.GMAIL_USER,
         to: 'erdem.erciyas@gmail.com',
-        subject: `🔔 Yeni İletişim Mesajı: ${subject}`,
+        subject: `🔔 Yeni İletişim Mesajı: ${String(subject ?? '').slice(0, 100)}`,
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f8fafc; border-radius: 12px;">
             <div style="background: linear-gradient(135deg, #0f766e, #0891b2); padding: 30px; border-radius: 12px; margin-bottom: 20px;">
@@ -106,23 +115,23 @@ export async function POST(request: NextRequest) {
               
               <div style="margin-bottom: 15px;">
                 <strong style="color: #374151;">👤 Gönderen:</strong>
-                <span style="color: #6b7280;">${name}</span>
+                <span style="color: #6b7280;">${safeName}</span>
               </div>
               
               <div style="margin-bottom: 15px;">
                 <strong style="color: #374151;">📧 Email:</strong>
-                <span style="color: #6b7280;">${email}</span>
+                <span style="color: #6b7280;">${safeEmail}</span>
               </div>
               
               <div style="margin-bottom: 15px;">
                 <strong style="color: #374151;">📋 Konu:</strong>
-                <span style="color: #6b7280;">${subject}</span>
+                <span style="color: #6b7280;">${safeSubject}</span>
               </div>
               
               <div style="margin-bottom: 15px;">
                 <strong style="color: #374151;">💬 Mesaj:</strong>
                 <div style="background-color: #f1f5f9; padding: 15px; border-radius: 8px; margin-top: 8px; border-left: 4px solid #0891b2;">
-                  ${messageText.replace(/\n/g, '<br>')}
+                  ${safeMessage}
                 </div>
               </div>
               
@@ -142,7 +151,7 @@ export async function POST(request: NextRequest) {
       const autoReplyMailOptions = {
         from: process.env.GMAIL_USER,
         to: emailAddress,
-        subject: `✅ Mesajınızı Aldık - ${subject}`,
+        subject: `✅ Mesajınızı Aldık - ${String(subject ?? '').slice(0, 100)}`,
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f8fafc; border-radius: 12px;">
             <div style="background: linear-gradient(135deg, #0f766e, #0891b2); padding: 30px; border-radius: 12px; margin-bottom: 20px;">
@@ -153,11 +162,11 @@ export async function POST(request: NextRequest) {
             
             <div style="background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);">
               <p style="color: #374151; font-size: 16px; line-height: 1.6; margin-top: 0;">
-                Merhaba <strong>${name}</strong>,
+                Merhaba <strong>${safeName}</strong>,
               </p>
               
               <p style="color: #374151; font-size: 16px; line-height: 1.6;">
-                <strong>"${subject}"</strong> konulu mesajınızı başarıyla aldık. Uzman ekibimiz en kısa sürede size geri dönüş yapacaktır.
+                <strong>"${safeSubject}"</strong> konulu mesajınızı başarıyla aldık. Uzman ekibimiz en kısa sürede size geri dönüş yapacaktır.
               </p>
               
               <div style="background-color: #ecfdf5; border: 1px solid #d1fae5; border-radius: 8px; padding: 20px; margin: 20px 0;">

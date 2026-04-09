@@ -25,7 +25,17 @@ export default function PortfolioDetailClient({ portfolioItem, relatedProjects, 
     ? [portfolioItem.coverImage, ...(portfolioItem.images || []).filter(img => img !== portfolioItem.coverImage)]
     : (portfolioItem.images || []);
 
-  const safeDescription = (portfolioItem.description || '').replace(/<[^>]*>/g, '').slice(0, 200);
+  const safeDescription = (() => {
+    const desc = portfolioItem.description || '';
+    let result = '';
+    let inTag = false;
+    for (let i = 0; i < desc.length; i++) {
+      if (desc[i] === '<') { inTag = true; continue; }
+      if (desc[i] === '>') { inTag = false; continue; }
+      if (!inTag) result += desc[i];
+    }
+    return result.slice(0, 200);
+  })();
 
   return (
     <div className="min-h-screen bg-gray-50">

@@ -1,5 +1,6 @@
 import DOMPurify from 'dompurify';
 import { JSDOM } from 'jsdom';
+import { stripHtmlTags } from './security-utils';
 
 // Server-side DOMPurify setup
 const window = new JSDOM('').window;
@@ -322,8 +323,7 @@ export function validateNewsInput(data: any): { valid: boolean; error?: string }
     }
 
     if (translation.content && translation.content.trim().length > 0) {
-      // Strip HTML tags for length validation
-      const plainText = translation.content.replace(/<[^>]*>/g, '').trim();
+      const plainText = stripHtmlTags(translation.content).trim();
       if (plainText.length < 100) {
         return { valid: false, error: `${lang.toUpperCase()} content must be at least 100 characters` };
       }
@@ -407,8 +407,7 @@ export function validateNewsUpdateInput(data: any): { valid: boolean; error?: st
       }
 
       if (translation.content) {
-        // Strip HTML tags for length validation
-        const plainText = translation.content.replace(/<[^>]*>/g, '').trim();
+        const plainText = stripHtmlTags(translation.content).trim();
         if (plainText.length < 100) {
           return { valid: false, error: `${lang.toUpperCase()} content must be at least 100 characters` };
         }

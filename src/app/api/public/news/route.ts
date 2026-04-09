@@ -65,11 +65,11 @@ export async function GET(request: NextRequest) {
       query.isActive = status === 'published';
     }
 
-    // Search in title field (simple contains search)
     if (search) {
+      const escapedSearch = search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
       query.$or = [
-        { title: { $regex: search, $options: 'i' } },
-        { excerpt: { $regex: search, $options: 'i' } },
+        { title: { $regex: escapedSearch, $options: 'i' } },
+        { excerpt: { $regex: escapedSearch, $options: 'i' } },
       ];
     }
 

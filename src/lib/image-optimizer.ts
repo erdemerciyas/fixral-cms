@@ -50,12 +50,17 @@ class ImageOptimizer {
       return '';
     }
 
-    // If already a Cloudinary URL, enhance it
+    try {
+      const parsed = new URL(imageUrl);
+      if (!['http:', 'https:'].includes(parsed.protocol)) return '';
+    } catch {
+      return '';
+    }
+
     if (imageUrl.includes('res.cloudinary.com')) {
       return this.enhanceCloudinaryUrl(imageUrl, options);
     }
 
-    // For external images, use Cloudinary fetch
     return this.generateCloudinaryFetchUrl(imageUrl, options);
   }
 
@@ -285,6 +290,17 @@ class ImageOptimizer {
 
     if (!imageUrl) {
       recommendations.push('Image URL is missing');
+      return recommendations;
+    }
+
+    try {
+      const parsed = new URL(imageUrl);
+      if (!['http:', 'https:'].includes(parsed.protocol)) {
+        recommendations.push('Invalid URL protocol');
+        return recommendations;
+      }
+    } catch {
+      recommendations.push('Invalid image URL');
       return recommendations;
     }
 

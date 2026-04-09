@@ -4,16 +4,33 @@
 
 import { logger } from '@/core/lib/logger';
 
-// Input sanitization
+export function stripHtmlTags(html: string): string {
+  if (typeof html !== 'string') return '';
+  let result = '';
+  let inTag = false;
+  for (let i = 0; i < html.length; i++) {
+    if (html[i] === '<') { inTag = true; continue; }
+    if (html[i] === '>') { inTag = false; continue; }
+    if (!inTag) result += html[i];
+  }
+  return result;
+}
+
 export class SecurityUtils {
-  // Sanitize string input to prevent XSS
   static sanitizeString(input: string): string {
     if (typeof input !== 'string') return '';
 
-    return input
-      .replace(/[<>]/g, '') // Remove < and >
-      .replace(/javascript:/gi, '') // Remove javascript: protocol
-      .replace(/on\w+=/gi, '') // Remove event handlers
+    let sanitized = input;
+    let prev;
+    do {
+      prev = sanitized;
+      sanitized = sanitized
+        .replace(/javascript\s*:/gi, '')
+        .replace(/on\w+\s*=/gi, '');
+    } while (sanitized !== prev);
+
+    return sanitized
+      .replace(/[<>]/g, '')
       .trim();
   }
 

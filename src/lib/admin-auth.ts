@@ -28,12 +28,18 @@ export async function isAdminAuthenticated(_request: NextRequest): Promise<boole
  * Sanitize user input
  */
 export function sanitizeInput(input: string): string {
-  return input
-    .trim()
-    .replace(/[<>]/g, '') // Remove angle brackets
-    .replace(/javascript:/gi, '') // Remove javascript: protocol
-    .replace(/on\w+=/gi, '') // Remove event handlers
-    .slice(0, 1000); // Limit length
+  let sanitized = input.trim();
+  let prev;
+  do {
+    prev = sanitized;
+    sanitized = sanitized
+      .replace(/javascript\s*:/gi, '')
+      .replace(/on\w+\s*=/gi, '');
+  } while (sanitized !== prev);
+
+  return sanitized
+    .replace(/[<>]/g, '')
+    .slice(0, 1000);
 }
 
 /**

@@ -395,7 +395,7 @@ export default function AdminPortfolioPage() {
                       {item.title}
                     </h3>
                     <p className="text-muted-foreground text-sm line-clamp-2 leading-relaxed mb-4 min-h-[2.5rem]">
-                      {item.description ? item.description.replace(/<[^>]+>/g, '') : 'Açıklama yok'}
+                      {item.description ? (() => { let r = '', t = false; for (let i = 0; i < item.description.length; i++) { if (item.description[i] === '<') { t = true; } else if (item.description[i] === '>') { t = false; } else if (!t) { r += item.description[i]; } } return r; })() : 'Açıklama yok'}
                     </p>
 
                     <div className="flex items-center justify-between pt-4 border-t border-border-subtle text-xs text-muted-foreground font-medium">
