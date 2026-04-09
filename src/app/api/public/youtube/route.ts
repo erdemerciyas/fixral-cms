@@ -1,18 +1,14 @@
 import { NextResponse } from "next/server";
 import Video from "@/models/Video";
-import mongoose from "mongoose";
+import connectDB from "@/lib/mongoose";
 
 export const dynamic = "force-dynamic";
 
 // Function to get videos from database only (no YouTube API)
 async function getVideosFromDatabase(queryParams: { limit?: number; type?: string; status?: string; channelId?: string } = {}) {
-  // Build query for videos
+  // Build query for videos with non-empty videoId
   const query: any = {
-    $and: [
-      { videoId: { $exists: true } },
-      { videoId: { $ne: null } },
-      { videoId: { $ne: "" } }
-    ]
+    videoId: { $ne: "" }
   };
 
   // Apply additional filters
@@ -35,8 +31,8 @@ async function getVideosFromDatabase(queryParams: { limit?: number; type?: strin
 
 export async function GET(req: Request) {
   try {
-    // Connect to MongoDB
-    await mongoose.connect(process.env.MONGODB_URI!);
+    // Connect to database
+    await connectDB();
 
     // Parse query parameters
     const { searchParams } = new URL(req.url);

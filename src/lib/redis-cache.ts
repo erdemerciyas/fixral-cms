@@ -350,8 +350,6 @@ export function buildCacheKey(...parts: (string | number | undefined)[]): string
 export const CACHE_KEYS = {
   PORTFOLIO: 'portfolio',
   PORTFOLIO_ITEM: 'portfolio:item',
-  PRODUCTS: 'products',
-  PRODUCT_ITEM: 'product:item',
   SERVICES: 'services',
   CATEGORIES: 'categories',
   VIDEOS: 'videos',
@@ -365,7 +363,6 @@ export const CACHE_KEYS = {
  */
 export const CACHE_TAGS = {
   PORTFOLIO: 'portfolio',
-  PRODUCTS: 'products',
   SERVICES: 'services',
   CATEGORIES: 'categories',
   VIDEOS: 'videos',

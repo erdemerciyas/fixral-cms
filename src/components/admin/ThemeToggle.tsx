@@ -2,7 +2,7 @@
 
 import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
-import { SunIcon, MoonIcon } from '@heroicons/react/24/outline';
+import { Sun as SunIcon, Moon as MoonIcon } from 'lucide-react';
 
 export default function ThemeToggle() {
     const [mounted, setMounted] = useState(false);

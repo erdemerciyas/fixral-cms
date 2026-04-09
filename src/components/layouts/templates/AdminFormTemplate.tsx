@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { PageHeader } from '@/components/ui/PageHeader'
+import { PageHeader } from '@/components/ui/_legacy/PageHeader'
 import { cn } from '@/lib/utils'
 
 interface AdminFormTemplateProps {

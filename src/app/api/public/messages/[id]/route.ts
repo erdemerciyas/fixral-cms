@@ -3,7 +3,6 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import connectDB from '@/lib/mongoose';
 import Message from '@/models/Message';
-import { ObjectId } from 'mongodb';
 
 // GET /api/messages/[id] - Tek mesaj getir
 export async function GET(
@@ -20,13 +19,6 @@ export async function GET(
     }
 
     const { id } = params;
-    
-    if (!ObjectId.isValid(id)) {
-      return NextResponse.json(
-        { error: 'Geçersiz mesaj ID' },
-        { status: 400 }
-      );
-    }
 
     await connectDB();
     
@@ -114,13 +106,6 @@ export async function PATCH(
 
     const { id } = params;
     
-    if (!ObjectId.isValid(id)) {
-      return NextResponse.json(
-        { error: 'Geçersiz mesaj ID' },
-        { status: 400 }
-      );
-    }
-
     await connectDB();
     
     const body = await request.json();
@@ -172,13 +157,6 @@ export async function DELETE(
 
     const { id } = params;
     
-    if (!ObjectId.isValid(id)) {
-      return NextResponse.json(
-        { error: 'Geçersiz mesaj ID' },
-        { status: 400 }
-      );
-    }
-
     await connectDB();
     
     const message = await Message.findByIdAndDelete(id);

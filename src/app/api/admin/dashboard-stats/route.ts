@@ -3,13 +3,11 @@ export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
 import connectDB from '../../../../lib/mongoose';
 import Portfolio from '../../../../models/Portfolio';
-import Product from '../../../../models/Product';
 import Service from '../../../../models/Service';
 import Message from '../../../../models/Message';
 import User from '../../../../models/User';
 import News from '../../../../models/News';
-import Order from '../../../../models/Order';
-import ProductCategory from '../../../../models/ProductCategory';
+import Category from '../../../../models/Category';
 import { withSecurity, SecurityConfigs } from '../../../../lib/security-middleware';
 
 export const GET = withSecurity(SecurityConfigs.admin)(async () => {
@@ -18,86 +16,49 @@ export const GET = withSecurity(SecurityConfigs.admin)(async () => {
 
     // Medya sayılarını Cloudinary'den al
     let mediaCount = 0;
-    let productMediaCount = 0;
 
     try {
       const cloudinary = await import('cloudinary').then(m => m.v2);
 
-      // Cloudinary config
       cloudinary.config({
         cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
         api_key: process.env.CLOUDINARY_API_KEY,
         api_secret: process.env.CLOUDINARY_API_SECRET,
       });
 
-      // 1. Get Total Count (approximate using max_results loop or just one page for now)
-      // Note: For accurate counts we should use Search API but Admin API listed resources is okay for now
-
-      // Get Product Images Count directly by folder
-      const productResult = await cloudinary.api.resources({
-        type: 'upload',
-        prefix: 'personal-blog/products/',
-        max_results: 500
-      });
-      productMediaCount = productResult.resources ? productResult.resources.length : 0;
-
-      // Get Site Images (Total - Products is a rough approximation if we grab everything)
-      // Or just get root folder content if well organized. 
-      // Current approach: Get 'all' and subtract products or filter out.
-      // Better: Just assume 'personal-blog/' prefix for everything.
-
       const allResult = await cloudinary.api.resources({
         type: 'upload',
-        prefix: 'personal-blog/',
+        prefix: `${process.env.CLOUDINARY_FOLDER || 'personal-blog'}/`,
         max_results: 500
       });
 
-
-
-      // Site media is whatever is NOT in products folder
-      // Simple logic: Total - Product. 
-      // Note: This assumes all product images are correctly in that folder.
-
-      // Refined logic: Manually filter the 'allResult' to be safe if total < 500
       if (allResult.resources) {
-        mediaCount = allResult.resources.filter((r: any) => !r.public_id.startsWith('personal-blog/products/')).length;
+        mediaCount = allResult.resources.length;
       }
 
     } catch (cloudinaryError) {
       console.error('Cloudinary media count error:', cloudinaryError);
       mediaCount = 0;
-      productMediaCount = 0;
     }
 
     const [
       portfolioCount, servicesCount, messagesCount, usersCount,
-      recentMessages, productsCount, newsCount, productQuestionsCount,
-      recentNews, recentPortfolio, recentServices, recentProducts, recentUsers,
-      ordersCount, productCategoriesCount,
-      // specific counts for notifications
-      newOrdersCount, unreadMessagesCount, unreadProductQuestionsCount
+      recentMessages, newsCount, categoriesCount,
+      recentNews, recentPortfolio, recentServices, recentUsers,
+      unreadMessagesCount
     ] = await Promise.all([
       Portfolio.countDocuments(),
       Service.countDocuments(),
-      Message.countDocuments({ type: { $nin: ['product_question', 'order_question'] } }), // General messages only
+      Message.countDocuments({ type: 'contact' }),
       User.countDocuments(),
-      Message.find({ type: { $nin: ['product_question', 'order_question'] } }).sort({ createdAt: -1 }).limit(5).select('name email subject createdAt status'),
-      Product.countDocuments(),
+      Message.find({ type: 'contact' }).sort({ createdAt: -1 }).limit(5).select('name email subject createdAt status'),
       News.countDocuments(),
-      Message.countDocuments({ type: { $in: ['product_question', 'order_question'] } }), // Product & Order Questions Count
+      Category.countDocuments(),
       News.find().sort({ createdAt: -1 }).limit(5).select('title status createdAt views'),
       Portfolio.find().sort({ createdAt: -1 }).limit(5).select('title status createdAt'),
       Service.find().sort({ createdAt: -1 }).limit(5).select('title status createdAt'),
-      Product.find().sort({ createdAt: -1 }).limit(5).select('name status createdAt'),
       User.find().sort({ createdAt: -1 }).limit(5).select('name email role createdAt'),
-      Order.countDocuments(),
-      ProductCategory.countDocuments(),
-      // New Notification Counts
-      // Count orders that need attention (new, pending payment, paid/ready to ship, preparing)
-      // Note: Model uses 'preparing', checking for both just in case legacy data used 'processing'
-      Order.countDocuments({ status: { $in: ['new', 'pending', 'paid', 'preparing', 'processing'] } }),
-      Message.countDocuments({ type: { $nin: ['product_question', 'order_question'] }, status: { $in: ['unread', 'new'] } }),
-      Message.countDocuments({ type: { $in: ['product_question', 'order_question'] }, status: { $in: ['new', 'unread'] } })
+      Message.countDocuments({ type: 'contact', status: { $in: ['unread', 'new'] } }),
     ]);
 
     const stats = {
@@ -106,16 +67,9 @@ export const GET = withSecurity(SecurityConfigs.admin)(async () => {
       messagesCount,
       usersCount,
       mediaCount,
-      productMediaCount,
-      productsCount,
       newsCount,
-      productQuestionsCount,
-      ordersCount,
-      productCategoriesCount,
-      // Notification Specific Stats
-      newOrdersCount,
+      categoriesCount,
       unreadMessagesCount,
-      unreadProductQuestionsCount,
 
       recentMessages: recentMessages.map(msg => ({
         _id: msg._id,
@@ -138,7 +92,6 @@ export const GET = withSecurity(SecurityConfigs.admin)(async () => {
         ...recentNews.map(item => ({ ...item.toObject(), type: 'news', title: item.title })),
         ...recentPortfolio.map(item => ({ ...item.toObject(), type: 'portfolio', title: item.title })),
         ...recentServices.map(item => ({ ...item.toObject(), type: 'service', title: item.title })),
-        ...recentProducts.map(item => ({ ...item.toObject(), type: 'product', title: item.name || item.title }))
       ].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).slice(0, 5)
     };
 
@@ -151,4 +104,4 @@ export const GET = withSecurity(SecurityConfigs.admin)(async () => {
       { status: 500 }
     );
   }
-}); 
+});

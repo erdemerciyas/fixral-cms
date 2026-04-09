@@ -17,27 +17,28 @@ import { TableHeader } from '@tiptap/extension-table-header';
 import { createLowlight } from 'lowlight';
 import { useCallback, useState, useEffect, useRef } from 'react';
 import DOMPurify from 'dompurify';
+import SafeHtmlRenderer from '../common/SafeHtmlRenderer';
 import {
-  BoldIcon,
-  ItalicIcon,
-  UnderlineIcon,
-  StrikethroughIcon,
-  CommandLineIcon,
-  LinkIcon,
-  PhotoIcon,
-  ListBulletIcon,
-  NumberedListIcon,
-  ChatBubbleLeftIcon,
-  Bars3BottomLeftIcon,
-  Bars3Icon,
-  Bars3BottomRightIcon,
-  PaintBrushIcon as HighlightIcon,
-  TableCellsIcon,
-  EyeIcon,
-  CodeBracketIcon,
-  ArrowUturnLeftIcon,
-  ArrowUturnRightIcon
-} from '@heroicons/react/24/outline';
+  Bold as BoldIcon,
+  Italic as ItalicIcon,
+  Underline as UnderlineIcon,
+  Strikethrough as StrikethroughIcon,
+  Terminal as CommandLineIcon,
+  Link2 as LinkIcon,
+  Image as PhotoIcon,
+  List as ListBulletIcon,
+  ListOrdered as NumberedListIcon,
+  MessageSquareQuote as ChatBubbleLeftIcon,
+  AlignLeft as Bars3BottomLeftIcon,
+  AlignCenter as Bars3Icon,
+  AlignRight as Bars3BottomRightIcon,
+  Highlighter as HighlightIcon,
+  Table2 as TableCellsIcon,
+  Eye as EyeIcon,
+  Code as CodeBracketIcon,
+  Undo2 as ArrowUturnLeftIcon,
+  Redo2 as ArrowUturnRightIcon
+} from 'lucide-react';
 import MediaBrowser from '../MediaBrowser';
 
 // Syntax highlighting için dil desteği
@@ -187,17 +188,6 @@ const ModernEditor: React.FC<ModernEditorProps> = ({
         class: `focus:outline-none ${className}`,
         style: `min-height: ${minHeight}; max-height: ${maxHeight}; overflow-y: auto;`,
       },
-      handleKeyDown: (view, event) => {
-        // Form submit'i engelle - Enter tuşu ile form submit olmasın
-        if (event.key === 'Enter') {
-          // Sadece normal Enter'ı engelle, Shift+Enter'a izin ver
-          if (!event.shiftKey && !event.ctrlKey && !event.metaKey) {
-            // Normal Enter - yeni satır oluştur ama form submit etme
-            return false; // TipTap'in kendi Enter handling'ini kullan
-          }
-        }
-        return false;
-      },
     },
   });
 
@@ -252,13 +242,6 @@ const ModernEditor: React.FC<ModernEditorProps> = ({
   return (
     <div 
       className="border border-slate-300 rounded-lg overflow-hidden bg-white tiptap-editor-container"
-      onKeyDown={(e) => {
-        // Form submit'i engelle
-        if (e.key === 'Enter' && !e.shiftKey && !e.ctrlKey && !e.metaKey) {
-          e.stopPropagation();
-          e.preventDefault();
-        }
-      }}
     >
       {/* Toolbar */}
       {showToolbar && !readOnly && (
@@ -268,6 +251,7 @@ const ModernEditor: React.FC<ModernEditorProps> = ({
             {/* Undo/Redo */}
             <div className="flex items-center border-r border-slate-300 pr-2 mr-2">
               <button
+                type="button"
                 onClick={() => editor.chain().focus().undo().run()}
                 disabled={!editor.can().undo()}
                 className="p-2 rounded hover:bg-slate-200 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -276,6 +260,7 @@ const ModernEditor: React.FC<ModernEditorProps> = ({
                 <ArrowUturnLeftIcon className="w-4 h-4" />
               </button>
               <button
+                type="button"
                 onClick={() => editor.chain().focus().redo().run()}
                 disabled={!editor.can().redo()}
                 className="p-2 rounded hover:bg-slate-200 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -288,6 +273,7 @@ const ModernEditor: React.FC<ModernEditorProps> = ({
             {/* Text Formatting */}
             <div className="flex items-center border-r border-slate-300 pr-2 mr-2">
               <button
+                type="button"
                 onClick={() => editor.chain().focus().toggleBold().run()}
                 className={`p-2 rounded hover:bg-slate-200 ${editor.isActive('bold') ? 'bg-blue-100 text-blue-700' : ''}`}
                 title="Kalın"
@@ -295,6 +281,7 @@ const ModernEditor: React.FC<ModernEditorProps> = ({
                 <BoldIcon className="w-4 h-4" />
               </button>
               <button
+                type="button"
                 onClick={() => editor.chain().focus().toggleItalic().run()}
                 className={`p-2 rounded hover:bg-slate-200 ${editor.isActive('italic') ? 'bg-blue-100 text-blue-700' : ''}`}
                 title="İtalik"
@@ -302,6 +289,7 @@ const ModernEditor: React.FC<ModernEditorProps> = ({
                 <ItalicIcon className="w-4 h-4" />
               </button>
               <button
+                type="button"
                 onClick={() => editor.chain().focus().toggleUnderline().run()}
                 className={`p-2 rounded hover:bg-slate-200 ${editor.isActive('underline') ? 'bg-blue-100 text-blue-700' : ''}`}
                 title="Altı Çizili"
@@ -309,6 +297,7 @@ const ModernEditor: React.FC<ModernEditorProps> = ({
                 <UnderlineIcon className="w-4 h-4" />
               </button>
               <button
+                type="button"
                 onClick={() => editor.chain().focus().toggleStrike().run()}
                 className={`p-2 rounded hover:bg-slate-200 ${editor.isActive('strike') ? 'bg-blue-100 text-blue-700' : ''}`}
                 title="Üstü Çizili"
@@ -316,6 +305,7 @@ const ModernEditor: React.FC<ModernEditorProps> = ({
                 <StrikethroughIcon className="w-4 h-4" />
               </button>
               <button
+                type="button"
                 onClick={() => editor.chain().focus().toggleHighlight().run()}
                 className={`p-2 rounded hover:bg-slate-200 ${editor.isActive('highlight') ? 'bg-yellow-100 text-yellow-700' : ''}`}
                 title="Vurgula"
@@ -358,6 +348,7 @@ const ModernEditor: React.FC<ModernEditorProps> = ({
             {/* Text Alignment */}
             <div className="flex items-center border-r border-slate-300 pr-2 mr-2">
               <button
+                type="button"
                 onClick={() => editor.chain().focus().setTextAlign('left').run()}
                 className={`p-2 rounded hover:bg-slate-200 ${editor.isActive({ textAlign: 'left' }) ? 'bg-blue-100 text-blue-700' : ''}`}
                 title="Sola Hizala"
@@ -365,6 +356,7 @@ const ModernEditor: React.FC<ModernEditorProps> = ({
                 <Bars3BottomLeftIcon className="w-4 h-4" />
               </button>
               <button
+                type="button"
                 onClick={() => editor.chain().focus().setTextAlign('center').run()}
                 className={`p-2 rounded hover:bg-slate-200 ${editor.isActive({ textAlign: 'center' }) ? 'bg-blue-100 text-blue-700' : ''}`}
                 title="Ortala"
@@ -372,6 +364,7 @@ const ModernEditor: React.FC<ModernEditorProps> = ({
                 <Bars3Icon className="w-4 h-4" />
               </button>
               <button
+                type="button"
                 onClick={() => editor.chain().focus().setTextAlign('right').run()}
                 className={`p-2 rounded hover:bg-slate-200 ${editor.isActive({ textAlign: 'right' }) ? 'bg-blue-100 text-blue-700' : ''}`}
                 title="Sağa Hizala"
@@ -383,6 +376,7 @@ const ModernEditor: React.FC<ModernEditorProps> = ({
             {/* Lists */}
             <div className="flex items-center border-r border-slate-300 pr-2 mr-2">
               <button
+                type="button"
                 onClick={() => editor.chain().focus().toggleBulletList().run()}
                 className={`p-2 rounded hover:bg-slate-200 ${editor.isActive('bulletList') ? 'bg-blue-100 text-blue-700' : ''}`}
                 title="Madde İşaretli Liste"
@@ -390,6 +384,7 @@ const ModernEditor: React.FC<ModernEditorProps> = ({
                 <ListBulletIcon className="w-4 h-4" />
               </button>
               <button
+                type="button"
                 onClick={() => editor.chain().focus().toggleOrderedList().run()}
                 className={`p-2 rounded hover:bg-slate-200 ${editor.isActive('orderedList') ? 'bg-blue-100 text-blue-700' : ''}`}
                 title="Numaralı Liste"
@@ -397,6 +392,7 @@ const ModernEditor: React.FC<ModernEditorProps> = ({
                 <NumberedListIcon className="w-4 h-4" />
               </button>
               <button
+                type="button"
                 onClick={() => editor.chain().focus().toggleBlockquote().run()}
                 className={`p-2 rounded hover:bg-slate-200 ${editor.isActive('blockquote') ? 'bg-blue-100 text-blue-700' : ''}`}
                 title="Alıntı"
@@ -408,6 +404,7 @@ const ModernEditor: React.FC<ModernEditorProps> = ({
             {/* Code */}
             <div className="flex items-center border-r border-slate-300 pr-2 mr-2">
               <button
+                type="button"
                 onClick={() => editor.chain().focus().toggleCode().run()}
                 className={`p-2 rounded hover:bg-slate-200 ${editor.isActive('code') ? 'bg-blue-100 text-blue-700' : ''}`}
                 title="Satır İçi Kod"
@@ -416,6 +413,7 @@ const ModernEditor: React.FC<ModernEditorProps> = ({
               </button>
               {allowCodeBlocks && (
                 <button
+                  type="button"
                   onClick={() => editor.chain().focus().toggleCodeBlock().run()}
                   className={`p-2 rounded hover:bg-slate-200 ${editor.isActive('codeBlock') ? 'bg-blue-100 text-blue-700' : ''}`}
                   title="Kod Bloğu"
@@ -428,6 +426,7 @@ const ModernEditor: React.FC<ModernEditorProps> = ({
             {/* Media & Links */}
             <div className="flex items-center border-r border-slate-300 pr-2 mr-2">
               <button
+                type="button"
                 onClick={setLink}
                 className={`p-2 rounded hover:bg-slate-200 ${editor.isActive('link') ? 'bg-blue-100 text-blue-700' : ''}`}
                 title="Link Ekle"
@@ -436,6 +435,7 @@ const ModernEditor: React.FC<ModernEditorProps> = ({
               </button>
               {allowImages && (
                 <button
+                  type="button"
                   onClick={() => setShowMediaBrowser(true)}
                   className="p-2 rounded hover:bg-slate-200"
                   title="Resim Ekle"
@@ -445,6 +445,7 @@ const ModernEditor: React.FC<ModernEditorProps> = ({
               )}
               {allowTables && (
                 <button
+                  type="button"
                   onClick={addTable}
                   className="p-2 rounded hover:bg-slate-200"
                   title="Tablo Ekle"
@@ -457,6 +458,7 @@ const ModernEditor: React.FC<ModernEditorProps> = ({
             {/* Preview */}
             <div className="flex items-center">
               <button
+                type="button"
                 onClick={() => setShowPreview(!showPreview)}
                 className={`p-2 rounded hover:bg-slate-200 ${showPreview ? 'bg-green-100 text-green-700' : ''}`}
                 title="Önizleme"
@@ -471,9 +473,9 @@ const ModernEditor: React.FC<ModernEditorProps> = ({
       {/* Editor Content */}
       <div className="relative">
         {showPreview ? (
-          <div 
+          <SafeHtmlRenderer
+            html={editor.getHTML()}
             className="p-4 w-full max-w-none"
-            dangerouslySetInnerHTML={{ __html: sanitizeContent(editor.getHTML()) }}
           />
         ) : (
           <div className="relative">
@@ -504,12 +506,10 @@ const ModernEditor: React.FC<ModernEditorProps> = ({
             }
             setShowMediaBrowser(false);
           }}
-          onUploadNew={() => {
-            // Handle upload new
-            setShowMediaBrowser(false);
-          }}
+          onUploadNew={() => {}}
           title="Resim Seç"
           allowedTypes={['image/']}
+          enableInlineUpload={true}
         />
       )}
     </div>

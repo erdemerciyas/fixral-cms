@@ -118,25 +118,18 @@ const UniversalEditor: React.FC<UniversalEditorProps> = ({
       )}
 
       {/* Modern Editor */}
-      <div onKeyDown={(e) => {
-        // Form submit'i engelle
-        if (e.key === 'Enter' && !e.shiftKey && !e.ctrlKey && !e.metaKey) {
-          e.stopPropagation();
-        }
-      }}>
-        <ModernEditor
-          content={value}
-          onChange={onChange}
-          placeholder={placeholder}
-          className={className}
-          minHeight={minHeight}
-          maxHeight={maxHeight}
-          readOnly={disabled}
-          allowImages={allowImages}
-          allowTables={allowTables}
-          allowCodeBlocks={allowCodeBlocks}
-        />
-      </div>
+      <ModernEditor
+        content={value}
+        onChange={onChange}
+        placeholder={placeholder}
+        className={className}
+        minHeight={minHeight}
+        maxHeight={maxHeight}
+        readOnly={disabled}
+        allowImages={allowImages}
+        allowTables={allowTables}
+        allowCodeBlocks={allowCodeBlocks}
+      />
     </div>
   );
 };

@@ -1,7 +1,7 @@
-// Service Worker for Personal Blog PWA
+// Service Worker for Fixral CMS PWA
 // Version 1.0.0
 
-const CACHE_NAME = 'personal-blog-v1';
+const CACHE_NAME = 'fixral-cms-v1';
 const CACHE_VERSION = '1.0.0';
 const STATIC_CACHE_NAME = `${CACHE_NAME}-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE_NAME = `${CACHE_NAME}-dynamic-${CACHE_VERSION}`;

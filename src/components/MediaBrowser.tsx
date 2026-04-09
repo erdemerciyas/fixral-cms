@@ -60,7 +60,10 @@ const MediaBrowser: React.FC<MediaBrowserProps> = ({
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const [filter, setFilter] = useState('all');
-  const [pageFilter, setPageFilter] = useState(pageContext || 'all');
+  const knownContexts = ['all', 'profile', 'portfolio', 'service', 'about', 'general'];
+  const [pageFilter, setPageFilter] = useState(
+    pageContext && knownContexts.includes(pageContext) ? pageContext : 'all'
+  );
   const [isMounted, setIsMounted] = useState(false);
   const [previewItem, setPreviewItem] = useState<MediaItem | null>(null);
   const modalRef = useRef<HTMLDivElement>(null);
@@ -222,6 +225,14 @@ const MediaBrowser: React.FC<MediaBrowserProps> = ({
 
     if (filter === 'images') {
       filtered = filtered.filter(item => item.mimeType.startsWith('image/'));
+    } else if (filter === 'videos') {
+      filtered = filtered.filter(item => item.mimeType.startsWith('video/'));
+    } else if (filter === 'documents') {
+      filtered = filtered.filter(item =>
+        item.mimeType.startsWith('application/pdf') ||
+        item.mimeType.startsWith('application/msword') ||
+        item.mimeType.startsWith('application/vnd.')
+      );
     }
 
     return filtered.sort((a, b) =>
@@ -333,7 +344,7 @@ const MediaBrowser: React.FC<MediaBrowserProps> = ({
 
             {/* Filters */}
             <div className="relative group">
-              <button className="p-2 bg-slate-50 border border-slate-200 rounded-xl hover:bg-slate-100 transition-colors">
+              <button type="button" className="p-2 bg-slate-50 border border-slate-200 rounded-xl hover:bg-slate-100 transition-colors">
                 <FunnelIcon className="w-5 h-5 text-slate-500" />
               </button>
               <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-xl border border-slate-100 p-2 hidden group-hover:block z-20">
@@ -344,7 +355,9 @@ const MediaBrowser: React.FC<MediaBrowserProps> = ({
                   className="w-full text-sm p-2 rounded-lg bg-slate-50 border-transparent focus:bg-white focus:ring-0 cursor-pointer hover:bg-slate-100 mb-2"
                 >
                   <option value="all">Tümü</option>
-                  <option value="images">Sadece Görseller</option>
+                  <option value="images">Görseller</option>
+                  <option value="videos">Videolar</option>
+                  <option value="documents">Belgeler</option>
                 </select>
 
                 <div className="h-px bg-slate-100 my-1" />
@@ -369,6 +382,7 @@ const MediaBrowser: React.FC<MediaBrowserProps> = ({
 
             {/* Actions */}
             <button
+              type="button"
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -385,6 +399,7 @@ const MediaBrowser: React.FC<MediaBrowserProps> = ({
             </button>
 
             <button
+              type="button"
               onClick={onClose}
               className="p-2 hover:bg-slate-100 rounded-xl text-slate-500 transition-colors"
             >
@@ -409,6 +424,7 @@ const MediaBrowser: React.FC<MediaBrowserProps> = ({
                 "{searchTerm}" aramasına uygun sonuç yok veya kütüphane boş.
               </p>
               <button
+                type="button"
                 onClick={() => enableInlineUpload ? fileInputRef.current?.click() : onUploadNew()}
                 className="px-6 py-2 bg-indigo-600 text-white rounded-xl text-sm font-medium hover:bg-indigo-700 transition-colors shadow-sm"
               >
@@ -443,15 +459,17 @@ const MediaBrowser: React.FC<MediaBrowserProps> = ({
                     {/* Hover Actions */}
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity z-10 flex items-center justify-center gap-2">
                       <button
+                        type="button"
                         onClick={(e) => { e.stopPropagation(); setPreviewItem(item); }}
-                        className="p-2 bg-white/90 rounded-full text-slate-700 hover:text-indigo-600 transiton-colors shadow-sm hover:scale-110"
+                        className="p-2 bg-white/90 rounded-full text-slate-700 hover:text-indigo-600 transition-colors shadow-sm hover:scale-110"
                         title="Önizle"
                       >
                         <EyeIcon className="w-5 h-5" />
                       </button>
                       <button
+                        type="button"
                         onClick={(e) => { e.stopPropagation(); handleDelete(item._id); }}
-                        className="p-2 bg-white/90 rounded-full text-slate-700 hover:text-red-600 transiton-colors shadow-sm hover:scale-110"
+                        className="p-2 bg-white/90 rounded-full text-slate-700 hover:text-red-600 transition-colors shadow-sm hover:scale-110"
                         title="Sil"
                       >
                         <TrashIcon className="w-5 h-5" />
@@ -504,12 +522,14 @@ const MediaBrowser: React.FC<MediaBrowserProps> = ({
 
           <div className="flex items-center gap-3">
             <button
+              type="button"
               onClick={onClose}
               className="px-4 py-2 text-slate-600 font-medium hover:bg-slate-50 rounded-lg transition-colors"
             >
               İptal
             </button>
             <button
+              type="button"
               onClick={handleConfirmSelection}
               disabled={allowMultipleSelect ? selectedItems.length === 0 : !selectedItem}
               className={`
@@ -528,6 +548,7 @@ const MediaBrowser: React.FC<MediaBrowserProps> = ({
         {previewItem && (
           <div className="absolute inset-0 z-50 bg-white/95 backdrop-blur flex flex-col items-center justify-center p-8 animate-in fade-in duration-200">
             <button
+              type="button"
               onClick={() => setPreviewItem(null)}
               className="absolute top-4 right-4 p-2 bg-slate-100 rounded-full hover:bg-slate-200 transition-colors"
             >
@@ -555,6 +576,7 @@ const MediaBrowser: React.FC<MediaBrowserProps> = ({
               </p>
 
               <button
+                type="button"
                 onClick={() => {
                   handleItemClick(previewItem._id);
                   setPreviewItem(null);

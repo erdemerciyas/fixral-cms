@@ -1,5 +1,6 @@
 import DOMPurify from 'dompurify';
 import { JSDOM } from 'jsdom';
+import { stripHtmlTags } from './security-utils';
 
 // Server-side DOMPurify setup
 const window = new JSDOM('').window;
@@ -289,7 +290,7 @@ export function validateNewsInput(data: any): { valid: boolean; error?: string }
   }
 
   // At least one language must be provided with complete data
-  const languages = ['tr', 'es'];
+  const languages = Object.keys(data.translations);
   let hasAtLeastOneLanguage = false;
 
   for (const lang of languages) {
@@ -322,8 +323,7 @@ export function validateNewsInput(data: any): { valid: boolean; error?: string }
     }
 
     if (translation.content && translation.content.trim().length > 0) {
-      // Strip HTML tags for length validation
-      const plainText = translation.content.replace(/<[^>]*>/g, '').trim();
+      const plainText = stripHtmlTags(translation.content).trim();
       if (plainText.length < 100) {
         return { valid: false, error: `${lang.toUpperCase()} content must be at least 100 characters` };
       }
@@ -358,22 +358,14 @@ export function validateNewsInput(data: any): { valid: boolean; error?: string }
     return { valid: false, error: 'At least one language translation with title and content is required' };
   }
 
-  // Validate featuredImage only if publishing
-  if (data.status === 'published') {
-    if (!data.featuredImage || typeof data.featuredImage !== 'object') {
-      return { valid: false, error: 'Featured image is required for publishing' };
+  // Validate featuredImage if provided
+  if (data.featuredImage && typeof data.featuredImage === 'object') {
+    if (data.featuredImage.url && typeof data.featuredImage.url !== 'string') {
+      return { valid: false, error: 'Featured image URL must be a string' };
     }
 
-    if (!data.featuredImage.url || typeof data.featuredImage.url !== 'string') {
-      return { valid: false, error: 'Featured image URL is required for publishing' };
-    }
-
-    if (!data.featuredImage.altText || typeof data.featuredImage.altText !== 'string') {
-      return { valid: false, error: 'Featured image alt text is required for publishing' };
-    }
-
-    if (!data.featuredImage.cloudinaryPublicId || typeof data.featuredImage.cloudinaryPublicId !== 'string') {
-      return { valid: false, error: 'Cloudinary public ID is required for publishing' };
+    if (data.featuredImage.altText && typeof data.featuredImage.altText !== 'string') {
+      return { valid: false, error: 'Featured image alt text must be a string' };
     }
   }
 
@@ -404,7 +396,7 @@ export function validateNewsUpdateInput(data: any): { valid: boolean; error?: st
       return { valid: false, error: 'Translations must be an object' };
     }
 
-    const languages = ['tr', 'es'];
+    const languages = Object.keys(data.translations);
     for (const lang of languages) {
       const translation = data.translations[lang];
 
@@ -415,8 +407,7 @@ export function validateNewsUpdateInput(data: any): { valid: boolean; error?: st
       }
 
       if (translation.content) {
-        // Strip HTML tags for length validation
-        const plainText = translation.content.replace(/<[^>]*>/g, '').trim();
+        const plainText = stripHtmlTags(translation.content).trim();
         if (plainText.length < 100) {
           return { valid: false, error: `${lang.toUpperCase()} content must be at least 100 characters` };
         }

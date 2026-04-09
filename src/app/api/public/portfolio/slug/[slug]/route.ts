@@ -71,7 +71,7 @@ export async function GET(request: Request, { params }: { params: { slug: string
     // Kategori bilgisini güvenli şekilde normalize et
     // Lean sonuç için yerel tip ile güvenli erişim
     const p = portfolioItem as unknown as PortfolioLean;
-    let category = null;
+    let category: LeanCategory | null = null;
     try {
       if (p.categoryIds && p.categoryIds.length > 0) {
         // Eğer populate edilmişse

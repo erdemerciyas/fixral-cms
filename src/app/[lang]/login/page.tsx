@@ -11,7 +11,7 @@ export default function LoginPage() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const lang = useLocale();
-    const callbackUrl = searchParams?.get('callbackUrl') || `/${lang}/products`;
+    const callbackUrl = searchParams?.get('callbackUrl') || `/${lang}`;
 
     const [formData, setFormData] = useState({
         email: '',
@@ -54,7 +54,7 @@ export default function LoginPage() {
                 <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
                     <h1 className="text-2xl font-bold text-slate-900 mb-2 text-center">Giriş Yap</h1>
                     <p className="text-slate-500 mb-8 text-center">
-                        Hesabınıza giriş yapın ve alışverişe devam edin.
+                        Hesabınıza giriş yapın.
                     </p>
 
                     <form onSubmit={handleSubmit} className="space-y-4">

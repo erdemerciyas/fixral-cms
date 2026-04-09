@@ -1,7 +1,7 @@
 export default function PortfolioLoading() {
     return (
         <div className="min-h-screen bg-gray-50 pt-24 pb-20">
-            <div className="container mx-auto px-4">
+            <div className="container-content">
                 {/* Skeleton for Hero */}
                 <div className="w-full max-w-3xl mx-auto text-center mb-12 animate-pulse space-y-4">
                     <div className="h-10 bg-slate-200 rounded-lg w-2/3 mx-auto"></div>

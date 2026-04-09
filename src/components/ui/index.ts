@@ -1,19 +1,19 @@
-// ── Design System: CVA-based Atomic Components ──
-export { Button, buttonVariants } from './Button'
-export type { ButtonProps } from './Button'
-export { Input, inputVariants } from './Input'
-export type { InputProps } from './Input'
-export { Card, CardHeader, CardTitle, CardBody, CardFooter } from './Card'
-export { Badge, badgeVariants } from './Badge'
-export type { BadgeProps } from './Badge'
-export { Alert, alertVariants } from './Alert'
-export { DSkeleton } from './Skeleton/index'
+// ── Core UI Primitives (shadcn-based) ──
+export { Button, buttonVariants } from './button'
+export type { ButtonProps } from './button'
+export { Badge, badgeVariants } from './badge'
+export type { BadgeProps } from './badge'
 
-// ── Design System: UI Patterns ──
-export { PageHeader } from './PageHeader'
-export { DataTable } from './DataTable'
-export type { Column as DataTableColumn } from './DataTable'
-export { FormSection } from './FormSection'
+// ── Legacy re-exports for backward compatibility ──
+export { Input, inputVariants } from './_legacy/Input/index'
+export type { InputProps } from './_legacy/Input/index'
+export { Card, CardHeader, CardTitle, CardBody, CardFooter } from './_legacy/Card/index'
+export { Alert, alertVariants } from './_legacy/Alert/index'
+export { DSkeleton } from './_legacy/Skeleton/index'
+export { PageHeader } from './_legacy/PageHeader'
+export { DataTable } from './_legacy/DataTable'
+export type { Column as DataTableColumn } from './_legacy/DataTable'
+export { FormSection } from './_legacy/FormSection'
 
 // UI Component exports
 export { default as Select } from './Select';
@@ -33,7 +33,4 @@ export { default as LanguageSwitch } from './LanguageSwitch';
 
 // Utility Components
 export { default as Pagination } from './Pagination';
-export { default as SearchInput } from './SearchInput';
-export { default as SortSelect } from './SortSelect';
-export { default as PriceRangeFilter } from './PriceRangeFilter';
 export { default as UniversalEditor } from './UniversalEditor';

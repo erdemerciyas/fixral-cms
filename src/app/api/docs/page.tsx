@@ -31,16 +31,6 @@ export default function ApiDocsPage() {
               </ul>
             </div>
             <div className="border rounded-lg p-4">
-              <h3 className="font-semibold text-green-600 mb-2">Products API</h3>
-              <ul className="text-sm space-y-1 text-gray-600">
-                <li>GET /api/products - List products</li>
-                <li>GET /api/products/[id] - Get product</li>
-                <li>POST /api/products - Create product</li>
-                <li>PUT /api/products/[id] - Update product</li>
-                <li>DELETE /api/products/[id] - Delete product</li>
-              </ul>
-            </div>
-            <div className="border rounded-lg p-4">
               <h3 className="font-semibold text-purple-600 mb-2">Admin API</h3>
               <ul className="text-sm space-y-1 text-gray-600">
                 <li>GET /api/admin/dashboard-stats - Dashboard stats</li>
@@ -87,7 +77,6 @@ export default function ApiDocsPage() {
             <h3 className="text-lg font-semibold mb-2">📚 Resources</h3>
             <ul className="space-y-2 text-sm text-gray-600">
               <li>• Portfolio Management</li>
-              <li>• Product Catalog</li>
               <li>• Service Listing</li>
               <li>• Video Management</li>
             </ul>

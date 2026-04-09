@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { connectToDatabase } from '../../../../lib/mongoose';
+import connectDB from '../../../../lib/mongoose';
 import User from '../../../../models/User';
 import crypto from 'crypto';
 import nodemailer from 'nodemailer';
@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    await connectToDatabase();
+    await connectDB();
 
     // Kullanıcıyı bul
     const user = await User.findOne({ email });

@@ -2,9 +2,8 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import Video from "@/models/Video";
-import mongoose from "mongoose";
+import connectDB from "@/lib/mongoose";
 
-// Function to extract video ID from YouTube URL
 function extractVideoId(url: string): string | null {
   const patterns = [
     /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/,
@@ -13,16 +12,17 @@ function extractVideoId(url: string): string | null {
   
   for (const pattern of patterns) {
     const match = url.match(pattern);
-    if (match) return match[1];
+    if (match && /^[a-zA-Z0-9_-]{11}$/.test(match[1])) return match[1];
   }
   
   return null;
 }
 
-// Function to get video info from oEmbed API (no API key needed)
 async function getVideoInfo(videoId: string) {
+  if (!/^[a-zA-Z0-9_-]{11}$/.test(videoId)) return null;
+
   try {
-    const oEmbedUrl = `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`;
+    const oEmbedUrl = `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${encodeURIComponent(videoId)}&format=json`;
     const response = await fetch(oEmbedUrl);
     
     if (!response.ok) {
@@ -34,7 +34,7 @@ async function getVideoInfo(videoId: string) {
     return {
       title: data.title || `Video ${videoId}`,
       channelName: data.author_name || 'Unknown Channel',
-      thumbnail: data.thumbnail_url || `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`,
+      thumbnail: data.thumbnail_url || `https://img.youtube.com/vi/${encodeURIComponent(videoId)}/mqdefault.jpg`,
       duration: null // oEmbed doesn't provide duration
     };
   } catch (error) {
@@ -93,7 +93,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    await mongoose.connect(process.env.MONGODB_URI!);
+    await connectDB();
 
     const { content } = await req.json();
     
@@ -118,7 +118,7 @@ export async function POST(req: Request) {
 
     let addedCount = 0;
     let skippedCount = 0;
-    const addedVideos = [];
+    const addedVideos: string[] = [];
 
     // Process videos (single or multiple)
     const videosToProcess = analysis.type === 'single_video' 

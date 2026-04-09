@@ -157,7 +157,7 @@ export function generateTwitterCardTags(article: any, language: 'tr' | 'es' = 't
  * Calculate SEO score for an article
  */
 export function calculateSEOScore(article: any, language: 'tr' | 'es' = 'tr'): number {
-  const translation = article.translations[language];
+  const translation = article.translations?.[language] || {};
   let score = 0;
 
   // Title (max 20 points)
@@ -212,7 +212,7 @@ export function calculateSEOScore(article: any, language: 'tr' | 'es' = 'tr'): n
  * Get SEO recommendations for an article
  */
 export function getSEORecommendations(article: any, language: 'tr' | 'es' = 'tr'): string[] {
-  const translation = article.translations[language];
+  const translation = article.translations?.[language] || {};
   const recommendations: string[] = [];
 
   // Title recommendations

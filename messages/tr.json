@@ -24,11 +24,12 @@
     "required": "Bu alan zorunludur.",
     "success": "İşlem başarılı.",
     "readMore": "Devamını oku",
-    "viewAll": "Tümünü gör"
+    "viewAll": "Tümünü gör",
+    "explore": "Keşfet",
+    "all": "Tümü"
   },
   "nav": {
     "home": "Anasayfa",
-    "products": "Ürünler",
     "portfolio": "Portfolyo",
     "services": "Hizmetler",
     "news": "Haberler",
@@ -36,8 +37,30 @@
     "login": "Giriş Yap",
     "register": "Kayıt Ol",
     "logout": "Çıkış Yap",
-    "cart": "Sepet",
-    "account": "Hesabım"
+    "account": "Hesabım",
+    "videos": "Videolar"
+  },
+  "header": {
+    "skipToContent": "Ana içeriğe atla",
+    "openMenu": "Menüyü aç",
+    "closeMenu": "Menüyü kapat",
+    "search": "Ara",
+    "searchPlaceholder": "Ne arıyorsunuz?",
+    "goToHome": "Anasayfaya git",
+    "contact": "İletişim"
+  },
+  "breadcrumb": {
+    "home": "Anasayfa",
+    "news": "Haberler",
+    "portfolio": "Portfolyo",
+    "services": "Hizmetler",
+    "contact": "İletişim",
+    "videos": "Videolar",
+    "account": "Hesabım",
+    "login": "Giriş",
+    "register": "Kayıt",
+    "about": "Hakkımda",
+    "offline": "Çevrimdışı"
   },
   "hero": {
     "title": "Fixral — Dijital Çözümler ve Hizmetler",
@@ -45,30 +68,21 @@
     "cta": "Hizmetlerimizi Keşfet",
     "ctaSecondary": "İletişime Geç"
   },
-  "products": {
-    "title": "Ürünler",
-    "search": "Ürün ara...",
-    "sort": {
-      "newest": "En Yeniler",
-      "oldest": "En Eskiler",
-      "priceAsc": "Fiyat (Artan)",
-      "priceDesc": "Fiyat (Azalan)"
-    },
-    "price": "Fiyat",
-    "priceRange": "Fiyat Aralığı",
-    "apply": "Uygula",
-    "inStock": "Stokta",
-    "outOfStock": "Stokta Yok",
-    "addToCart": "Sepete Ekle",
-    "orderNow": "Hemen Sipariş Ver",
-    "noProducts": "Ürün bulunamadı."
-  },
   "news": {
     "title": "Haberler",
+    "pageTitle": "Haberler & Duyurular",
+    "pageDescription": "En son haberler, şirket duyuruları ve sektör güncellemelerini buradan takip edebilirsiniz.",
     "latest": "Son Haberler",
-    "readMore": "Devamını oku",
+    "readMore": "Devamını Oku",
     "noNews": "Haber bulunamadı.",
-    "publishedAt": "Yayın tarihi"
+    "publishedAt": "Yayın tarihi",
+    "searchPlaceholder": "Haberlerde ara...",
+    "showAll": "Tüm Haberleri Göster",
+    "noResults": "Sonuç Bulunamadı",
+    "noResultsDescription": "Aradığınız kriterlere uygun haber bulunamadı.",
+    "resultsFound": "{count} sonuç bulundu",
+    "forQuery": "için",
+    "inTag": "etiketinde"
   },
   "portfolio": {
     "title": "Portfolyo",
@@ -76,6 +90,12 @@
     "date": "Tamamlanma Tarihi",
     "technologies": "Teknolojiler",
     "noPortfolio": "Portfolyo bulunamadı."
+  },
+  "services": {
+    "title": "Hizmetler",
+    "pageTitle": "Sunduğumuz Hizmetler",
+    "pageDescription": "Modern teknoloji çözümleri ve profesyonel hizmetlerimizi keşfedin",
+    "explore": "Hizmetleri İncele"
   },
   "contact": {
     "title": "İletişim",
@@ -103,7 +123,25 @@
   "footer": {
     "rights": "Tüm hakları saklıdır.",
     "privacyPolicy": "Gizlilik Politikası",
-    "terms": "Kullanım Koşulları"
+    "terms": "Kullanım Koşulları",
+    "quickLinks": "Hızlı Bağlantılar",
+    "contactTitle": "İletişim",
+    "aboutTitle": "Hakkında",
+    "developer": "Geliştiren",
+    "backToTop": "Yukarı Çık",
+    "madeWith": "Made with",
+    "madeIn": "in Turkey"
+  },
+  "pagination": {
+    "previous": "Önceki",
+    "next": "Sonraki",
+    "page": "Sayfa",
+    "of": "/"
+  },
+  "videos": {
+    "title": "Videolar",
+    "pageTitle": "Video Galeri",
+    "noVideos": "Video bulunamadı."
   },
   "meta": {
     "siteName": "Fixral",

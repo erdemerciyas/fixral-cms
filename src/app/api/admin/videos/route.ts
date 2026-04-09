@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import Video from "@/models/Video";
-import mongoose from "mongoose";
+import connectDB from "@/lib/mongoose";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 
@@ -26,8 +26,8 @@ export async function GET(_req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Connect to MongoDB
-    await mongoose.connect(process.env.MONGODB_URI!);
+    // Connect to database
+    await connectDB();
 
     // Get videos from database only (no YouTube API)
     const dbVideos = await getVideosFromDatabase();
@@ -52,8 +52,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Connect to MongoDB
-    await mongoose.connect(process.env.MONGODB_URI!);
+    // Connect to database
+    await connectDB();
 
     // Get video data from request body
     const videoData = await req.json();

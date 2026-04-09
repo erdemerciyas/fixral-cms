@@ -3,7 +3,7 @@
 import { schemaMarkupGenerator, SchemaMarkup } from '@/lib/schema-markup';
 
 interface StructuredDataProps {
-  type: 'organization' | 'person' | 'website' | 'blogPosting' | 'product' | 'service' | 'breadcrumb' | 'faq' | 'video' | 'contactPage' | 'aboutPage' | 'creativeWork';
+  type: 'organization' | 'person' | 'website' | 'blogPosting' | 'service' | 'breadcrumb' | 'faq' | 'video' | 'contactPage' | 'aboutPage' | 'creativeWork';
   data: Record<string, unknown>;
 }
 
@@ -40,18 +40,6 @@ export function StructuredData({ type, data }: StructuredDataProps) {
         data.dateModified as string,
         data.author as string,
         data.url as string
-      );
-      break;
-
-    case 'product':
-      schema = schemaMarkupGenerator.generateProductSchema(
-        data.name as string,
-        data.description as string,
-        data.image as string,
-        data.price as number,
-        data.currency as string | undefined,
-        data.rating as number | undefined,
-        data.reviewCount as number | undefined
       );
       break;
 
@@ -167,42 +155,6 @@ export function FAQStructuredData({
   faqs: Array<{ question: string; answer: string }>;
 }) {
   return <StructuredData type="faq" data={{ faqs }} />;
-}
-
-/**
- * Product Structured Data Component
- */
-export function ProductStructuredData({
-  name,
-  description,
-  image,
-  price,
-  currency,
-  rating,
-  reviewCount,
-}: {
-  name: string;
-  description: string;
-  image: string;
-  price: number;
-  currency?: string;
-  rating?: number;
-  reviewCount?: number;
-}) {
-  return (
-    <StructuredData
-      type="product"
-      data={{
-        name,
-        description,
-        image,
-        price,
-        currency,
-        rating,
-        reviewCount,
-      }}
-    />
-  );
 }
 
 /**

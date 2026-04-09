@@ -1,0 +1,317 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ──────────────────────────────────────────────
+// Singletons & Standalone
+// ──────────────────────────────────────────────
+
+model SiteSettingsRow {
+  id                String   @id @default(cuid())
+  siteName          String   @default("")
+  logoText          String   @default("")
+  slogan            String   @default("")
+  description       String   @default("")
+  favicon           String   @default("")
+  siteUrl           String   @default("")
+  timezone          String   @default("Europe/Istanbul")
+  language          String   @default("tr")
+  maintenanceMode   Boolean  @default(false)
+  allowRegistration Boolean  @default(true)
+  enableComments    Boolean  @default(true)
+  isActive          Boolean  @default(true)
+  logo              Json     @default("{}")
+  colors            Json     @default("{}")
+  socialMedia       Json     @default("{}")
+  seo               Json     @default("{}")
+  contact           Json     @default("{}")
+  analytics         Json     @default("{}")
+  system            Json     @default("{}")
+  themeConfig       Json     @default("{}")
+  seoConfig         Json     @default("{}")
+  analyticsConfig   Json     @default("{}")
+  socialMediaConfig Json     @default("{}")
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model FooterSettingsRow {
+  id              String   @id @default(cuid())
+  mainDescription String   @default("")
+  contactInfo     Json     @default("{}")
+  quickLinks      Json     @default("[]")
+  socialLinks     Json     @default("{}")
+  copyrightInfo   Json     @default("{}")
+  developerInfo   Json     @default("{}")
+  visibility      Json     @default("{}")
+  theme           Json     @default("{}")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model SettingRow {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ContentSettingRow {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PageSettingRow {
+  id               String   @id @default(cuid())
+  pageId           String   @unique
+  title            String   @default("")
+  description      String   @default("")
+  path             String   @default("")
+  icon             String   @default("")
+  isExternal       Boolean  @default(false)
+  isActive         Boolean  @default(true)
+  showInNavigation Boolean  @default(true)
+  order            Int      @default(0)
+  buttonText       String   @default("")
+  buttonLink       String   @default("")
+  config           Json     @default("{}")
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model PageSettingsRow {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     Json     @default("{}")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PageTemplateRow {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  layout    Json     @default("{}")
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model LanguageRow {
+  id          String   @id @default(cuid())
+  code        String   @unique
+  label       String
+  nativeLabel String   @default("")
+  flag        String   @default("")
+  isDefault   Boolean  @default(false)
+  isActive    Boolean  @default(true)
+  direction   String   @default("ltr")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model AboutRow {
+  id          String   @id @default(cuid())
+  title       String   @default("")
+  description String   @default("")
+  image       String   @default("")
+  gallery     String[] @default([])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ──────────────────────────────────────────────
+// User & Simple Entities
+// ──────────────────────────────────────────────
+
+model UserRow {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      String   @default("user")
+  isActive  Boolean  @default(true)
+  addresses Json     @default("[]")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CategoryRow {
+  id          String   @id @default(cuid())
+  name        String
+  description String   @default("")
+  slug        String   @unique
+  isActive    Boolean  @default(true)
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model ContactRow {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  phone     String   @default("")
+  subject   String   @default("")
+  message   String   @default("")
+  status    String   @default("new")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ThemeRow and PluginRow removed - functionality embedded in SiteSettings
+
+model SliderRow {
+  id          String   @id @default(cuid())
+  title       String   @default("")
+  subtitle    String   @default("")
+  description String   @default("")
+  buttonText  String   @default("")
+  buttonLink  String   @default("")
+  badge       String   @default("")
+  imageType   String   @default("upload")
+  imageUrl    String   @default("")
+  isActive    Boolean  @default(true)
+  order       Int      @default(0)
+  duration    Int      @default(5000)
+  createdBy   String   @default("")
+  updatedBy   String   @default("")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model VideoRow {
+  id          String    @id @default(cuid())
+  videoId     String    @unique
+  title       String    @default("")
+  description String    @default("")
+  thumbnail   String    @default("")
+  publishedAt DateTime?
+  type        String    @default("normal")
+  status      String    @default("visible")
+  tags        String[]  @default([])
+  channelId   String    @default("")
+  channelName String    @default("")
+  channelUrl  String    @default("")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Model3DRow {
+  id          String   @id @default(cuid())
+  name        String
+  description String   @default("")
+  fileUrl     String
+  thumbnail   String   @default("")
+  filetype    String   @default("")
+  fileSize    Int      @default(0)
+  isPublic    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ──────────────────────────────────────────────
+// Core Content
+// ──────────────────────────────────────────────
+
+model NewsRow {
+  id             String   @id @default(cuid())
+  title          String
+  slug           String   @unique
+  excerpt        String   @default("")
+  content        String   @default("")
+  featuredImage  Json?
+  author         String   @default("")
+  status         String   @default("draft")
+  isActive       Boolean  @default(true)
+  category       String   @default("")
+  tags           String[] @default([])
+  translations   Json?
+  seoTitle       String   @default("")
+  seoDescription String   @default("")
+  seoKeywords    String[] @default([])
+  views          Int      @default(0)
+  relatedPortfolioIds String[] @default([])
+  relatedNewsIds      String[] @default([])
+  publishedAt    DateTime?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([slug])
+  @@index([status])
+  @@index([isActive, createdAt(sort: Desc)])
+}
+
+model PortfolioRow {
+  id             String   @id @default(cuid())
+  title          String
+  slug           String   @unique
+  description    String   @default("")
+  content        String   @default("")
+  coverImage     String   @default("")
+  images         String[] @default([])
+  technologies   String[] @default([])
+  category       String   @default("")
+  categoryIds    String[] @default([])
+  client         String   @default("")
+  completionDate String   @default("")
+  models3D       Json?
+  order          Int      @default(0)
+  projectUrl     String   @default("")
+  githubUrl      String   @default("")
+  isActive       Boolean  @default(true)
+  featured       Boolean  @default(false)
+  externalUrl    String   @default("")
+  translations   Json?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([slug])
+  @@index([isActive, createdAt(sort: Desc)])
+}
+
+model ServiceRow {
+  id           String   @id @default(cuid())
+  title        String
+  description  String   @default("")
+  features     String[] @default([])
+  image        String   @default("")
+  icon         String   @default("")
+  slug         String   @unique
+  isActive     Boolean  @default(true)
+  order        Int      @default(0)
+  translations Json?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([slug])
+  @@index([isActive, order])
+}
+
+model MessageRow {
+  id           String   @id @default(cuid())
+  name         String
+  email        String
+  subject      String   @default("")
+  message      String   @default("")
+  status       String   @default("unread")
+  type         String   @default("contact")
+  conversation Json     @default("[]")
+  adminReply   String   @default("")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([status])
+  @@index([type])
+  @@index([createdAt(sort: Desc)])
+}

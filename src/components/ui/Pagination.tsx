@@ -13,8 +13,8 @@ export default function Pagination({ currentPage, totalPages, createPageUrl }: P
     // Logic to determine which page numbers to show
     const getPageNumbers = () => {
         const delta = 2; // Number of pages to show on each side of current page
-        const range = [];
-        const rangeWithDots = [];
+        const range: number[] = [];
+        const rangeWithDots: Array<number | string> = [];
 
         for (let i = 1; i <= totalPages; i++) {
             // Show first, last, current, and neighbors

@@ -24,10 +24,12 @@ export async function GET(_req: NextRequest) {
       .sort({ order: 1 })
       .select('_id pageId title path description icon isExternal isActive showInNavigation order createdAt updatedAt');
 
-    // Filter out internal pages that shouldn't be managed
     const filteredPages = pages.filter((p: { pageId: string }) => p.pageId !== 'product-detail');
 
-    return NextResponse.json(filteredPages);
+    const response = NextResponse.json(filteredPages);
+    response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate');
+    response.headers.set('Pragma', 'no-cache');
+    return response;
   } catch (error) {
     console.error('Error fetching pages:', error);
     return NextResponse.json(

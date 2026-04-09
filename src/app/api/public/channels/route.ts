@@ -1,40 +1,35 @@
 import { NextResponse } from "next/server";
 import Video from "@/models/Video";
-import mongoose from "mongoose";
+import connectDB from "@/lib/mongoose";
 
 export async function GET() {
   try {
-    // Connect to MongoDB
-    await mongoose.connect(process.env.MONGODB_URI!);
+    await connectDB();
 
-    // Get unique channels from videos
-    const channels = await Video.aggregate([
-      {
-        $match: {
-          channelId: { $exists: true, $ne: null, $nin: ["", null] }
-        }
-      },
-      {
-        $group: {
-          _id: "$channelId",
-          channelName: { $first: "$channelName" },
-          channelUrl: { $first: "$channelUrl" },
-          videoCount: { $sum: 1 }
-        }
-      },
-      {
-        $project: {
-          channelId: "$_id",
-          channelName: 1,
-          channelUrl: 1,
+    // Get all videos with valid channelId
+    const videos = await Video.find({
+      channelId: { $ne: "" },
+    }).select("channelId channelName channelUrl");
+
+    // Group by channelId in JS
+    const channelMap = new Map<string, { channelId: string; channelName: string; channelUrl: string; videoCount: number }>();
+
+    for (const video of videos) {
+      const cid = video.channelId;
+      if (!cid) continue;
+      if (channelMap.has(cid)) {
+        channelMap.get(cid)!.videoCount++;
+      } else {
+        channelMap.set(cid, {
+          channelId: cid,
+          channelName: video.channelName || "",
+          channelUrl: video.channelUrl || "",
           videoCount: 1,
-          _id: 0
-        }
-      },
-      {
-        $sort: { videoCount: -1 }
+        });
       }
-    ]);
+    }
+
+    const channels = Array.from(channelMap.values()).sort((a, b) => b.videoCount - a.videoCount);
 
     return NextResponse.json(channels);
   } catch (error: any) {

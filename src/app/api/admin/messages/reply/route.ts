@@ -64,11 +64,9 @@ export async function POST(req: NextRequest) {
                 to: message.email,
                 subject: `Sayın ${message.name}, sorunuz yanıtlandı`,
                 messageData: {
-                    senderName: message.name, // The user is the original sender
+                    senderName: message.name,
                     messageContent: message.message,
                     adminReply: reply,
-                    orderId: message.orderId,
-                    productName: message.productName,
                     createdAt: message.createdAt
                 },
                 isAdminNotification: false

@@ -138,13 +138,6 @@ export default function RegisterPage() {
 
                     <div className="mt-6 pt-6 border-t border-slate-100 text-center text-sm text-slate-500">
                         Zaten hesabınız var mı? <Link href="/api/auth/signin" className="text-brand-primary-900 font-bold hover:underline">Giriş Yap</Link>
-                        {/* Note: I might need to check where /api/auth/signin redirects or if there is a custom login page.
-                            The user mentioned "Giriş Yap" works, but checkout auth page uses `signIn()` directly.
-                            Usually NextAuth uses built-in pages unless defined.
-                            I will assume standard NextAuth for now, or the checkout auth page which is at `/checkout/auth`.
-                            Maybe better to link to `/checkout/auth` if they came from there?
-                            Or just the generic Login if I find one.
-                        */}
                     </div>
                 </div>
             </div>

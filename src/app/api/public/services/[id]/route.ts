@@ -1,9 +1,8 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import { connectToDatabase } from '@/lib/mongoose';
+import connectDB from '@/lib/mongoose';
 import { authOptions } from '@/lib/auth';
-import { ObjectId } from 'mongodb';
-
+import Service from '@/models/Service';
 
 // GET /api/services/[id] - Belirli bir servisi getir
 export async function GET(
@@ -11,19 +10,10 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const { db } = await connectToDatabase();
-    
-    if (!ObjectId.isValid(params.id)) {
-      return NextResponse.json(
-        { error: 'Geçersiz servis ID' },
-        { status: 400 }
-      );
-    }
+    await connectDB();
 
-    const service = await db
-      .collection('services')
-      .findOne({ _id: new ObjectId(params.id) });
-    
+    const service = await Service.findById(params.id);
+
     if (!service) {
       return NextResponse.json(
         { error: 'Servis bulunamadı' },
@@ -55,31 +45,21 @@ export async function PUT(
       );
     }
 
-    if (!ObjectId.isValid(params.id)) {
-      return NextResponse.json(
-        { error: 'Geçersiz servis ID' },
-        { status: 400 }
-      );
-    }
-
     const body = await request.json();
-    const { db } = await connectToDatabase();
+    await connectDB();
 
     const imageUrl = body.image || '';
 
     const updateData = {
       ...body,
       image: imageUrl,
-      updatedAt: new Date()
     };
 
-    const result = await db
-      .collection('services')
-      .findOneAndUpdate(
-        { _id: new ObjectId(params.id) },
-        { $set: updateData },
-        { returnDocument: 'after' }
-      );
+    const result = await Service.findByIdAndUpdate(
+      params.id,
+      updateData,
+      { new: true }
+    );
 
     if (!result) {
       return NextResponse.json(
@@ -112,18 +92,9 @@ export async function DELETE(
       );
     }
 
-    if (!ObjectId.isValid(params.id)) {
-      return NextResponse.json(
-        { error: 'Geçersiz servis ID' },
-        { status: 400 }
-      );
-    }
+    await connectDB();
 
-    const { db } = await connectToDatabase();
-    
-    const result = await db
-      .collection('services')
-      .findOneAndDelete({ _id: new ObjectId(params.id) });
+    const result = await Service.findByIdAndDelete(params.id);
 
     if (!result) {
       return NextResponse.json(
@@ -140,4 +111,4 @@ export async function DELETE(
       { status: 500 }
     );
   }
-} 
+}

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { connectToDatabase } from '../../../../lib/mongoose';
+import connectDB from '../../../../lib/mongoose';
 import User from '../../../../models/User';
 import bcrypt from 'bcryptjs';
 import { rateLimit, getClientIP } from '../../../../lib/rate-limit';
@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    await connectToDatabase();
+    await connectDB();
 
     // Token'ı kontrol et - constant time comparison için
     const user = await User.findOne({

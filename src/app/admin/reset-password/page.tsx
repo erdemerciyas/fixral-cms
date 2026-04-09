@@ -3,14 +3,7 @@
 import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import {
-  LockClosedIcon,
-  EnvelopeIcon,
-  ArrowLeftIcon,
-  CheckIcon,
-  XMarkIcon,
-  KeyIcon
-} from '@heroicons/react/24/outline';
+import { ArrowLeft, Check, Key, Lock, Mail, X } from 'lucide-react';
 
 function ResetPasswordContent() {
   const router = useRouter();
@@ -105,7 +98,7 @@ function ResetPasswordContent() {
         <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl shadow-indigo-500/30 p-8">
           {/* Logo */}
           <div className="flex flex-col items-center mb-8">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-lg shadow-indigo-500/30 mb-4">
+            <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-lg shadow-indigo-500/30 mb-4">
               <span className="text-white font-bold text-3xl">A</span>
             </div>
             <h1 className="text-3xl font-bold text-slate-900 mb-2">
@@ -126,9 +119,9 @@ function ResetPasswordContent() {
               : 'bg-red-50 border-red-200 text-red-800'
               }`}>
               {message.type === 'success' ? (
-                <CheckIcon className="w-5 h-5 mt-0.5 flex-shrink-0" />
+                <Check className="w-5 h-5 mt-0.5 flex-shrink-0" />
               ) : (
-                <XMarkIcon className="w-5 h-5 mt-0.5 flex-shrink-0" />
+                <X className="w-5 h-5 mt-0.5 flex-shrink-0" />
               )}
               <span>{message.text}</span>
             </div>
@@ -143,7 +136,7 @@ function ResetPasswordContent() {
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <EnvelopeIcon className="h-5 w-5 text-slate-400" />
+                    <Mail className="h-5 w-5 text-slate-400" />
                   </div>
                   <input
                     id="email"
@@ -169,7 +162,7 @@ function ResetPasswordContent() {
                   </div>
                 ) : (
                   <div className="flex items-center justify-center space-x-2">
-                    <EnvelopeIcon className="w-5 h-5" />
+                    <Mail className="w-5 h-5" />
                     <span>Send Reset Link</span>
                   </div>
                 )}
@@ -183,7 +176,7 @@ function ResetPasswordContent() {
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <LockClosedIcon className="h-5 w-5 text-slate-400" />
+                    <Lock className="h-5 w-5 text-slate-400" />
                   </div>
                   <input
                     id="password"
@@ -204,7 +197,7 @@ function ResetPasswordContent() {
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <LockClosedIcon className="h-5 w-5 text-slate-400" />
+                    <Lock className="h-5 w-5 text-slate-400" />
                   </div>
                   <input
                     id="confirmPassword"
@@ -231,7 +224,7 @@ function ResetPasswordContent() {
                   </div>
                 ) : (
                   <div className="flex items-center justify-center space-x-2">
-                    <KeyIcon className="w-5 h-5" />
+                    <Key className="w-5 h-5" />
                     <span>Reset Password</span>
                   </div>
                 )}
@@ -245,7 +238,7 @@ function ResetPasswordContent() {
               href="/admin/login"
               className="flex items-center justify-center text-sm text-slate-600 hover:text-indigo-600 transition-colors"
             >
-              <ArrowLeftIcon className="w-4 h-4 mr-2" />
+              <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Login
             </Link>
           </div>
@@ -256,7 +249,7 @@ function ResetPasswordContent() {
               href="/"
               className="flex items-center justify-center text-sm text-slate-500 hover:text-slate-700 transition-colors"
             >
-              <ArrowLeftIcon className="w-4 h-4 mr-2" />
+              <ArrowLeft className="w-4 h-4 mr-2" />
               Back to website
             </Link>
           </div>

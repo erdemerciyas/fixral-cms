@@ -5,6 +5,7 @@ import Portfolio from '@/models/Portfolio';
 import '@/models/Category';
 import { PortfolioItem } from '@/types/portfolio';
 import { SITE_URL, getPortfolioAlternates, generateOgImages } from '@/lib/seo-utils';
+import { stripHtmlTags } from '@/lib/security-utils';
 import PortfolioDetailClient from './PortfolioDetailClient';
 
 export const revalidate = 3600;
@@ -56,11 +57,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   return {
     title: `${item.title} | Fixral Portfolyo`,
-    description: (item.description || '').replace(/<[^>]*>/g, '').slice(0, 160),
+    description: stripHtmlTags(item.description || '').slice(0, 160),
     alternates: getPortfolioAlternates(slug),
     openGraph: {
       title: `${item.title} | Fixral Portfolyo`,
-      description: (item.description || '').replace(/<[^>]*>/g, '').slice(0, 160),
+      description: stripHtmlTags(item.description || '').slice(0, 160),
       url: `${SITE_URL}/tr/portfolio/${slug}`,
       type: 'article',
       images: ogImages,

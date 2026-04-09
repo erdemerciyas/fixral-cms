@@ -8,6 +8,10 @@ import connectDB from '@/lib/mongoose';
 import Message from '@/models/Message';
 import nodemailer from 'nodemailer';
 
+function escapeHtml(str: string): string {
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
 // GET /api/messages - Mesajları getir (Admin only)
 export async function GET() {
   try {
@@ -128,11 +132,17 @@ export async function POST(request: Request) {
       const messageText = String(message ?? '');
       const emailAddress = String(email ?? '');
 
-      // Size gönderilecek email (yeni proje talebi bildirimi)
+      const safeName = escapeHtml(String(name ?? ''));
+      const safeEmail = escapeHtml(String(email ?? ''));
+      const safeSubject = escapeHtml(String(subject ?? ''));
+      const safePhone = escapeHtml(String(phone ?? ''));
+      const safeCompany = escapeHtml(String(company ?? ''));
+      const safeMessage = escapeHtml(messageText).replace(/\n/g, '<br>');
+
       const notificationMailOptions = {
         from: process.env.GMAIL_USER,
         to: 'erdem.erciyas@gmail.com',
-        subject: `🚀 Yeni Proje Talebi: ${subject}`,
+        subject: `🚀 Yeni Proje Talebi: ${String(subject ?? '').slice(0, 100)}`,
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f8fafc; border-radius: 12px;">
             <div style="background: linear-gradient(135deg, #0f766e, #0891b2); padding: 30px; border-radius: 12px; margin-bottom: 20px;">
@@ -149,22 +159,22 @@ export async function POST(request: Request) {
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
                 <div>
                   <strong style="color: #374151;">👤 Ad Soyad:</strong>
-                  <p style="color: #6b7280; margin: 5px 0;">${name}</p>
+                  <p style="color: #6b7280; margin: 5px 0;">${safeName}</p>
                 </div>
                 <div>
                   <strong style="color: #374151;">📧 Email:</strong>
-                  <p style="color: #6b7280; margin: 5px 0;">${email}</p>
+                  <p style="color: #6b7280; margin: 5px 0;">${safeEmail}</p>
                 </div>
                 ${phone ? `
                 <div>
                   <strong style="color: #374151;">📞 Telefon:</strong>
-                  <p style="color: #6b7280; margin: 5px 0;">${phone}</p>
+                  <p style="color: #6b7280; margin: 5px 0;">${safePhone}</p>
                 </div>
                 ` : ''}
                 ${company ? `
                 <div>
                   <strong style="color: #374151;">🏢 Şirket:</strong>
-                  <p style="color: #6b7280; margin: 5px 0;">${company}</p>
+                  <p style="color: #6b7280; margin: 5px 0;">${safeCompany}</p>
                 </div>
                 ` : ''}
               </div>
@@ -175,7 +185,7 @@ export async function POST(request: Request) {
               
               <div style="margin-bottom: 15px;">
                 <strong style="color: #374151;">📋 Konu:</strong>
-                <p style="color: #6b7280; margin: 5px 0; font-size: 16px; font-weight: 600;">${subject}</p>
+                <p style="color: #6b7280; margin: 5px 0; font-size: 16px; font-weight: 600;">${safeSubject}</p>
               </div>
               
               <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 20px;">
@@ -196,7 +206,7 @@ export async function POST(request: Request) {
               <div style="margin-bottom: 15px;">
                 <strong style="color: #374151;">💬 Proje Açıklaması:</strong>
                 <div style="background-color: #f1f5f9; padding: 15px; border-radius: 8px; margin-top: 8px; border-left: 4px solid #0891b2;">
-                  ${messageText.replace(/\n/g, '<br>')}
+                  ${safeMessage}
                 </div>
               </div>
               
@@ -216,7 +226,7 @@ export async function POST(request: Request) {
       const autoReplyMailOptions = {
         from: process.env.GMAIL_USER,
         to: emailAddress,
-        subject: `✅ Proje Talebinizi Aldık - ${subject}`,
+        subject: `✅ Proje Talebinizi Aldık - ${String(subject ?? '').slice(0, 100)}`,
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f8fafc; border-radius: 12px;">
             <div style="background: linear-gradient(135deg, #0f766e, #0891b2); padding: 30px; border-radius: 12px; margin-bottom: 20px;">
@@ -227,11 +237,11 @@ export async function POST(request: Request) {
             
             <div style="background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);">
               <p style="color: #374151; font-size: 16px; line-height: 1.6; margin-top: 0;">
-                Merhaba <strong>${name}</strong>,
+                Merhaba <strong>${safeName}</strong>,
               </p>
               
               <p style="color: #374151; font-size: 16px; line-height: 1.6;">
-                <strong>"${subject}"</strong> konulu proje talebiniz tarafımıza başarıyla ulaştı. 
+                <strong>"${safeSubject}"</strong> konulu proje talebiniz tarafımıza başarıyla ulaştı. 
                 Proje detaylarınızı inceleyelim ve size en kısa sürede geri dönüş yapalım.
               </p>
               

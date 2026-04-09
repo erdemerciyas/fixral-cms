@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import Video from "@/models/Video";
-import mongoose from "mongoose";
+import connectDB from "@/lib/mongoose";
 
 export async function POST(req: Request) {
   try {
@@ -11,7 +11,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    await mongoose.connect(process.env.MONGODB_URI!);
+    await connectDB();
 
     const { videoIds } = await req.json();
     

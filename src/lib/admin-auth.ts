@@ -25,33 +25,21 @@ export async function isAdminAuthenticated(_request: NextRequest): Promise<boole
 }
 
 /**
- * Validate theme slug
- */
-export function isValidThemeSlug(slug: string): boolean {
-  // Only allow alphanumeric, hyphens, and underscores
-  const slugRegex = /^[a-z0-9_-]+$/i;
-  return slugRegex.test(slug) && slug.length >= 2 && slug.length <= 50;
-}
-
-/**
- * Validate plugin slug
- */
-export function isValidPluginSlug(slug: string): boolean {
-  // Only allow alphanumeric, hyphens, and underscores
-  const slugRegex = /^[a-z0-9_-]+$/i;
-  return slugRegex.test(slug) && slug.length >= 2 && slug.length <= 50;
-}
-
-/**
  * Sanitize user input
  */
 export function sanitizeInput(input: string): string {
-  return input
-    .trim()
-    .replace(/[<>]/g, '') // Remove angle brackets
-    .replace(/javascript:/gi, '') // Remove javascript: protocol
-    .replace(/on\w+=/gi, '') // Remove event handlers
-    .slice(0, 1000); // Limit length
+  let sanitized = input.trim();
+  let prev;
+  do {
+    prev = sanitized;
+    sanitized = sanitized
+      .replace(/javascript\s*:/gi, '')
+      .replace(/on\w+\s*=/gi, '');
+  } while (sanitized !== prev);
+
+  return sanitized
+    .replace(/[<>]/g, '')
+    .slice(0, 1000);
 }
 
 /**

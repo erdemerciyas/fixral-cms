@@ -24,11 +24,12 @@
     "required": "Este campo es obligatorio.",
     "success": "Operación exitosa.",
     "readMore": "Leer más",
-    "viewAll": "Ver todo"
+    "viewAll": "Ver todo",
+    "explore": "Explorar",
+    "all": "Todos"
   },
   "nav": {
     "home": "Inicio",
-    "products": "Productos",
     "portfolio": "Portafolio",
     "services": "Servicios",
     "news": "Noticias",
@@ -36,8 +37,30 @@
     "login": "Iniciar sesión",
     "register": "Registrarse",
     "logout": "Cerrar sesión",
-    "cart": "Carrito",
-    "account": "Mi cuenta"
+    "account": "Mi cuenta",
+    "videos": "Videos"
+  },
+  "header": {
+    "skipToContent": "Saltar al contenido principal",
+    "openMenu": "Abrir menú",
+    "closeMenu": "Cerrar menú",
+    "search": "Buscar",
+    "searchPlaceholder": "¿Qué estás buscando?",
+    "goToHome": "Ir al inicio",
+    "contact": "Contacto"
+  },
+  "breadcrumb": {
+    "home": "Inicio",
+    "news": "Noticias",
+    "portfolio": "Portafolio",
+    "services": "Servicios",
+    "contact": "Contacto",
+    "videos": "Videos",
+    "account": "Mi cuenta",
+    "login": "Iniciar sesión",
+    "register": "Registrarse",
+    "about": "Acerca de",
+    "offline": "Sin conexión"
   },
   "hero": {
     "title": "Fixral — Soluciones y Servicios Digitales",
@@ -45,30 +68,21 @@
     "cta": "Descubre nuestros servicios",
     "ctaSecondary": "Contáctanos"
   },
-  "products": {
-    "title": "Productos",
-    "search": "Buscar productos...",
-    "sort": {
-      "newest": "Más recientes",
-      "oldest": "Más antiguos",
-      "priceAsc": "Precio (ascendente)",
-      "priceDesc": "Precio (descendente)"
-    },
-    "price": "Precio",
-    "priceRange": "Rango de precios",
-    "apply": "Aplicar",
-    "inStock": "En stock",
-    "outOfStock": "Agotado",
-    "addToCart": "Agregar al carrito",
-    "orderNow": "Pedir ahora",
-    "noProducts": "No se encontraron productos."
-  },
   "news": {
     "title": "Noticias",
+    "pageTitle": "Noticias y Anuncios",
+    "pageDescription": "Sigue las últimas noticias, anuncios de la empresa y actualizaciones del sector.",
     "latest": "Últimas noticias",
     "readMore": "Leer más",
     "noNews": "No se encontraron noticias.",
-    "publishedAt": "Fecha de publicación"
+    "publishedAt": "Fecha de publicación",
+    "searchPlaceholder": "Buscar noticias...",
+    "showAll": "Ver todas las noticias",
+    "noResults": "Sin resultados",
+    "noResultsDescription": "No se encontraron noticias con los criterios seleccionados.",
+    "resultsFound": "{count} resultados encontrados",
+    "forQuery": "para",
+    "inTag": "en la etiqueta"
   },
   "portfolio": {
     "title": "Portafolio",
@@ -76,6 +90,12 @@
     "date": "Fecha de finalización",
     "technologies": "Tecnologías",
     "noPortfolio": "No se encontraron proyectos."
+  },
+  "services": {
+    "title": "Servicios",
+    "pageTitle": "Nuestros Servicios",
+    "pageDescription": "Descubre nuestras soluciones tecnológicas modernas y servicios profesionales",
+    "explore": "Ver servicios"
   },
   "contact": {
     "title": "Contacto",
@@ -103,7 +123,25 @@
   "footer": {
     "rights": "Todos los derechos reservados.",
     "privacyPolicy": "Política de privacidad",
-    "terms": "Términos de uso"
+    "terms": "Términos de uso",
+    "quickLinks": "Enlaces rápidos",
+    "contactTitle": "Contacto",
+    "aboutTitle": "Acerca de",
+    "developer": "Desarrollado por",
+    "backToTop": "Ir arriba",
+    "madeWith": "Made with",
+    "madeIn": "in Turkey"
+  },
+  "pagination": {
+    "previous": "Anterior",
+    "next": "Siguiente",
+    "page": "Página",
+    "of": "/"
+  },
+  "videos": {
+    "title": "Videos",
+    "pageTitle": "Galería de Videos",
+    "noVideos": "No se encontraron videos."
   },
   "meta": {
     "siteName": "Fixral",

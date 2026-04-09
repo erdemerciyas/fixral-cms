@@ -1,23 +1,4 @@
-import mongoose from 'mongoose';
+import { createPrismaModel } from '@/lib/prisma-model-adapter';
+import { prisma } from '@/lib/prisma';
 
-const categorySchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  slug: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  description: {
-    type: String,
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
-
-export default mongoose.models.Category || mongoose.model('Category', categorySchema);
+export default createPrismaModel('Category', prisma.categoryRow);

@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
+import connectDB from '@/lib/mongoose';
 import Portfolio from '@/models/Portfolio';
 
 /**
@@ -10,15 +12,16 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession();
-    
-    if (!session) {
+    const session = await getServerSession(authOptions);
+
+    if (!session || session.user?.role !== 'admin') {
       return NextResponse.json(
         { success: false, error: 'Unauthorized' },
-        { status: 401 }
+        { status: 403 }
       );
     }
 
+    await connectDB();
     const portfolio = await Portfolio.findById(params.id);
 
     if (!portfolio) {
@@ -46,15 +49,16 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession();
-    
-    if (!session) {
+    const session = await getServerSession(authOptions);
+
+    if (!session || session.user?.role !== 'admin') {
       return NextResponse.json(
         { success: false, error: 'Unauthorized' },
-        { status: 401 }
+        { status: 403 }
       );
     }
 
+    await connectDB();
     const body = await req.json();
     const portfolio = await Portfolio.findByIdAndUpdate(
       params.id,
@@ -87,15 +91,16 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession();
-    
-    if (!session) {
+    const session = await getServerSession(authOptions);
+
+    if (!session || session.user?.role !== 'admin') {
       return NextResponse.json(
         { success: false, error: 'Unauthorized' },
-        { status: 401 }
+        { status: 403 }
       );
     }
 
+    await connectDB();
     const portfolio = await Portfolio.findByIdAndDelete(params.id);
 
     if (!portfolio) {

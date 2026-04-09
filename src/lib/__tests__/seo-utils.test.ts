@@ -5,7 +5,6 @@ import {
   generateOgImages,
   getBlogAlternates,
   getPortfolioAlternates,
-  getProductAlternates,
 } from '../seo-utils';
 
 describe('SITE_URL', () => {
@@ -88,9 +87,4 @@ describe('slug-based alternate helpers', () => {
     expect(result.languages['es-ES']).toContain('/es/portfolio/my-project');
   });
 
-  it('getProductAlternates builds symmetric product URLs', () => {
-    const result = getProductAlternates('product-x');
-    expect(result.languages['tr-TR']).toContain('/tr/products/product-x');
-    expect(result.languages['es-ES']).toContain('/es/products/product-x');
-  });
 });

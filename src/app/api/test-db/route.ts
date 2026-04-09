@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import connectDB from '@/lib/mongoose';
-import mongoose from 'mongoose';
+import { prisma } from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 
@@ -15,11 +14,10 @@ export async function GET() {
     }
 
     try {
-        await connectDB();
-        const collections = await mongoose.connection.db!.listCollections().toArray();
-        const collectionNames = collections.map(c => c.name);
+        const tables: { tablename: string }[] = await prisma.$queryRaw`SELECT tablename FROM pg_tables WHERE schemaname='public'`;
+        const tableNames = tables.map(t => t.tablename);
 
-        return NextResponse.json({ collections: collectionNames });
+        return NextResponse.json({ collections: tableNames });
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : 'Unknown error';
         return NextResponse.json({ error: message }, { status: 500 });

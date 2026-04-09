@@ -12,34 +12,20 @@ export async function GET() {
 
     let pages = await PageSetting.find().sort({ order: 1 });
 
-    // Varsayılan sayfalar
+    // Varsayılan sayfalar — yalnızca koleksiyon tamamen boşken seed edilir.
+    // Mevcut kayıtlar varsa admin tarafından silinmiş/düzenlenmiş olabilir, dokunulmaz.
     const defaultPages = [
       { pageId: 'home', title: 'Ana Sayfa', path: '/', description: 'Mühendislik ve 3D tarama hizmetlerimizi keşfedin', icon: 'HomeIcon', isExternal: false, isActive: true, showInNavigation: true, order: 0 },
       { pageId: 'services', title: 'Hizmetler', path: '/services', description: 'Sunduğum profesyonel hizmetleri inceleyin', icon: 'WrenchScrewdriverIcon', isExternal: false, isActive: true, showInNavigation: true, order: 2 },
       { pageId: 'portfolio', title: 'Portfolio', path: '/portfolio', description: 'Tamamladığım projeleri ve çalışmalarımı görün', icon: 'FolderOpenIcon', isExternal: false, isActive: true, showInNavigation: true, order: 3 },
       { pageId: 'videos', title: 'Videolar', path: '/videos', description: 'YouTube kanalımızdaki videoları izleyin', icon: 'FilmIcon', isExternal: false, isActive: true, showInNavigation: true, order: 4 },
       { pageId: 'contact', title: 'İletişim', path: '/contact', description: 'Benimle iletişime geçin ve projelerinizi konuşalım', icon: 'PhoneIcon', isExternal: false, isActive: true, showInNavigation: true, order: 5 },
-      { pageId: 'products', title: 'Ürünler', path: '/products', description: 'Sıfır ve ikinci el ürünlerimizi keşfedin', icon: 'FolderOpenIcon', isExternal: false, isActive: true, showInNavigation: true, order: 6 },
       { pageId: 'news', title: 'Haberler', path: '/haberler', description: 'Güncel haberler ve duyurular', icon: 'NewspaperIcon', isExternal: false, isActive: true, showInNavigation: true, order: 1 },
     ];
 
-    // Kayıt yoksa seed et; varsa eksikleri upsert et
     if (pages.length === 0) {
       pages = await PageSetting.insertMany(defaultPages);
-    } else {
-      const existingById = new Map<string, unknown>(pages.map((p: { pageId: string }) => [p.pageId, p]));
-      const upserts: Promise<unknown>[] = [];
-      for (const def of defaultPages) {
-        if (!existingById.has(def.pageId)) {
-          upserts.push(PageSetting.findOneAndUpdate({ pageId: def.pageId }, def, { new: true, upsert: true }));
-        }
-      }
-      if (upserts.length) await Promise.all(upserts);
-      pages = await PageSetting.find().sort({ order: 1 });
     }
-
-    // Admin listesinde gösterilmeyecek dahili sayfalar
-    pages = pages.filter((p: { pageId: string }) => p.pageId !== 'product-detail');
 
     const response = NextResponse.json(pages);
     response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
@@ -55,9 +41,7 @@ export async function GET() {
       { pageId: 'portfolio', title: 'Portfolio', path: '/portfolio', description: 'Tamamladığım projeleri ve çalışmalarımı görün', icon: 'FolderOpenIcon', isExternal: false, isActive: true, showInNavigation: true, order: 3 },
       { pageId: 'videos', title: 'Videolar', path: '/videos', description: 'YouTube kanalımızdaki videoları izleyin', icon: 'FilmIcon', isExternal: false, isActive: true, showInNavigation: true, order: 4 },
       { pageId: 'contact', title: 'İletişim', path: '/contact', description: 'Benimle iletişime geçin ve projelerinizi konuşalım', icon: 'PhoneIcon', isExternal: false, isActive: true, showInNavigation: true, order: 5 },
-      { pageId: 'products', title: 'Ürünler', path: '/products', description: 'Sıfır ve ikinci el ürünlerimizi keşfedin', icon: 'FolderOpenIcon', isExternal: false, isActive: true, showInNavigation: true, order: 6 },
       { pageId: 'news', title: 'Haberler', path: '/haberler', description: 'Güncel haberler ve duyurular', icon: 'NewspaperIcon', isExternal: false, isActive: true, showInNavigation: true, order: 1 },
-      { pageId: 'product-detail', title: 'Ürün Detayı', path: '/products/[slug]', description: 'Ürün detay sayfası ayarları', icon: 'FolderOpenIcon', isExternal: false, isActive: true, showInNavigation: false, order: 7 },
     ];
     const resp = NextResponse.json(fallbackPages, { status: 200 });
     resp.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');

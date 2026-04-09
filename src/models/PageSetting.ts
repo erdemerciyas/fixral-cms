@@ -1,45 +1,4 @@
-import mongoose from 'mongoose';
+import { createPrismaModel } from '@/lib/prisma-model-adapter';
+import { prisma } from '@/lib/prisma';
 
-const PageSettingSchema = new mongoose.Schema({
-  pageId: {
-    type: String,
-    required: true,
-    unique: true
-  },
-  title: {
-    type: String,
-    required: true
-  },
-  path: {
-    type: String,
-    required: true
-  },
-  icon: {
-    type: String,
-    default: '' // heroicon adı, örn: 'HomeIcon', 'UserIcon'
-  },
-  isExternal: {
-    type: Boolean,
-    default: false
-  },
-  description: {
-    type: String,
-    required: true
-  },
-  isActive: {
-    type: Boolean,
-    default: true
-  },
-  showInNavigation: {
-    type: Boolean,
-    default: true
-  },
-  order: {
-    type: Number,
-    default: 0
-  }
-}, {
-  timestamps: true
-});
-
-export default mongoose.models.PageSetting || mongoose.model('PageSetting', PageSettingSchema);
+export default createPrismaModel('PageSetting', prisma.pageSettingRow);

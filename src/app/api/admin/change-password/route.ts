@@ -1,9 +1,10 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import { connectToDatabase } from '../../../../lib/mongoose';
+import connectDB from '../../../../lib/mongoose';
 import { authOptions } from '../../../../lib/auth';
 import bcrypt from 'bcryptjs';
 import { withSecurity, SecurityConfigs } from '../../../../lib/security-middleware';
+import User from '../../../../models/User';
 
 export const POST = withSecurity(SecurityConfigs.admin)(async (request: Request) => {
   try {
@@ -17,7 +18,6 @@ export const POST = withSecurity(SecurityConfigs.admin)(async (request: Request)
       );
     }
 
-    // Session email (admin) must exist due to middleware; validate defensively
     const email = session?.user?.email as string | undefined;
     if (!email) {
       return NextResponse.json(
@@ -26,11 +26,9 @@ export const POST = withSecurity(SecurityConfigs.admin)(async (request: Request)
       );
     }
 
-    // Veritabanı bağlantısı
-    const { db } = await connectToDatabase();
+    await connectDB();
 
-    // Admin kullanıcısını bul
-    const admin = await db.collection('users').findOne({ email });
+    const admin = await User.findOne({ email });
 
     if (!admin) {
       return NextResponse.json(
@@ -39,11 +37,9 @@ export const POST = withSecurity(SecurityConfigs.admin)(async (request: Request)
       );
     }
 
-    // Yeni şifreyi hashle
     const hashedPassword = await bcrypt.hash(newPassword, 12);
 
-    // Şifreyi güncelle
-    await db.collection('users').updateOne(
+    await User.updateOne(
       { email },
       { $set: { password: hashedPassword } }
     );

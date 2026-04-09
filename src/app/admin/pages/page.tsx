@@ -5,19 +5,34 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { Reorder, useDragControls } from 'framer-motion';
 import {
-  DocumentTextIcon,
-  PlusIcon,
-  MagnifyingGlassIcon,
-  PencilIcon,
-  TrashIcon,
-  CheckCircleIcon,
-  XCircleIcon,
-  Bars3Icon,
-  XMarkIcon
-} from '@heroicons/react/24/outline';
-import toast from 'react-hot-toast';
-import Swal from 'sweetalert2';
+  FileText,
+  Plus,
+  Search,
+  Pencil,
+  Trash2,
+  CheckCircle,
+  XCircle,
+  Menu,
+  X
+} from 'lucide-react';
+import { toast } from 'sonner';
+import { useConfirm } from '@/hooks/use-confirm';
 import { resolveIcon, availableIcons } from '@/lib/icons';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface PageItem {
   _id: string;
@@ -34,8 +49,9 @@ interface PageItem {
 }
 
 export default function AdminPagesPage() {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const router = useRouter();
+  const { confirm } = useConfirm();
   const [loading, setLoading] = useState(true);
   const [pages, setPages] = useState<PageItem[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -67,7 +83,10 @@ export default function AdminPagesPage() {
 
   const loadPages = async () => {
     try {
-      const response = await fetch('/api/admin/pages');
+      const response = await fetch('/api/admin/pages', {
+        cache: 'no-store',
+        headers: { 'Cache-Control': 'no-cache' },
+      });
       if (response.ok) {
         const data = await response.json();
         setPages(data);
@@ -148,18 +167,12 @@ export default function AdminPagesPage() {
   };
 
   const handleDelete = async (pageId: string) => {
-    const result = await Swal.fire({
+    const confirmed = await confirm({
       title: 'Emin misiniz?',
-      text: "Bu sayfayı silmek istediğinizden emin misiniz?",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Evet, sil!',
-      cancelButtonText: 'Vazgeç'
+      description: 'Bu sayfayı silmek istediğinizden emin misiniz?',
     });
 
-    if (!result.isConfirmed) return;
+    if (!confirmed) return;
 
     try {
       const response = await fetch(`/api/admin/pages/${pageId}`, {
@@ -246,13 +259,19 @@ export default function AdminPagesPage() {
 
   if (status === 'loading' || loading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="flex flex-col items-center space-y-4">
-          <div className="relative">
-            <div className="w-16 h-16 border-4 border-indigo-200 rounded-full"></div>
-            <div className="absolute top-0 left-0 w-16 h-16 border-4 border-transparent border-t-indigo-600 rounded-full animate-spin"></div>
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div className="space-y-2">
+            <Skeleton className="h-8 w-48" />
+            <Skeleton className="h-4 w-64" />
           </div>
-          <p className="text-lg font-medium text-slate-600">Sayfalar yükleniyor...</p>
+          <Skeleton className="h-10 w-32" />
+        </div>
+        <Skeleton className="h-12 w-full rounded-xl" />
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <Skeleton key={i} className="h-32 rounded-xl" />
+          ))}
         </div>
       </div>
     );
@@ -263,72 +282,92 @@ export default function AdminPagesPage() {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Sayfalar</h1>
-          <p className="text-slate-500 mt-1">Site sayfalarınızı yönetin</p>
+          <h1 className="text-2xl font-bold text-foreground">Sayfalar</h1>
+          <p className="text-muted-foreground mt-1">Site sayfalarınızı yönetin</p>
         </div>
         <div className="flex gap-3">
           {hasReordered && (
-            <button
+            <Button
+              variant="default"
               onClick={saveOrder}
               disabled={savingOrder}
-              className="inline-flex items-center px-6 py-3 bg-emerald-600 text-white font-semibold rounded-xl hover:bg-emerald-700 transition-all duration-200 disabled:opacity-50"
+              className="h-auto rounded-xl px-6 py-3 bg-emerald-600 text-primary-foreground hover:bg-emerald-700"
             >
               {savingOrder ? (
-                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2" />
+                <div className="mr-2 size-5 animate-spin rounded-full border-2 border-primary-foreground/30 border-t-primary-foreground" />
               ) : (
-                <CheckCircleIcon className="w-5 h-5 mr-2" />
+                <CheckCircle className="mr-2 size-5" />
               )}
               Sıralamayı Kaydet
-            </button>
+            </Button>
           )}
-          <button className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-200">
-            <PlusIcon className="w-5 h-5 mr-2" />
+          <Button
+            size="lg"
+            className="h-auto rounded-xl px-6 py-3 font-semibold shadow-none hover:shadow-lg hover:shadow-primary/30"
+          >
+            <Plus className="size-5" />
             Sayfa Oluştur
-          </button>
+          </Button>
         </div>
       </div>
 
       {/* Search and Filter Bar */}
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200/60 p-4">
+      <Card className="shadow-sm">
+        <CardContent className="p-4">
         <div className="flex flex-col sm:flex-row gap-4">
-          <div className="flex-1 relative">
-            <MagnifyingGlassIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-            <input
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" />
+            <Input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Sayfa ara..."
-              className="w-full pl-12 pr-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+              className="h-auto rounded-xl py-3 pl-11 pr-4 focus-visible:ring-primary"
             />
           </div>
-          <div className="flex space-x-2 bg-slate-100 p-1 rounded-xl">
-            <button
+          <div className="flex space-x-2 rounded-xl bg-muted p-1">
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
               onClick={() => setStatusFilter('all')}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${statusFilter === 'all'
-                ? 'bg-white text-indigo-600 shadow-sm'
-                : 'text-slate-600 hover:text-slate-900'
-                }`}
+              className={cn(
+                'rounded-lg font-medium',
+                statusFilter === 'all'
+                  ? 'bg-card text-primary shadow-sm hover:bg-card hover:text-primary'
+                  : 'text-muted-foreground hover:text-foreground'
+              )}
             >
               Tümü ({pages.length})
-            </button>
-            <button
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
               onClick={() => setStatusFilter('published')}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${statusFilter === 'published'
-                ? 'bg-white text-indigo-600 shadow-sm'
-                : 'text-slate-600 hover:text-slate-900'
-                }`}
+              className={cn(
+                'rounded-lg font-medium',
+                statusFilter === 'published'
+                  ? 'bg-card text-primary shadow-sm hover:bg-card hover:text-primary'
+                  : 'text-muted-foreground hover:text-foreground'
+              )}
             >
               Aktif ({pages.filter(p => p.isActive).length})
-            </button>
-            <button
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
               onClick={() => setStatusFilter('draft')}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${statusFilter === 'draft'
-                ? 'bg-white text-indigo-600 shadow-sm'
-                : 'text-slate-600 hover:text-slate-900'
-                }`}
+              className={cn(
+                'rounded-lg font-medium',
+                statusFilter === 'draft'
+                  ? 'bg-card text-primary shadow-sm hover:bg-card hover:text-primary'
+                  : 'text-muted-foreground hover:text-foreground'
+              )}
             >
               Pasif ({pages.filter(p => !p.isActive).length})
-            </button>
+            </Button>
           </div>
         </div>
         {!isReorderEnabled && (
@@ -337,13 +376,15 @@ export default function AdminPagesPage() {
             Sıralama yapmak için filtreleri temizleyin (Arama yaparken sıralama devre dışıdır)
           </div>
         )}
-      </div>
+        </CardContent>
+      </Card>
 
       {/* Pages List */}
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200/60 overflow-hidden">
+      <Card className="overflow-hidden shadow-sm">
+        <CardContent className="p-0">
         {filteredPages.length > 0 ? (
           isReorderEnabled ? (
-            <Reorder.Group axis="y" values={filteredPages} onReorder={handleReorder} className="divide-y divide-slate-200">
+            <Reorder.Group axis="y" values={filteredPages} onReorder={handleReorder} className="divide-y divide-border">
               {filteredPages.map((page) => (
                 <DraggablePageItem
                   key={page._id}
@@ -356,7 +397,7 @@ export default function AdminPagesPage() {
               ))}
             </Reorder.Group>
           ) : (
-            <div className="divide-y divide-slate-200">
+            <div className="divide-y divide-border">
               {filteredPages.map((page) => (
                 <PageListItem
                   key={page._id}
@@ -372,9 +413,9 @@ export default function AdminPagesPage() {
           )
         ) : (
           <div className="text-center py-16">
-            <DocumentTextIcon className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-slate-900 mb-2">Sayfa bulunamadı</h3>
-            <p className="text-slate-500">
+            <FileText className="w-16 h-16 text-muted-foreground/50 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-foreground mb-2">Sayfa bulunamadı</h3>
+            <p className="text-muted-foreground">
               {searchQuery || statusFilter !== 'all'
                 ? 'Aramanızı veya filtrenizi değiştirmeyi deneyin'
                 : 'Sayfalar Site Ayarları sayfasından yönetilir'
@@ -382,127 +423,130 @@ export default function AdminPagesPage() {
             </p>
           </div>
         )}
-      </div>
+        </CardContent>
+      </Card>
 
       {/* Edit Modal */}
-      {isEditModalOpen && (
-        <div className="fixed inset-0 z-50 overflow-y-auto">
-          <div className="flex min-h-full items-center justify-center p-4">
-            <div className="fixed inset-0 bg-black/30 backdrop-blur-sm" onClick={() => setIsEditModalOpen(false)} />
-            <div className="relative w-full max-w-lg rounded-2xl bg-white p-8 shadow-2xl">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold text-slate-900">Sayfa Düzenle</h3>
-                <button onClick={() => setIsEditModalOpen(false)} className="text-slate-400 hover:text-slate-600">
-                  <XMarkIcon className="w-6 h-6" />
-                </button>
-              </div>
+      <Dialog
+        open={isEditModalOpen}
+        onOpenChange={(open) => {
+          setIsEditModalOpen(open);
+          if (!open) setEditingPage(null);
+        }}
+      >
+        <DialogContent className="max-w-lg rounded-xl p-8 sm:rounded-xl">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold">Sayfa Düzenle</DialogTitle>
+          </DialogHeader>
 
-              <form onSubmit={handleEditSubmit} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Başlık</label>
-                  <input
-                    type="text"
-                    value={editForm.title}
-                    onChange={(e) => setEditForm({ ...editForm, title: e.target.value })}
-                    className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Yol (Path)</label>
-                  <input
-                    type="text"
-                    value={editForm.path}
-                    onChange={(e) => setEditForm({ ...editForm, path: e.target.value })}
-                    className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Açıklama</label>
-                  <textarea
-                    value={editForm.description}
-                    onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
-                    className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    rows={3}
-                    required
-                  />
-                </div>
-                {/* Icon Picker */}
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">İkon</label>
-                  <div className="grid grid-cols-5 gap-2">
-                    {/* No icon option */}
-                    <button
-                      type="button"
-                      onClick={() => setEditForm({ ...editForm, icon: '' })}
-                      className={`flex flex-col items-center justify-center p-2 rounded-lg border-2 transition-all text-xs ${
-                        !editForm.icon
-                          ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
-                          : 'border-slate-200 text-slate-400 hover:border-slate-300 hover:bg-slate-50'
-                      }`}
-                      title="İkon yok"
-                    >
-                      <XMarkIcon className="w-5 h-5 mb-0.5" />
-                      <span>Yok</span>
-                    </button>
-                    {availableIcons.map((iconItem) => {
-                      const IconComp = resolveIcon(iconItem.name);
-                      if (!IconComp) return null;
-                      const isSelected = editForm.icon === iconItem.name;
-                      return (
-                        <button
-                          key={iconItem.name}
-                          type="button"
-                          onClick={() => setEditForm({ ...editForm, icon: iconItem.name })}
-                          className={`flex flex-col items-center justify-center p-2 rounded-lg border-2 transition-all text-xs ${
-                            isSelected
-                              ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
-                              : 'border-slate-200 text-slate-500 hover:border-slate-300 hover:bg-slate-50'
-                          }`}
-                          title={iconItem.label}
-                        >
-                          <IconComp className="w-5 h-5 mb-0.5" />
-                          <span className="truncate w-full text-center">{iconItem.label}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                <div className="flex items-center">
-                  <input
-                    type="checkbox"
-                    id="showInNav"
-                    checked={editForm.showInNavigation}
-                    onChange={(e) => setEditForm({ ...editForm, showInNavigation: e.target.checked })}
-                    className="w-4 h-4 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500"
-                  />
-                  <label htmlFor="showInNav" className="ml-2 text-sm text-slate-700">
-                    Menüde Göster
-                  </label>
-                </div>
-
-                <div className="flex justify-end gap-3 mt-6">
-                  <button
-                    type="button"
-                    onClick={() => setIsEditModalOpen(false)}
-                    className="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
-                  >
-                    İptal
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
-                  >
-                    Kaydet
-                  </button>
-                </div>
-              </form>
+          <form onSubmit={handleEditSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="edit-title">Başlık</Label>
+              <Input
+                id="edit-title"
+                type="text"
+                value={editForm.title}
+                onChange={(e) => setEditForm({ ...editForm, title: e.target.value })}
+                className="rounded-lg focus-visible:ring-primary/50"
+                required
+              />
             </div>
-          </div>
-        </div>
-      )}
+            <div className="space-y-2">
+              <Label htmlFor="edit-path">Yol (Path)</Label>
+              <Input
+                id="edit-path"
+                type="text"
+                value={editForm.path}
+                onChange={(e) => setEditForm({ ...editForm, path: e.target.value })}
+                className="rounded-lg focus-visible:ring-primary/50"
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-description">Açıklama</Label>
+              <Textarea
+                id="edit-description"
+                value={editForm.description}
+                onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
+                className="rounded-lg focus-visible:ring-primary/50"
+                rows={3}
+                required
+              />
+            </div>
+            {/* Icon Picker */}
+            <div className="space-y-2">
+              <Label>İkon</Label>
+              <div className="grid grid-cols-5 gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setEditForm({ ...editForm, icon: '' })}
+                  className={cn(
+                    'flex h-auto flex-col gap-0.5 rounded-lg border-2 p-2 text-xs font-normal',
+                    !editForm.icon
+                      ? 'border-primary bg-primary/10 text-primary hover:bg-primary/10 hover:text-primary'
+                      : 'border-border text-muted-foreground hover:border-border hover:bg-muted/50'
+                  )}
+                  title="İkon yok"
+                >
+                  <X className="size-5" />
+                  <span>Yok</span>
+                </Button>
+                {availableIcons.map((iconItem) => {
+                  const IconComp = resolveIcon(iconItem.name);
+                  if (!IconComp) return null;
+                  const isSelected = editForm.icon === iconItem.name;
+                  return (
+                    <Button
+                      key={iconItem.name}
+                      type="button"
+                      variant="outline"
+                      onClick={() => setEditForm({ ...editForm, icon: iconItem.name })}
+                      className={cn(
+                        'flex h-auto flex-col gap-0.5 rounded-lg border-2 p-2 text-xs font-normal',
+                        isSelected
+                          ? 'border-primary bg-primary/10 text-primary hover:bg-primary/10 hover:text-primary'
+                          : 'border-border text-muted-foreground hover:border-border hover:bg-muted/50'
+                      )}
+                      title={iconItem.label}
+                    >
+                      <IconComp className="size-5" />
+                      <span className="w-full truncate text-center">{iconItem.label}</span>
+                    </Button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <Checkbox
+                id="showInNav"
+                checked={editForm.showInNavigation}
+                onCheckedChange={(checked) =>
+                  setEditForm({ ...editForm, showInNavigation: checked === true })
+                }
+              />
+              <Label htmlFor="showInNav" className="text-sm font-normal">
+                Menüde Göster
+              </Label>
+            </div>
+
+            <DialogFooter className="mt-6 gap-3 sm:gap-3">
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={() => {
+                  setIsEditModalOpen(false);
+                  setEditingPage(null);
+                }}
+              >
+                İptal
+              </Button>
+              <Button type="submit">Kaydet</Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
@@ -511,9 +555,9 @@ export default function AdminPagesPage() {
 function PageIconDisplay({ page }: { page: PageItem }) {
   const IconComp = page.icon ? resolveIcon(page.icon) : null;
   if (IconComp) {
-    return <IconComp className="w-5 h-5 text-white" />;
+    return <IconComp className="size-5 text-primary-foreground" />;
   }
-  return <DocumentTextIcon className="w-5 h-5 text-white" />;
+  return <FileText className="size-5 text-primary-foreground" />;
 }
 
 // Draggable Page Item with specific drag controls
@@ -537,26 +581,26 @@ function DraggablePageItem({
       value={page}
       dragListener={false}
       dragControls={dragControls}
-      className="bg-white"
+      className="bg-card"
     >
-      <div className="flex items-center justify-between px-6 py-4 hover:bg-slate-50 transition-colors group">
+      <div className="flex items-center justify-between px-6 py-4 hover:bg-muted/50 transition-colors group">
         <div className="flex items-center space-x-4 flex-1 min-w-0">
           {/* Specific Drag Handle */}
           <div
             onPointerDown={(e) => dragControls.start(e)}
-            className="cursor-grab active:cursor-grabbing text-slate-400 hover:text-slate-600 p-1"
+            className="cursor-grab p-1 text-muted-foreground hover:text-foreground active:cursor-grabbing"
           >
-            <Bars3Icon className="w-5 h-5" />
+            <Menu className="w-5 h-5" />
           </div>
 
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center flex-shrink-0">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/80 to-primary flex items-center justify-center flex-shrink-0">
             <PageIconDisplay page={page} />
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="text-sm font-semibold text-slate-900 group-hover:text-indigo-600 transition-colors truncate">
+            <h3 className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors truncate">
               {page.title}
             </h3>
-            <div className="flex items-center space-x-3 mt-1 text-xs text-slate-500">
+            <div className="flex items-center space-x-3 mt-1 text-xs text-muted-foreground">
               <button
                 onClick={() => onStatusToggle(page)}
                 className={`inline-flex items-center px-2 py-0.5 rounded-full font-medium transition-colors cursor-pointer ${page.isActive
@@ -566,12 +610,12 @@ function DraggablePageItem({
               >
                 {page.isActive ? (
                   <>
-                    <CheckCircleIcon className="w-3 h-3 mr-1" />
+                    <CheckCircle className="w-3 h-3 mr-1" />
                     Aktif
                   </>
                 ) : (
                   <>
-                    <XCircleIcon className="w-3 h-3 mr-1" />
+                    <XCircle className="w-3 h-3 mr-1" />
                     Pasif
                   </>
                 )}
@@ -585,21 +629,27 @@ function DraggablePageItem({
           </div>
         </div>
         <div className="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
-          <span className="text-xs text-slate-500 mr-2">
+          <span className="text-xs text-muted-foreground mr-2">
             {formatDate(page.updatedAt)}
           </span>
-          <button
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
             onClick={() => onEdit(page)}
-            className="p-2 hover:bg-indigo-100 rounded-lg transition-colors"
+            className="rounded-lg hover:bg-primary/10"
           >
-            <PencilIcon className="w-4 h-4 text-slate-600" />
-          </button>
-          <button
+            <Pencil className="size-4 text-muted-foreground" />
+          </Button>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
             onClick={() => onDelete(page._id)}
-            className="p-2 hover:bg-red-100 rounded-lg transition-colors"
+            className="rounded-lg hover:bg-red-100"
           >
-            <TrashIcon className="w-4 h-4 text-slate-600" />
-          </button>
+            <Trash2 className="size-4 text-muted-foreground" />
+          </Button>
         </div>
       </div>
     </Reorder.Item>
@@ -623,22 +673,22 @@ function PageListItem({
   isDraggable: boolean
 }) {
   return (
-    <div className="flex items-center justify-between px-6 py-4 hover:bg-slate-50 transition-colors group">
+    <div className="flex items-center justify-between px-6 py-4 hover:bg-muted/50 transition-colors group">
       <div className="flex items-center space-x-4 flex-1 min-w-0">
         {isDraggable && (
-          <div className="text-slate-300 p-1">
+          <div className="text-muted-foreground/50 p-1">
             {/* Disabled drag handle visual */}
-            <Bars3Icon className="w-5 h-5" />
+            <Menu className="w-5 h-5" />
           </div>
         )}
-        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center flex-shrink-0">
+        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/80 to-primary flex items-center justify-center flex-shrink-0">
           <PageIconDisplay page={page} />
         </div>
         <div className="flex-1 min-w-0">
-          <h3 className="text-sm font-semibold text-slate-900 group-hover:text-indigo-600 transition-colors truncate">
+          <h3 className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors truncate">
             {page.title}
           </h3>
-          <div className="flex items-center space-x-3 mt-1 text-xs text-slate-500">
+          <div className="flex items-center space-x-3 mt-1 text-xs text-muted-foreground">
             <button
               onClick={() => onStatusToggle(page)}
               className={`inline-flex items-center px-2 py-0.5 rounded-full font-medium transition-colors cursor-pointer ${page.isActive
@@ -648,12 +698,12 @@ function PageListItem({
             >
               {page.isActive ? (
                 <>
-                  <CheckCircleIcon className="w-3 h-3 mr-1" />
+                  <CheckCircle className="w-3 h-3 mr-1" />
                   Aktif
                 </>
               ) : (
                 <>
-                  <XCircleIcon className="w-3 h-3 mr-1" />
+                  <XCircle className="w-3 h-3 mr-1" />
                   Pasif
                 </>
               )}
@@ -667,21 +717,27 @@ function PageListItem({
         </div>
       </div>
       <div className="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
-        <span className="text-xs text-slate-500 mr-2">
+        <span className="text-xs text-muted-foreground mr-2">
           {formatDate(page.updatedAt)}
         </span>
-        <button
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
           onClick={() => onEdit(page)}
-          className="p-2 hover:bg-indigo-100 rounded-lg transition-colors"
+          className="rounded-lg hover:bg-primary/10"
         >
-          <PencilIcon className="w-4 h-4 text-slate-600" />
-        </button>
-        <button
+          <Pencil className="size-4 text-muted-foreground" />
+        </Button>
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
           onClick={() => onDelete(page._id)}
-          className="p-2 hover:bg-red-100 rounded-lg transition-colors"
+          className="rounded-lg hover:bg-red-100"
         >
-          <TrashIcon className="w-4 h-4 text-slate-600" />
-        </button>
+          <Trash2 className="size-4 text-muted-foreground" />
+        </Button>
       </div>
     </div>
   );

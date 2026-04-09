@@ -43,7 +43,7 @@ export const getPortfolioItems = cache(async (limit = 6) => {
         console.log('Fetching portfolio items with limit:', limit);
 
         const items = await Portfolio.find({ isActive: true })
-            .sort({ completionDate: -1 })
+            .sort({ createdAt: -1 })
             .limit(limit)
             .populate({
                 path: 'categoryIds',

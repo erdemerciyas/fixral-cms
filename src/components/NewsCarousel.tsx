@@ -92,7 +92,7 @@ export default function NewsCarousel({
   }
 
   const getTranslation = (item: NewsItem) => {
-    return item.translations[language] || item.translations.tr;
+    return item.translations?.[language] || item.translations?.tr || { title: '', excerpt: '', content: '' };
   };
 
   const getNewsUrl = (slug: string) => {
@@ -143,8 +143,8 @@ export default function NewsCarousel({
                   {/* Image Container */}
                   <div className="relative w-full h-48 overflow-hidden bg-gray-200">
                     <Image
-                      src={item.featuredImage.url}
-                      alt={item.featuredImage.altText}
+                      src={item.featuredImage?.url || '/images/placeholder.jpg'}
+                      alt={item.featuredImage?.altText || translation.title || ''}
                       fill
                       className="object-cover hover:scale-105 transition-transform duration-300"
                       sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"

@@ -4,14 +4,15 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import {
-  ChartBarIcon,
-  ClockIcon,
-  ServerIcon,
-  CheckCircleIcon,
-  XCircleIcon,
-  ArrowTrendingUpIcon,
-  ArrowTrendingDownIcon
-} from '@heroicons/react/24/outline';
+  BarChart,
+  Clock,
+  Server,
+  CheckCircle,
+  XCircle,
+  TrendingUp,
+  TrendingDown
+} from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface SystemMetric {
   name: string;
@@ -78,32 +79,38 @@ export default function AdminMonitoringPage() {
       case 'error':
         return 'bg-red-100 text-red-700 border-red-200';
       default:
-        return 'bg-slate-100 text-slate-700 border-slate-200';
+        return 'bg-muted text-foreground border-border';
     }
   };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'operational':
-        return CheckCircleIcon;
+        return CheckCircle;
       case 'warning':
-        return ClockIcon;
+        return Clock;
       case 'error':
-        return XCircleIcon;
+        return XCircle;
       default:
-        return ServerIcon;
+        return Server;
     }
   };
 
   if (status === 'loading' || loading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="flex flex-col items-center space-y-4">
-          <div className="relative">
-            <div className="w-16 h-16 border-4 border-indigo-200 rounded-full"></div>
-            <div className="absolute top-0 left-0 w-16 h-16 border-4 border-transparent border-t-indigo-600 rounded-full animate-spin"></div>
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div className="space-y-2">
+            <Skeleton className="h-8 w-48" />
+            <Skeleton className="h-4 w-64" />
           </div>
-          <p className="text-lg font-medium text-slate-600">Loading monitoring data...</p>
+          <Skeleton className="h-10 w-32" />
+        </div>
+        <Skeleton className="h-12 w-full rounded-xl" />
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <Skeleton key={i} className="h-32 rounded-xl" />
+          ))}
         </div>
       </div>
     );
@@ -113,19 +120,19 @@ export default function AdminMonitoringPage() {
     <div className="space-y-6">
       {/* Page Header */}
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">System Monitoring</h1>
-        <p className="text-slate-500 mt-1">Real-time system health and performance metrics</p>
+        <h1 className="text-2xl font-bold text-foreground">System Monitoring</h1>
+        <p className="text-muted-foreground mt-1">Real-time system health and performance metrics</p>
       </div>
 
       {/* System Status Overview */}
-      <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-2xl p-6 border border-emerald-200">
+      <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl p-6 border border-emerald-200">
         <div className="flex items-center space-x-4">
           <div className="w-12 h-12 rounded-xl bg-emerald-500 flex items-center justify-center">
-            <CheckCircleIcon className="w-6 h-6 text-white" />
+            <CheckCircle className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-slate-900">System Status</h3>
-            <p className="text-sm text-slate-600">All systems operational</p>
+            <h3 className="text-lg font-semibold text-foreground">System Status</h3>
+            <p className="text-sm text-muted-foreground">All systems operational</p>
           </div>
         </div>
       </div>
@@ -135,7 +142,7 @@ export default function AdminMonitoringPage() {
         {metrics.map((metric) => (
           <div
             key={metric.name}
-            className={`bg-white rounded-2xl shadow-sm border-2 p-6 hover:shadow-lg transition-all duration-300 ${getStatusColor(metric.status)}`}
+            className={`bg-card rounded-xl shadow-sm border-2 p-6 hover:shadow-lg transition-all duration-300 ${getStatusColor(metric.status)}`}
           >
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-center space-x-3">
@@ -146,7 +153,7 @@ export default function AdminMonitoringPage() {
                 }`}>
                   <metric.icon className="w-5 h-5 text-white" />
                 </div>
-                <h3 className="text-base font-semibold text-slate-900">
+                <h3 className="text-base font-semibold text-foreground">
                   {metric.name}
                 </h3>
               </div>
@@ -155,18 +162,18 @@ export default function AdminMonitoringPage() {
                   metric.change >= 0 ? 'text-emerald-600' : 'text-red-600'
                 }`}>
                   {metric.change >= 0 ? (
-                    <ArrowTrendingUpIcon className="w-4 h-4" />
+                    <TrendingUp className="w-4 h-4" />
                   ) : (
-                    <ArrowTrendingDownIcon className="w-4 h-4" />
+                    <TrendingDown className="w-4 h-4" />
                   )}
                   <span>{Math.abs(metric.change)}%</span>
                 </div>
               )}
             </div>
-            <p className="text-2xl font-bold text-slate-900">
+            <p className="text-2xl font-bold text-foreground">
               {metric.value}
             </p>
-            <p className="text-sm text-slate-500 capitalize">
+            <p className="text-sm text-muted-foreground capitalize">
               {metric.status}
             </p>
           </div>
@@ -174,16 +181,16 @@ export default function AdminMonitoringPage() {
       </div>
 
       {/* Activity Logs */}
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200/60 overflow-hidden">
-        <div className="px-6 py-4 border-b border-slate-200">
-          <h2 className="text-lg font-bold text-slate-900">Recent Activity</h2>
+      <div className="bg-card rounded-xl shadow-sm border border-border/60 overflow-hidden">
+        <div className="px-6 py-4 border-b border-border">
+          <h2 className="text-lg font-bold text-foreground">Recent Activity</h2>
         </div>
-        <div className="divide-y divide-slate-200">
+        <div className="divide-y divide-border">
           {logs.length > 0 ? (
             logs.slice(0, 10).map((log) => (
               <div
                 key={log.id}
-                className="px-6 py-4 hover:bg-slate-50 transition-colors"
+                className="px-6 py-4 hover:bg-muted/50 transition-colors"
               >
                 <div className="flex items-start space-x-4">
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
@@ -191,15 +198,15 @@ export default function AdminMonitoringPage() {
                     log.status === 'error' ? 'bg-red-500' :
                     'bg-amber-500'
                   }`}>
-                    {log.status === 'success' && <CheckCircleIcon className="w-4 h-4 text-white" />}
-                    {log.status === 'error' && <XCircleIcon className="w-4 h-4 text-white" />}
-                    {log.status === 'warning' && <ClockIcon className="w-4 h-4 text-white" />}
+                    {log.status === 'success' && <CheckCircle className="w-4 h-4 text-white" />}
+                    {log.status === 'error' && <XCircle className="w-4 h-4 text-white" />}
+                    {log.status === 'warning' && <Clock className="w-4 h-4 text-white" />}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-slate-900">
+                    <p className="text-sm font-medium text-foreground">
                       {log.action}
                     </p>
-                    <p className="text-xs text-slate-500 mt-1">
+                    <p className="text-xs text-muted-foreground mt-1">
                       {new Date(log.timestamp).toLocaleString()}
                     </p>
                   </div>
@@ -208,9 +215,9 @@ export default function AdminMonitoringPage() {
             ))
           ) : (
             <div className="text-center py-16">
-              <ChartBarIcon className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-slate-900 mb-2">No activity logs</h3>
-              <p className="text-slate-500">
+              <BarChart className="w-16 h-16 text-muted-foreground/50 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-foreground mb-2">No activity logs</h3>
+              <p className="text-muted-foreground">
                 Activity will appear here once your system starts logging events
               </p>
             </div>

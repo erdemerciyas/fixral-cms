@@ -21,6 +21,7 @@ jspm_packages/
 
 # next.js
 /.next/
+**/.next/
 /out/
 
 # production
@@ -90,3 +91,13 @@ temp_commit_message.txt
 
 # Bundle analysis output
 analyze.log
+
+# Build output logs
+build_output*.txt
+
+# Zip archives
+*.zip
+
+# Lint output artifacts
+lint_output_current.txt
+lint_results.txt

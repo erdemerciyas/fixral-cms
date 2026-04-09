@@ -64,7 +64,7 @@ class ConfigManager {
       CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
       CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
       OPENAI_API_KEY: process.env.OPENAI_API_KEY,
-      APP_NAME: process.env.APP_NAME || 'Personal Blog',
+      APP_NAME: process.env.APP_NAME || 'Fixral CMS',
       APP_URL: process.env.APP_URL || process.env.NEXTAUTH_URL,
       FREE_SHIPPING_THRESHOLD: process.env.FREE_SHIPPING_THRESHOLD,
       RATE_LIMIT_MAX: process.env.RATE_LIMIT_MAX,
@@ -158,7 +158,7 @@ class ConfigManager {
       CLOUDINARY_API_KEY: '',
       CLOUDINARY_API_SECRET: '',
       OPENAI_API_KEY: '',
-      APP_NAME: 'Personal Blog',
+      APP_NAME: 'Fixral CMS',
       APP_URL: typeof window !== 'undefined' ? window.location.origin : '',
       RATE_LIMIT_MAX: '100',
       RATE_LIMIT_WINDOW: '900000',
@@ -226,7 +226,7 @@ class ConfigManager {
 
   get app() {
     return {
-      name: this.config.APP_NAME || 'Personal Blog',
+      name: this.config.APP_NAME || 'Fixral CMS',
       url: this.config.APP_URL || this.config.NEXTAUTH_URL,
       freeShippingThreshold: Number(this.config.FREE_SHIPPING_THRESHOLD) || 1500,
     };

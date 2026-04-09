@@ -11,7 +11,6 @@ function prettify(segment: string) {
   if (label === 'services') label = 'Hizmetler';
   if (label === 'about') label = 'Hakkımda';
   if (label === 'contact') label = 'İletişim';
-  if (label === 'products') label = 'Ürünler';
   if (label === 'admin') label = 'Yönetim Paneli';
   if (label === 'haberler') label = 'Haberler';
   if (label === 'noticias') label = 'Noticias';

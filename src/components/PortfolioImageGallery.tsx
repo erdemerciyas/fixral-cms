@@ -23,6 +23,7 @@ interface PortfolioImageGalleryProps {
   disabled?: boolean;
   maxSize?: number; // MB cinsinden
   pageContext?: string;
+  allowedMediaTypes?: string[];
 }
 
 // interface ImageItem {
@@ -37,8 +38,10 @@ const PortfolioImageGallery: React.FC<PortfolioImageGalleryProps> = ({
   onCoverImageChange,
   disabled = false,
   maxSize = 10,
-  pageContext = 'portfolio'
+  pageContext = 'portfolio',
+  allowedMediaTypes,
 }) => {
+  const mediaTypes = allowedMediaTypes || ['image/'];
   const [uploading, setUploading] = useState(false);
   // const [dragOver, setDragOver] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -424,14 +427,13 @@ const PortfolioImageGallery: React.FC<PortfolioImageGalleryProps> = ({
         onClose={() => setMediaModalOpen(false)}
         onSelect={handleMediaSelect}
         onUploadNew={() => {
-          console.log('onUploadNew çağrıldı - PortfolioImageGallery');
-          // Dosya seçim input'unu tetikle ama modal'ı kapatma
           fileInputRef.current?.click();
         }}
-        allowedTypes={["image/"]}
+        allowedTypes={mediaTypes}
         allowMultipleSelect={true}
         pageContext={pageContext}
         variant="fullscreen"
+        enableInlineUpload={true}
       />
     </div>
   );

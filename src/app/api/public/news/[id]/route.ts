@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
 import connectDB from '@/lib/mongoose';
 import News from '@/models/News';
 import { ApiResponse, UpdateNewsInput } from '@/types/news';
@@ -47,7 +48,7 @@ export async function GET(
     }
 
     // Check if user has permission to view draft articles
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
     if (news.status === 'draft' && !session) {
       return NextResponse.json(
         {
@@ -115,7 +116,7 @@ export async function PUT(
 ) {
   try {
     // Check authentication
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
     if (!session || !session.user) {
       return NextResponse.json(
         {
@@ -154,53 +155,69 @@ export async function PUT(
       );
     }
 
-    // Update fields
     const updateData: UpdateNewsInput = body;
+    const updateFields: Record<string, any> = {};
 
     if (updateData.translations) {
-      // translations is a Mongoose Map - use set() for each language
-      const newTrans = updateData.translations as Record<string, any>;
-      for (const [langCode, value] of Object.entries(newTrans)) {
-        news.translations.set(langCode, value);
-      }
+      const existingTrans = (typeof news.translations === 'object' && news.translations) ? news.translations : {};
+      updateFields.translations = { ...existingTrans, ...updateData.translations };
     }
 
     if (updateData.featuredImage) {
-      news.featuredImage = { ...news.featuredImage, ...updateData.featuredImage };
+      updateFields.featuredImage = updateData.featuredImage;
     }
 
     if (updateData.status !== undefined) {
-      news.status = updateData.status;
+      updateFields.status = updateData.status;
+      updateFields.isActive = updateData.status === 'published';
     }
 
     if (updateData.tags !== undefined) {
-      news.tags = updateData.tags;
+      updateFields.tags = updateData.tags;
     }
 
     if (updateData.relatedPortfolioIds !== undefined) {
-      news.relatedPortfolioIds = updateData.relatedPortfolioIds;
+      updateFields.relatedPortfolioIds = updateData.relatedPortfolioIds;
     }
 
     if (updateData.relatedNewsIds !== undefined) {
-      news.relatedNewsIds = updateData.relatedNewsIds;
+      updateFields.relatedNewsIds = updateData.relatedNewsIds;
     }
 
-    await news.save();
+    // Sync title from default translation
+    if (updateData.translations) {
+      for (const trans of Object.values(updateData.translations) as any[]) {
+        if (trans?.title) {
+          updateFields.title = trans.title;
+          break;
+        }
+      }
+    }
+
+    const result = await News.updateOne(
+      { _id: params.id },
+      { $set: updateFields }
+    );
+
+    const updatedNews = await News.findById(params.id);
 
     // Revalidate cache for updated news
-    const { revalidateNewsDetail, revalidateNewsListing, revalidateNewsCarousel } = await import('@/lib/news-cache-service');
-    await revalidateNewsDetail(news.slug);
-    await revalidateNewsListing();
-    await revalidateNewsCarousel();
+    try {
+      const { revalidateNewsDetail, revalidateNewsListing, revalidateNewsCarousel } = await import('@/lib/news-cache-service');
+      await revalidateNewsDetail(news.slug);
+      await revalidateNewsListing();
+      await revalidateNewsCarousel();
+    } catch (cacheError) {
+      logger.error('Cache revalidation failed', 'NEWS_API', { error: cacheError });
+    }
 
     logger.info('News article updated', 'NEWS_API', {
-      newsId: news._id,
-      userId: (session.user as any).id,
+      newsId: params.id,
     });
 
     const response: ApiResponse<any> = {
       success: true,
-      data: news,
+      data: updatedNews,
     };
 
     return NextResponse.json(response);
@@ -247,7 +264,7 @@ export async function DELETE(
 ) {
   try {
     // Check authentication
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
     if (!session || !session.user) {
       return NextResponse.json(
         {

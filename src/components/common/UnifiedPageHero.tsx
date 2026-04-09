@@ -5,12 +5,14 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { ArrowRightIcon } from '@heroicons/react/24/outline';
 import { useActiveTheme } from '../../providers/ActiveThemeProvider';
+import { useAppTranslations } from '@/hooks/useAppTranslations';
 
 interface UnifiedPageHeroProps {
   title: string;
   description?: string;
   subtitle?: string;
   badge?: string;
+  featuredBadge?: string;
   buttonText?: string;
   buttonLink?: string;
   secondaryButtonText?: string;
@@ -49,17 +51,20 @@ export default function UnifiedPageHero({
   description,
   subtitle,
   badge,
-  buttonText = 'Keşfet',
+  featuredBadge,
+  buttonText,
   buttonLink = '#content',
   secondaryButtonText,
   secondaryButtonLink,
-  backgroundGradient, // No default here to check if provided
+  backgroundGradient,
   showButton = true,
   showSecondaryButton = false,
   variant = 'default',
 }: UnifiedPageHeroProps) {
   const [mounted, setMounted] = useState(false);
   const { theme } = useActiveTheme();
+  const { t } = useAppTranslations('common');
+  const resolvedButtonText = buttonText || t('explore');
 
   useEffect(() => {
     setMounted(true);
@@ -88,13 +93,18 @@ export default function UnifiedPageHero({
   const titleColor = heroConfig?.title?.color;
   const subtitleColor = heroConfig?.subtitle?.color;
 
+  const sizeClasses = variant === 'compact'
+    ? 'pt-28 pb-16 md:pt-32 md:pb-20'
+    : 'pt-32 pb-20 md:pt-40 md:pb-28 lg:pt-44 lg:pb-32';
+
+  const ssrSizeClasses = variant === 'compact'
+    ? 'py-16 md:py-20'
+    : 'py-24 md:py-32 lg:py-36';
+
   if (!mounted) {
     return (
       <section
-        className={`text-white ${variant === 'compact'
-          ? 'py-12 md:py-16'
-          : 'py-32 md:py-48 lg:py-56 flex items-center justify-center'
-          } ${!isCustomBg ? finalBg : ''}`}
+        className={`text-white ${ssrSizeClasses} ${!isCustomBg ? finalBg : ''}`}
         style={isCustomBg ? { background: finalBg } : {}}
       >
         <div className="container-content">
@@ -108,13 +118,10 @@ export default function UnifiedPageHero({
 
   return (
     <section
-      className={`relative overflow-hidden text-white ${variant === 'compact'
-        ? 'pt-24 pb-16 md:pt-28 md:pb-20'
-        : 'pt-48 pb-40 md:pt-56 md:pb-52 lg:pt-64 lg:pb-60 flex items-center justify-center'
-        } ${!isCustomBg ? finalBg : ''}`}
+      className={`relative overflow-hidden text-white ${sizeClasses} ${!isCustomBg ? finalBg : ''}`}
       style={isCustomBg ? { background: finalBg } : undefined}
       role="banner"
-      aria-label={`${title} - Sayfa başlığı`}
+      aria-label={title}
     >
       <div className="container-content">
         <motion.div
@@ -167,6 +174,18 @@ export default function UnifiedPageHero({
             </motion.p>
           )}
 
+          {/* Featured Badge */}
+          {featuredBadge && (
+            <motion.div
+              variants={itemVariants}
+              className={`flex items-center mb-8 ${alignment === 'left' ? 'justify-start' : alignment === 'right' ? 'justify-end' : 'justify-center'}`}
+            >
+              <div className="flex items-center px-4 py-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full">
+                <span className="text-white/90 font-semibold text-sm">{featuredBadge}</span>
+              </div>
+            </motion.div>
+          )}
+
           {/* CTA Buttons */}
           {(showButton || showSecondaryButton) && (
             <motion.div
@@ -182,7 +201,7 @@ export default function UnifiedPageHero({
                     color: heroConfig.buttons.primary.textColor,
                   } : undefined}
                 >
-                  {buttonText}
+                  {resolvedButtonText}
                   <ArrowRightIcon className="w-5 h-5" aria-hidden="true" />
                 </Link>
               )}

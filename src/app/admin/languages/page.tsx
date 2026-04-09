@@ -2,12 +2,13 @@
 
 import { useEffect, useState } from 'react';
 import {
-  PlusIcon,
-  PencilIcon,
-  TrashIcon,
-  GlobeAltIcon,
-  CheckCircleIcon,
-} from '@heroicons/react/24/outline';
+  Plus,
+  Pencil,
+  Trash2,
+  Globe,
+  CheckCircle,
+} from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface Language {
   _id: string;
@@ -142,8 +143,8 @@ export default function LanguagesPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Dil Yönetimi</h1>
-          <p className="mt-1 text-sm text-slate-500">
+          <h1 className="text-2xl font-bold text-foreground">Dil Yönetimi</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
             Aktif dilleri ve varsayılan dili buradan yönetebilirsiniz.
           </p>
         </div>
@@ -151,7 +152,7 @@ export default function LanguagesPage() {
           onClick={openNew}
           className="flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700 transition-colors"
         >
-          <PlusIcon className="h-4 w-4" />
+          <Plus className="h-4 w-4" />
           Dil Ekle
         </button>
       </div>
@@ -164,59 +165,59 @@ export default function LanguagesPage() {
       {showForm && (
         <form
           onSubmit={handleSubmit}
-          className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm space-y-4"
+          className="rounded-xl border border-border bg-card p-6 shadow-sm space-y-4"
         >
-          <h2 className="font-semibold text-slate-800">
+          <h2 className="font-semibold text-foreground">
             {editId ? 'Dili Düzenle' : 'Yeni Dil Ekle'}
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium text-slate-600 mb-1">Dil Kodu *</label>
+              <label className="block text-xs font-medium text-muted-foreground mb-1">Dil Kodu *</label>
               <input
                 required
                 disabled={!!editId}
                 value={form.code}
                 onChange={(e) => setForm({ ...form, code: e.target.value })}
                 placeholder="tr, es, en..."
-                className="block w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 disabled:bg-slate-50 disabled:text-slate-400"
+                className="block w-full rounded-lg border border-border px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 disabled:bg-muted/50 disabled:text-muted-foreground"
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-600 mb-1">Bayrak Emojisi</label>
+              <label className="block text-xs font-medium text-muted-foreground mb-1">Bayrak Emojisi</label>
               <input
                 value={form.flag}
                 onChange={(e) => setForm({ ...form, flag: e.target.value })}
                 placeholder="🇹🇷"
-                className="block w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                className="block w-full rounded-lg border border-border px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-600 mb-1">Dil Adı (TR) *</label>
+              <label className="block text-xs font-medium text-muted-foreground mb-1">Dil Adı (TR) *</label>
               <input
                 required
                 value={form.label}
                 onChange={(e) => setForm({ ...form, label: e.target.value })}
                 placeholder="Türkçe"
-                className="block w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                className="block w-full rounded-lg border border-border px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-600 mb-1">Yerel Ad *</label>
+              <label className="block text-xs font-medium text-muted-foreground mb-1">Yerel Ad *</label>
               <input
                 required
                 value={form.nativeLabel}
                 onChange={(e) => setForm({ ...form, nativeLabel: e.target.value })}
                 placeholder="Türkçe"
-                className="block w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                className="block w-full rounded-lg border border-border px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-600 mb-1">Yazı Yönü</label>
+              <label className="block text-xs font-medium text-muted-foreground mb-1">Yazı Yönü</label>
               <select
                 value={form.direction}
                 onChange={(e) => setForm({ ...form, direction: e.target.value as 'ltr' | 'rtl' })}
-                className="block w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                className="block w-full rounded-lg border border-border px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
               >
                 <option value="ltr">Soldan sağa (LTR)</option>
                 <option value="rtl">Sağdan sola (RTL)</option>
@@ -225,21 +226,21 @@ export default function LanguagesPage() {
           </div>
 
           <div className="flex items-center gap-6">
-            <label className="flex items-center gap-2 text-sm text-slate-600 cursor-pointer">
+            <label className="flex items-center gap-2 text-sm text-muted-foreground cursor-pointer">
               <input
                 type="checkbox"
                 checked={form.isDefault}
                 onChange={(e) => setForm({ ...form, isDefault: e.target.checked })}
-                className="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
+                className="rounded border-border text-emerald-600 focus:ring-emerald-500"
               />
               Varsayılan dil
             </label>
-            <label className="flex items-center gap-2 text-sm text-slate-600 cursor-pointer">
+            <label className="flex items-center gap-2 text-sm text-muted-foreground cursor-pointer">
               <input
                 type="checkbox"
                 checked={form.isActive}
                 onChange={(e) => setForm({ ...form, isActive: e.target.checked })}
-                className="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
+                className="rounded border-border text-emerald-600 focus:ring-emerald-500"
               />
               Aktif
             </label>
@@ -256,7 +257,7 @@ export default function LanguagesPage() {
             <button
               type="button"
               onClick={() => setShowForm(false)}
-              className="rounded-lg bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-200 transition-colors"
+              className="rounded-lg bg-muted px-4 py-2 text-sm font-semibold text-foreground hover:bg-slate-200 transition-colors"
             >
               İptal
             </button>
@@ -265,25 +266,37 @@ export default function LanguagesPage() {
       )}
 
       {/* Language list */}
-      <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+      <div className="rounded-xl border border-border bg-card shadow-sm overflow-hidden">
         {loading ? (
-          <div className="flex justify-center py-12">
-            <div className="h-6 w-6 animate-spin rounded-full border-2 border-emerald-600 border-t-transparent" />
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div className="space-y-2">
+                <Skeleton className="h-8 w-48" />
+                <Skeleton className="h-4 w-64" />
+              </div>
+              <Skeleton className="h-10 w-32" />
+            </div>
+            <Skeleton className="h-12 w-full rounded-xl" />
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <Skeleton key={i} className="h-32 rounded-xl" />
+              ))}
+            </div>
           </div>
         ) : languages.length === 0 ? (
           <div className="py-12 text-center">
-            <GlobeAltIcon className="mx-auto h-10 w-10 text-slate-300 mb-3" />
-            <p className="text-sm text-slate-500">Henüz dil eklenmemiş.</p>
+            <Globe className="mx-auto h-10 w-10 text-muted-foreground/50 mb-3" />
+            <p className="text-sm text-muted-foreground">Henüz dil eklenmemiş.</p>
             <button onClick={openNew} className="mt-3 text-sm font-medium text-emerald-600 hover:underline">
               İlk dili ekle
             </button>
           </div>
         ) : (
           <table className="min-w-full divide-y divide-slate-100">
-            <thead className="bg-slate-50">
+            <thead className="bg-muted/50">
               <tr>
                 {['Dil', 'Kod', 'Yön', 'Durum', 'İşlemler'].map((h) => (
-                  <th key={h} className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+                  <th key={h} className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                     {h}
                   </th>
                 ))}
@@ -291,31 +304,31 @@ export default function LanguagesPage() {
             </thead>
             <tbody className="divide-y divide-slate-50">
               {languages.map((lang) => (
-                <tr key={lang._id} className="hover:bg-slate-50 transition-colors">
+                <tr key={lang._id} className="hover:bg-muted/50 transition-colors">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
                       <span className="text-xl">{lang.flag}</span>
                       <div>
-                        <p className="text-sm font-medium text-slate-800">{lang.label}</p>
-                        <p className="text-xs text-slate-400">{lang.nativeLabel}</p>
+                        <p className="text-sm font-medium text-foreground">{lang.label}</p>
+                        <p className="text-xs text-muted-foreground">{lang.nativeLabel}</p>
                       </div>
                       {lang.isDefault && (
                         <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700">
-                          <CheckCircleIcon className="h-3 w-3" />
+                          <CheckCircle className="h-3 w-3" />
                           Varsayılan
                         </span>
                       )}
                     </div>
                   </td>
-                  <td className="px-4 py-3 text-sm font-mono text-slate-600">{lang.code}</td>
-                  <td className="px-4 py-3 text-sm text-slate-500 uppercase">{lang.direction}</td>
+                  <td className="px-4 py-3 text-sm font-mono text-muted-foreground">{lang.code}</td>
+                  <td className="px-4 py-3 text-sm text-muted-foreground uppercase">{lang.direction}</td>
                   <td className="px-4 py-3">
                     <button
                       onClick={() => toggleActive(lang)}
                       className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium transition-colors ${
                         lang.isActive
                           ? 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
-                          : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
+                          : 'bg-muted text-muted-foreground hover:bg-slate-200'
                       }`}
                     >
                       {lang.isActive ? 'Aktif' : 'Pasif'}
@@ -325,18 +338,18 @@ export default function LanguagesPage() {
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => openEdit(lang)}
-                        className="rounded p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition-colors"
+                        className="rounded p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
                         title="Düzenle"
                       >
-                        <PencilIcon className="h-4 w-4" />
+                        <Pencil className="h-4 w-4" />
                       </button>
                       <button
                         onClick={() => handleDelete(lang._id, lang.isDefault)}
                         disabled={lang.isDefault}
-                        className="rounded p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-600 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                        className="rounded p-1.5 text-muted-foreground hover:bg-red-50 hover:text-red-600 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                         title="Sil"
                       >
-                        <TrashIcon className="h-4 w-4" />
+                        <Trash2 className="h-4 w-4" />
                       </button>
                     </div>
                   </td>

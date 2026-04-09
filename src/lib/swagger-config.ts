@@ -7,7 +7,7 @@ export const swaggerConfig = {
     openapi: '3.0.0',
     info: {
       title: 'Fixral API',
-      description: 'Personal Blog & Portfolio Platform API Documentation',
+      description: 'Fixral CMS - Advanced Content Management Platform API Documentation',
       version: '2.5.4',
       contact: {
         name: 'Erdem Erciyas',
@@ -94,44 +94,6 @@ export const swaggerConfig = {
               type: 'array',
               items: { type: 'string' },
               description: 'Category IDs',
-            },
-          },
-        },
-        Product: {
-          type: 'object',
-          required: ['name', 'slug', 'description', 'price', 'image'],
-          properties: {
-            _id: {
-              type: 'string',
-              description: 'Product ID',
-            },
-            name: {
-              type: 'string',
-              description: 'Product name',
-            },
-            slug: {
-              type: 'string',
-              description: 'URL-friendly slug',
-            },
-            description: {
-              type: 'string',
-              description: 'Product description',
-            },
-            price: {
-              type: 'number',
-              description: 'Product price',
-            },
-            image: {
-              type: 'string',
-              description: 'Product image URL',
-            },
-            category: {
-              type: 'string',
-              description: 'Product category',
-            },
-            stock: {
-              type: 'number',
-              description: 'Available stock',
             },
           },
         },
@@ -319,23 +281,6 @@ export const apiEndpoints = {
         },
         404: {
           description: 'Portfolio item not found',
-        },
-      },
-    },
-  },
-  products: {
-    list: {
-      method: 'GET',
-      path: '/api/public/products',
-      description: 'Get all products',
-      tags: ['Products'],
-      responses: {
-        200: {
-          description: 'Products retrieved successfully',
-          schema: {
-            type: 'array',
-            items: { $ref: '#/components/schemas/Product' },
-          },
         },
       },
     },

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import mongoose from 'mongoose';
+import { authOptions } from '@/lib/auth';
 import connectDB from '@/lib/mongoose';
 import News from '@/models/News';
 import Language from '@/models/Language';
@@ -57,24 +57,19 @@ export async function GET(request: NextRequest) {
     // Build query
     const query: any = {};
 
-    // Only show published articles to non-authenticated users
-    const session = await getServerSession();
+    // Only show active articles to non-authenticated users
+    const session = await getServerSession(authOptions);
     if (!session) {
-      query.status = 'published';
+      query.isActive = true;
     } else if (status) {
-      query.status = status;
+      query.isActive = status === 'published';
     }
 
-    // Search across all active language translations
     if (search) {
-      const langs = await Language.find({ isActive: true }).select('code').lean();
-      const langCodes = langs.map((l: any) => l.code);
-      const titleConditions = langCodes.map((code: string) => ({
-        [`translations.${code}.title`]: { $regex: search, $options: 'i' },
-      }));
+      const escapedSearch = search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
       query.$or = [
-        ...titleConditions,
-        { tags: { $in: [new RegExp(search, 'i')] } },
+        { title: { $regex: escapedSearch, $options: 'i' } },
+        { excerpt: { $regex: escapedSearch, $options: 'i' } },
       ];
     }
 
@@ -152,7 +147,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     // Check authentication
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
     if (!session || !session.user) {
       return NextResponse.json(
         {
@@ -183,43 +178,23 @@ export async function POST(request: NextRequest) {
     const newsData: CreateNewsInput = body;
     logger.info('Creating news with data', 'NEWS_API', { newsData });
 
-    let authorId: mongoose.Types.ObjectId;
-    const sessionUserId = (session.user as any).id;
-
-    if (mongoose.Types.ObjectId.isValid(sessionUserId)) {
-      authorId = new mongoose.Types.ObjectId(sessionUserId);
-    } else if (session.user.email) {
-      // Fallback: try to find user by email
-      logger.warn('Session user ID invalid, trying fallback by email', 'NEWS_API', { email: session.user.email });
+    // Resolve author
+    let authorName = session.user.name || session.user.email?.split('@')[0] || 'Admin';
+    if (session.user.email) {
       const user = await User.findOne({ email: session.user.email });
-
       if (user) {
-        authorId = user._id;
-      } else {
-        return NextResponse.json(
-          {
-            success: false,
-            error: 'User not found in database',
-          } as ApiResponse<null>,
-          { status: 401 }
-        );
+        authorName = user.name || authorName;
       }
-    } else {
-      return NextResponse.json(
-        {
-          success: false,
-          error: 'Invalid user session. Please log out and log in again.',
-        } as ApiResponse<null>,
-        { status: 401 }
-      );
     }
 
     // Generate slug from any available translation title
     let titleForSlug = 'news';
+    let mainTitle = '';
     if (newsData.translations) {
       for (const trans of Object.values(newsData.translations)) {
         if ((trans as any)?.title) {
           titleForSlug = (trans as any).title;
+          mainTitle = titleForSlug;
           break;
         }
       }
@@ -227,24 +202,15 @@ export async function POST(request: NextRequest) {
     const slugBase = slugify(titleForSlug, { lower: true, strict: true, replacement: '-' });
     const slug = `${slugBase}-${Date.now()}`;
 
-    const news = new News({
+    const news = await News.create({
       ...newsData,
+      title: mainTitle || titleForSlug,
       slug,
-      author: {
-        id: authorId,
-        name: session.user.name || session.user.email?.split('@')[0] || 'Admin',
-        email: session.user.email,
-      },
-      // Use status from form if provided, otherwise default to draft
-      status: newsData.status || 'draft',
+      author: authorName,
+      isActive: newsData.status === 'published',
+      translations: newsData.translations || null,
     });
 
-    logger.info('News object before save', 'NEWS_API', {
-      status: news.status,
-      hasTranslations: !!news.translations,
-    });
-
-    await news.save();
     logger.info('News saved successfully', 'NEWS_API', { newsId: news._id });
 
     // Revalidate cache for new news article
@@ -256,7 +222,6 @@ export async function POST(request: NextRequest) {
     logger.info('News article created', 'NEWS_API', {
       newsId: news._id,
       slug: news.slug,
-      userId: sessionUserId,
     });
 
     const response: ApiResponse<any> = {
@@ -275,7 +240,6 @@ export async function POST(request: NextRequest) {
       errorType: error?.constructor?.name,
     });
 
-    // Return more detailed error in development
     const isProduction = process.env.NODE_ENV === 'production';
     const detailedError = isProduction ? 'Failed to create news article' : errorMessage;
 

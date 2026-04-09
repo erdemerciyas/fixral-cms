@@ -69,10 +69,12 @@ export const PUT = withSecurity(SecurityConfigs.admin)(async (request: Request) 
     } else {
       console.log('📝 Updating existing footer settings');
       try {
-        // Deep merge for nested objects
+        const DANGEROUS_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const mergeDeep = (target: any, source: any) => {
           for (const key in source) {
+            if (!Object.prototype.hasOwnProperty.call(source, key)) continue;
+            if (DANGEROUS_KEYS.has(key)) continue;
             if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
               if (!target[key]) target[key] = {};
               mergeDeep(target[key], source[key]);

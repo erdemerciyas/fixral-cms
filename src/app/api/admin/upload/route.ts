@@ -200,7 +200,8 @@ export async function POST(request: NextRequest) {
 
     // Cloudinary'e güvenli yükleme
     // Ensure uploads here never go under products/
-    const folder = `personal-blog/${pageContext}`;
+    const cloudinaryFolder = process.env.CLOUDINARY_FOLDER || 'personal-blog';
+    const folder = `${cloudinaryFolder}/${pageContext}`;
 
     // Add detailed logging before upload
     logger.info('Attempting Cloudinary upload', 'UPLOAD', {
@@ -224,7 +225,7 @@ export async function POST(request: NextRequest) {
           public_id: uniqueFileName,
           overwrite: false,
           unique_filename: false,
-          tags: [pageContext, 'personal-blog', 'secure-upload'],
+          tags: [pageContext, 'fixral-cms', 'secure-upload'],
           // Security transformations
           transformation: [
             { quality: 'auto:good' },

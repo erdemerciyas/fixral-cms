@@ -5,17 +5,18 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
-  CubeIcon,
-  MagnifyingGlassIcon,
-  TrashIcon,
-  CalendarIcon,
-  Squares2X2Icon,
-  ListBulletIcon,
-  CheckCircleIcon,
-  ArrowDownTrayIcon
-} from '@heroicons/react/24/outline';
-import toast from 'react-hot-toast';
-import Swal from 'sweetalert2';
+  Box,
+  Search,
+  Trash2,
+  Calendar,
+  LayoutGrid,
+  List,
+  CheckCircle2,
+  Download
+} from 'lucide-react';
+import { toast } from 'sonner';
+import { useConfirm } from '@/hooks/use-confirm';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface Model3D {
   _id: string;
@@ -32,6 +33,7 @@ interface Model3D {
 export default function AdminModelsPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const { confirm } = useConfirm();
   const [loading, setLoading] = useState(true);
   const [models, setModels] = useState<Model3D[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -77,18 +79,12 @@ export default function AdminModelsPage() {
   };
 
   const handleDelete = async (modelId: string) => {
-    const result = await Swal.fire({
+    const confirmed = await confirm({
       title: 'Emin misiniz?',
-      text: "Bu 3D modeli silmek istediğinizden emin misiniz?",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Evet, sil!',
-      cancelButtonText: 'Vazgeç'
+      description: 'Bu 3D modeli silmek istediğinizden emin misiniz?',
     });
 
-    if (!result.isConfirmed) return;
+    if (!confirmed) return;
 
     try {
       const response = await fetch(`/api/admin/models/${modelId}`, {
@@ -113,18 +109,12 @@ export default function AdminModelsPage() {
   };
 
   const handleBulkDelete = async () => {
-    const result = await Swal.fire({
+    const confirmed = await confirm({
       title: 'Emin misiniz?',
-      text: `${selectedItems.size} modeli silmek istediğinizden emin misiniz?`,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Evet, sil!',
-      cancelButtonText: 'Vazgeç'
+      description: `${selectedItems.size} modeli silmek istediğinizden emin misiniz?`,
     });
 
-    if (!result.isConfirmed) return;
+    if (!confirmed) return;
 
     try {
       await Promise.all(
@@ -187,13 +177,19 @@ export default function AdminModelsPage() {
 
   if (status === 'loading' || loading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="flex flex-col items-center space-y-4">
-          <div className="relative">
-            <div className="w-16 h-16 border-4 border-indigo-200 rounded-full"></div>
-            <div className="absolute top-0 left-0 w-16 h-16 border-4 border-transparent border-t-indigo-600 rounded-full animate-spin"></div>
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div className="space-y-2">
+            <Skeleton className="h-8 w-48" />
+            <Skeleton className="h-4 w-64" />
           </div>
-          <p className="text-lg font-medium text-slate-600">Modeller yükleniyor...</p>
+          <Skeleton className="h-10 w-32" />
+        </div>
+        <Skeleton className="h-12 w-full rounded-xl" />
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <Skeleton key={i} className="h-32 rounded-xl" />
+          ))}
         </div>
       </div>
     );
@@ -202,42 +198,42 @@ export default function AdminModelsPage() {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sticky top-0 z-20 bg-slate-50/80 backdrop-blur-sm py-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sticky top-0 z-20 bg-muted/80 backdrop-blur-sm py-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">3D Model Yönetimi</h1>
-          <p className="text-slate-500 mt-1">3D dosyalarınızı ve dijital varlıklarınızı yönetin</p>
+          <h1 className="text-2xl font-bold text-foreground tracking-tight">3D Model Yönetimi</h1>
+          <p className="text-muted-foreground mt-1">3D dosyalarınızı ve dijital varlıklarınızı yönetin</p>
         </div>
         <Link
           href="/admin/portfolio/new"
           className="inline-flex items-center px-6 py-3 bg-slate-900 text-white font-semibold rounded-xl hover:bg-slate-800 hover:shadow-lg hover:shadow-slate-900/20 transition-all duration-200"
         >
-          <ArrowDownTrayIcon className="w-5 h-5 mr-2" />
+          <Download className="w-5 h-5 mr-2" />
           Model Yükle
         </Link>
       </div>
 
       {/* Toolbar */}
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-2 sm:p-3 sticky top-24 z-10 transition-all duration-300">
+      <div className="bg-card rounded-xl shadow-sm border border-border p-2 sm:p-3 sticky top-24 z-10 transition-all duration-300">
         <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
           {/* Search & Filter Group */}
           <div className="flex-1 w-full lg:w-auto flex flex-col sm:flex-row gap-3">
             <div className="relative flex-1">
-              <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Model ara..."
-                className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 focus:bg-white transition-all shadow-sm"
+                className="w-full pl-10 pr-4 py-2.5 bg-muted/50 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 focus:bg-card transition-all shadow-sm"
               />
             </div>
 
-            <div className="flex items-center bg-slate-100 border border-slate-200/50 rounded-xl p-1 shadow-sm shrink-0 overflow-x-auto">
+            <div className="flex items-center bg-muted border border-border/50 rounded-xl p-1 shadow-sm shrink-0 overflow-x-auto">
               <button
                 onClick={() => setFormatFilter('all')}
                 className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${formatFilter === 'all'
-                  ? 'bg-white text-slate-900 shadow-sm'
-                  : 'text-slate-500 hover:text-slate-900'
+                  ? 'bg-card text-foreground shadow-sm'
+                  : 'text-muted-foreground hover:text-foreground'
                   }`}
               >
                 Tümü
@@ -248,7 +244,7 @@ export default function AdminModelsPage() {
                   onClick={() => setFormatFilter(fmt)}
                   className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${formatFilter === fmt
                     ? 'bg-indigo-50 text-indigo-700 shadow-sm'
-                    : 'text-slate-500 hover:text-indigo-700'
+                    : 'text-muted-foreground hover:text-indigo-700'
                     }`}
                 >
                   {fmt}
@@ -261,33 +257,33 @@ export default function AdminModelsPage() {
           <div className="flex items-center justify-between sm:justify-end gap-3 w-full lg:w-auto">
             {selectedItems.size > 0 && (
               <div className="flex items-center gap-3 animate-in fade-in slide-in-from-right-4 duration-200">
-                <span className="text-sm font-medium text-slate-600 hidden sm:inline">
+                <span className="text-sm font-medium text-muted-foreground hidden sm:inline">
                   {selectedItems.size} seçildi
                 </span>
                 <button
                   onClick={handleBulkDelete}
                   className="flex items-center px-4 py-2.5 bg-red-50 text-red-600 font-medium rounded-xl hover:bg-red-100 transition-colors"
                 >
-                  <TrashIcon className="w-4 h-4 mr-2" />
+                  <Trash2 className="w-4 h-4 mr-2" />
                   Sil
                 </button>
               </div>
             )}
 
-            <div className="flex bg-slate-100 border border-slate-200/50 rounded-xl p-1 shadow-sm shrink-0">
+            <div className="flex bg-muted border border-border/50 rounded-xl p-1 shadow-sm shrink-0">
               <button
                 onClick={() => setViewMode('grid')}
-                className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-card text-indigo-600 shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
                 title="Grid Görünümü"
               >
-                <Squares2X2Icon className="w-5 h-5" />
+                <LayoutGrid className="w-5 h-5" />
               </button>
               <button
                 onClick={() => setViewMode('list')}
-                className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-card text-indigo-600 shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
                 title="Liste Görünümü"
               >
-                <ListBulletIcon className="w-5 h-5" />
+                <List className="w-5 h-5" />
               </button>
             </div>
           </div>
@@ -296,12 +292,12 @@ export default function AdminModelsPage() {
 
       {/* Content Area */}
       {filteredModels.length === 0 ? (
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 border-dashed p-12 text-center">
-          <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4">
-            <CubeIcon className="w-8 h-8 text-slate-400" />
+        <div className="bg-card rounded-xl shadow-sm border border-border border-dashed p-12 text-center">
+          <div className="w-16 h-16 bg-muted/50 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Box className="w-8 h-8 text-muted-foreground" />
           </div>
-          <h3 className="text-lg font-semibold text-slate-900 mb-2">3D Model bulunamadı</h3>
-          <p className="text-slate-500 mb-6 max-w-sm mx-auto">
+          <h3 className="text-lg font-semibold text-foreground mb-2">3D Model bulunamadı</h3>
+          <p className="text-muted-foreground mb-6 max-w-sm mx-auto">
             {searchQuery || formatFilter !== 'all'
               ? 'Arama kriterlerinize uygun model bulunamadı.'
               : 'Henüz hiç 3D model yüklenmemiş. Portfolyo üzerinden model ekleyebilirsiniz.'}
@@ -322,14 +318,14 @@ export default function AdminModelsPage() {
               {filteredModels.map(model => (
                 <li
                   key={model._id}
-                  className={`group relative bg-white rounded-2xl border transition-all duration-300 hover:shadow-xl overflow-hidden
-                         ${selectedItems.has(model._id) ? 'border-indigo-500 ring-1 ring-indigo-500' : 'border-slate-200 hover:border-slate-300'}
+                  className={`group relative bg-card rounded-xl border transition-all duration-300 hover:shadow-xl overflow-hidden
+                         ${selectedItems.has(model._id) ? 'border-indigo-500 ring-1 ring-indigo-500' : 'border-border hover:border-border'}
                       `}
                 >
                   {/* Icon Cover */}
-                  <div className="aspect-[4/3] bg-slate-50 relative overflow-hidden group-hover:bg-slate-100 transition-colors flex items-center justify-center p-8">
+                  <div className="aspect-[4/3] bg-muted/50 relative overflow-hidden group-hover:bg-muted transition-colors flex items-center justify-center p-8">
                     <div className="relative z-0">
-                      <CubeIcon className="w-24 h-24 text-indigo-200 group-hover:text-indigo-300 transition-colors" strokeWidth={1} />
+                      <Box className="w-24 h-24 text-indigo-200 group-hover:text-indigo-300 transition-colors" strokeWidth={1} />
                       <div className="absolute inset-0 flex items-center justify-center">
                         <span className="text-sm font-bold text-indigo-600 uppercase tracking-wider">{model.format}</span>
                       </div>
@@ -343,26 +339,26 @@ export default function AdminModelsPage() {
                            `}
                     >
                       <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center
-                               ${selectedItems.has(model._id) ? 'bg-indigo-600 border-indigo-600 text-white' : 'bg-transparent border-white text-transparent hover:bg-white/20'}
+                               ${selectedItems.has(model._id) ? 'bg-indigo-600 border-indigo-600 text-white' : 'bg-transparent border-white text-transparent hover:bg-card/20'}
                             `}>
-                        <CheckCircleIcon className="w-5 h-5" />
+                        <CheckCircle2 className="w-5 h-5" />
                       </div>
                     </div>
                   </div>
 
                   {/* Content */}
                   <div className="p-5">
-                    <div className="flex items-center gap-2 text-xs text-slate-400 mb-3">
-                      <CalendarIcon className="w-4 h-4" />
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground mb-3">
+                      <Calendar className="w-4 h-4" />
                       <span>{formatDate(model.createdAt)}</span>
                       <span className="w-1 h-1 bg-slate-300 rounded-full" />
-                      <span className="text-slate-600 font-medium">{formatFileSize(model.fileSize)}</span>
+                      <span className="text-muted-foreground font-medium">{formatFileSize(model.fileSize)}</span>
                     </div>
 
-                    <h3 className="text-lg font-bold text-slate-900 mb-2 line-clamp-1 group-hover:text-indigo-600 transition-colors">
+                    <h3 className="text-lg font-bold text-foreground mb-2 line-clamp-1 group-hover:text-indigo-600 transition-colors">
                       {model.name}
                     </h3>
-                    <p className="text-xs text-slate-500 line-clamp-1 mb-4 h-5">
+                    <p className="text-xs text-muted-foreground line-clamp-1 mb-4 h-5">
                       {model.portfolioTitle ? `Proje: ${model.portfolioTitle}` : 'Bağlı proje yok'}
                     </p>
 
@@ -372,16 +368,16 @@ export default function AdminModelsPage() {
                         download
                         className="flex items-center text-xs font-medium text-indigo-600 hover:text-indigo-800"
                       >
-                        <ArrowDownTrayIcon className="w-3.5 h-3.5 mr-1" />
+                        <Download className="w-3.5 h-3.5 mr-1" />
                         İndir
                       </a>
 
                       <button
                         onClick={() => handleDelete(model._id)}
-                        className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        className="p-2 text-muted-foreground hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                         title="Sil"
                       >
-                        <TrashIcon className="w-4 h-4" />
+                        <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
                   </div>
@@ -390,16 +386,16 @@ export default function AdminModelsPage() {
             </ul>
           ) : (
             // LIST VIEW
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <div className="bg-card rounded-xl shadow-sm border border-border overflow-hidden">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="bg-slate-50 border-b border-slate-200 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                  <tr className="bg-muted/50 border-b border-border text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                     <th className="px-6 py-4 w-12">
                       <input
                         type="checkbox"
                         checked={selectedItems.size === filteredModels.length}
                         onChange={(e) => handleSelectAll(e.target.checked)}
-                        className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+                        className="rounded border-border text-indigo-600 focus:ring-indigo-500"
                       />
                     </th>
                     <th className="px-6 py-4">Model Detayı</th>
@@ -413,44 +409,44 @@ export default function AdminModelsPage() {
                   {filteredModels.map(model => (
                     <tr
                       key={model._id}
-                      className={`group transition-colors ${selectedItems.has(model._id) ? 'bg-indigo-50/50' : 'hover:bg-slate-50'}`}
+                      className={`group transition-colors ${selectedItems.has(model._id) ? 'bg-indigo-50/50' : 'hover:bg-muted/50'}`}
                     >
                       <td className="px-6 py-4">
                         <input
                           type="checkbox"
                           checked={selectedItems.has(model._id)}
                           onChange={() => handleSelectItem(model._id)}
-                          className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+                          className="rounded border-border text-indigo-600 focus:ring-indigo-500"
                         />
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-4">
                           <div className="w-10 h-10 bg-indigo-50 rounded-lg flex items-center justify-center flex-shrink-0 text-indigo-600">
-                            <CubeIcon className="w-6 h-6" />
+                            <Box className="w-6 h-6" />
                           </div>
                           <div>
-                            <h4 className="text-sm font-semibold text-slate-900 group-hover:text-indigo-600 transition-colors">
+                            <h4 className="text-sm font-semibold text-foreground group-hover:text-indigo-600 transition-colors">
                               {model.name}
                             </h4>
-                            <p className="text-xs text-slate-500 mt-0.5">
+                            <p className="text-xs text-muted-foreground mt-0.5">
                               {model.portfolioTitle || 'Bağlı proje yok'}
                             </p>
                           </div>
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-bold bg-slate-100 text-slate-700 uppercase">
+                        <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-bold bg-muted text-foreground uppercase">
                           {model.format}
                         </span>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="text-sm text-slate-600 font-mono">
+                        <span className="text-sm text-muted-foreground font-mono">
                           {formatFileSize(model.fileSize)}
                         </span>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="flex flex-col text-xs text-slate-500">
-                          <span className="font-medium text-slate-700">{formatDate(model.createdAt).split(' ').slice(0, 2).join(' ')}</span>
+                        <div className="flex flex-col text-xs text-muted-foreground">
+                          <span className="font-medium text-foreground">{formatDate(model.createdAt).split(' ').slice(0, 2).join(' ')}</span>
                           <span>{formatDate(model.createdAt).split(' ')[2]}</span>
                         </div>
                       </td>
@@ -459,17 +455,17 @@ export default function AdminModelsPage() {
                           <a
                             href={model.file}
                             download
-                            className="p-1.5 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                            className="p-1.5 text-muted-foreground hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
                             title="İndir"
                           >
-                            <ArrowDownTrayIcon className="w-4 h-4" />
+                            <Download className="w-4 h-4" />
                           </a>
                           <button
                             onClick={() => handleDelete(model._id)}
-                            className="p-1.5 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                            className="p-1.5 text-muted-foreground hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                             title="Sil"
                           >
-                            <TrashIcon className="w-4 h-4" />
+                            <Trash2 className="w-4 h-4" />
                           </button>
                         </div>
                       </td>
