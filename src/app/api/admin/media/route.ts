@@ -61,9 +61,7 @@ export const GET = withSecurity(SecurityConfigs.admin)(async (request: NextReque
         // Site-level contexts that should browse all site media (not a subfolder)
         const siteContexts = ['site', 'site-logo', 'favicon', 'general', 'logo', 'hero', 'banner', 'og-image'];
 
-        if (pageContextFilter === 'products') {
-          resourceOptions.prefix = 'personal-blog/products/';
-        } else if (pageContextFilter === 'all') {
+        if (pageContextFilter === 'all') {
           resourceOptions.prefix = 'personal-blog/';
         } else if (siteContexts.includes(pageContextFilter)) {
           resourceOptions.prefix = 'personal-blog/';

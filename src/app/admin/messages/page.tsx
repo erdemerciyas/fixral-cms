@@ -34,15 +34,12 @@ interface Message {
   message: string;
   status: 'unread' | 'read' | 'new' | 'replied' | 'closed';
   createdAt: string;
-  type?: 'contact' | 'product_question' | 'service_request' | 'announcement' | 'reply' | 'order_question';
-  productId?: string;
-  productName?: string;
+  type?: 'contact' | 'service_request' | 'announcement' | 'reply';
   projectType?: string;
   budget?: string;
   urgency?: string;
   adminReply?: string;
   repliedAt?: string;
-  orderId?: string;
 }
 
 export default function AdminMessagesPage() {

@@ -9,7 +9,6 @@ import {
   FileText,
   Image as ImageIcon,
   Box,
-  ShoppingBag
 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -17,7 +16,7 @@ export default function AdminEditorPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [loading, setLoading] = useState(true);
-  const [selectedType, setSelectedType] = useState<'news' | 'page' | 'portfolio' | 'service' | 'product'>('news');
+  const [selectedType, setSelectedType] = useState<'news' | 'page' | 'portfolio' | 'service'>('news');
 
   useEffect(() => {
     if (status === 'loading') return;
@@ -35,7 +34,6 @@ export default function AdminEditorPage() {
     { type: 'page', name: 'Page', icon: FileText, color: 'from-emerald-500 to-teal-600', href: '/admin/pages' },
     { type: 'portfolio', name: 'Portfolio Item', icon: ImageIcon, color: 'from-amber-500 to-orange-600', href: '/admin/portfolio/new' },
     { type: 'service', name: 'Service', icon: Box, color: 'from-rose-500 to-pink-600', href: '/admin/services/new' },
-    { type: 'product', name: 'Product', icon: ShoppingBag, color: 'from-cyan-500 to-blue-600', href: '/admin/products/new' },
   ];
 
   if (status === 'loading' || loading) {
@@ -117,13 +115,6 @@ export default function AdminEditorPage() {
           >
             <Box className="w-5 h-5 text-rose-600 mr-3" />
             <span className="text-sm font-medium text-foreground">Add Service</span>
-          </Link>
-          <Link
-            href="/admin/products/new"
-            className="flex items-center p-4 rounded-xl bg-cyan-50 hover:bg-cyan-100 transition-colors"
-          >
-            <ShoppingBag className="w-5 h-5 text-cyan-600 mr-3" />
-            <span className="text-sm font-medium text-foreground">Add Product</span>
           </Link>
         </div>
       </div>

@@ -60,7 +60,7 @@ const MediaBrowser: React.FC<MediaBrowserProps> = ({
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const [filter, setFilter] = useState('all');
-  const knownContexts = ['all', 'profile', 'portfolio', 'service', 'about', 'general', 'products'];
+  const knownContexts = ['all', 'profile', 'portfolio', 'service', 'about', 'general'];
   const [pageFilter, setPageFilter] = useState(
     pageContext && knownContexts.includes(pageContext) ? pageContext : 'all'
   );

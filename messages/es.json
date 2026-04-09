@@ -30,7 +30,6 @@
   },
   "nav": {
     "home": "Inicio",
-    "products": "Productos",
     "portfolio": "Portafolio",
     "services": "Servicios",
     "news": "Noticias",
@@ -38,7 +37,6 @@
     "login": "Iniciar sesión",
     "register": "Registrarse",
     "logout": "Cerrar sesión",
-    "cart": "Carrito",
     "account": "Mi cuenta",
     "videos": "Videos"
   },
@@ -62,7 +60,6 @@
     "login": "Iniciar sesión",
     "register": "Registrarse",
     "about": "Acerca de",
-    "products": "Productos",
     "offline": "Sin conexión"
   },
   "hero": {
@@ -70,24 +67,6 @@
     "subtitle": "Tecnologías web modernas, desarrollo de software y servicios de transformación digital.",
     "cta": "Descubre nuestros servicios",
     "ctaSecondary": "Contáctanos"
-  },
-  "products": {
-    "title": "Productos",
-    "search": "Buscar productos...",
-    "sort": {
-      "newest": "Más recientes",
-      "oldest": "Más antiguos",
-      "priceAsc": "Precio (ascendente)",
-      "priceDesc": "Precio (descendente)"
-    },
-    "price": "Precio",
-    "priceRange": "Rango de precios",
-    "apply": "Aplicar",
-    "inStock": "En stock",
-    "outOfStock": "Agotado",
-    "addToCart": "Agregar al carrito",
-    "orderNow": "Pedir ahora",
-    "noProducts": "No se encontraron productos."
   },
   "news": {
     "title": "Noticias",

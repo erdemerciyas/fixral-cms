@@ -90,3 +90,9 @@ temp_commit_message.txt
 
 # Bundle analysis output
 analyze.log
+
+# Build output logs
+build_output*.txt
+
+# Zip archives
+*.zip

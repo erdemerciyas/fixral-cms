@@ -27,7 +27,6 @@ const ROUTE_SEGMENT_MAP: Record<string, string> = {
   account: 'account',
   login: 'login',
   register: 'register',
-  products: 'products',
   offline: 'offline',
   about: 'about',
 };

@@ -33,7 +33,4 @@ export { default as LanguageSwitch } from './LanguageSwitch';
 
 // Utility Components
 export { default as Pagination } from './Pagination';
-export { default as SearchInput } from './SearchInput';
-export { default as SortSelect } from './SortSelect';
-export { default as PriceRangeFilter } from './PriceRangeFilter';
 export { default as UniversalEditor } from './UniversalEditor';

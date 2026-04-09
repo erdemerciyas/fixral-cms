@@ -30,7 +30,6 @@
   },
   "nav": {
     "home": "Anasayfa",
-    "products": "Ürünler",
     "portfolio": "Portfolyo",
     "services": "Hizmetler",
     "news": "Haberler",
@@ -38,7 +37,6 @@
     "login": "Giriş Yap",
     "register": "Kayıt Ol",
     "logout": "Çıkış Yap",
-    "cart": "Sepet",
     "account": "Hesabım",
     "videos": "Videolar"
   },
@@ -62,7 +60,6 @@
     "login": "Giriş",
     "register": "Kayıt",
     "about": "Hakkımda",
-    "products": "Ürünler",
     "offline": "Çevrimdışı"
   },
   "hero": {
@@ -70,24 +67,6 @@
     "subtitle": "Modern web teknolojileri, yazılım geliştirme ve dijital dönüşüm hizmetleri.",
     "cta": "Hizmetlerimizi Keşfet",
     "ctaSecondary": "İletişime Geç"
-  },
-  "products": {
-    "title": "Ürünler",
-    "search": "Ürün ara...",
-    "sort": {
-      "newest": "En Yeniler",
-      "oldest": "En Eskiler",
-      "priceAsc": "Fiyat (Artan)",
-      "priceDesc": "Fiyat (Azalan)"
-    },
-    "price": "Fiyat",
-    "priceRange": "Fiyat Aralığı",
-    "apply": "Uygula",
-    "inStock": "Stokta",
-    "outOfStock": "Stokta Yok",
-    "addToCart": "Sepete Ekle",
-    "orderNow": "Hemen Sipariş Ver",
-    "noProducts": "Ürün bulunamadı."
   },
   "news": {
     "title": "Haberler",

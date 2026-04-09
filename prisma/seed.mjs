@@ -552,114 +552,7 @@ async function main() {
   }
   console.log('  ✓ Videos');
 
-  // ── 8. Product Categories (5 parent + 5 child) ──
-  const parentCats = [
-    { name: '3D Yazıcılar', slug: '3d-yazicilar', desc: '3D yazıcı modelleri' },
-    { name: 'Filamentler', slug: 'filamentler', desc: '3D yazıcı filamentleri' },
-    { name: 'Yedek Parçalar', slug: 'yedek-parcalar', desc: '3D yazıcı yedek parçaları' },
-    { name: 'Elektronik', slug: 'elektronik', desc: 'Elektronik bileşenler' },
-    { name: 'Aksesuarlar', slug: 'aksesuarlar', desc: 'Yazıcı aksesuarları' },
-  ];
-
-  for (let i = 0; i < parentCats.length; i++) {
-    const pc = parentCats[i];
-    await prisma.productCategoryRow.upsert({
-      where: { slug: pc.slug },
-      update: {},
-      create: {
-        id: seedId('pcat', i + 1),
-        name: pc.name,
-        slug: pc.slug,
-        description: pc.desc,
-        order: i + 1,
-        isActive: true,
-      },
-    });
-  }
-
-  const childCats = [
-    { name: 'FDM Yazıcılar', slug: 'fdm-yazicilar', desc: 'FDM teknolojili yazıcılar', parentIdx: 0 },
-    { name: 'Reçine Yazıcılar', slug: 'recine-yazicilar', desc: 'SLA/DLP reçine yazıcılar', parentIdx: 0 },
-    { name: 'PLA Filament', slug: 'pla-filament', desc: 'PLA malzeme filamentler', parentIdx: 1 },
-    { name: 'ABS Filament', slug: 'abs-filament', desc: 'ABS malzeme filamentler', parentIdx: 1 },
-    { name: 'Nozzle', slug: 'nozzle', desc: 'Yazıcı nozzle çeşitleri', parentIdx: 2 },
-  ];
-
-  for (let i = 0; i < childCats.length; i++) {
-    const cc = childCats[i];
-    await prisma.productCategoryRow.upsert({
-      where: { slug: cc.slug },
-      update: {},
-      create: {
-        id: seedId('pcat', i + 6),
-        name: cc.name,
-        slug: cc.slug,
-        description: cc.desc,
-        order: i + 1,
-        parentId: seedId('pcat', cc.parentIdx + 1),
-        isActive: true,
-      },
-    });
-  }
-  console.log('  ✓ Product Categories');
-
-  // ── 9. Products (10) ──────────────────────
-  const products = [
-    { title: 'Creality Ender 3 V3', slug: 'creality-ender-3-v3', desc: 'Başlangıç seviyesi FDM 3D yazıcı. Kolay kurulum ve yüksek baskı kalitesi.', price: 8500, stock: 25, catIdx: 5 },
-    { title: 'Anycubic Photon Mono X', slug: 'anycubic-photon-mono-x', desc: 'Yüksek çözünürlüklü reçine 3D yazıcı. Detaylı baskılar için ideal.', price: 12000, stock: 15, catIdx: 6 },
-    { title: 'Bambu Lab P1S', slug: 'bambu-lab-p1s', desc: 'Hızlı ve güvenilir FDM yazıcı. Multi-color baskı desteği.', price: 22000, stock: 10, catIdx: 5 },
-    { title: 'eSUN PLA+ Filament 1kg', slug: 'esun-pla-plus-1kg', desc: 'Yüksek kalite PLA+ filament. 1.75mm, 1kg bobin.', price: 350, stock: 200, catIdx: 7 },
-    { title: 'Prusament ASA 1kg', slug: 'prusament-asa-1kg', desc: 'UV dayanımlı ASA filament. Dış mekan kullanımı için ideal.', price: 750, stock: 80, catIdx: 8 },
-    { title: 'PETG Filament Şeffaf 1kg', slug: 'petg-filament-seffaf', desc: 'Şeffaf PETG filament. Gıdaya uygun, dayanıklı.', price: 420, stock: 150, catIdx: 7 },
-    { title: 'Hardened Steel Nozzle 0.4mm', slug: 'hardened-nozzle-04', desc: 'Sertleştirilmiş çelik nozzle. Aşındırıcı filamentler için.', price: 120, stock: 300, catIdx: 9 },
-    { title: 'Raspberry Pi 4 Model B 4GB', slug: 'raspberry-pi-4-4gb', desc: 'Octoprint ve Klipper için ideal mini bilgisayar.', price: 2800, stock: 50, catIdx: 3 },
-    { title: 'PEI Manyetik Tabla 235x235', slug: 'pei-tabla-235', desc: 'Esnek PEI manyetik baskı tablası. Ender 3 uyumlu.', price: 280, stock: 100, catIdx: 4 },
-    { title: 'BLTouch Sensör Kiti', slug: 'bltouch-sensor-kiti', desc: 'Otomatik tabla seviyeleme sensörü. Kurulum kiti dahil.', price: 450, stock: 60, catIdx: 4 },
-  ];
-
-  for (let i = 0; i < products.length; i++) {
-    const pr = products[i];
-    await prisma.productRow.upsert({
-      where: { slug: pr.slug },
-      update: {},
-      create: {
-        id: seedId('prod', i + 1),
-        title: pr.title,
-        slug: pr.slug,
-        description: pr.desc,
-        condition: 'new',
-        price: pr.price,
-        currency: 'TRY',
-        coverImage: `https://picsum.photos/seed/${pr.slug}/600/600`,
-        images: [
-          `https://picsum.photos/seed/${pr.slug}-1/600/600`,
-          `https://picsum.photos/seed/${pr.slug}-2/600/600`,
-        ],
-        stock: pr.stock,
-        isActive: true,
-        ratingAverage: 0,
-        ratingCount: 0,
-      },
-    });
-
-    // Link product to category
-    await prisma.productToCategoryRow.upsert({
-      where: {
-        productId_categoryId: {
-          productId: seedId('prod', i + 1),
-          categoryId: seedId('pcat', pr.catIdx),
-        },
-      },
-      update: {},
-      create: {
-        productId: seedId('prod', i + 1),
-        categoryId: seedId('pcat', pr.catIdx),
-      },
-    });
-  }
-  console.log('  ✓ Products');
-
-  // ── 10. Contacts (10) ─────────────────────
+  // ── 8. Contacts (10) ─────────────────────
   const contacts = [
     { name: 'Ali Veli', email: 'ali@example.com', subject: 'Web sitesi teklifi', message: 'Firmamız için kurumsal bir web sitesi yaptırmak istiyoruz. Fiyat teklifi alabilir miyiz?' },
     { name: 'Fatma Kara', email: 'fatma@example.com', subject: 'E-ticaret projesi', message: 'Online mağaza kurmak istiyoruz. Detaylı bilgi alabilir miyim?' },
@@ -690,18 +583,18 @@ async function main() {
   }
   console.log('  ✓ Contacts');
 
-  // ── 11. Messages (10) ─────────────────────
+  // ── 9. Messages (10) ─────────────────────
   const messages = [
-    { name: 'Ahmet Yılmaz', email: 'ahmet@test.com', subject: 'Sipariş hakkında', message: 'Siparişimin ne zaman kargoya verileceğini öğrenmek istiyorum.', type: 'order' },
-    { name: 'Elif Demir', email: 'elif@test.com', subject: 'Ürün sorusu', message: 'Bu ürünün garantisi var mı?', type: 'product' },
-    { name: 'Mehmet Kaya', email: 'mehmet@test.com', subject: 'İade talebi', message: 'Aldığım ürünü iade etmek istiyorum. Prosedür nedir?', type: 'order' },
-    { name: 'Zeynep Arslan', email: 'zeynep@test.com', subject: 'Fiyat bilgisi', message: 'Toplu alımlarda indirim uyguluyor musunuz?', type: 'contact' },
-    { name: 'Burak Çelik', email: 'burak@test.com', subject: 'Teknik destek', message: '3D yazıcım baskı sırasında katman kayması yapıyor. Yardım edebilir misiniz?', type: 'contact' },
-    { name: 'Selin Yıldız', email: 'selin@test.com', subject: 'Kargo hasarı', message: 'Kargo geldiğinde kutuda hasar vardı. Ne yapmalıyım?', type: 'order' },
-    { name: 'Emre Şahin', email: 'emre@test.com', subject: 'Stok sorusu', message: 'Bu ürün ne zaman tekrar stoğa girecek?', type: 'product' },
-    { name: 'Ayşe Korkmaz', email: 'ayse@test.com', subject: 'Ödeme sorunu', message: 'Kredi kartı ile ödeme yaparken hata alıyorum.', type: 'contact' },
-    { name: 'Can Öztürk', email: 'can@test.com', subject: 'Kurulum yardımı', message: 'Yazıcının kurulumunda sorun yaşıyorum. Kurulum kılavuzu var mı?', type: 'product' },
-    { name: 'Defne Aydın', email: 'defne@test.com', subject: 'Teşekkür', message: 'Siparişim çok hızlı geldi, kaliteden çok memnunum. Teşekkürler!', type: 'contact' },
+    { name: 'Ahmet Yılmaz', email: 'ahmet@test.com', subject: 'Proje hakkında bilgi', message: 'Web sitesi projesi hakkında bilgi almak istiyorum.', type: 'contact' },
+    { name: 'Elif Demir', email: 'elif@test.com', subject: 'Hizmet sorusu', message: 'SEO hizmetiniz hakkında detay alabilir miyim?', type: 'contact' },
+    { name: 'Mehmet Kaya', email: 'mehmet@test.com', subject: 'Teklif talebi', message: 'Kurumsal web sitesi için teklif alabilir miyim?', type: 'contact' },
+    { name: 'Zeynep Arslan', email: 'zeynep@test.com', subject: 'Fiyat bilgisi', message: 'Toplu proje indirimi yapıyor musunuz?', type: 'contact' },
+    { name: 'Burak Çelik', email: 'burak@test.com', subject: 'Teknik destek', message: 'Mevcut web sitemizde performans sorunları yaşıyoruz. Yardım edebilir misiniz?', type: 'contact' },
+    { name: 'Selin Yıldız', email: 'selin@test.com', subject: 'İş birliği teklifi', message: 'Dijital pazarlama alanında iş birliği yapmak istiyoruz.', type: 'contact' },
+    { name: 'Emre Şahin', email: 'emre@test.com', subject: 'Portfolyo sorusu', message: 'E-ticaret projenizin detaylarını öğrenebilir miyim?', type: 'contact' },
+    { name: 'Ayşe Korkmaz', email: 'ayse@test.com', subject: 'Danışmanlık', message: 'Teknoloji seçimi konusunda danışmanlık almak istiyorum.', type: 'contact' },
+    { name: 'Can Öztürk', email: 'can@test.com', subject: 'Staj başvurusu', message: 'Yazılım geliştirme alanında staj yapmak istiyorum.', type: 'contact' },
+    { name: 'Defne Aydın', email: 'defne@test.com', subject: 'Teşekkür', message: 'Harika bir iş çıkardınız, çok teşekkürler!', type: 'contact' },
   ];
 
   for (let i = 0; i < messages.length; i++) {
@@ -721,67 +614,6 @@ async function main() {
     });
   }
   console.log('  ✓ Messages');
-
-  // ── 12. Orders (10) ───────────────────────
-  const orderStatuses = ['new', 'processing', 'shipped', 'delivered', 'delivered', 'delivered', 'cancelled', 'new', 'processing', 'delivered'];
-  const customerNames = ['Ali Veli', 'Fatma Kara', 'Hasan Beyaz', 'Merve Güneş', 'Oğuz Deniz', 'Seda Yılmaz', 'Kemal Aydın', 'Nazlı Demir', 'Baran Çelik', 'Yasemin Korkmaz'];
-
-  for (let i = 0; i < 10; i++) {
-    const prodIdx = i % products.length;
-    const pr = products[prodIdx];
-    await prisma.orderRow.upsert({
-      where: { id: seedId('order', i + 1) },
-      update: {},
-      create: {
-        id: seedId('order', i + 1),
-        productId: seedId('prod', prodIdx + 1),
-        productName: pr.title,
-        productSlug: pr.slug,
-        customerName: customerNames[i],
-        customerEmail: `${customerNames[i].toLowerCase().replace(' ', '.')}@example.com`,
-        customerPhone: `053${String(i + 1).padStart(8, '0')}`,
-        customerAddress: `İstanbul, Türkiye - Adres ${i + 1}`,
-        quantity: (i % 3) + 1,
-        price: pr.price * ((i % 3) + 1),
-        status: orderStatuses[i],
-        note: i % 2 === 0 ? 'Hediye paketi yapılsın lütfen.' : '',
-        createdAt: new Date(2025, Math.floor(i / 3), 5 + i * 2),
-      },
-    });
-  }
-  console.log('  ✓ Orders');
-
-  // ── 13. Product Reviews (10) ──────────────
-  const reviewComments = [
-    { title: 'Harika ürün!', comment: 'Baskı kalitesi beklediğimden çok daha iyi. Kesinlikle tavsiye ederim.', rating: 5 },
-    { title: 'Fiyat/performans iyi', comment: 'Bu fiyata bu kalite gerçekten iyi. Küçük kusurları var ama genel olarak memnunum.', rating: 4 },
-    { title: 'İdare eder', comment: 'Ortalama bir ürün. Çok iyi değil ama çok da kötü değil.', rating: 3 },
-    { title: 'Çok memnunum', comment: 'Hızlı kargo, kaliteli ürün. Teşekkürler!', rating: 5 },
-    { title: 'Beklentimi karşıladı', comment: 'Ürün açıklamada yazıldığı gibi. Sorunsuz çalışıyor.', rating: 4 },
-    { title: 'Süper kalite', comment: 'Daha önce farklı markalar denedim ama bu en iyisi.', rating: 5 },
-    { title: 'Tavsiye ederim', comment: 'Kurulumu kolay, baskı sonuçları tatmin edici.', rating: 4 },
-    { title: 'İyi ama geliştirilebilir', comment: 'Genel olarak iyi bir ürün. Ambalaj biraz daha iyi olabilirdi.', rating: 3 },
-    { title: 'Mükemmel!', comment: 'Tam aradığım ürün. 3D baskı hobime harika bir katkı sağladı.', rating: 5 },
-    { title: 'Gayet başarılı', comment: 'İkinci kez alıyorum, her seferinde aynı kaliteyi sunuyor.', rating: 4 },
-  ];
-
-  for (let i = 0; i < reviewComments.length; i++) {
-    const r = reviewComments[i];
-    await prisma.productReviewRow.upsert({
-      where: { id: seedId('review', i + 1) },
-      update: {},
-      create: {
-        id: seedId('review', i + 1),
-        productId: seedId('prod', (i % products.length) + 1),
-        userId: seedId('user', (i % users.length) + 1),
-        title: r.title,
-        comment: r.comment,
-        rating: r.rating,
-        status: i < 8 ? 'approved' : 'pending',
-      },
-    });
-  }
-  console.log('  ✓ Product Reviews');
 
   console.log('\nDummy data seeding completed!');
 }

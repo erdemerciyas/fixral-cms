@@ -31,7 +31,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 interface RecentItem {
   id: string
   title: string
-  type: 'news' | 'portfolio' | 'service' | 'product'
+  type: 'news' | 'portfolio' | 'service'
   status: 'published' | 'draft'
   date: string
   views: number
@@ -71,7 +71,6 @@ const TYPE_ICONS: Record<string, React.ComponentType<{ className?: string }>> = 
   news: FileText,
   portfolio: ImageIcon,
   service: Box,
-  product: Box,
 }
 
 export default function AdminDashboard() {
@@ -94,7 +93,6 @@ export default function AdminDashboard() {
     newsCount: rawData?.newsCount || 0,
     portfolioCount: rawData?.portfolioCount || 0,
     servicesCount: rawData?.servicesCount || 0,
-    productsCount: rawData?.productsCount || 0,
     usersCount: rawData?.usersCount || 0,
     videosCount: rawData?.mediaCount || 0,
     messagesCount: rawData?.messagesCount || 0,
@@ -129,7 +127,6 @@ export default function AdminDashboard() {
       case 'news': actionText = 'Yeni haber eklendi'; break
       case 'portfolio': actionText = 'Portfolyo güncellendi'; type = 'info'; break
       case 'service': actionText = 'Yeni hizmet eklendi'; break
-      case 'product': actionText = 'Yeni ürün eklendi'; break
     }
     allActivities.push({
       id: `content-${content._id}`,
@@ -158,7 +155,6 @@ export default function AdminDashboard() {
     { title: 'Toplam Haber', value: dashboardStats.newsCount, icon: FileText, href: '/admin/news' },
     { title: 'Portfolyo', value: dashboardStats.portfolioCount, icon: ImageIcon, href: '/admin/portfolio' },
     { title: 'Hizmetler', value: dashboardStats.servicesCount, icon: Box, href: '/admin/services' },
-    { title: 'Ürünler', value: dashboardStats.productsCount, icon: Box, href: '/admin/products' },
     { title: 'Kullanıcılar', value: dashboardStats.usersCount, icon: Users, href: '/admin/users' },
     { title: 'Medya', value: dashboardStats.videosCount, icon: ImageIcon, href: '/admin/media' },
   ]
@@ -167,7 +163,6 @@ export default function AdminDashboard() {
     { name: 'Haber Ekle', href: '/admin/news/create', icon: FileText },
     { name: 'Portfolyo Ekle', href: '/admin/portfolio/new', icon: ImageIcon },
     { name: 'Hizmet Ekle', href: '/admin/services/new', icon: Box },
-    { name: 'Ürün Ekle', href: '/admin/products/new', icon: Box },
   ]
 
   const systemStatus = [
@@ -300,11 +295,9 @@ export default function AdminDashboard() {
                         href={
                           item.type === 'news'
                             ? `/admin/news/${item.id}/edit`
-                            : item.type === 'product'
-                              ? `/admin/products/edit/${item.id}`
-                              : item.type === 'portfolio'
-                                ? `/admin/portfolio/edit/${item.id}`
-                                : `/admin/services/edit/${item.id}`
+                            : item.type === 'portfolio'
+                              ? `/admin/portfolio/edit/${item.id}`
+                              : `/admin/services/edit/${item.id}`
                         }
                       >
                         <Button variant="ghost" size="icon" className="h-7 w-7">

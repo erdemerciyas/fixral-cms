@@ -97,44 +97,6 @@ export const swaggerConfig = {
             },
           },
         },
-        Product: {
-          type: 'object',
-          required: ['name', 'slug', 'description', 'price', 'image'],
-          properties: {
-            _id: {
-              type: 'string',
-              description: 'Product ID',
-            },
-            name: {
-              type: 'string',
-              description: 'Product name',
-            },
-            slug: {
-              type: 'string',
-              description: 'URL-friendly slug',
-            },
-            description: {
-              type: 'string',
-              description: 'Product description',
-            },
-            price: {
-              type: 'number',
-              description: 'Product price',
-            },
-            image: {
-              type: 'string',
-              description: 'Product image URL',
-            },
-            category: {
-              type: 'string',
-              description: 'Product category',
-            },
-            stock: {
-              type: 'number',
-              description: 'Available stock',
-            },
-          },
-        },
         Service: {
           type: 'object',
           required: ['name', 'description', 'icon'],
@@ -319,23 +281,6 @@ export const apiEndpoints = {
         },
         404: {
           description: 'Portfolio item not found',
-        },
-      },
-    },
-  },
-  products: {
-    list: {
-      method: 'GET',
-      path: '/api/public/products',
-      description: 'Get all products',
-      tags: ['Products'],
-      responses: {
-        200: {
-          description: 'Products retrieved successfully',
-          schema: {
-            type: 'array',
-            items: { $ref: '#/components/schemas/Product' },
-          },
         },
       },
     },

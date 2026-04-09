@@ -25,24 +25,6 @@ export async function isAdminAuthenticated(_request: NextRequest): Promise<boole
 }
 
 /**
- * Validate theme slug
- */
-export function isValidThemeSlug(slug: string): boolean {
-  // Only allow alphanumeric, hyphens, and underscores
-  const slugRegex = /^[a-z0-9_-]+$/i;
-  return slugRegex.test(slug) && slug.length >= 2 && slug.length <= 50;
-}
-
-/**
- * Validate plugin slug
- */
-export function isValidPluginSlug(slug: string): boolean {
-  // Only allow alphanumeric, hyphens, and underscores
-  const slugRegex = /^[a-z0-9_-]+$/i;
-  return slugRegex.test(slug) && slug.length >= 2 && slug.length <= 50;
-}
-
-/**
  * Sanitize user input
  */
 export function sanitizeInput(input: string): string {

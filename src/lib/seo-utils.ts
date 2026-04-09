@@ -72,9 +72,3 @@ export function getPortfolioAlternates(slug: string) {
   return generateAlternates(`/tr/portfolio/${slug}`, `/es/portfolio/${slug}`);
 }
 
-/**
- * Ürün slug'ı için TR-ES URL çiftini döndürür.
- */
-export function getProductAlternates(slug: string) {
-  return generateAlternates(`/tr/products/${slug}`, `/es/products/${slug}`);
-}

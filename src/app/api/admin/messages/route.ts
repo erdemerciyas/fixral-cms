@@ -24,15 +24,13 @@ export async function GET(_req: NextRequest) {
     const { searchParams } = new URL(_req.url);
     const scope = searchParams.get('scope');
 
-    let query = {};
-    if (scope === 'general') {
-      // Exclude e-commerce related messages
-      query = { type: { $nin: ['product_question', 'order_question'] } };
-    }
+    const query = scope === 'general'
+      ? { type: { $nin: ['product_question', 'order_question'] } }
+      : {};
 
     const messages = await Message.find(query)
       .sort({ createdAt: -1 })
-      .select('_id name email subject message status type productId productName orderId createdAt updatedAt conversation adminReply');
+      .select('_id name email subject message status type createdAt updatedAt conversation adminReply');
 
     return NextResponse.json(messages);
   } catch (error) {

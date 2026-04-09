@@ -18,7 +18,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 interface ContentItem {
   _id: string;
   title: string;
-  type: 'news' | 'page' | 'portfolio' | 'service' | 'product';
+  type: 'news' | 'page' | 'portfolio' | 'service';
   status: 'published' | 'draft';
   updatedAt: string;
 }
@@ -30,7 +30,7 @@ export default function AdminContentPage() {
   const [loading, setLoading] = useState(true);
   const [content, setContent] = useState<ContentItem[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [typeFilter, setTypeFilter] = useState<'all' | 'news' | 'page' | 'portfolio' | 'service' | 'product'>('all');
+  const [typeFilter, setTypeFilter] = useState<'all' | 'news' | 'page' | 'portfolio' | 'service'>('all');
 
   useEffect(() => {
     if (status === 'loading') return;
@@ -98,7 +98,6 @@ export default function AdminContentPage() {
       case 'page': return '📄';
       case 'portfolio': return '💼';
       case 'service': return '🔧';
-      case 'product': return '🛒';
       default: return '📝';
     }
   };
@@ -109,7 +108,6 @@ export default function AdminContentPage() {
       case 'page': return 'from-emerald-500 to-teal-600';
       case 'portfolio': return 'from-amber-500 to-orange-600';
       case 'service': return 'from-rose-500 to-pink-600';
-      case 'product': return 'from-cyan-500 to-blue-600';
       default: return 'from-slate-500 to-gray-600';
     }
   };
@@ -209,15 +207,6 @@ export default function AdminContentPage() {
                 }`}
             >
               Services ({content.filter(c => c.type === 'service').length})
-            </button>
-            <button
-              onClick={() => setTypeFilter('product')}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${typeFilter === 'product'
-                ? 'bg-card text-primary shadow-sm'
-                : 'text-muted-foreground hover:text-foreground'
-                }`}
-            >
-              Products ({content.filter(c => c.type === 'product').length})
             </button>
           </div>
         </div>

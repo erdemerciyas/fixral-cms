@@ -148,42 +148,6 @@ class SchemaMarkupGenerator {
     };
   }
 
-  /**
-   * Generate Product schema
-   */
-  generateProductSchema(
-    name: string,
-    description: string,
-    image: string,
-    price: number,
-    currency: string = 'USD',
-    rating?: number,
-    reviewCount?: number
-  ): SchemaMarkup {
-    const schema: SchemaMarkup = {
-      '@context': 'https://schema.org',
-      '@type': 'Product',
-      name,
-      description,
-      image,
-      offers: {
-        '@type': 'Offer',
-        price: price.toString(),
-        priceCurrency: currency,
-        availability: 'https://schema.org/InStock',
-      },
-    };
-
-    if (rating && reviewCount) {
-      schema.aggregateRating = {
-        '@type': 'AggregateRating',
-        ratingValue: rating.toString(),
-        reviewCount: reviewCount.toString(),
-      };
-    }
-
-    return schema;
-  }
 
   /**
    * Generate Service schema
