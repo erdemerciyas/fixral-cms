@@ -4,36 +4,21 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import {
-  Settings,
   Check,
   Globe,
   Server,
-  Bell,
-  ShieldCheck,
   Image as ImageIcon
 } from 'lucide-react';
 import ImageUpload from '../../../components/ImageUpload';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
 
 const selectInputClass = cn(
   'flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm'
 );
-
-interface SiteSettings {
-  siteName: string;
-  siteUrl: string;
-  timezone: string;
-  language: string;
-  maintenanceMode: boolean;
-  allowRegistration: boolean;
-  enableComments: boolean;
-  enableAnalytics: boolean;
-}
 
 export default function AdminSiteSettingsPage() {
   const { data: session, status } = useSession();
@@ -50,11 +35,7 @@ export default function AdminSiteSettingsPage() {
     allowRegistration: true,
     enableComments: true,
     system: { maxUploadSize: 10 },
-    analytics: { enableAnalytics: false, googleAnalyticsId: '', googleTagManagerId: '', googleSiteVerification: '' },
-    seo: { metaTitle: '', metaDescription: '', keywords: [] },
-    contact: { email: '', phone: '', address: '' },
     logo: { url: '' },
-    socialMedia: { twitter: '', facebook: '', instagram: '', linkedin: '', github: '' }
   });
 
   useEffect(() => {
@@ -80,11 +61,7 @@ export default function AdminSiteSettingsPage() {
           ...prev,
           ...data,
           system: { ...prev.system, ...data.system },
-          analytics: { ...prev.analytics, ...data.analytics },
-          seo: { ...prev.seo, ...data.seo },
-          contact: { ...prev.contact, ...data.contact },
           logo: { ...prev.logo, ...data.logo },
-          socialMedia: { ...prev.socialMedia, ...data.socialMedia }
         }));
       }
     } catch (error) {
@@ -278,22 +255,17 @@ export default function AdminSiteSettingsPage() {
           </div>
 
 
-          {/* İletişim Bilgileri */}
+          {/* İletişim & Sosyal Medya — ayrı sayfadan yönetilir */}
           <div className="bg-card rounded-xl shadow-sm border border-border/60 p-6">
-            <h2 className="text-lg font-bold text-foreground mb-4">İletişim Bilgileri</h2>
-            <div className="space-y-4">
-              <div>
-                <Label className="block text-sm font-medium text-foreground mb-1">Email</Label>
-                <Input type="email" value={settings.contact?.email || ''} onChange={(e) => updateNested('contact', 'email', e.target.value)} className="w-full px-3 py-2 border rounded-lg outline-none" />
-              </div>
-              <div>
-                <Label className="block text-sm font-medium text-foreground mb-1">Telefon</Label>
-                <Input type="text" value={settings.contact?.phone || ''} onChange={(e) => updateNested('contact', 'phone', e.target.value)} className="w-full px-3 py-2 border rounded-lg outline-none" />
-              </div>
-              <div>
-                <Label className="block text-sm font-medium text-foreground mb-1">Adres</Label>
-                <Textarea rows={2} value={settings.contact?.address || ''} onChange={(e) => updateNested('contact', 'address', e.target.value)} className="w-full px-3 py-2 border rounded-lg outline-none" />
-              </div>
+            <h2 className="text-lg font-bold text-foreground mb-2">İletişim & Sosyal Medya</h2>
+            <p className="text-sm text-muted-foreground mb-4">Bu ayarlar ayrı sayfalardan yönetilmektedir.</p>
+            <div className="flex flex-wrap gap-2">
+              <a href="/admin/contact" className="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors">
+                İletişim Ayarları
+              </a>
+              <a href="/admin/social-media" className="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors">
+                Sosyal Medya
+              </a>
             </div>
           </div>
         </div>
@@ -344,7 +316,7 @@ export default function AdminSiteSettingsPage() {
 
           <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-6">
             <h3 className="font-semibold text-indigo-900 mb-2">Ek Ayarlar</h3>
-            <p className="text-sm text-indigo-700 mb-4">Analytics, SEO ve Sosyal Medya ayarları ayrı sayfalardan yönetilmektedir.</p>
+            <p className="text-sm text-indigo-700 mb-4">Aşağıdaki ayarlar ayrı sayfalardan yönetilmektedir.</p>
             <div className="flex flex-wrap gap-2">
               <a href="/admin/seo" className="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors">
                 SEO Ayarları
@@ -354,6 +326,9 @@ export default function AdminSiteSettingsPage() {
               </a>
               <a href="/admin/social-media" className="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors">
                 Sosyal Medya
+              </a>
+              <a href="/admin/contact" className="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors">
+                İletişim
               </a>
             </div>
           </div>

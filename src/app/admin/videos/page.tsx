@@ -139,7 +139,10 @@ export default function AdminVideosPage() {
           <h1 className="text-2xl font-bold text-foreground">Videos</h1>
           <p className="text-muted-foreground mt-1">Manage your video content</p>
         </div>
-        <button className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-200">
+        <button
+          onClick={() => router.push('/admin/content')}
+          className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-200"
+        >
           <Plus className="w-5 h-5 mr-2" />
           Add Video
         </button>
@@ -198,7 +201,7 @@ export default function AdminVideosPage() {
             className="bg-card rounded-xl shadow-sm border border-border/60 overflow-hidden hover:shadow-lg transition-all duration-300 group"
           >
             {/* Thumbnail */}
-            <div className="relative aspect-video bg-gradient-to-br from-purple-100 to-indigo-100">
+            <div className="relative aspect-video bg-gradient-to-br from-purple-100 to-indigo-100 dark:from-purple-950 dark:to-indigo-950">
               {video.thumbnail ? (
                 <img
                   src={video.thumbnail}
@@ -244,12 +247,9 @@ export default function AdminVideosPage() {
                 </span>
               </div>
               <div className="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button className="p-2 hover:bg-indigo-100 rounded-lg transition-colors">
-                  <Pencil className="w-4 h-4 text-muted-foreground" />
-                </button>
                 <button
                   onClick={() => handleDelete(video._id)}
-                  className="p-2 hover:bg-red-100 rounded-lg transition-colors"
+                  className="p-2 hover:bg-red-100 dark:hover:bg-red-950/50 rounded-lg transition-colors"
                 >
                   <Trash2 className="w-4 h-4 text-muted-foreground" />
                 </button>
@@ -271,7 +271,10 @@ export default function AdminVideosPage() {
             }
           </p>
           {!searchQuery && statusFilter === 'all' && (
-            <button className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-200">
+            <button
+              onClick={() => router.push('/admin/content')}
+              className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-200"
+            >
               <Plus className="w-5 h-5 mr-2" />
               Add Video
             </button>

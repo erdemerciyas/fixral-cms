@@ -123,6 +123,47 @@ export async function PUT(
   }
 }
 
+// POST /api/admin/slider/[id] - Slider durumunu değiştir
+export async function POST(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user || session.user.role !== 'admin') {
+      return NextResponse.json(
+        { error: 'Bu işlem için admin yetkisi gerekli' },
+        { status: 403 }
+      );
+    }
+
+    const { id } = params;
+    const body = await request.json();
+
+    await connectDB();
+
+    const updateData: Record<string, unknown> = {};
+    if (body.status !== undefined) updateData.status = body.status;
+    if (body.isActive !== undefined) updateData.isActive = body.isActive;
+
+    const slider = await Slider.findByIdAndUpdate(id, updateData, { new: true });
+    if (!slider) {
+      return NextResponse.json(
+        { error: 'Slider bulunamadı' },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(slider);
+  } catch (error) {
+    console.error('Slider durumu güncellenirken hata:', error);
+    return NextResponse.json(
+      { error: 'Slider durumu güncellenirken bir hata oluştu' },
+      { status: 500 }
+    );
+  }
+}
+
 // DELETE /api/admin/slider/[id] - Slider sil
 export async function DELETE(
   request: Request,

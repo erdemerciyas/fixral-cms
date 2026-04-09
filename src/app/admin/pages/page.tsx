@@ -191,6 +191,18 @@ export default function AdminPagesPage() {
     }
   };
 
+  const openCreateModal = () => {
+    setEditingPage(null);
+    setEditForm({
+      title: '',
+      path: '/',
+      description: '',
+      icon: '',
+      showInNavigation: true
+    });
+    setIsEditModalOpen(true);
+  };
+
   const openEditModal = (page: PageItem) => {
     setEditingPage(page);
     setEditForm({
@@ -205,35 +217,41 @@ export default function AdminPagesPage() {
 
   const handleEditSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!editingPage) return;
 
     try {
-      const response = await fetch(`/api/admin/pages/${editingPage._id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(editForm),
-      });
+      if (editingPage) {
+        const response = await fetch(`/api/admin/pages/${editingPage._id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(editForm),
+        });
 
-      if (response.ok) {
-        const updatedPage = await response.json();
-        const pageData = updatedPage.data || updatedPage; // Handle potential response inconsistencies
-
-        setPages(pages.map(p => p._id === editingPage._id ? {
-          ...p,
-          ...editForm,
-        } : p));
-
-        setIsEditModalOpen(false);
-        setEditingPage(null);
-        loadPages(); // Reload to ensure sync
-        toast.success('Sayfa güncellendi');
+        if (response.ok) {
+          setPages(pages.map(p => p._id === editingPage._id ? { ...p, ...editForm } : p));
+          setIsEditModalOpen(false);
+          setEditingPage(null);
+          loadPages();
+          toast.success('Sayfa güncellendi');
+        } else {
+          toast.error('Sayfa güncellenemedi');
+        }
       } else {
-        toast.error('Sayfa güncellenemedi');
+        const response = await fetch('/api/admin/pages', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(editForm),
+        });
+
+        if (response.ok) {
+          setIsEditModalOpen(false);
+          loadPages();
+          toast.success('Sayfa oluşturuldu');
+        } else {
+          toast.error('Sayfa oluşturulamadı');
+        }
       }
     } catch (error) {
-      console.error('Güncelleme hatası:', error);
+      console.error('İşlem hatası:', error);
       toast.error('Bir hata oluştu');
     }
   };
@@ -303,6 +321,7 @@ export default function AdminPagesPage() {
           )}
           <Button
             size="lg"
+            onClick={openCreateModal}
             className="h-auto rounded-xl px-6 py-3 font-semibold shadow-none hover:shadow-lg hover:shadow-primary/30"
           >
             <Plus className="size-5" />
@@ -436,7 +455,7 @@ export default function AdminPagesPage() {
       >
         <DialogContent className="max-w-lg rounded-xl p-8 sm:rounded-xl">
           <DialogHeader>
-            <DialogTitle className="text-xl font-bold">Sayfa Düzenle</DialogTitle>
+            <DialogTitle className="text-xl font-bold">{editingPage ? 'Sayfa Düzenle' : 'Yeni Sayfa Oluştur'}</DialogTitle>
           </DialogHeader>
 
           <form onSubmit={handleEditSubmit} className="space-y-4">

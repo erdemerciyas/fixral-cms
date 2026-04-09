@@ -92,6 +92,15 @@ export default function AdminContentPage() {
     });
   };
 
+  const getEditUrl = (type: string, id: string) => {
+    switch (type) {
+      case 'news': return `/admin/news/${id}/edit`;
+      case 'portfolio': return `/admin/portfolio/edit/${id}`;
+      case 'service': return `/admin/services/edit/${id}`;
+      default: return `/admin/${type}/${id}/edit`;
+    }
+  };
+
   const getTypeIcon = (type: string) => {
     switch (type) {
       case 'news': return '📰';
@@ -231,8 +240,8 @@ export default function AdminContentPage() {
                     </h3>
                     <div className="flex items-center space-x-2 mt-1 text-xs text-muted-foreground">
                       <span className={`px-2 py-0.5 rounded-full font-medium ${item.status === 'published'
-                        ? 'bg-emerald-100 text-emerald-700'
-                        : 'bg-amber-100 text-amber-700'
+                        ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300'
+                        : 'bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300'
                         }`}>
                         {item.status}
                       </span>
@@ -243,7 +252,7 @@ export default function AdminContentPage() {
                 </div>
                 <div className="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
                   <Link
-                    href={`/admin/${item.type}/${item._id}/edit`}
+                    href={getEditUrl(item.type, item._id)}
                     className="p-2 hover:bg-primary/10 rounded-lg transition-colors"
                     title="Edit"
                   >
@@ -251,7 +260,7 @@ export default function AdminContentPage() {
                   </Link>
                   <button
                     onClick={() => handleDelete(item._id)}
-                    className="p-2 hover:bg-red-100 rounded-lg transition-colors"
+                    className="p-2 hover:bg-red-100 dark:hover:bg-red-950/50 rounded-lg transition-colors"
                     title="Delete"
                   >
                     <Trash2 className="w-4 h-4 text-muted-foreground" />

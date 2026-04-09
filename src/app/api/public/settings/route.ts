@@ -192,11 +192,12 @@ export const POST = withSecurity(SecurityConfigs.admin)(async (request: NextRequ
       }
 
       if (body.twitterHandle !== undefined) {
+        const currentSiteSettings = await SiteSettings.getSiteSettings();
         siteSettingsUpdate.socialMedia = {
           twitter: body.twitterHandle,
-          linkedin: '',
-          github: '',
-          instagram: ''
+          linkedin: currentSiteSettings.socialMedia?.linkedin ?? '',
+          github: currentSiteSettings.socialMedia?.github ?? '',
+          instagram: currentSiteSettings.socialMedia?.instagram ?? ''
         };
       }
 

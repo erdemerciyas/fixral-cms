@@ -89,22 +89,20 @@ const navigation: NavItem[] = [
     icon: Settings,
     children: [
       { name: 'Site Ayarları', href: '/admin/site-settings' },
-      { name: 'Genel Ayarlar', href: '/admin/settings' },
       { name: 'SEO Ayarları', href: '/admin/seo' },
       { name: 'Analitik', href: '/admin/analytics' },
       { name: 'Sosyal Medya', href: '/admin/social-media' },
+      { name: 'İletişim Ayarları', href: '/admin/contact' },
       { name: 'Kullanıcılar', href: '/admin/users' },
       { name: 'Dil Ayarları', href: '/admin/languages' },
       { name: 'Sitemap', href: '/admin/sitemap' },
-      { name: 'Güncellemeler', href: '/admin/updates' },
     ],
   },
   {
     name: 'Yedekleme & İzleme',
     icon: Database,
     children: [
-      { name: 'Yedekleme', href: '/admin/backup' },
-      { name: 'İzleme', href: '/admin/monitoring' },
+      { name: 'Dışa Aktar', href: '/admin/backup' },
     ],
   },
   {
@@ -112,7 +110,6 @@ const navigation: NavItem[] = [
     icon: Mail,
     children: [
       { name: 'Mesajlar', href: '/admin/messages' },
-      { name: 'İletişim Ayarları', href: '/admin/contact' },
     ],
   },
 ]

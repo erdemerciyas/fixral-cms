@@ -238,7 +238,7 @@ export default function AdminSliderPage() {
               <div className="absolute top-3 left-3">
                 <span className={`px-2 py-1 text-xs font-semibold rounded-full ${slider.status === 'active'
                   ? 'bg-emerald-500 text-white'
-                  : 'bg-muted/500 text-white'
+                  : 'bg-muted text-muted-foreground'
                   }`}>
                   {slider.status}
                 </span>

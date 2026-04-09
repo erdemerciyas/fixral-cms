@@ -145,9 +145,14 @@ export default function AdminUsersPage() {
             : user
         ));
         setEditingUser(null);
+        toast.success('User updated successfully');
+      } else {
+        const data = await response.json();
+        toast.error(data.error || 'Failed to update user');
       }
     } catch (error) {
       console.error('Error updating user:', error);
+      toast.error('Error updating user');
     }
   };
 
@@ -326,7 +331,7 @@ export default function AdminUsersPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search users..."
-              className="w-select pl-12 pr-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+              className="w-full pl-12 pr-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
             />
           </div>
           <div className="flex space-x-2 bg-muted p-1 rounded-xl">
@@ -396,16 +401,16 @@ export default function AdminUsersPage() {
                 <div className="flex items-center space-x-4">
                   <div className="flex items-center space-x-2">
                     <span className={`px-2 py-1 text-xs font-medium rounded-full ${user.role === 'admin'
-                      ? 'bg-indigo-100 text-indigo-700'
+                      ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300'
                       : user.role === 'editor'
-                        ? 'bg-emerald-100 text-emerald-700'
+                        ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300'
                         : 'bg-muted text-foreground'
                       }`}>
                       {user.role}
                     </span>
                     <span className={`px-2 py-1 text-xs font-medium rounded-full ${user.status === 'active'
-                      ? 'bg-emerald-100 text-emerald-700'
-                      : 'bg-red-100 text-red-700'
+                      ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300'
+                      : 'bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300'
                       }`}>
                       {user.status}
                     </span>
@@ -505,7 +510,7 @@ export default function AdminUsersPage() {
 
               {/* Saved Addresses Section */}
               {editingUser.addresses && editingUser.addresses.length > 0 && (
-                <div className="pt-4 border-t border-slate-100">
+                <div className="pt-4 border-t border-border">
                   <h4 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
                     <MapPin className="w-4 h-4 text-indigo-500" />
                     Saved Addresses ({editingUser.addresses.length})
@@ -516,7 +521,7 @@ export default function AdminUsersPage() {
                         <div className="flex items-center justify-between mb-1">
                           <span className="font-semibold text-foreground">{addr.title}</span>
                           {addr.isPrimary && (
-                            <span className="px-1.5 py-0.5 bg-indigo-100 text-indigo-700 text-[10px] rounded-md font-medium">Primary</span>
+                            <span className="px-1.5 py-0.5 bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300 text-[10px] rounded-md font-medium">Primary</span>
                           )}
                         </div>
                         <div className="text-muted-foreground text-xs space-y-0.5">
@@ -639,8 +644,8 @@ export default function AdminUsersPage() {
               <p className="text-sm text-muted-foreground mb-4">
                 Changing password for <span className="font-medium text-foreground">{passwordModalUser.name}</span>
               </p>
-              <div className="mb-4 bg-blue-50 p-3 rounded-lg border border-blue-100">
-                <p className="text-sm text-blue-700 mb-2">
+              <div className="mb-4 bg-blue-50 dark:bg-blue-950/50 p-3 rounded-lg border border-blue-100 dark:border-blue-900">
+                <p className="text-sm text-blue-700 dark:text-blue-300 mb-2">
                   This process requires email verification.
                 </p>
                 <Button

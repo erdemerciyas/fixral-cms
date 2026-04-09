@@ -3,10 +3,8 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import connectDB from '@/lib/mongoose';
 import archiver from 'archiver';
-import { PassThrough } from 'stream';
 import { logger } from '@/core/lib/logger';
 
-// Import All Models
 import News from '@/models/News';
 import SiteSettings from '@/models/SiteSettings';
 import Portfolio from '@/models/Portfolio';
@@ -24,27 +22,17 @@ import Message from '@/models/Message';
 import PageSetting from '@/models/PageSetting';
 
 export const dynamic = 'force-dynamic';
+export const maxDuration = 300;
 
-// Helper to download image (using global fetch)
-async function downloadImage(url: string): Promise<Buffer | null> {
-    if (!url || !url.startsWith('http')) return null;
-    const res = await fetch(url);
-    if (!res.ok) return null;
-    return Buffer.from(await res.arrayBuffer());
-}
-
-// Convert stream to iterator for Next.js response
-function iteratorToStream(iterator: any) {
-    return new ReadableStream({
-        async pull(controller) {
-            const { value, done } = await iterator.next();
-            if (done) {
-                controller.close();
-            } else {
-                controller.enqueue(value);
-            }
-        },
-    });
+async function downloadFile(url: string): Promise<Buffer | null> {
+    try {
+        if (!url || !url.startsWith('http')) return null;
+        const res = await fetch(url, { signal: AbortSignal.timeout(15000) });
+        if (!res.ok) return null;
+        return Buffer.from(await res.arrayBuffer());
+    } catch {
+        return null;
+    }
 }
 
 export async function GET(req: NextRequest) {
@@ -55,11 +43,10 @@ export async function GET(req: NextRequest) {
         }
 
         const searchParams = req.nextUrl.searchParams;
-        const includeMedia = searchParams.get('includeMedia') === 'true';
+        const includeMedia = searchParams.get('includeMedia') !== 'false';
 
         await connectDB();
 
-        // Fetch ALL data
         const [
             news, siteSettings, portfolios, services,
             sliders, about, contact, footer, contentSettings,
@@ -93,52 +80,56 @@ export async function GET(req: NextRequest) {
             }
         };
 
+        const archive = archiver('zip', { zlib: { level: 5 } });
+        const chunks: Uint8Array[] = [];
+
+        archive.on('data', (chunk: Buffer) => chunks.push(new Uint8Array(chunk)));
+
+        const archiveFinished = new Promise<Buffer>((resolve, reject) => {
+            archive.on('end', () => resolve(Buffer.concat(chunks)));
+            archive.on('error', reject);
+        });
+
+        archive.append(JSON.stringify(backupData, null, 2), { name: 'backup_data.json' });
+
         if (includeMedia) {
-            const archive = archiver('zip', { zlib: { level: 9 } });
-            const stream = new PassThrough();
-
-            archive.pipe(stream);
-            archive.append(JSON.stringify(backupData, null, 2), { name: 'full_backup_data.json' });
-
             const mediaFiles: { url: string; name: string }[] = [];
             const seenUrls = new Set<string>();
 
             const addMedia = (url: string | undefined, prefix: string, slugOrId: string) => {
-                if (url && !seenUrls.has(url)) {
-                    // Clean URL params if any
-                    const cleanUrl = url.split('?')[0];
-                    const ext = cleanUrl.split('.').pop() || 'jpg';
-                    const safeSlug = slugOrId.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-                    mediaFiles.push({ url, name: `media/${prefix}/${safeSlug}.${ext}` });
-                    seenUrls.add(url);
-                }
+                if (!url || !url.startsWith('http') || seenUrls.has(url)) return;
+                const cleanUrl = url.split('?')[0];
+                const ext = cleanUrl.split('.').pop() || 'jpg';
+                const safeSlug = slugOrId.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+                mediaFiles.push({ url, name: `media/${prefix}/${safeSlug}.${ext}` });
+                seenUrls.add(url);
             };
 
-            // 1. Site Settings (Logo)
             siteSettings.forEach((s: any) => {
                 if (s.logo?.url) addMedia(s.logo.url, 'site', 'logo');
+                if (s.favicon?.url) addMedia(s.favicon.url, 'site', 'favicon');
             });
 
-            // 2. News
             news.forEach((item: any) => {
-                if (item.featuredImage?.url) addMedia(item.featuredImage.url, 'news', `${item.slug}-featured`);
+                if (item.featuredImage?.url) addMedia(item.featuredImage.url, 'news', `${item.slug || item._id}-featured`);
+                if (item.image) addMedia(item.image, 'news', `${item.slug || item._id}-image`);
             });
 
-            // 3. Portfolios
             portfolios.forEach((item: any) => {
-                if (item.coverImage) addMedia(item.coverImage, 'portfolio', `${item.slug}-cover`);
+                if (item.coverImage) addMedia(item.coverImage, 'portfolio', `${item.slug || item._id}-cover`);
                 if (Array.isArray(item.images)) {
-                    item.images.forEach((url: string, idx: number) => addMedia(url, 'portfolio', `${item.slug}-img-${idx}`));
+                    item.images.forEach((img: any, idx: number) => {
+                        const url = typeof img === 'string' ? img : img?.url;
+                        addMedia(url, 'portfolio', `${item.slug || item._id}-img-${idx}`);
+                    });
                 }
             });
 
-            // 5. Services
             services.forEach((item: any) => {
-                if (item.icon) addMedia(item.icon, 'services', `${item.slug}-icon`);
-                if (item.image) addMedia(item.image, 'services', `${item.slug}-image`);
+                if (item.icon) addMedia(item.icon, 'services', `${item.slug || item._id}-icon`);
+                if (item.image) addMedia(item.image, 'services', `${item.slug || item._id}-image`);
             });
 
-            // 6. Sliders
             sliders.forEach((slider: any) => {
                 if (Array.isArray(slider.items)) {
                     slider.items.forEach((item: any, idx: number) => {
@@ -148,7 +139,6 @@ export async function GET(req: NextRequest) {
                 }
             });
 
-            // 7. About
             about.forEach((item: any) => {
                 if (item.image) addMedia(item.image, 'about', 'main-image');
                 if (Array.isArray(item.gallery)) {
@@ -156,40 +146,49 @@ export async function GET(req: NextRequest) {
                 }
             });
 
-            (async () => {
-                for (const file of mediaFiles) {
-                    const buffer = await downloadImage(file.url);
-                    if (buffer) {
-                        try {
+            videos.forEach((item: any) => {
+                if (item.thumbnail) addMedia(item.thumbnail, 'videos', `${item._id}-thumb`);
+            });
+
+            const BATCH_SIZE = 5;
+            for (let i = 0; i < mediaFiles.length; i += BATCH_SIZE) {
+                const batch = mediaFiles.slice(i, i + BATCH_SIZE);
+                const results = await Promise.allSettled(
+                    batch.map(async (file) => {
+                        const buffer = await downloadFile(file.url);
+                        if (buffer) {
                             archive.append(buffer, { name: file.name });
-                        } catch {
-                            logger.warn('Failed to append file to zip', 'BACKUP', { file: file.name });
                         }
+                    })
+                );
+                results.forEach((r, idx) => {
+                    if (r.status === 'rejected') {
+                        logger.warn('Failed to download media for backup', 'BACKUP', {
+                            file: batch[idx].name,
+                            url: batch[idx].url,
+                        });
                     }
-                }
-                await archive.finalize();
-            })().catch(err => {
-                logger.error('Archive generation failed', 'BACKUP', { error: err });
-                archive.abort();
-            });
+                });
+            }
 
-            return new NextResponse(iteratorToStream(stream[Symbol.asyncIterator]()), {
-                headers: {
-                    'Content-Type': 'application/zip',
-                    'Content-Disposition': `attachment; filename="fixral-full-backup-${new Date().toISOString().split('T')[0]}.zip"`,
-                },
-            });
-
-        } else {
-            // JSON Only
-            return new NextResponse(JSON.stringify(backupData, null, 2), {
-                status: 200,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Content-Disposition': `attachment; filename="fixral-full-backup-data-${new Date().toISOString().split('T')[0]}.json"`
-                }
-            });
+            const manifest = {
+                totalMedia: mediaFiles.length,
+                files: mediaFiles.map(f => f.name),
+            };
+            archive.append(JSON.stringify(manifest, null, 2), { name: 'media_manifest.json' });
         }
+
+        archive.finalize();
+        const zipBuffer = await archiveFinished;
+
+        return new NextResponse(zipBuffer, {
+            status: 200,
+            headers: {
+                'Content-Type': 'application/zip',
+                'Content-Length': zipBuffer.length.toString(),
+                'Content-Disposition': `attachment; filename="fixral-backup-${new Date().toISOString().split('T')[0]}.zip"`,
+            },
+        });
 
     } catch (error) {
         logger.error('Export failed', 'BACKUP', { error });

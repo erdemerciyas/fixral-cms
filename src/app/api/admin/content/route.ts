@@ -2,7 +2,59 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import Video from "@/models/Video";
+import News from "@/models/News";
+import Service from "@/models/Service";
+import Portfolio from "@/models/Portfolio";
 import connectDB from "@/lib/mongoose";
+
+export async function GET() {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    await connectDB();
+
+    const [news, services, portfolios] = await Promise.all([
+      News.find().select('title status updatedAt createdAt').sort({ createdAt: -1 }).lean(),
+      Service.find().select('title status updatedAt createdAt').sort({ createdAt: -1 }).lean(),
+      Portfolio.find().select('title status updatedAt createdAt').sort({ createdAt: -1 }).lean(),
+    ]);
+
+    const allContent = [
+      ...news.map((item: any) => ({
+        _id: item._id?.toString() || item.id,
+        title: item.title || 'Untitled',
+        type: 'news' as const,
+        status: item.status || 'draft',
+        updatedAt: item.updatedAt || item.createdAt || new Date().toISOString(),
+      })),
+      ...services.map((item: any) => ({
+        _id: item._id?.toString() || item.id,
+        title: item.title || 'Untitled',
+        type: 'service' as const,
+        status: item.status || 'draft',
+        updatedAt: item.updatedAt || item.createdAt || new Date().toISOString(),
+      })),
+      ...portfolios.map((item: any) => ({
+        _id: item._id?.toString() || item.id,
+        title: item.title || 'Untitled',
+        type: 'portfolio' as const,
+        status: item.status || 'draft',
+        updatedAt: item.updatedAt || item.createdAt || new Date().toISOString(),
+      })),
+    ].sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
+
+    return NextResponse.json(allContent);
+  } catch (error) {
+    console.error("Error fetching content:", error);
+    return NextResponse.json(
+      { error: "İçerik yüklenirken hata oluştu" },
+      { status: 500 }
+    );
+  }
+}
 
 function extractVideoId(url: string): string | null {
   const patterns = [

@@ -20,6 +20,8 @@ import {
   DollarSign
 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { toast } from 'sonner';
+import { useConfirm } from '@/hooks/use-confirm';
 
 interface ServiceItem {
   _id: string;
@@ -38,6 +40,7 @@ interface ServiceItem {
 export default function AdminServicesPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const { confirm } = useConfirm();
   const [loading, setLoading] = useState(true);
   const [services, setServices] = useState<ServiceItem[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -86,7 +89,8 @@ export default function AdminServicesPage() {
   };
 
   const handleDelete = async (serviceId: string) => {
-    if (!confirm('Bu hizmeti silmek istediğinizden emin misiniz?')) return;
+    const confirmed = await confirm({ title: 'Emin misiniz?', description: 'Bu hizmeti silmek istediğinizden emin misiniz?' });
+    if (!confirmed) return;
 
     try {
       const response = await fetch(`/api/admin/services/${serviceId}`, {
@@ -100,14 +104,19 @@ export default function AdminServicesPage() {
           newSelected.delete(serviceId);
           setSelectedItems(newSelected);
         }
+        toast.success('Hizmet başarıyla silindi');
+      } else {
+        toast.error('Hizmet silinemedi');
       }
     } catch (error) {
       console.error('Hizmet silinirken hata:', error);
+      toast.error('Hizmet silinirken hata oluştu');
     }
   };
 
   const handleBulkDelete = async () => {
-    if (!confirm(`${selectedItems.size} hizmeti silmek istediğinizden emin misiniz?`)) return;
+    const confirmed = await confirm({ title: 'Emin misiniz?', description: `${selectedItems.size} hizmeti silmek istediğinizden emin misiniz?` });
+    if (!confirmed) return;
 
     try {
       await Promise.all(
@@ -117,8 +126,10 @@ export default function AdminServicesPage() {
       );
       setServices(services.filter(service => !selectedItems.has(service._id)));
       setSelectedItems(new Set());
+      toast.success('Seçilen hizmetler silindi');
     } catch (error) {
       console.error('Hizmetler silinirken hata:', error);
+      toast.error('Hizmetler silinirken hata oluştu');
     }
   };
 
@@ -220,21 +231,21 @@ export default function AdminServicesPage() {
               >
                 Tümü
               </button>
-              <div className="w-px h-4 bg-slate-200 mx-1" />
+              <div className="w-px h-4 bg-border mx-1" />
               <button
                 onClick={() => setStatusFilter('published')}
                 className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${statusFilter === 'published'
-                  ? 'bg-emerald-50 text-emerald-700 shadow-sm'
+                  ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300 shadow-sm'
                   : 'text-muted-foreground hover:text-emerald-700'
                   }`}
               >
                 Yayında
               </button>
-              <div className="w-px h-4 bg-slate-200 mx-1" />
+              <div className="w-px h-4 bg-border mx-1" />
               <button
                 onClick={() => setStatusFilter('draft')}
                 className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${statusFilter === 'draft'
-                  ? 'bg-amber-50 text-amber-700 shadow-sm'
+                  ? 'bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-300 shadow-sm'
                   : 'text-muted-foreground hover:text-amber-700'
                   }`}
               >
@@ -330,7 +341,7 @@ export default function AdminServicesPage() {
                       />
                     ) : (
                       <div className="w-full h-full flex flex-col items-center justify-center text-muted-foreground/50 gap-3">
-                        <div className={`w-16 h-16 rounded-xl flex items-center justify-center bg-card shadow-sm border border-slate-100`}>
+                        <div className={`w-16 h-16 rounded-xl flex items-center justify-center bg-card shadow-sm border border-border`}>
                           <Box className="w-8 h-8 text-primary" />
                         </div>
                       </div>
@@ -380,7 +391,7 @@ export default function AdminServicesPage() {
                       {service.description}
                     </p>
 
-                    <div className="flex items-center justify-between pt-4 border-t border-slate-100">
+                    <div className="flex items-center justify-between pt-4 border-t border-border">
                       <div className="flex items-center text-sm font-semibold text-foreground">
                         {service.price ? (
                           <span className="flex items-center gap-1">
@@ -402,7 +413,7 @@ export default function AdminServicesPage() {
                         </button>
                         <Link
                           href={`/admin/services/edit/${service._id}`}
-                          className="flex items-center px-3 py-1.5 bg-muted text-foreground text-sm font-medium rounded-lg hover:bg-slate-200 transition-colors"
+                          className="flex items-center px-3 py-1.5 bg-muted text-foreground text-sm font-medium rounded-lg hover:bg-muted/80 transition-colors"
                         >
                           <Pencil className="w-3.5 h-3.5 mr-1.5" />
                           Düzenle
@@ -434,7 +445,7 @@ export default function AdminServicesPage() {
                     <th className="px-6 py-4 w-32 text-right">İşlemler</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-border">
                   {filteredServices.map(service => (
                     <tr
                       key={service._id}
@@ -477,8 +488,8 @@ export default function AdminServicesPage() {
                       <td className="px-6 py-4">
                         <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border
                                   ${service.status === 'published'
-                            ? 'bg-emerald-50 text-emerald-700 border-emerald-100'
-                            : 'bg-amber-50 text-amber-700 border-amber-100'}
+                            ? 'bg-emerald-50 text-emerald-700 border-emerald-100 dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-900'
+                            : 'bg-amber-50 text-amber-700 border-amber-100 dark:bg-amber-950 dark:text-amber-300 dark:border-amber-900'}
                                `}>
                           <span className={`w-1.5 h-1.5 rounded-full mr-1.5
                                      ${service.status === 'published' ? 'bg-emerald-500' : 'bg-amber-500'}

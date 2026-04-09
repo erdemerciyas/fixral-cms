@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
 
 const selectInputClass = cn(
   'flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm'
@@ -88,11 +89,11 @@ export default function SliderForm({ initialData, isEditing = false }: SliderFor
                 router.refresh();
             } else {
                 const data = await response.json();
-                alert(data.error || 'Operation failed');
+                toast.error(data.error || 'İşlem başarısız');
             }
         } catch (error) {
             console.error('Error saving slider:', error);
-            alert('An error occurred');
+            toast.error('Bir hata oluştu');
         } finally {
             setLoading(false);
         }
