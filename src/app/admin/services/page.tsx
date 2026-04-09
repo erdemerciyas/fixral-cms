@@ -67,7 +67,7 @@ export default function AdminServicesPage() {
         const mappedData = data.map((item: any) => ({
           ...item,
           title: item.title || item.name || 'İsimsiz Hizmet',
-          status: item.status || 'published',
+          status: item.status || (item.isActive === false ? 'draft' : 'published'),
           category: item.category || 'Genel',
           description: item.description || 'Açıklama yok',
           price: item.price || undefined,

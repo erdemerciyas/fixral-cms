@@ -17,9 +17,9 @@ export async function GET() {
     await connectDB();
 
     const [news, services, portfolios] = await Promise.all([
-      News.find().select('title status updatedAt createdAt').sort({ createdAt: -1 }).lean(),
-      Service.find().select('title status updatedAt createdAt').sort({ createdAt: -1 }).lean(),
-      Portfolio.find().select('title status updatedAt createdAt').sort({ createdAt: -1 }).lean(),
+      News.find().select('title status isActive updatedAt createdAt').sort({ createdAt: -1 }).lean(),
+      Service.find().select('title isActive updatedAt createdAt').sort({ createdAt: -1 }).lean(),
+      Portfolio.find().select('title isActive updatedAt createdAt').sort({ createdAt: -1 }).lean(),
     ]);
 
     const allContent = [
@@ -27,21 +27,21 @@ export async function GET() {
         _id: item._id?.toString() || item.id,
         title: item.title || 'Untitled',
         type: 'news' as const,
-        status: item.status || 'draft',
+        status: item.status || (item.isActive ? 'published' : 'draft'),
         updatedAt: item.updatedAt || item.createdAt || new Date().toISOString(),
       })),
       ...services.map((item: any) => ({
         _id: item._id?.toString() || item.id,
         title: item.title || 'Untitled',
         type: 'service' as const,
-        status: item.status || 'draft',
+        status: item.isActive ? 'published' : 'draft',
         updatedAt: item.updatedAt || item.createdAt || new Date().toISOString(),
       })),
       ...portfolios.map((item: any) => ({
         _id: item._id?.toString() || item.id,
         title: item.title || 'Untitled',
         type: 'portfolio' as const,
-        status: item.status || 'draft',
+        status: item.isActive ? 'published' : 'draft',
         updatedAt: item.updatedAt || item.createdAt || new Date().toISOString(),
       })),
     ].sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());

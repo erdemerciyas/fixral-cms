@@ -54,10 +54,10 @@ export const GET = withSecurity(SecurityConfigs.admin)(async () => {
       Message.find({ type: 'contact' }).sort({ createdAt: -1 }).limit(5).select('name email subject createdAt status'),
       News.countDocuments(),
       Category.countDocuments(),
-      News.find().sort({ createdAt: -1 }).limit(5).select('title status createdAt views'),
-      Portfolio.find().sort({ createdAt: -1 }).limit(5).select('title status createdAt'),
-      Service.find().sort({ createdAt: -1 }).limit(5).select('title status createdAt'),
-      User.find().sort({ createdAt: -1 }).limit(5).select('name email role createdAt'),
+      News.find().sort({ createdAt: -1 }).limit(5).select('title status createdAt views slug'),
+      Portfolio.find().sort({ createdAt: -1 }).limit(5).select('title isActive createdAt slug'),
+      Service.find().sort({ createdAt: -1 }).limit(5).select('title isActive createdAt slug'),
+      User.find().sort({ createdAt: -1 }).limit(5).select('name email role createdAt isActive'),
       Message.countDocuments({ type: 'contact', status: { $in: ['unread', 'new'] } }),
     ]);
 
@@ -89,9 +89,9 @@ export const GET = withSecurity(SecurityConfigs.admin)(async () => {
         type: 'user'
       })),
       recentContent: [
-        ...recentNews.map(item => ({ ...item.toObject(), type: 'news', title: item.title })),
-        ...recentPortfolio.map(item => ({ ...item.toObject(), type: 'portfolio', title: item.title })),
-        ...recentServices.map(item => ({ ...item.toObject(), type: 'service', title: item.title })),
+        ...recentNews.map(item => ({ ...item.toObject(), type: 'news', title: item.title, status: item.status || (item.isActive ? 'published' : 'draft') })),
+        ...recentPortfolio.map(item => ({ ...item.toObject(), type: 'portfolio', title: item.title, status: item.isActive ? 'published' : 'draft' })),
+        ...recentServices.map(item => ({ ...item.toObject(), type: 'service', title: item.title, status: item.isActive ? 'published' : 'draft' })),
       ].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).slice(0, 5)
     };
 
