@@ -34,7 +34,7 @@ export async function generateMetadata(): Promise<Metadata> {
     const seoConfig = siteSettings.seoConfig || {};
     const analyticsConfig = siteSettings.analyticsConfig || {};
 
-    let title = siteSettings.siteName || 'Personal Blog';
+    let title = siteSettings.siteName || 'Fixral CMS';
     let description = siteSettings.slogan || siteSettings.description || 'Kişisel blog ve portfolyo sitesi';
     let keywords = siteSettings.seo?.keywords || [];
 

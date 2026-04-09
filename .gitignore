@@ -21,6 +21,7 @@ jspm_packages/
 
 # next.js
 /.next/
+**/.next/
 /out/
 
 # production
@@ -96,3 +97,7 @@ build_output*.txt
 
 # Zip archives
 *.zip
+
+# Lint output artifacts
+lint_output_current.txt
+lint_results.txt

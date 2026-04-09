@@ -49,6 +49,7 @@ export const GET = withSecurity(SecurityConfigs.admin)(async (request: NextReque
     // 1. Cloudinary'den dosyaları çek
     try {
       let cloudinaryResult = { total_count: 0, resources: [] };
+      const cloudinaryFolder = process.env.CLOUDINARY_FOLDER || 'personal-blog';
 
       try {
         // Admin API ile görselleri çek
@@ -62,26 +63,24 @@ export const GET = withSecurity(SecurityConfigs.admin)(async (request: NextReque
         const siteContexts = ['site', 'site-logo', 'favicon', 'general', 'logo', 'hero', 'banner', 'og-image'];
 
         if (pageContextFilter === 'all') {
-          resourceOptions.prefix = 'personal-blog/';
+          resourceOptions.prefix = `${cloudinaryFolder}/`;
         } else if (siteContexts.includes(pageContextFilter)) {
-          resourceOptions.prefix = 'personal-blog/';
+          resourceOptions.prefix = `${cloudinaryFolder}/`;
         } else {
-          // Try specific subfolder first; fallback handled below
-          resourceOptions.prefix = `personal-blog/${pageContextFilter}/`;
+          resourceOptions.prefix = `${cloudinaryFolder}/${pageContextFilter}/`;
         }
 
         let adminResult = await cloudinary.api.resources(resourceOptions);
 
-        // Fallback: if specific subfolder returned nothing, retry with root prefix
         if (
           (!adminResult.resources || adminResult.resources.length === 0) &&
-          resourceOptions.prefix !== 'personal-blog/' &&
-          resourceOptions.prefix !== 'personal-blog/products/'
+          resourceOptions.prefix !== `${cloudinaryFolder}/` &&
+          resourceOptions.prefix !== `${cloudinaryFolder}/products/`
         ) {
-          console.log(`📋 No files in ${resourceOptions.prefix}, falling back to personal-blog/`);
+          console.log(`📋 No files in ${resourceOptions.prefix}, falling back to ${cloudinaryFolder}/`);
           adminResult = await cloudinary.api.resources({
             ...resourceOptions,
-            prefix: 'personal-blog/'
+            prefix: `${cloudinaryFolder}/`
           });
         }
 
@@ -111,7 +110,7 @@ export const GET = withSecurity(SecurityConfigs.admin)(async (request: NextReque
         // Ürün medyasını sadece 'site' kapsamındayken hariç tut
         const shouldExcludeProducts = pageContextFilter === 'site';
         for (const resource of cloudinaryResult.resources as CloudinaryResource[]) {
-          const isProduct = resource.public_id?.startsWith('personal-blog/products/');
+          const isProduct = resource.public_id?.startsWith(`${cloudinaryFolder}/products/`);
           if (shouldExcludeProducts && isProduct) {
             continue;
           }

@@ -3,17 +3,17 @@ import { NextRequest } from 'next/server';
 
 // JWT configuration
 const getJWTAccessSecret = (): string => {
-  const secret = process.env.JWT_ACCESS_SECRET || process.env.NEXTAUTH_SECRET || 'your-access-secret';
+  const secret = process.env.JWT_ACCESS_SECRET || process.env.NEXTAUTH_SECRET;
   if (!secret || secret.length < 8) {
-    throw new Error('JWT_ACCESS_SECRET must be at least 8 characters long');
+    throw new Error('JWT_ACCESS_SECRET or NEXTAUTH_SECRET must be configured and at least 8 characters long');
   }
   return secret;
 };
 
 const getJWTRefreshSecret = (): string => {
-  const secret = process.env.JWT_REFRESH_SECRET || (process.env.NEXTAUTH_SECRET ? process.env.NEXTAUTH_SECRET + '_refresh' : 'your-refresh-secret');
+  const secret = process.env.JWT_REFRESH_SECRET || (process.env.NEXTAUTH_SECRET ? process.env.NEXTAUTH_SECRET + '_refresh' : undefined);
   if (!secret || secret.length < 8) {
-    throw new Error('JWT_REFRESH_SECRET must be at least 8 characters long');
+    throw new Error('JWT_REFRESH_SECRET or NEXTAUTH_SECRET must be configured and at least 8 characters long');
   }
   return secret;
 };
@@ -44,8 +44,8 @@ export function generateAccessToken(payload: Omit<JWTPayload, 'iat' | 'exp'>): s
     // @ts-expect-error - TypeScript overload issue with jsonwebtoken
     return sign(payload, secret, {
       expiresIn: ACCESS_TOKEN_EXPIRY,
-      issuer: 'personal-blog',
-      audience: 'personal-blog-users'
+      issuer: 'fixral-cms',
+      audience: 'fixral-cms-users'
     });
   } catch (error) {
     console.error('Access token generation error:', error);
@@ -62,8 +62,8 @@ export function generateRefreshToken(payload: Omit<JWTPayload, 'iat' | 'exp'>): 
     // @ts-expect-error - TypeScript overload issue with jsonwebtoken
     return sign(payload, secret, {
       expiresIn: REFRESH_TOKEN_EXPIRY,
-      issuer: 'personal-blog',
-      audience: 'personal-blog-users'
+      issuer: 'fixral-cms',
+      audience: 'fixral-cms-users'
     });
   } catch (error) {
     console.error('Refresh token generation error:', error);
@@ -95,8 +95,8 @@ export function verifyAccessToken(token: string): JWTPayload {
   try {
     const secret = getJWTAccessSecret();
     const decoded = verify(token, secret, {
-      issuer: 'personal-blog',
-      audience: 'personal-blog-users'
+      issuer: 'fixral-cms',
+      audience: 'fixral-cms-users'
     }) as JWTPayload;
     
     return decoded;
@@ -113,8 +113,8 @@ export function verifyRefreshToken(token: string): JWTPayload {
   try {
     const secret = getJWTRefreshSecret();
     const decoded = verify(token, secret, {
-      issuer: 'personal-blog',
-      audience: 'personal-blog-users'
+      issuer: 'fixral-cms',
+      audience: 'fixral-cms-users'
     }) as JWTPayload;
     
     return decoded;

@@ -256,6 +256,7 @@ NEXTAUTH_URL=http://localhost:3000
 CLOUDINARY_CLOUD_NAME=your-cloud-name
 CLOUDINARY_API_KEY=your-api-key
 CLOUDINARY_API_SECRET=your-api-secret
+CLOUDINARY_FOLDER=personal-blog
 
 # Gmail SMTP (Email)
 GMAIL_USER=your-gmail@gmail.com

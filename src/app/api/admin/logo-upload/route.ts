@@ -49,7 +49,8 @@ export const POST = withSecurity(SecurityConfigs.admin)(async (request: NextRequ
     const publicId = `logo-${Date.now()}_${fileHash}_${sanitized}`;
 
     // Cloudinary'e yükle
-    const folder = 'personal-blog/site/logo';
+    const cloudinaryFolder = process.env.CLOUDINARY_FOLDER || 'personal-blog';
+    const folder = `${cloudinaryFolder}/site/logo`;
     const result = await new Promise<UploadApiResponse>((resolve, reject) => {
       cloudinary.uploader
         .upload_stream(
@@ -59,7 +60,7 @@ export const POST = withSecurity(SecurityConfigs.admin)(async (request: NextRequ
             public_id: publicId,
             overwrite: false,
             unique_filename: false,
-            tags: ['logo', 'personal-blog'],
+            tags: ['logo', 'fixral-cms'],
             transformation: [{ quality: 'auto:good' }, { fetch_format: 'auto' }],
             strip_metadata: true,
             width: 1024,

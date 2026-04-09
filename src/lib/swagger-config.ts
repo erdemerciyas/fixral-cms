@@ -7,7 +7,7 @@ export const swaggerConfig = {
     openapi: '3.0.0',
     info: {
       title: 'Fixral API',
-      description: 'Personal Blog & Portfolio Platform API Documentation',
+      description: 'Fixral CMS - Advanced Content Management Platform API Documentation',
       version: '2.5.4',
       contact: {
         name: 'Erdem Erciyas',

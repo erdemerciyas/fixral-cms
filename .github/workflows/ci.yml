@@ -64,7 +64,7 @@ jobs:
         env:
           NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET || env.NEXTAUTH_SECRET }}
           NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL || env.NEXTAUTH_URL }}
-          MONGODB_URI: ${{ secrets.MONGODB_URI || 'mongodb://localhost:27017/personal-blog-ci' }}
+          MONGODB_URI: ${{ secrets.MONGODB_URI || 'mongodb://localhost:27017/fixral-cms-ci' }}
           SKIP_ENV_VALIDATION: "true"
           NODE_ENV: production
 
@@ -110,5 +110,5 @@ jobs:
         env:
           NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET || env.NEXTAUTH_SECRET }}
           NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL || env.NEXTAUTH_URL }}
-          MONGODB_URI: ${{ secrets.MONGODB_URI || 'mongodb://localhost:27017/personal-blog-ci' }}
+          MONGODB_URI: ${{ secrets.MONGODB_URI || 'mongodb://localhost:27017/fixral-cms-ci' }}
           SKIP_ENV_VALIDATION: "true"

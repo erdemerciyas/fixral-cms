@@ -35,7 +35,7 @@ export default function PWAInstallPrompt() {
           <div className="flex-1 min-w-0">
             {/* Title */}
             <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-1">
-              Install Personal Blog
+              Install Fixral
             </h3>
 
             {/* Description */}

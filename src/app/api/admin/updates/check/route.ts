@@ -18,7 +18,7 @@ export async function GET() {
 
         // GitHub Repository Info
         const OWNER = 'erdemerciyas';
-        const REPO = 'personal-blog';
+        const REPO = 'fixral-cms';
         const GITHUB_API_URL = `https://api.github.com/repos/${OWNER}/${REPO}/releases/latest`;
 
         // Check Remote

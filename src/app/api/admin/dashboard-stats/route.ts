@@ -28,7 +28,7 @@ export const GET = withSecurity(SecurityConfigs.admin)(async () => {
 
       const allResult = await cloudinary.api.resources({
         type: 'upload',
-        prefix: 'personal-blog/',
+        prefix: `${process.env.CLOUDINARY_FOLDER || 'personal-blog'}/`,
         max_results: 500
       });
 

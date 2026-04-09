@@ -11,7 +11,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   const { lang } = await params;
   const canonical = lang === 'es' ? `${SITE_URL}/es` : `${SITE_URL}/tr`;
 
-  let title = 'Personal Blog';
+  let title = 'Fixral CMS';
   let description = '';
 
   try {

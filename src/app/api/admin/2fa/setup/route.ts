@@ -45,7 +45,7 @@ export async function POST(req: Request) {
         }
 
         // Generate TOTP auth URL
-        const service = 'Personal Blog Admin';
+        const service = 'Fixral CMS Admin';
         console.log('Generating keyuri...');
         let otpauth;
         try {
