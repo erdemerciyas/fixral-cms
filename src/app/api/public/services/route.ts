@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
 import connectDB from '@/lib/mongoose';
 import slugify from 'slugify';
 
@@ -70,8 +69,6 @@ export const POST = withSecurity(SecurityConfigs.admin)(asyncHandler(async (requ
 
   const imageUrl = body.image || '';
 
-  const session = await getServerSession();
-
   const slugBase = slugify(body.title.trim(), { lower: true, strict: true, replacement: '-' });
   const slug = body.slug || `${slugBase}-${Date.now()}`;
 
@@ -84,7 +81,6 @@ export const POST = withSecurity(SecurityConfigs.admin)(asyncHandler(async (requ
     translations: body.translations || null,
     createdAt: new Date(),
     updatedAt: new Date(),
-    createdBy: session?.user?.email
   };
 
   try {

@@ -128,7 +128,9 @@ const ModernEditor: React.FC<ModernEditorProps> = ({
   // Editör konfigürasyonu
   const extensions = [
     StarterKit.configure({
-      codeBlock: false, // Lowlight ile değiştireceğiz
+      codeBlock: false,
+      link: false,
+      underline: false,
     }),
     TextStyle,
     Color,
