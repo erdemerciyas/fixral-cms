@@ -1,6 +1,4 @@
-
-# FIXRAL 3D - Advanced CMS
-
+# Fixral CMS
 
 [![Next.js](https://img.shields.io/badge/Next.js-14.2-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.6-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
@@ -9,6 +7,7 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
 [![shadcn/ui](https://img.shields.io/badge/shadcn/ui-Radix-000?style=for-the-badge)](https://ui.shadcn.com/)
 [![Version](https://img.shields.io/badge/Version-5.0.0-blue?style=for-the-badge)]()
+[![License](https://img.shields.io/badge/License-Proprietary-red?style=for-the-badge)]()
 
 **Fixral CMS** is a production-grade, full-stack Content Management System built with Next.js 14 (App Router), Prisma ORM, and PostgreSQL.
 
@@ -247,16 +246,20 @@ Create a `.env.local` file in the project root:
 DATABASE_URL=postgresql://user:password@ep-xxxx-pooler.eu-central-1.aws.neon.tech/neondb?sslmode=require
 DIRECT_URL=postgresql://user:password@ep-xxxx.eu-central-1.aws.neon.tech/neondb?sslmode=require
 
-# Authentication
+# Authentication (REQUIRED)
 JWT_SECRET=your-super-secret-jwt-key
 NEXTAUTH_SECRET=your-nextauth-secret
 NEXTAUTH_URL=http://localhost:3000
+
+# App Configuration
+APP_NAME=Fixral CMS
+APP_URL=http://localhost:3000
 
 # Cloudinary (Image Upload)
 CLOUDINARY_CLOUD_NAME=your-cloud-name
 CLOUDINARY_API_KEY=your-api-key
 CLOUDINARY_API_SECRET=your-api-secret
-CLOUDINARY_FOLDER=personal-blog
+CLOUDINARY_FOLDER=personal-blog          # Cloudinary folder prefix for media assets
 
 # Gmail SMTP (Email)
 GMAIL_USER=your-gmail@gmail.com
@@ -270,9 +273,15 @@ YOUTUBE_CHANNEL_ID=your-channel-id
 ADMIN_EMAIL=admin@example.com
 ADMIN_PASSWORD=your-admin-password
 
+# Security
+RATE_LIMIT_MAX=100
+RATE_LIMIT_WINDOW=900000
+
 # Vercel (Production)
 VERCEL_URL=your-vercel-url
 ```
+
+> **Note:** Never commit `.env.local` or `.env.production` to version control. Use `.env.example` as a template.
 
 ---
 
@@ -332,12 +341,25 @@ Required GitHub Secrets:
 - **Data Validation:** Zod schemas on all API endpoints
 - **XSS Protection:** DOMPurify + sanitize-html on user content
 - **Authentication:** NextAuth.js with JWT strategy and role-based access
+- **2FA Support:** TOTP-based two-factor authentication for admin accounts
+- **JWT Hardening:** No fallback secrets; requires explicit `NEXTAUTH_SECRET` or `JWT_ACCESS_SECRET` configuration
 - **Middleware Security:** IP blocking, rate limiting, and authorization checks
+- **API Separation:** Public and admin API routes with independent auth guards
 - **Content Security:** Semantic HTML with proper ARIA attributes
+- **Environment Safety:** Sensitive env files (`.env.local`, `.env.production`) excluded from version control
+- **EXIF Stripping:** Uploaded images have metadata removed for privacy
+- **Debug Endpoints:** `/api/public/debug` and `/api/public/create-admin` are disabled outside `development` mode
 
 ---
 
 ## Changelog
+
+### v5.0.1 - Rebranding & Security Hardening
+- **Rebranding:** All "Personal Blog" references replaced with "Fixral CMS" across JWT tokens, PWA manifest, service worker, config defaults, Swagger docs, 2FA TOTP, and CI pipeline
+- **Security:** Removed `.env.production` from git tracking; removed hardcoded JWT fallback secrets
+- **Cloudinary:** Introduced `CLOUDINARY_FOLDER` env variable to decouple media folder prefix from source code
+- **Cleanup:** Removed stale lint output files, nested `.next` cache artifacts, and updated `.gitignore`
+- **Package:** Regenerated `package-lock.json` with correct `fixral-cms` package identity
 
 ### v5.0.0 - Prisma Migration & shadcn/ui Redesign
 - **Database Migration:** PostgreSQL (Neon) via Prisma ORM, replacing MongoDB as primary database
@@ -384,3 +406,5 @@ Required GitHub Secrets:
 This project is proprietary software. All rights reserved. Unauthorized copying, distribution, or modification is strictly prohibited.
 
 **Developer:** Erdem Erciyas
+**Repository:** [github.com/erdemerciyas/fixral-cms](https://github.com/erdemerciyas/fixral-cms)
+**Website:** [fixral.com](https://www.fixral.com)
