@@ -2,24 +2,29 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
 export async function GET() {
+  const buildVersion = 'v2-prisma-only';
   try {
-    await prisma.$queryRaw`SELECT 1`;
+    const result = await prisma.$queryRaw`SELECT 1 as ok`;
 
     return NextResponse.json({
       status: 'healthy',
+      buildVersion,
       timestamp: new Date().toISOString(),
       platform: process.env.VERCEL ? 'vercel' : 'local',
       region: process.env.VERCEL_REGION || 'unknown',
       database: 'connected',
+      dbResult: result,
     });
   } catch (error) {
     return NextResponse.json({
       status: 'unhealthy',
+      buildVersion,
       timestamp: new Date().toISOString(),
       platform: process.env.VERCEL ? 'vercel' : 'local',
       region: process.env.VERCEL_REGION || 'unknown',
       database: 'disconnected',
       error: error instanceof Error ? error.message : 'Unknown error',
+      errorName: error instanceof Error ? error.constructor.name : typeof error,
     }, { status: 500 });
   }
 }
