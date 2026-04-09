@@ -52,18 +52,22 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json();
 
-    if (!body.title?.trim()) {
+    let titleForSlug = body.title || '';
+    if (!titleForSlug && body.translations) {
+      for (const trans of Object.values(body.translations) as any[]) {
+        if (trans?.title?.trim()) { titleForSlug = trans.title; break; }
+      }
+    }
+
+    if (!titleForSlug?.trim()) {
       return NextResponse.json(
         { success: false, error: 'Başlık alanı zorunludur' },
         { status: 400 }
       );
     }
 
-    let titleForSlug = body.title;
-    if (!titleForSlug && body.translations) {
-      for (const trans of Object.values(body.translations) as any[]) {
-        if (trans?.title) { titleForSlug = trans.title; break; }
-      }
+    if (!body.title) {
+      body.title = titleForSlug;
     }
 
     const slugBase = slugify(titleForSlug || 'haber', { lower: true, strict: true, replacement: '-' });

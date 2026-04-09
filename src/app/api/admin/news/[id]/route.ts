@@ -64,10 +64,20 @@ export async function PUT(
 
     const body = await req.json();
 
+    let title = body.title || '';
+    if (!title && body.translations) {
+      for (const trans of Object.values(body.translations) as any[]) {
+        if (trans?.title?.trim()) { title = trans.title; break; }
+      }
+    }
+    if (title && !body.title) {
+      body.title = title;
+    }
+
     const updateData: Record<string, any> = { ...body, updatedAt: new Date() };
 
-    if (body.title && !body.slug) {
-      const slugBase = slugify(body.title, { lower: true, strict: true, replacement: '-' });
+    if (title && !body.slug) {
+      const slugBase = slugify(title, { lower: true, strict: true, replacement: '-' });
       updateData.slug = `${slugBase}-${Date.now()}`;
     }
 
