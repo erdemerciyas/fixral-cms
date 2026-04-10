@@ -20,11 +20,15 @@ import { Skeleton } from '@/components/ui/skeleton';
 interface SliderItem {
   _id: string;
   title: string;
-  image: string;
+  imageUrl: string;
+  image?: string;
   link?: string;
+  buttonLink?: string;
   description: string;
   order: number;
-  status: 'active' | 'inactive';
+  isActive: boolean;
+  badge?: string;
+  duration?: number;
   createdAt: string;
 }
 
@@ -91,12 +95,12 @@ export default function AdminSliderPage() {
       const response = await fetch(`/api/admin/slider/${sliderId}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: slider.status === 'active' ? 'inactive' : 'active' }),
+        body: JSON.stringify({ isActive: !slider.isActive }),
       });
 
       if (response.ok) {
         setSliders(sliders.map(s =>
-          s._id === sliderId ? { ...s, status: s.status === 'active' ? 'inactive' : 'active' } : s
+          s._id === sliderId ? { ...s, isActive: !s.isActive } : s
         ));
       }
     } catch (error) {
@@ -129,7 +133,9 @@ export default function AdminSliderPage() {
 
   const filteredSliders = sliders.filter(slider => {
     const matchesSearch = slider.title.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesStatus = statusFilter === 'all' || slider.status === statusFilter;
+    const matchesStatus = statusFilter === 'all'
+      || (statusFilter === 'active' && slider.isActive)
+      || (statusFilter === 'inactive' && !slider.isActive);
     return matchesSearch && matchesStatus;
   });
 
@@ -200,7 +206,7 @@ export default function AdminSliderPage() {
                 : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
-              Active ({sliders.filter(s => s.status === 'active').length})
+              Active ({sliders.filter(s => s.isActive).length})
             </button>
             <button
               onClick={() => setStatusFilter('inactive')}
@@ -209,7 +215,7 @@ export default function AdminSliderPage() {
                 : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
-              Inactive ({sliders.filter(s => s.status === 'inactive').length})
+              Inactive ({sliders.filter(s => !s.isActive).length})
             </button>
           </div>
         </div>
@@ -224,9 +230,9 @@ export default function AdminSliderPage() {
           >
             {/* Image */}
             <div className="relative aspect-video bg-gradient-to-br from-indigo-100 to-violet-100">
-              {slider.image ? (
+              {(slider.imageUrl || slider.image) ? (
                 <img
-                  src={slider.image}
+                  src={slider.imageUrl || slider.image}
                   alt={slider.title}
                   className="w-full h-full object-cover"
                 />
@@ -236,11 +242,11 @@ export default function AdminSliderPage() {
                 </div>
               )}
               <div className="absolute top-3 left-3">
-                <span className={`px-2 py-1 text-xs font-semibold rounded-full ${slider.status === 'active'
+                <span className={`px-2 py-1 text-xs font-semibold rounded-full ${slider.isActive
                   ? 'bg-emerald-500 text-white'
                   : 'bg-muted text-muted-foreground'
                   }`}>
-                  {slider.status}
+                  {slider.isActive ? 'Aktif' : 'Pasif'}
                 </span>
               </div>
             </div>
@@ -276,11 +282,11 @@ export default function AdminSliderPage() {
                   </button>
                   <button
                     onClick={() => handleToggleStatus(slider._id)}
-                    className={`p-2 rounded-lg transition-colors ${slider.status === 'active'
+                    className={`p-2 rounded-lg transition-colors ${slider.isActive
                       ? 'bg-amber-100 hover:bg-amber-200'
                       : 'bg-emerald-100 hover:bg-emerald-200'
                       }`}
-                    title={slider.status === 'active' ? 'Deactivate' : 'Activate'}
+                    title={slider.isActive ? 'Pasife Al' : 'Aktif Et'}
                   >
                     <Eye className="w-4 h-4 text-muted-foreground" />
                   </button>

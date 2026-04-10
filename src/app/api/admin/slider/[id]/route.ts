@@ -66,43 +66,39 @@ export async function PUT(
       badge, 
       imageType, 
       imageUrl, 
-      aiPrompt, 
-      aiProvider,
       order,
       duration,
       isActive 
     } = body;
 
-    // Validation
-    if (!title || !subtitle || !description || !imageUrl) {
+    await connectDB();
+
+    const existing = await Slider.findById(id);
+    if (!existing) {
       return NextResponse.json(
-        { error: 'Başlık, alt başlık, açıklama ve resim alanları zorunludur' },
-        { status: 400 }
+        { error: 'Slider bulunamadı' },
+        { status: 404 }
       );
     }
 
-    await connectDB();
-    
-    const updateData = {
-      title: title.trim(),
-      subtitle: subtitle.trim(),
-      description: description.trim(),
-      buttonText: buttonText?.trim() || 'Daha Fazla',
-      buttonLink: buttonLink?.trim() || '/contact',
-      badge: badge?.trim() || 'Yenilik',
-      imageType: imageType || 'url',
-      imageUrl: imageUrl.trim(),
-      aiPrompt: aiPrompt?.trim() || '',
-      aiProvider: aiProvider || 'unsplash',
-      order: order || 0,
-      duration: duration || 5000,
-      isActive: isActive !== undefined ? isActive : true,
+    const updateData: Record<string, unknown> = {
+      title: title?.trim() || existing.title,
+      subtitle: subtitle?.trim() || existing.subtitle,
+      description: description?.trim() || existing.description,
+      buttonText: buttonText?.trim() || existing.buttonText || 'Daha Fazla',
+      buttonLink: buttonLink !== undefined ? buttonLink.trim() : (existing.buttonLink || '/contact'),
+      badge: badge?.trim() || existing.badge || 'Yenilik',
+      imageType: imageType || existing.imageType || 'url',
+      imageUrl: imageUrl?.trim() || existing.imageUrl,
+      order: order !== undefined ? Number(order) : existing.order,
+      duration: duration ? Number(duration) : (existing.duration || 5000),
+      isActive: isActive !== undefined ? isActive : existing.isActive,
       updatedBy: session.user.email || 'admin',
     };
 
     const slider = await Slider.findByIdAndUpdate(
       id,
-      updateData,
+      { $set: updateData },
       { new: true }
     );
 
