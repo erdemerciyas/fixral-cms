@@ -43,9 +43,9 @@ function getDefaultNavLinks() {
     { href: '/', label: 'Anasayfa', icon: null },
     { href: '/haberler', label: 'Haberler', icon: null },
     { href: '/services', label: 'Hizmetler', icon: null },
-    { href: '/portfolio', label: 'Portfolyo', icon: null },
+    { href: '/portfolio', label: 'Portföy', icon: null },
     { href: '/videos', label: 'Videolar', icon: null },
-    { href: '/contact', label: 'Iletisim', icon: null },
+    { href: '/contact', label: 'İletişim', icon: null },
   ];
 }
 

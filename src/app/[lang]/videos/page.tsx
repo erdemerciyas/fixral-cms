@@ -154,7 +154,7 @@ function VideoCardRedesigned({
               ) : (
                 <FilmStrip weight="light" className="w-3 h-3" />
               )}
-              {video.type === 'short' ? 'Kisa' : 'Video'}
+              {video.type === 'short' ? 'Kısa' : 'Video'}
             </span>
           </div>
         </div>
@@ -216,7 +216,7 @@ function VideoCardRedesigned({
                 transitionTimingFunction: 'cubic-bezier(0.32,0.72,0,1)',
               }}
             >
-              Izle &rarr;
+              İzle &rarr;
             </span>
           </div>
         </div>
@@ -243,8 +243,8 @@ export default function VideosPage() {
     buttonLink: string;
   }>({
     title: 'Videolar',
-    description: 'YouTube kanalimzdaki en guncel ve populer iceriklerimize goz atin',
-    buttonText: 'Videolari Kesfet',
+    description: 'YouTube kanalımızdaki en güncel ve popüler içeriklerimize göz atın',
+    buttonText: 'Videoları Keşfet',
     buttonLink: '#video-content',
   });
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -297,15 +297,15 @@ export default function VideosPage() {
           const heroData = await heroRes.json();
           setHero({
             title: heroData.title || 'Videolar',
-            description: heroData.description || 'YouTube kanalimzdaki en guncel ve populer iceriklerimize goz atin',
-            buttonText: heroData.buttonText || 'Videolari Kesfet',
+            description: heroData.description || 'YouTube kanalımızdaki en güncel ve popüler içeriklerimize göz atın',
+            buttonText: heroData.buttonText || 'Videoları Keşfet',
             buttonLink: heroData.buttonLink || '#video-content',
           });
         } else {
           setHero({
             title: 'Videolar',
-            description: 'YouTube kanalimzdaki en guncel ve populer iceriklerimize goz atin',
-            buttonText: 'Videolari Kesfet',
+            description: 'YouTube kanalımızdaki en güncel ve popüler içeriklerimize göz atın',
+            buttonText: 'Videoları Keşfet',
             buttonLink: '#video-content',
           });
         }
@@ -397,9 +397,9 @@ export default function VideosPage() {
   };
 
   const typeButtons = [
-    { value: '', label: 'Tumu' },
+    { value: '', label: 'Tümü' },
     { value: 'normal', label: 'Video' },
-    { value: 'short', label: 'Kisa' },
+    { value: 'short', label: 'Kısa' },
   ] as const;
 
   if (loading) {
@@ -539,7 +539,7 @@ export default function VideosPage() {
                         transitionTimingFunction: 'cubic-bezier(0.32,0.72,0,1)',
                       }}
                     >
-                      <option value="">Tum Kanallar</option>
+                      <option value="">Tüm Kanallar</option>
                       {availableChannels.map((channel) => (
                         <option key={channel.channelId} value={channel.channelId}>
                           {channel.channelName} ({channel.videoCount})
@@ -671,7 +671,7 @@ export default function VideosPage() {
                   className="text-sm text-zinc-400 dark:text-zinc-500"
                   style={{ fontFamily: 'var(--font-geist-sans)' }}
                 >
-                  Tum videolar yuklendi
+                  Tüm videolar yüklendi
                 </span>
               </motion.div>
             )}
@@ -686,15 +686,15 @@ export default function VideosPage() {
                 className="text-lg font-semibold text-zinc-800 dark:text-zinc-200 mb-2"
                 style={{ fontFamily: 'var(--font-geist-sans)' }}
               >
-                Video bulunamadi
+                Video bulunamadı
               </h3>
               <p
                 className="text-sm text-zinc-500 dark:text-zinc-400 max-w-md mx-auto leading-relaxed"
                 style={{ fontFamily: 'var(--font-geist-sans)' }}
               >
                 {searchTerm || selectedTags.length > 0
-                  ? 'Aramanizla eslesen bir video bulunamadi. Farkli anahtar kelimeler kullanmayi veya filtreleri temizlemeyi deneyin.'
-                  : 'Henuz hic video eklenmemis. Daha sonra tekrar kontrol edin.'}
+                  ? 'Aramanızla eşleşen bir video bulunamadı. Farklı anahtar kelimeler kullanmayı veya filtreleri temizlemeyi deneyin.'
+                  : 'Henüz hiç video eklenmemiş. Daha sonra tekrar kontrol edin.'}
               </p>
               {(searchTerm || selectedTags.length > 0) && (
                 <button

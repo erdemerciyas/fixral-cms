@@ -32,18 +32,21 @@ export default function HomeTemplate({
       <main>
         {/* Services Section */}
         <SectionWrapper
-          className="bg-gradient-subtle"
+          className="bg-white"
           ariaLabel="Hizmetlerimiz"
         >
           <ScrollReveal>
-            <div className="mb-16 md:mb-20">
+            <div className="mb-12 md:mb-16">
               <EyebrowTag className="mb-5">Hizmetler</EyebrowTag>
-              <h2 className="section-title text-zinc-900 mb-4">
-                Sundugumuz Cozumler
+              <h2
+                className="text-3xl md:text-4xl lg:text-5xl font-bold text-zinc-900 mb-4"
+                style={{ letterSpacing: '-0.03em', lineHeight: 1.1 }}
+              >
+                Sunduğumuz Çözümler
               </h2>
-              <p className="section-subtitle">
-                Modern teknoloji ve uzman kadromuzla projelerinizi hayata gecirmek icin
-                kapsamli muhendislik cozumleri sunuyoruz.
+              <p className="text-zinc-500 text-base md:text-lg leading-relaxed max-w-xl">
+                Modern teknoloji ve uzman kadromuzla projelerinizi hayata geçirmek için
+                kapsamlı mühendislik çözümleri sunuyoruz.
               </p>
             </div>
           </ScrollReveal>
@@ -57,21 +60,21 @@ export default function HomeTemplate({
                 className="group inline-flex items-center gap-3 rounded-full font-medium text-sm active:scale-[0.98]"
                 style={{
                   padding: '12px 8px 12px 24px',
-                  border: '1px solid rgba(0,52,80,0.12)',
-                  color: '#3f3f46',
-                  transition: 'all 500ms cubic-bezier(0.32, 0.72, 0, 1)',
+                  background: '#0c1a24',
+                  color: 'rgba(255,255,255,0.9)',
+                  transition: 'all 500ms cubic-bezier(0.22, 1, 0.36, 1)',
                 }}
               >
-                <span>Tum Hizmetlerimizi Goruntule</span>
+                <span>Tüm Hizmetleri Gör</span>
                 <span
                   className="w-8 h-8 rounded-full flex items-center justify-center"
-                  style={{ background: 'rgba(0,52,80,0.06)' }}
+                  style={{ background: 'rgba(255,255,255,0.12)' }}
                 >
                   <ArrowRight
                     size={14}
                     weight="bold"
-                    className="text-zinc-500 group-hover:translate-x-0.5 group-hover:-translate-y-[1px]"
-                    style={{ transition: 'transform 300ms cubic-bezier(0.32, 0.72, 0, 1)' }}
+                    className="text-white group-hover:translate-x-0.5 group-hover:-translate-y-[1px]"
+                    style={{ transition: 'transform 300ms cubic-bezier(0.22, 1, 0.36, 1)' }}
                   />
                 </span>
               </Link>
@@ -85,10 +88,10 @@ export default function HomeTemplate({
             <div className="mb-16 md:mb-20">
               <EyebrowTag className="mb-5">Haberler</EyebrowTag>
               <h2 className="section-title text-zinc-900 mb-4">
-                Son Gelismeler
+                Son Gelişmeler
               </h2>
               <p className="section-subtitle">
-                En son haberler, duyurular ve guncellemeler.
+                En son haberler, duyurular ve güncellemeler.
               </p>
             </div>
           </ScrollReveal>
@@ -107,7 +110,7 @@ export default function HomeTemplate({
                   transition: 'all 500ms cubic-bezier(0.32, 0.72, 0, 1)',
                 }}
               >
-                <span>Tum Haberleri Goruntule</span>
+                <span>Tüm Haberleri Görüntüle</span>
                 <span
                   className="w-8 h-8 rounded-full flex items-center justify-center"
                   style={{ background: 'rgba(0,52,80,0.06)' }}
@@ -137,7 +140,7 @@ export default function HomeTemplate({
             background: 'linear-gradient(135deg, #09141d 0%, #003450 40%, #002a3f 100%)',
             padding: '6rem 0',
           }}
-          aria-label="Proje cagrisi"
+          aria-label="Proje çağrısı"
         >
           {/* Mesh gradient orbs */}
           <div className="absolute inset-0 pointer-events-none">
@@ -171,16 +174,16 @@ export default function HomeTemplate({
                     background: 'rgba(255,255,255,0.03)',
                   }}
                 >
-                  Proje Basvurusu
+                  Proje Başvurusu
                 </span>
                 <h2
                   className="text-3xl md:text-5xl font-bold text-white mb-6"
                   style={{ letterSpacing: '-0.03em', lineHeight: 1.1 }}
                 >
-                  Projenizi Gercege Donusturun
+                  Projenizi Gerçeğe Dönüştürün
                 </h2>
                 <p className="text-lg leading-relaxed mb-10 max-w-lg" style={{ color: 'rgba(255,255,255,0.4)' }}>
-                  Uzman ekibimiz ve modern teknolojilerimizle fikirlerinizi hayata gecirmeye haziriz.
+                  Uzman ekibimiz ve modern teknolojilerimizle fikirlerinizi hayata geçirmeye hazırız.
                 </p>
               </div>
 
@@ -195,7 +198,7 @@ export default function HomeTemplate({
                     transition: 'all 500ms cubic-bezier(0.32, 0.72, 0, 1)',
                   }}
                 >
-                  <span>Iletisime Gecin</span>
+                  <span>İletişime Geçin</span>
                   <span
                     className="w-9 h-9 rounded-full flex items-center justify-center"
                     style={{ background: 'rgba(0,52,80,0.08)' }}
@@ -219,7 +222,7 @@ export default function HomeTemplate({
                     transition: 'all 500ms cubic-bezier(0.32, 0.72, 0, 1)',
                   }}
                 >
-                  Projelerimizi Inceleyin
+                  Projelerimizi İnceleyin
                 </Link>
               </div>
             </motion.div>

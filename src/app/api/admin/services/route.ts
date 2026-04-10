@@ -22,7 +22,7 @@ export async function GET(_req: NextRequest) {
     await connectDB();
 
     const services = await Service.find()
-      .sort({ createdAt: -1 });
+      .sort({ order: 1, createdAt: -1 });
 
     return NextResponse.json(services);
   } catch (error) {
@@ -87,6 +87,39 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(
       { success: false, error: 'Hizmet oluşturulurken bir hata oluştu' },
+      { status: 500 }
+    );
+  }
+}
+
+/**
+ * PUT /api/admin/services - Batch update service order
+ */
+export async function PUT(req: NextRequest) {
+  try {
+    const session = await getServerSession(authOptions);
+
+    if (!session) {
+      return NextResponse.json(
+        { success: false, error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
+    const items: { id: string; order: number }[] = await req.json();
+    await connectDB();
+
+    const updatePromises = items.map((item) =>
+      Service.findByIdAndUpdate(item.id, { order: item.order }, { new: true })
+    );
+
+    await Promise.all(updatePromises);
+
+    return NextResponse.json({ success: true, message: 'Sıralama güncellendi' });
+  } catch (error) {
+    console.error('Error updating service order:', error);
+    return NextResponse.json(
+      { success: false, error: 'Sıralama güncellenirken bir hata oluştu' },
       { status: 500 }
     );
   }

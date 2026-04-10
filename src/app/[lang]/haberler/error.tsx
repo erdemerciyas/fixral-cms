@@ -9,8 +9,8 @@ export default function NewsError({ error, reset }: { error: Error; reset: () =>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
                     </svg>
                 </div>
-                <h1 className="text-2xl font-bold text-slate-900 mb-3">Bir hata olustu</h1>
-                <p className="text-slate-500 mb-8">Sayfa yuklenirken bir sorun olustu. Lutfen tekrar deneyin.</p>
+                <h1 className="text-2xl font-bold text-slate-900 mb-3">Bir hata oluştu</h1>
+                <p className="text-slate-500 mb-8">Sayfa yüklenirken bir sorun oluştu. Lütfen tekrar deneyin.</p>
                 <button
                     onClick={reset}
                     className="px-6 py-2.5 bg-fixral-primary text-white rounded-lg font-medium hover:opacity-90 transition-opacity"

@@ -7,7 +7,7 @@ import { SITE_URL } from '@/lib/seo-utils';
 
 function prettify(segment: string) {
   let label = segment.replace(/-/g, ' ');
-  if (label === 'portfolio') label = 'Portfolyo';
+  if (label === 'portfolio') label = 'Portföy';
   if (label === 'services') label = 'Hizmetler';
   if (label === 'about') label = 'Hakkımda';
   if (label === 'contact') label = 'İletişim';

@@ -53,7 +53,7 @@ export default function PortfolioDetailClient({ portfolioItem, relatedProjects, 
       <BreadcrumbsJsonLd
         items={[
           { name: 'Anasayfa', item: `/${lang}` },
-          { name: 'Portfolyo', item: `/${lang}/portfolio` },
+          { name: 'Portföy', item: `/${lang}/portfolio` },
           { name: portfolioItem.title, item: `/${lang}/portfolio/${slug}` },
         ]}
       />
@@ -219,7 +219,7 @@ export default function PortfolioDetailClient({ portfolioItem, relatedProjects, 
                 />
               </div>
               <div className="text-center">
-                <Link href={`/${lang}/portfolio`} className="btn-outline">Tüm Portfolyoyu Görüntüle</Link>
+                <Link href={`/${lang}/portfolio`} className="btn-outline">Tüm Portföyü Görüntüle</Link>
               </div>
             </div>
           )}

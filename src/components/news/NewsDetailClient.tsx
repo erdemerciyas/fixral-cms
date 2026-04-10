@@ -234,7 +234,7 @@ export default function NewsDetailClient({ lang, news, translation }: NewsDetail
             >
               <div className="flex items-center gap-2 mb-4">
                 <ShareNetwork size={16} weight="light" className="text-zinc-400" />
-                <span className="text-xs font-medium uppercase tracking-[0.15em] text-zinc-400">Bu Haberi Paylas</span>
+                <span className="text-xs font-medium uppercase tracking-[0.15em] text-zinc-400">Bu Haberi Paylaş</span>
               </div>
               <div className="flex gap-3">
                 {[
@@ -295,7 +295,7 @@ export default function NewsDetailClient({ lang, news, translation }: NewsDetail
                 style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
               >
                 <ArrowLeft size={14} weight="light" className="transition-transform duration-700 group-hover:-translate-x-1" style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }} />
-                Tum Haberlere Don
+                Tüm Haberlere Dön
               </Link>
             </motion.div>
         </div>
@@ -311,7 +311,7 @@ export default function NewsDetailClient({ lang, news, translation }: NewsDetail
             style={{ maxWidth: '1400px' }}
           >
             <div className="flex items-center gap-3 mb-6">
-              <h2 className="text-xl font-semibold text-zinc-900 tracking-tight">Ilgili Projeler</h2>
+              <h2 className="text-xl font-semibold text-zinc-900 tracking-tight">İlgili Projeler</h2>
               <div className="h-px bg-zinc-200 flex-grow" />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -358,7 +358,7 @@ export default function NewsDetailClient({ lang, news, translation }: NewsDetail
               transition={{ duration: 0.7, ease }}
             >
               <div className="flex items-center gap-3 mb-6">
-                <h2 className="text-xl font-semibold text-zinc-900 tracking-tight">Ilginizi Cekebilir</h2>
+                <h2 className="text-xl font-semibold text-zinc-900 tracking-tight">İlginizi Çekebilir</h2>
                 <div className="h-px bg-zinc-200 flex-grow" />
               </div>
             </motion.div>
@@ -399,7 +399,7 @@ export default function NewsDetailClient({ lang, news, translation }: NewsDetail
                       <span className="inline-flex items-center gap-1 text-xs font-medium text-[#003450] transition-all duration-700 group-hover:gap-2"
                         style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
                       >
-                        Okumaya basla
+                        Okumaya başla
                         <ArrowRight size={12} weight="light" />
                       </span>
                     </div>

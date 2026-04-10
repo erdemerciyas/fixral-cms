@@ -192,7 +192,7 @@ function ServiceSection({ service, index }: { service: Service; index: number })
                   transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)',
                 }}
               >
-                <span>Detayli Bilgi Al</span>
+                <span>Detaylı Bilgi Al</span>
                 <ArrowRight
                   weight="light"
                   className="w-4 h-4 transition-transform duration-700 group-hover:translate-x-1"
@@ -221,10 +221,10 @@ export default function ServicesClient({ services, hero }: ServicesClientProps) 
               className="text-2xl md:text-3xl font-semibold text-zinc-900 tracking-tight leading-snug mb-3"
               style={{ fontFamily: 'var(--font-geist-sans)' }}
             >
-              Detayli Hizmet Aciklamalari
+              Detaylı Hizmet Açıklamaları
             </h2>
             <p className="text-zinc-500 text-base md:text-[17px] leading-relaxed">
-              Her bir hizmetimizin detaylarini inceleyin ve ihtiyaclariniza en uygun cozumu kesfedin.
+              Her bir hizmetimizin detaylarını inceleyin ve ihtiyaçlarınıza en uygun çözümü keşfedin.
             </p>
           </ScrollReveal>
         </div>
@@ -242,10 +242,10 @@ export default function ServicesClient({ services, hero }: ServicesClientProps) 
                 className="text-2xl font-semibold text-zinc-800 mb-3"
                 style={{ fontFamily: 'var(--font-geist-sans)' }}
               >
-                Henuz hizmet bulunmuyor
+                Henüz hizmet bulunmuyor
               </h2>
               <p className="text-zinc-500 text-base">
-                Yakinda sizlere hizmet sunmaya baslayacagiz.
+                Yakında sizlere hizmet sunmaya başlayacağız.
               </p>
             </ScrollReveal>
           </div>
@@ -269,7 +269,7 @@ export default function ServicesClient({ services, hero }: ServicesClientProps) 
         <div className="container-content relative z-10 text-center">
           <ScrollReveal>
             <EyebrowTag variant="light" className="mb-6 mx-auto">
-              Ozel Proje
+              Özel Proje
             </EyebrowTag>
           </ScrollReveal>
 
@@ -278,13 +278,13 @@ export default function ServicesClient({ services, hero }: ServicesClientProps) 
               className="text-3xl md:text-4xl lg:text-5xl font-semibold text-white tracking-tight leading-tight mb-5"
               style={{ fontFamily: 'var(--font-geist-sans)' }}
             >
-              Ozel Bir Projeniz mi Var?
+              Özel Bir Projeniz mi Var?
             </h2>
           </ScrollReveal>
 
           <ScrollReveal delay={0.15}>
             <p className="text-white/60 text-base md:text-lg leading-relaxed max-w-xl mx-auto mb-10">
-              Size ozel cozumler gelistirmek icin buradayiz. Projenizi birlikte degerlendirelim.
+              Size özel çözümler geliştirmek için buradayız. Projenizi birlikte değerlendirelim.
             </p>
           </ScrollReveal>
 
@@ -311,7 +311,7 @@ export default function ServicesClient({ services, hero }: ServicesClientProps) 
                 transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)',
               }}
             >
-              <span>Ornek Projelerimizi Inceleyin</span>
+              <span>Örnek Projelerimizi İnceleyin</span>
               <ArrowRight
                 weight="light"
                 className="w-4 h-4 transition-transform duration-700 group-hover:translate-x-1"

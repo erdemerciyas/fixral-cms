@@ -92,7 +92,7 @@ function CategoryFilterBar({ categories, activeCategories, onToggle }: {
           />
         )}
         <span className={`relative z-10 ${allActive ? 'text-white' : 'text-zinc-600 hover:text-zinc-800'}`}>
-          Tumunu Goster
+          Tümünü Göster
         </span>
       </button>
 
@@ -158,8 +158,8 @@ export default function PortfolioTemplate(props: any) {
 
   const hero = {
     title: props.heroData?.title || props.title || 'Portfolyo',
-    description: props.heroData?.description || 'Tamamladigimiz basarili projeler ve yaratici cozumler',
-    buttonText: props.heroData?.buttonText || 'Projeleri Incele',
+    description: props.heroData?.description || 'Tamamladığımız başarılı projeler ve yaratıcı çözümler',
+    buttonText: props.heroData?.buttonText || 'Projeleri İncele',
     buttonLink: props.heroData?.buttonLink || '#projects',
   };
 
@@ -256,7 +256,7 @@ export default function PortfolioTemplate(props: any) {
       <div className="min-h-screen bg-zinc-50 flex items-center justify-center">
         <div className="text-center max-w-md mx-auto px-4">
           <h3 className="font-[family-name:var(--font-geist-sans)] text-xl font-semibold text-zinc-800 mb-4">
-            Bir Hata Olustu
+            Bir Hata Oluştu
           </h3>
           <p className="text-zinc-500 mb-6">{error}</p>
           <button onClick={() => window.location.reload()} className="btn-primary">
@@ -290,10 +290,10 @@ export default function PortfolioTemplate(props: any) {
           <ScrollReveal className="mb-8 md:mb-10">
             <EyebrowTag>Projeler</EyebrowTag>
             <h2 className="font-[family-name:var(--font-geist-sans)] text-2xl md:text-3xl font-semibold text-zinc-800 mt-4 tracking-tight">
-              Calisma Galeri
+              Çalışma Galerisi
             </h2>
             <p className="text-zinc-500 mt-2 max-w-xl text-sm md:text-base leading-relaxed">
-              Farkli sektorlerden tamamladigimiz projeler ve yaratici cozumler.
+              Farklı sektörlerden tamamladığımız projeler ve yaratıcı çözümler.
             </p>
           </ScrollReveal>
 
@@ -344,13 +344,13 @@ export default function PortfolioTemplate(props: any) {
                   }}
                   className="appearance-none pl-9 pr-9 py-3 bg-white rounded-2xl border border-zinc-200 text-zinc-700 text-sm font-[family-name:var(--font-geist-sans)] outline-none cursor-pointer transition-all focus:border-[#003450]/40 focus:ring-2 focus:ring-[#003450]/10"
                   style={{ transitionDuration: '700ms', transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
-                  aria-label="Sirala"
+                  aria-label="Sırala"
                 >
                   <option value="newest-desc">En Yeni</option>
                   <option value="oldest-asc">En Eski</option>
                   <option value="title-asc">A-Z</option>
                   <option value="title-desc">Z-A</option>
-                  <option value="category-asc">Kategoriye Gore</option>
+                  <option value="category-asc">Kategoriye Göre</option>
                 </select>
                 <CaretDown weight="light" className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 pointer-events-none" />
               </div>
@@ -426,10 +426,10 @@ export default function PortfolioTemplate(props: any) {
 
                       {/* Date range */}
                       <div>
-                        <h4 className="font-[family-name:var(--font-geist-sans)] text-sm font-semibold text-zinc-700 mb-3">Tarih Araligi</h4>
+                        <h4 className="font-[family-name:var(--font-geist-sans)] text-sm font-semibold text-zinc-700 mb-3">Tarih Aralığı</h4>
                         <div className="space-y-3">
                           <div>
-                            <label className="block text-xs text-zinc-500 mb-1.5">Baslangic</label>
+                            <label className="block text-xs text-zinc-500 mb-1.5">Başlangıç</label>
                             <input
                               type="date"
                               value={filters.dateRange.start}
@@ -438,7 +438,7 @@ export default function PortfolioTemplate(props: any) {
                             />
                           </div>
                           <div>
-                            <label className="block text-xs text-zinc-500 mb-1.5">Bitis</label>
+                            <label className="block text-xs text-zinc-500 mb-1.5">Bitiş</label>
                             <input
                               type="date"
                               value={filters.dateRange.end}
@@ -508,10 +508,10 @@ export default function PortfolioTemplate(props: any) {
                   <MagnifyingGlass weight="light" className="w-8 h-8 text-zinc-400" />
                 </div>
                 <h3 className="font-[family-name:var(--font-geist-sans)] text-xl font-semibold text-zinc-800 mb-3">
-                  Arama Sonucu Bulunamadi
+                  Arama Sonucu Bulunamadı
                 </h3>
                 <p className="text-zinc-500 max-w-md mx-auto mb-5 text-sm">
-                  Arama kriterlerinize uygun proje bulunamadi. Filtreleri degistirmeyi veya temizlemeyi deneyin.
+                  Arama kriterlerinize uygun proje bulunamadı. Filtreleri değiştirmeyi veya temizlemeyi deneyin.
                 </p>
                 <button onClick={clearAll} className="px-5 py-2.5 rounded-2xl border border-zinc-200 text-sm font-medium text-zinc-600 hover:border-zinc-300 hover:text-zinc-800 transition-colors">
                   Filtreleri Temizle
@@ -529,12 +529,12 @@ export default function PortfolioTemplate(props: any) {
 
         <div className="container-content text-center relative z-10">
           <ScrollReveal>
-            <EyebrowTag variant="light">Birlikte Calisalim</EyebrowTag>
+            <EyebrowTag variant="light">Birlikte Çalışalım</EyebrowTag>
             <h2 className="font-[family-name:var(--font-geist-sans)] text-2xl md:text-4xl font-semibold text-white mt-5 mb-4 tracking-tight">
-              Projenizi Birlikte Gerceklestirelim
+              Projenizi Birlikte Gerçekleştirelim
             </h2>
             <p className="text-white/60 max-w-lg mx-auto mb-8 text-sm md:text-base leading-relaxed">
-              Portfolyomuzdeki projeler gibi sizin de fikirlerinizi hayata gecirmeye haziriz.
+              Portfolyomuzdeki projeler gibi sizin de fikirlerinizi hayata geçirmeye hazırız.
             </p>
           </ScrollReveal>
 
@@ -546,14 +546,14 @@ export default function PortfolioTemplate(props: any) {
                 style={{ transitionDuration: '700ms', transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
               >
                 <Sparkle weight="light" className="w-4 h-4" />
-                Proje Baslatalim
+                Proje Başlatalım
               </Link>
               <Link
                 href={`/${lang}/services`}
                 className="inline-flex items-center justify-center gap-2 px-6 py-3.5 border border-white/20 text-white rounded-2xl text-sm font-medium hover:bg-white/10 transition-colors"
                 style={{ transitionDuration: '700ms', transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
               >
-                Hizmetlerimizi Inceleyin
+                Hizmetlerimizi İnceleyin
                 <ArrowRight weight="light" className="w-4 h-4" />
               </Link>
             </div>

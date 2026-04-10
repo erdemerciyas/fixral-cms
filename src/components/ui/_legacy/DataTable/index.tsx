@@ -18,7 +18,7 @@ interface DataTableProps<T extends { _id?: string; id?: string }> {
 }
 
 export function DataTable<T extends { _id?: string; id?: string }>({
-  columns, data, loading, emptyText = 'Kayit bulunamadi', onRowClick, className
+  columns, data, loading, emptyText = 'Kayıt bulunamadı', onRowClick, className
 }: DataTableProps<T>) {
   if (loading) {
     return (

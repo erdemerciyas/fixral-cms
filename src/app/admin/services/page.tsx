@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { Reorder, useDragControls } from 'framer-motion';
 import {
   Box,
   Plus,
@@ -11,13 +12,14 @@ import {
   Pencil,
   Trash2,
   Calendar,
-  Tag,
   LayoutGrid,
   List,
   CheckCircle,
-  Eye,
-  Filter,
-  DollarSign
+  DollarSign,
+  GripVertical,
+  Save,
+  Loader2,
+  ArrowUpDown,
 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
@@ -29,6 +31,7 @@ interface ServiceItem {
   slug?: string;
   description?: string;
   status: 'published' | 'draft';
+  order?: number;
   price?: number;
   category?: string;
   icon?: string;
@@ -46,7 +49,9 @@ export default function AdminServicesPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'published' | 'draft'>('all');
   const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
+  const [hasReordered, setHasReordered] = useState(false);
+  const [savingOrder, setSavingOrder] = useState(false);
 
   useEffect(() => {
     if (status === 'loading') return;
@@ -70,14 +75,10 @@ export default function AdminServicesPage() {
           status: item.status || (item.isActive === false ? 'draft' : 'published'),
           category: item.category || 'Genel',
           description: item.description || 'Açıklama yok',
+          order: item.order ?? 0,
           price: item.price || undefined,
           image: item.image || ''
         }));
-
-        // Sort by date descending
-        mappedData.sort((a: ServiceItem, b: ServiceItem) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        );
 
         setServices(mappedData);
       }
@@ -85,6 +86,42 @@ export default function AdminServicesPage() {
       console.error('Hizmetler yüklenirken hata:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleReorder = (newOrder: ServiceItem[]) => {
+    setServices(newOrder);
+    setHasReordered(true);
+  };
+
+  const saveOrder = async () => {
+    if (!hasReordered) return;
+
+    setSavingOrder(true);
+    try {
+      const updates = services.map((service, index) => ({
+        id: service._id,
+        order: index + 1,
+      }));
+
+      const response = await fetch('/api/admin/services', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updates),
+      });
+
+      if (response.ok) {
+        setHasReordered(false);
+        loadServices();
+        toast.success('Sıralama kaydedildi');
+      } else {
+        toast.error('Sıralama kaydedilemedi');
+      }
+    } catch (error) {
+      console.error('Sıralama kaydedilirken hata:', error);
+      toast.error('Sıralama kaydedilirken hata oluştu');
+    } finally {
+      setSavingOrder(false);
     }
   };
 
@@ -160,6 +197,8 @@ export default function AdminServicesPage() {
     return matchesSearch && matchesStatus;
   });
 
+  const isReorderEnabled = searchQuery === '' && statusFilter === 'all' && viewMode === 'list';
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('tr-TR', {
       month: 'short',
@@ -179,9 +218,9 @@ export default function AdminServicesPage() {
           <Skeleton className="h-10 w-32" />
         </div>
         <Skeleton className="h-12 w-full rounded-xl" />
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="space-y-2">
           {Array.from({ length: 6 }).map((_, i) => (
-            <Skeleton key={i} className="h-32 rounded-xl" />
+            <Skeleton key={i} className="h-16 rounded-xl" />
           ))}
         </div>
       </div>
@@ -194,15 +233,31 @@ export default function AdminServicesPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sticky top-0 z-20 bg-muted/80 backdrop-blur-sm py-4">
         <div>
           <h1 className="text-2xl font-bold text-foreground tracking-tight">Hizmet Yönetimi</h1>
-          <p className="text-muted-foreground mt-1">Hizmetlerinizi, paketlerinizi ve fiyatlandırmayı yönetin</p>
+          <p className="text-muted-foreground mt-1">Hizmetlerinizi yönetin ve sıralayın</p>
         </div>
-        <Link
-          href="/admin/services/new"
-          className="inline-flex items-center px-6 py-3 bg-slate-900 text-white font-semibold rounded-xl hover:bg-slate-800 hover:shadow-lg hover:shadow-slate-900/20 transition-all duration-200"
-        >
-          <Plus className="w-5 h-5 mr-2" />
-          Yeni Hizmet Ekle
-        </Link>
+        <div className="flex gap-3">
+          {hasReordered && (
+            <button
+              onClick={saveOrder}
+              disabled={savingOrder}
+              className="inline-flex items-center px-5 py-3 bg-emerald-600 text-white font-semibold rounded-xl hover:bg-emerald-700 hover:shadow-lg hover:shadow-emerald-600/20 transition-all duration-200 disabled:opacity-60"
+            >
+              {savingOrder ? (
+                <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+              ) : (
+                <Save className="w-5 h-5 mr-2" />
+              )}
+              Sıralamayı Kaydet
+            </button>
+          )}
+          <Link
+            href="/admin/services/new"
+            className="inline-flex items-center px-6 py-3 bg-slate-900 text-white font-semibold rounded-xl hover:bg-slate-800 hover:shadow-lg hover:shadow-slate-900/20 transition-all duration-200"
+          >
+            <Plus className="w-5 h-5 mr-2" />
+            Yeni Hizmet Ekle
+          </Link>
+        </div>
       </div>
 
       {/* Toolbar */}
@@ -273,22 +328,28 @@ export default function AdminServicesPage() {
 
             <div className="flex bg-muted border border-border/50 rounded-xl p-1 shadow-sm shrink-0">
               <button
+                onClick={() => setViewMode('list')}
+                className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-card text-primary shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+                title="Liste Görünümü (Sıralama)"
+              >
+                <ArrowUpDown className="w-5 h-5" />
+              </button>
+              <button
                 onClick={() => setViewMode('grid')}
                 className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-card text-primary shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
                 title="Grid Görünümü"
               >
                 <LayoutGrid className="w-5 h-5" />
               </button>
-              <button
-                onClick={() => setViewMode('list')}
-                className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-card text-primary shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
-                title="Liste Görünümü"
-              >
-                <List className="w-5 h-5" />
-              </button>
             </div>
           </div>
         </div>
+        {viewMode === 'list' && !isReorderEnabled && (
+          <div className="mt-2 text-xs text-amber-600 dark:text-amber-400 flex items-center">
+            <div className="w-1.5 h-1.5 rounded-full bg-amber-500 mr-2" />
+            Sıralama yapmak için filtreleri temizleyin (Arama yaparken sıralama devre dışıdır)
+          </div>
+        )}
       </div>
 
       {/* Content Area */}
@@ -322,7 +383,35 @@ export default function AdminServicesPage() {
         </div>
       ) : (
         <>
-          {viewMode === 'grid' ? (
+          {viewMode === 'list' ? (
+            <div className="bg-card rounded-xl shadow-sm border border-border overflow-hidden">
+              {isReorderEnabled ? (
+                <Reorder.Group axis="y" values={filteredServices} onReorder={handleReorder} className="divide-y divide-border">
+                  {filteredServices.map((service, index) => (
+                    <DraggableServiceItem
+                      key={service._id}
+                      service={service}
+                      index={index}
+                      onDelete={handleDelete}
+                      formatDate={formatDate}
+                    />
+                  ))}
+                </Reorder.Group>
+              ) : (
+                <div className="divide-y divide-border">
+                  {filteredServices.map((service, index) => (
+                    <StaticServiceItem
+                      key={service._id}
+                      service={service}
+                      index={index}
+                      onDelete={handleDelete}
+                      formatDate={formatDate}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {filteredServices.map(service => (
                 <div
@@ -341,7 +430,7 @@ export default function AdminServicesPage() {
                       />
                     ) : (
                       <div className="w-full h-full flex flex-col items-center justify-center text-muted-foreground/50 gap-3">
-                        <div className={`w-16 h-16 rounded-xl flex items-center justify-center bg-card shadow-sm border border-border`}>
+                        <div className="w-16 h-16 rounded-xl flex items-center justify-center bg-card shadow-sm border border-border">
                           <Box className="w-8 h-8 text-primary" />
                         </div>
                       </div>
@@ -369,6 +458,13 @@ export default function AdminServicesPage() {
                         {service.status === 'published' ? 'Yayında' : 'Taslak'}
                       </span>
                     </div>
+
+                    {/* Order Badge */}
+                    <div className="absolute top-3 left-3 pointer-events-none">
+                      <span className="w-7 h-7 rounded-lg bg-black/60 text-white text-xs font-bold flex items-center justify-center backdrop-blur-md">
+                        {service.order ?? '-'}
+                      </span>
+                    </div>
                   </div>
 
                   {/* Content */}
@@ -376,33 +472,16 @@ export default function AdminServicesPage() {
                     <div className="flex items-center gap-2 text-xs text-muted-foreground mb-3">
                       <Calendar className="w-4 h-4" />
                       <span>{formatDate(service.createdAt)}</span>
-                      {service.category && (
-                        <>
-                          <span className="w-1 h-1 bg-slate-300 rounded-full" />
-                          <span className="text-muted-foreground font-medium">{service.category}</span>
-                        </>
-                      )}
                     </div>
 
                     <h3 className="text-lg font-bold text-foreground mb-2 line-clamp-1 group-hover:text-primary transition-colors">
                       {service.title}
                     </h3>
                     <p className="text-sm text-muted-foreground line-clamp-2 mb-4 h-10">
-                      {service.description}
+                      {service.description?.replace(/<[^>]*>/g, '') || ''}
                     </p>
 
-                    <div className="flex items-center justify-between pt-4 border-t border-border">
-                      <div className="flex items-center text-sm font-semibold text-foreground">
-                        {service.price ? (
-                          <span className="flex items-center gap-1">
-                            <DollarSign className="w-4 h-4 text-muted-foreground" />
-                            {service.price}
-                          </span>
-                        ) : (
-                          <span className="text-xs text-muted-foreground italic">Fiyat girilmemiş</span>
-                        )}
-                      </div>
-
+                    <div className="flex items-center justify-end pt-4 border-t border-border">
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => handleDelete(service._id)}
@@ -424,118 +503,151 @@ export default function AdminServicesPage() {
                 </div>
               ))}
             </div>
-          ) : (
-            // LIST VIEW
-            <div className="bg-card rounded-xl shadow-sm border border-border overflow-hidden">
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="bg-muted/50 border-b border-border text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                    <th className="px-6 py-4 w-12">
-                      <input
-                        type="checkbox"
-                        checked={selectedItems.size === filteredServices.length}
-                        onChange={(e) => handleSelectAll(e.target.checked)}
-                        className="rounded border-border text-primary focus:ring-primary/50"
-                      />
-                    </th>
-                    <th className="px-6 py-4">Hizmet Detayı</th>
-                    <th className="px-6 py-4 w-32">Durum</th>
-                    <th className="px-6 py-4 w-32">Fiyat</th>
-                    <th className="px-6 py-4 w-40">Tarih</th>
-                    <th className="px-6 py-4 w-32 text-right">İşlemler</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border">
-                  {filteredServices.map(service => (
-                    <tr
-                      key={service._id}
-                      className={`group transition-colors ${selectedItems.has(service._id) ? 'bg-primary/5' : 'hover:bg-muted/50'}`}
-                    >
-                      <td className="px-6 py-4">
-                        <input
-                          type="checkbox"
-                          checked={selectedItems.has(service._id)}
-                          onChange={() => handleSelectItem(service._id)}
-                          className="rounded border-border text-primary focus:ring-primary/50"
-                        />
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-4">
-                          <div className="w-16 h-12 bg-muted rounded-lg overflow-hidden flex-shrink-0 border border-border flex items-center justify-center">
-                            {service.image ? (
-                              <img src={service.image} alt="" className="w-full h-full object-cover" />
-                            ) : (
-                              <Box className="w-6 h-6 text-muted-foreground" />
-                            )}
-                          </div>
-                          <div>
-                            <h4 className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">
-                              {service.title}
-                            </h4>
-                            <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">
-                              {service.description}
-                            </p>
-                            <div className="flex items-center gap-2 mt-1.5">
-                              {service.category && (
-                                <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-muted text-muted-foreground">
-                                  {service.category}
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border
-                                  ${service.status === 'published'
-                            ? 'bg-emerald-50 text-emerald-700 border-emerald-100 dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-900'
-                            : 'bg-amber-50 text-amber-700 border-amber-100 dark:bg-amber-950 dark:text-amber-300 dark:border-amber-900'}
-                               `}>
-                          <span className={`w-1.5 h-1.5 rounded-full mr-1.5
-                                     ${service.status === 'published' ? 'bg-emerald-500' : 'bg-amber-500'}
-                                  `} />
-                          {service.status === 'published' ? 'Yayında' : 'Taslak'}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4">
-                        {service.price ? (
-                          <span className="text-sm font-medium text-foreground">${service.price}</span>
-                        ) : (
-                          <span className="text-xs text-muted-foreground">-</span>
-                        )}
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex flex-col text-xs text-muted-foreground">
-                          <span className="font-medium text-foreground">{formatDate(service.createdAt).split(' ').slice(0, 2).join(' ')}</span>
-                          <span>{formatDate(service.createdAt).split(' ')[2]}</span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <Link
-                            href={`/admin/services/edit/${service._id}`}
-                            className="p-1.5 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
-                            title="Düzenle"
-                          >
-                            <Pencil className="w-4 h-4" />
-                          </Link>
-                          <button
-                            onClick={() => handleDelete(service._id)}
-                            className="p-1.5 text-muted-foreground hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                            title="Sil"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
           )}
         </>
       )}
+    </div>
+  );
+}
+
+function DraggableServiceItem({
+  service,
+  index,
+  onDelete,
+  formatDate,
+}: {
+  service: ServiceItem;
+  index: number;
+  onDelete: (id: string) => void;
+  formatDate: (d: string) => string;
+}) {
+  const dragControls = useDragControls();
+
+  return (
+    <Reorder.Item
+      value={service}
+      dragListener={false}
+      dragControls={dragControls}
+      className="bg-card"
+    >
+      <div className="flex items-center justify-between px-4 sm:px-6 py-4 hover:bg-muted/50 transition-colors group">
+        <div className="flex items-center gap-4 flex-1 min-w-0">
+          <div
+            onPointerDown={(e) => dragControls.start(e)}
+            className="cursor-grab p-1.5 text-muted-foreground hover:text-foreground active:cursor-grabbing touch-none"
+          >
+            <GripVertical className="w-5 h-5" />
+          </div>
+
+          <span className="w-7 h-7 rounded-lg bg-muted text-muted-foreground text-xs font-bold flex items-center justify-center shrink-0">
+            {index + 1}
+          </span>
+
+          <div className="w-12 h-12 bg-muted rounded-xl overflow-hidden flex-shrink-0 border border-border flex items-center justify-center">
+            {service.image ? (
+              <img src={service.image} alt="" className="w-full h-full object-cover" />
+            ) : (
+              <Box className="w-5 h-5 text-primary" />
+            )}
+          </div>
+
+          <div className="flex-1 min-w-0">
+            <h3 className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors truncate">
+              {service.title}
+            </h3>
+            <div className="flex items-center gap-2 mt-1">
+              <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium
+                ${service.status === 'published'
+                  ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300'
+                  : 'bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300'}
+              `}>
+                {service.status === 'published' ? 'Yayında' : 'Taslak'}
+              </span>
+              <span className="text-xs text-muted-foreground hidden sm:inline">{formatDate(service.createdAt)}</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+          <Link
+            href={`/admin/services/edit/${service._id}`}
+            className="p-2 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
+            title="Düzenle"
+          >
+            <Pencil className="w-4 h-4" />
+          </Link>
+          <button
+            onClick={() => onDelete(service._id)}
+            className="p-2 text-muted-foreground hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+            title="Sil"
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+    </Reorder.Item>
+  );
+}
+
+function StaticServiceItem({
+  service,
+  index,
+  onDelete,
+  formatDate,
+}: {
+  service: ServiceItem;
+  index: number;
+  onDelete: (id: string) => void;
+  formatDate: (d: string) => string;
+}) {
+  return (
+    <div className="flex items-center justify-between px-4 sm:px-6 py-4 hover:bg-muted/50 transition-colors group">
+      <div className="flex items-center gap-4 flex-1 min-w-0">
+        <span className="w-7 h-7 rounded-lg bg-muted text-muted-foreground text-xs font-bold flex items-center justify-center shrink-0">
+          {index + 1}
+        </span>
+
+        <div className="w-12 h-12 bg-muted rounded-xl overflow-hidden flex-shrink-0 border border-border flex items-center justify-center">
+          {service.image ? (
+            <img src={service.image} alt="" className="w-full h-full object-cover" />
+          ) : (
+            <Box className="w-5 h-5 text-primary" />
+          )}
+        </div>
+
+        <div className="flex-1 min-w-0">
+          <h3 className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors truncate">
+            {service.title}
+          </h3>
+          <div className="flex items-center gap-2 mt-1">
+            <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium
+              ${service.status === 'published'
+                ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300'
+                : 'bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300'}
+            `}>
+              {service.status === 'published' ? 'Yayında' : 'Taslak'}
+            </span>
+            <span className="text-xs text-muted-foreground hidden sm:inline">{formatDate(service.createdAt)}</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+        <Link
+          href={`/admin/services/edit/${service._id}`}
+          className="p-2 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
+          title="Düzenle"
+        >
+          <Pencil className="w-4 h-4" />
+        </Link>
+        <button
+          onClick={() => onDelete(service._id)}
+          className="p-2 text-muted-foreground hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+          title="Sil"
+        >
+          <Trash2 className="w-4 h-4" />
+        </button>
+      </div>
     </div>
   );
 }

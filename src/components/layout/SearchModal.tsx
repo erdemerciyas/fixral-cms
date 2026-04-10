@@ -28,13 +28,13 @@ interface SearchModalProps {
 
 const CATEGORY_ICONS: Record<string, React.ElementType> = {
     'Haberler': NewspaperIcon,
-    'Portfolyo': FolderOpenIcon,
+    'Portföy': FolderOpenIcon,
     'Hizmetler': WrenchScrewdriverIcon,
 };
 
 const CATEGORY_COLORS: Record<string, string> = {
     'Haberler': 'bg-blue-50 text-blue-600',
-    'Portfolyo': 'bg-purple-50 text-purple-600',
+    'Portföy': 'bg-purple-50 text-purple-600',
     'Hizmetler': 'bg-emerald-50 text-emerald-600',
 };
 
@@ -100,7 +100,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                         title: item.title || item.name,
                         description: item.description || item.summary || '',
                         href: `/${currentLang}/portfolio/${item.slug}`,
-                        category: 'Portfolyo',
+                        category: 'Portföy',
                     });
                 });
             }
@@ -267,7 +267,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                                     <div className="flex flex-wrap gap-2">
                                         {[
                                             { label: 'Haberler', href: `/${currentLang}/${currentLang === 'es' ? 'noticias' : 'haberler'}` },
-                                            { label: 'Portfolyo', href: `/${currentLang}/portfolio` },
+                                            { label: 'Portföy', href: `/${currentLang}/portfolio` },
                                             { label: 'Hizmetler', href: `/${currentLang}/services` },
                                         ].map((link) => (
                                             <Link

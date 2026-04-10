@@ -26,11 +26,11 @@ interface HeroSliderProps {
 const defaultSlider: SliderItem[] = [
     {
         _id: 'default-hero',
-        title: 'Muhendislik Cozumleri',
-        subtitle: '3D Tarama & Tersine Muhendislik',
-        description: 'Profesyonel 3D tarama, modelleme ve prototipleme hizmetleri ile projelerinizi hayata gecirin.',
+        title: 'Mühendislik Çözümleri',
+        subtitle: '3D Tarama & Tersine Mühendislik',
+        description: 'Profesyonel 3D tarama, modelleme ve prototipleme hizmetleri ile projelerinizi hayata geçirin.',
         image: 'https://picsum.photos/seed/fixral-hero/1920/1080',
-        buttonText: 'Projelerimizi Inceleyin',
+        buttonText: 'Projelerimizi İnceleyin',
         buttonLink: '/portfolio'
     }
 ];
@@ -97,7 +97,7 @@ export default function HeroSlider({ items = [] }: HeroSliderProps) {
             className="relative overflow-hidden flex items-center"
             style={{ minHeight: '100dvh' }}
             role="banner"
-            aria-label="Ana hero bolumu"
+            aria-label="Ana hero bölümü"
         >
             {/* Background Images */}
             <div className="absolute inset-0">
@@ -145,7 +145,7 @@ export default function HeroSlider({ items = [] }: HeroSliderProps) {
                             transition: 'all 500ms cubic-bezier(0.32, 0.72, 0, 1)',
                         }}
                         disabled={isTransitioning}
-                        aria-label="Onceki slayt"
+                        aria-label="Önceki slayt"
                     >
                         <CaretLeft size={20} weight="light" className="text-white/60" />
                     </button>
@@ -247,7 +247,7 @@ export default function HeroSlider({ items = [] }: HeroSliderProps) {
                                             transition: 'all 500ms cubic-bezier(0.32, 0.72, 0, 1)',
                                         }}
                                     >
-                                        <span>{currentSlide.buttonText || 'Projelerimizi Inceleyin'}</span>
+                                        <span>{currentSlide.buttonText || 'Projelerimizi İnceleyin'}</span>
                                         <span
                                             className="w-8 h-8 rounded-full flex items-center justify-center"
                                             style={{
@@ -273,7 +273,7 @@ export default function HeroSlider({ items = [] }: HeroSliderProps) {
                                             transition: 'all 500ms cubic-bezier(0.32, 0.72, 0, 1)',
                                         }}
                                     >
-                                        Iletisime Gecin
+                                        İletişime Geçin
                                     </Link>
                                 </motion.nav>
                             </motion.div>

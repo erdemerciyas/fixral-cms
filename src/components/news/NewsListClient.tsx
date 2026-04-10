@@ -93,7 +93,7 @@ function HeroCard({ article, lang, newsT }: { article: ArticleData; lang: string
               className="inline-flex items-center gap-2 text-sm font-medium text-white/80 transition-all duration-700 group-hover:text-white group-hover:gap-3"
               style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
             >
-              {newsT.readMore || 'Devamini Oku'}
+              {newsT.readMore || 'Devamını Oku'}
               <ArrowRight size={16} weight="light" />
             </span>
           </div>
@@ -183,7 +183,7 @@ function ArticleCard({
               className="inline-flex items-center gap-1.5 text-sm font-medium text-[#003450] transition-all duration-700 group-hover:gap-2.5"
               style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
             >
-              {newsT.readMore || 'Devamini Oku'}
+              {newsT.readMore || 'Devamını Oku'}
               <ArrowRight size={14} weight="light" />
             </span>
           </div>
@@ -253,7 +253,7 @@ export default function NewsListClient({
               )}
               style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
             >
-              {commonT.all || 'Tumu'}
+              {commonT.all || 'Tümü'}
             </Link>
             {allTags.map((t) => (
               <Link
@@ -283,10 +283,10 @@ export default function NewsListClient({
           className="text-sm text-zinc-400 flex items-center gap-2"
         >
           <span className="w-1.5 h-1.5 rounded-full bg-[#003450]" />
-          {search && <span>&ldquo;{search}&rdquo; {newsT.forQuery || 'icin'}</span>}
+          {search && <span>&ldquo;{search}&rdquo; {newsT.forQuery || 'için'}</span>}
           {tag && <span>&ldquo;{tag}&rdquo; {newsT.inTag || 'etiketinde'}</span>}
           <strong className="text-zinc-600">
-            {(newsT.resultsFound || '{count} sonuc bulundu').replace('{count}', String(total))}
+            {(newsT.resultsFound || '{count} sonuç bulundu').replace('{count}', String(total))}
           </strong>
         </motion.div>
       )}
@@ -338,7 +338,7 @@ export default function NewsListClient({
                   className="px-4 py-2 rounded-xl text-sm font-medium bg-white border border-zinc-200 text-zinc-600 hover:border-[#003450]/40 hover:text-[#003450] transition-all duration-700 shadow-[0_1px_2px_rgba(0,0,0,0.04)]"
                   style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
                 >
-                  {commonT.previous || 'Onceki'}
+                  {commonT.previous || 'Önceki'}
                 </Link>
               )}
 
@@ -381,17 +381,17 @@ export default function NewsListClient({
             <Newspaper size={28} weight="light" />
           </div>
           <h3 className="text-lg font-medium text-zinc-900 mb-1">
-            {newsT.noResults || 'Sonuc Bulunamadi'}
+            {newsT.noResults || 'Sonuç Bulunamadı'}
           </h3>
           <p className="text-zinc-500 text-sm mb-6">
-            {newsT.noResultsDescription || 'Aradiginiz kriterlere uygun haber bulunamadi.'}
+            {newsT.noResultsDescription || 'Aradığınız kriterlere uygun haber bulunamadı.'}
           </p>
           <Link
             href={`/${lang}/haberler`}
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium bg-[#003450] text-white hover:bg-[#003450]/90 transition-all duration-700 shadow-sm"
             style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
           >
-            {newsT.showAll || 'Tum Haberleri Goster'}
+            {newsT.showAll || 'Tüm Haberleri Göster'}
           </Link>
         </motion.div>
       )}

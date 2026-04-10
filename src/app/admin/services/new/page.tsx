@@ -22,7 +22,11 @@ import {
   ChevronUp,
   Sparkles,
   Eye,
+  Shapes,
+  Wand2,
+  Loader2,
 } from 'lucide-react';
+import { availableIcons, resolveIcon } from '@/lib/icons';
 
 const ModernEditor = dynamic(() => import('@/components/admin/ModernEditor'), {
   ssr: false,
@@ -58,7 +62,9 @@ export default function NewServicePage() {
   const [success, setSuccess] = useState<string | null>(null);
   const [features, setFeatures] = useState<string[]>(['']);
   const [serviceImage, setServiceImage] = useState('');
+  const [serviceIcon, setServiceIcon] = useState('');
   const [seoExpanded, setSeoExpanded] = useState(false);
+  const [seoGenerating, setSeoGenerating] = useState(false);
 
   const { languages, defaultLanguage, loading: langsLoading, error: langsError } = useActiveLanguages();
   const [activeLanguage, setActiveLanguage] = useState('');
@@ -76,7 +82,7 @@ export default function NewServicePage() {
         init[lang.code] = prev[lang.code] || emptyTranslation();
       }
       if (initialFormRef.current === null) {
-        initialFormRef.current = JSON.stringify({ translations: init, features: [''], serviceImage: '' });
+        initialFormRef.current = JSON.stringify({ translations: init, features: [''], serviceImage: '', serviceIcon: '' });
       }
       return init;
     });
@@ -90,8 +96,8 @@ export default function NewServicePage() {
 
   const isDirty = useMemo(() => {
     if (!initialFormRef.current) return false;
-    return JSON.stringify({ translations, features, serviceImage }) !== initialFormRef.current;
-  }, [translations, features, serviceImage]);
+    return JSON.stringify({ translations, features, serviceImage, serviceIcon }) !== initialFormRef.current;
+  }, [translations, features, serviceImage, serviceIcon]);
 
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -127,6 +133,64 @@ export default function NewServicePage() {
     }));
   }, [activeLanguage]);
 
+  const generateSeo = useCallback(() => {
+    const trans = translations[activeLanguage];
+    if (!trans) return;
+
+    setSeoGenerating(true);
+    setSeoExpanded(true);
+
+    const title = trans.title || '';
+    const rawHtml = trans.description || '';
+    const plainText = rawHtml
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/&nbsp;/g, ' ')
+      .replace(/&amp;/g, '&')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&quot;/g, '"')
+      .replace(/\s+/g, ' ')
+      .trim();
+
+    const metaDesc = plainText.length > 155
+      ? plainText.substring(0, 155).replace(/\s+\S*$/, '') + '...'
+      : plainText;
+
+    const stopWords = new Set([
+      'bir', 've', 'ile', 'de', 'da', 'bu', 'için', 'olan', 'den', 'dan',
+      'olarak', 'gibi', 'hem', 'ise', 'her', 'daha', 'çok', 'en', 'ya',
+      'veya', 'ama', 'ancak', 'ki', 'ne', 'the', 'and', 'or', 'is', 'in',
+      'of', 'to', 'a', 'an', 'that', 'this', 'are', 'was', 'were', 'be',
+      'kadar', 'sonra', 'önce', 'üzere', 'göre', 'ayrıca', 'arasında',
+    ]);
+
+    const allText = `${title} ${plainText}`.toLowerCase();
+    const words = allText.match(/[a-zA-ZğüşöçıİĞÜŞÖÇ]{3,}/g) || [];
+    const freq: Record<string, number> = {};
+    for (const w of words) {
+      if (!stopWords.has(w)) {
+        freq[w] = (freq[w] || 0) + 1;
+      }
+    }
+
+    const keywords = Object.entries(freq)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 8)
+      .map(([word]) => word);
+
+    setTimeout(() => {
+      setTranslations(prev => ({
+        ...prev,
+        [activeLanguage]: {
+          ...prev[activeLanguage],
+          metaDescription: metaDesc,
+          keywords,
+        },
+      }));
+      setSeoGenerating(false);
+    }, 400);
+  }, [activeLanguage, translations]);
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
@@ -150,6 +214,7 @@ export default function NewServicePage() {
           title: defTrans.title,
           description: defTrans.description || '',
           image: serviceImage || undefined,
+          icon: serviceIcon || '',
           features: filteredFeatures,
           translations,
         }),
@@ -311,7 +376,7 @@ export default function NewServicePage() {
 
           {/* Features */}
           <div className="bg-card rounded-xl shadow-sm border border-border p-5">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
                 <ListIcon className="w-4 h-4 text-muted-foreground" />
                 <label className="text-sm font-semibold text-foreground">Servis Özellikleri</label>
@@ -325,6 +390,7 @@ export default function NewServicePage() {
                 Özellik Ekle
               </button>
             </div>
+            <p className="text-[11px] text-muted-foreground mb-4">Enter ile yeni madde ekleyin. Listeyi toplu yapıştırabilirsiniz, her satır ayrı madde olur.</p>
 
             <div className="space-y-2.5">
               {features.length === 0 ? (
@@ -339,6 +405,44 @@ export default function NewServicePage() {
                       type="text"
                       value={feature}
                       onChange={(e) => updateFeature(index, e.target.value)}
+                      onKeyDown={(e) => {
+                        const container = e.currentTarget.parentElement?.parentElement;
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          if (feature.trim()) {
+                            setFeatures(prev => {
+                              const next = [...prev];
+                              next.splice(index + 1, 0, '');
+                              return next;
+                            });
+                            setTimeout(() => {
+                              const inputs = container?.querySelectorAll('input[type="text"]');
+                              (inputs?.[index + 1] as HTMLInputElement)?.focus();
+                            }, 50);
+                          }
+                        }
+                        if (e.key === 'Backspace' && feature === '' && features.length > 1) {
+                          e.preventDefault();
+                          const focusTarget = index > 0 ? index - 1 : 0;
+                          removeFeature(index);
+                          setTimeout(() => {
+                            const inputs = container?.querySelectorAll('input[type="text"]');
+                            (inputs?.[focusTarget] as HTMLInputElement)?.focus();
+                          }, 50);
+                        }
+                      }}
+                      onPaste={(e) => {
+                        const text = e.clipboardData.getData('text');
+                        const lines = text.split(/[\n\r]+/).map(l => l.replace(/^[\s\-\•\*\d+\.\)\]]+/, '').trim()).filter(Boolean);
+                        if (lines.length > 1) {
+                          e.preventDefault();
+                          setFeatures(prev => {
+                            const next = [...prev];
+                            next.splice(index, 1, ...lines);
+                            return next;
+                          });
+                        }
+                      }}
                       className={`${inputNormal} flex-1`}
                       placeholder="Özellik açıklaması"
                       disabled={loading}
@@ -439,23 +543,73 @@ export default function NewServicePage() {
             />
           </div>
 
+          {/* Icon Picker */}
+          <div className="bg-card rounded-xl shadow-sm border border-border p-4">
+            <div className="flex items-center gap-2 mb-3">
+              <Shapes className="w-4 h-4 text-muted-foreground" />
+              <label className="text-sm font-semibold text-foreground">Hizmet İkonu</label>
+            </div>
+            <p className="text-xs text-muted-foreground mb-3">Anasayfada hizmet kartında görünecek ikon. Seçilmezse başlığa göre otomatik atanır.</p>
+            <div className="grid grid-cols-6 gap-1.5 max-h-[240px] overflow-y-auto p-1">
+              {availableIcons.map((iconItem) => {
+                const IconComp = resolveIcon(iconItem.name);
+                const isSelected = serviceIcon === iconItem.name;
+                return (
+                  <button
+                    key={iconItem.name}
+                    type="button"
+                    onClick={() => setServiceIcon(isSelected ? '' : iconItem.name)}
+                    className={`group/icon flex flex-col items-center justify-center p-2 rounded-lg border transition-all ${
+                      isSelected
+                        ? 'border-primary bg-primary/10 ring-1 ring-primary'
+                        : 'border-transparent hover:border-border hover:bg-muted/50'
+                    }`}
+                    title={iconItem.label}
+                  >
+                    {IconComp && <IconComp className={`w-5 h-5 ${isSelected ? 'text-primary' : 'text-muted-foreground group-hover/icon:text-foreground'}`} />}
+                  </button>
+                );
+              })}
+            </div>
+            {serviceIcon && (
+              <div className="mt-2 flex items-center justify-between text-xs">
+                <span className="text-muted-foreground">Seçili: <span className="font-medium text-foreground">{availableIcons.find(i => i.name === serviceIcon)?.label}</span></span>
+                <button type="button" onClick={() => setServiceIcon('')} className="text-red-500 hover:text-red-600 font-medium">Kaldır</button>
+              </div>
+            )}
+          </div>
+
           {/* SEO Section - Collapsible */}
           <div className="bg-card rounded-xl shadow-sm border border-border overflow-hidden">
-            <button
-              type="button"
-              onClick={() => setSeoExpanded(!seoExpanded)}
-              className="w-full p-4 flex items-center justify-between hover:bg-muted/50 transition-colors"
-            >
-              <div className="flex items-center gap-2">
+            <div className="flex items-center justify-between p-4 hover:bg-muted/50 transition-colors">
+              <button
+                type="button"
+                onClick={() => setSeoExpanded(!seoExpanded)}
+                className="flex items-center gap-2 flex-1"
+              >
                 <Sparkles className="w-4 h-4 text-primary" />
                 <span className="text-sm font-semibold text-foreground">SEO Metadata</span>
-              </div>
-              {seoExpanded ? (
-                <ChevronUp className="w-4 h-4 text-muted-foreground" />
-              ) : (
-                <ChevronDown className="w-4 h-4 text-muted-foreground" />
-              )}
-            </button>
+                {seoExpanded ? (
+                  <ChevronUp className="w-4 h-4 text-muted-foreground ml-auto" />
+                ) : (
+                  <ChevronDown className="w-4 h-4 text-muted-foreground ml-auto" />
+                )}
+              </button>
+              <button
+                type="button"
+                onClick={generateSeo}
+                disabled={seoGenerating || !translations[activeLanguage]?.description}
+                className="ml-3 flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-primary/10 text-primary hover:bg-primary/20 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                title="Başlık ve içerikten SEO bilgilerini otomatik oluştur"
+              >
+                {seoGenerating ? (
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                ) : (
+                  <Wand2 className="w-3.5 h-3.5" />
+                )}
+                Otomatik Oluştur
+              </button>
+            </div>
 
             {seoExpanded && (
               <div className="px-4 pb-4 space-y-3 border-t border-border pt-3">

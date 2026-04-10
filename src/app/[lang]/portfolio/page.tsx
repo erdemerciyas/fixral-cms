@@ -11,7 +11,7 @@ export const revalidate = 3600;
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const { lang } = await params;
   const titleByLang = lang === 'es' ? 'Portafolio | Fixral' : 'Portfolyo | Fixral';
-  const descByLang = lang === 'es' ? 'Descubre nuestros proyectos y trabajos completados.' : 'Tamamladigimiz projeleri ve calismalarimizi kesfedin.';
+  const descByLang = lang === 'es' ? 'Descubre nuestros proyectos y trabajos completados.' : 'Tamamladığımız projeleri ve çalışmalarımızı keşfedin.';
   return {
     title: titleByLang,
     description: descByLang,
@@ -52,10 +52,10 @@ export default async function PortfolioPage() {
       <div className="min-h-screen bg-zinc-50 flex items-center justify-center">
         <div className="text-center max-w-md mx-auto px-4 py-8">
           <h3 className="text-xl font-semibold text-zinc-800 mb-4" style={{ fontFamily: 'var(--font-geist-sans)' }}>
-            Bir Hata Olustu
+            Bir Hata Oluştu
           </h3>
           <p className="text-zinc-500 mb-6 text-sm">
-            Portfolyo projeleri yuklenirken gecici bir sorun olustu.
+            Portfolyo projeleri yüklenirken geçici bir sorun oluştu.
           </p>
         </div>
       </div>

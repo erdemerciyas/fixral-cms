@@ -165,7 +165,7 @@ export default function DesktopNav({
                             color: isTransparent ? 'rgba(255,255,255,0.6)' : '#71717a',
                             transition: 'all 300ms cubic-bezier(0.32, 0.72, 0, 1)',
                         }}
-                        aria-label="Hesabim"
+                        aria-label="Hesabım"
                         aria-expanded={isAccountOpen}
                     >
                         {session?.user ? (
@@ -197,7 +197,7 @@ export default function DesktopNav({
                                                     {(session.user.name?.[0] || session.user.email?.[0] || 'U').toUpperCase()}
                                                 </div>
                                                 <div className="min-w-0">
-                                                    <p className="text-sm font-semibold text-zinc-900 truncate">{session.user.name || 'Kullanici'}</p>
+                                                    <p className="text-sm font-semibold text-zinc-900 truncate">{session.user.name || 'Kullanıcı'}</p>
                                                     <p className="text-[11px] text-zinc-400 truncate">{session.user.email}</p>
                                                 </div>
                                             </div>
@@ -225,7 +225,7 @@ export default function DesktopNav({
                                                 onClick={() => setIsAccountOpen(false)}
                                             >
                                                 <User size={16} weight="light" />
-                                                <span>Hesabim</span>
+                                                <span>Hesabım</span>
                                             </Link>
                                         </div>
 
@@ -237,7 +237,7 @@ export default function DesktopNav({
                                                 onClick={() => setIsAccountOpen(false)}
                                             >
                                                 <SignOut size={16} weight="light" />
-                                                <span>Cikis Yap</span>
+                                                <span>Çıkış Yap</span>
                                             </Link>
                                         </div>
                                     </>
@@ -252,7 +252,7 @@ export default function DesktopNav({
                                             }}
                                             onClick={() => setIsAccountOpen(false)}
                                         >
-                                            Giris Yap
+                                            Giriş Yap
                                         </Link>
                                         <Link
                                             href={`/${currentLang}/register`}
@@ -263,7 +263,7 @@ export default function DesktopNav({
                                             }}
                                             onClick={() => setIsAccountOpen(false)}
                                         >
-                                            Kayit Ol
+                                            Kayıt Ol
                                         </Link>
                                     </div>
                                 )}
@@ -288,7 +288,7 @@ export default function DesktopNav({
                         transition: 'all 500ms cubic-bezier(0.32, 0.72, 0, 1)',
                         boxShadow: isTransparent ? 'none' : '0 4px 12px rgba(0, 52, 80, 0.15)',
                     }}
-                    aria-label="Proje basvurusu formunu ac"
+                    aria-label="Proje başvurusu formunu aç"
                 >
                     <PaperPlaneTilt
                         size={14}
@@ -296,7 +296,7 @@ export default function DesktopNav({
                         className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
                         aria-hidden="true"
                     />
-                    <span>Proje Basvurusu</span>
+                    <span>Proje Başvurusu</span>
                 </button>
             )}
         </div>

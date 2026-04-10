@@ -70,10 +70,10 @@ export default function HomePortfolioSection({
           <div className="mb-16">
             <EyebrowTag className="mb-5">Portfolyo</EyebrowTag>
             <h2 className="section-title text-zinc-900 mb-4">
-              One Cikan Projelerimiz
+              Öne Çıkan Projelerimiz
             </h2>
             <p className="section-subtitle">
-              Tamamladigimiz basarili projelerden ornekler.
+              Tamamladığımız başarılı projelerden örnekler.
             </p>
           </div>
 
@@ -85,10 +85,10 @@ export default function HomePortfolioSection({
               <ArrowRight size={32} weight="light" className="text-zinc-300" />
             </div>
             <h3 className="text-xl font-semibold text-zinc-700 mb-2">
-              Projeler Yukleniyor
+              Projeler Yükleniyor
             </h3>
             <p className="text-zinc-400 text-sm">
-              Yakinda burada ornek projelerimizi gorebileceksiniz.
+              Yakında burada örnek projelerimizi görebileceksiniz.
             </p>
           </div>
         </div>
@@ -112,11 +112,11 @@ export default function HomePortfolioSection({
             className="text-3xl md:text-5xl font-bold text-zinc-900 mb-4"
             style={{ letterSpacing: '-0.03em', lineHeight: 1.1 }}
           >
-            One Cikan Projelerimiz
+            Öne Çıkan Projelerimiz
           </h2>
           <p className="text-lg text-zinc-500 max-w-xl">
-            Tamamladigimiz basarili projelerden ornekler. Kalite ve yenilik odakli
-            calismalarimizi kesfedin.
+            Tamamladığımız başarılı projelerden örnekler. Kalite ve yenilik odaklı
+            çalışmalarımızı keşfedin.
           </p>
         </motion.div>
 
@@ -180,7 +180,7 @@ export default function HomePortfolioSection({
               transition: 'all 500ms cubic-bezier(0.32, 0.72, 0, 1)',
             }}
           >
-            <span>Tum Projeleri Goruntule</span>
+            <span>Tüm Projeleri Görüntüle</span>
             <span
               className="w-8 h-8 rounded-full flex items-center justify-center"
               style={{ background: 'rgba(0,52,80,0.06)' }}
@@ -207,7 +207,7 @@ export default function HomePortfolioSection({
               <div className="text-2xl font-bold text-zinc-900 font-mono" style={{ letterSpacing: '-0.02em' }}>
                 {new Date().getFullYear() - 2020}+
               </div>
-              <div className="text-xs text-zinc-400 mt-0.5">Yillik Deneyim</div>
+              <div className="text-xs text-zinc-400 mt-0.5">Yıllık Deneyim</div>
             </div>
           </div>
         </motion.div>
