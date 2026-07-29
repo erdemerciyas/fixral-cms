@@ -1,12 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Squares2X2Icon,
-  ViewColumnsIcon,
-  QueueListIcon
-} from '@heroicons/react/24/outline';
+import { m, AnimatePresence } from 'framer-motion';
+import { LayoutGrid as Squares2X2Icon, Columns3 as ViewColumnsIcon, List as QueueListIcon } from 'lucide-react';
 import { ProjectSummary } from '@/types/portfolio';
 import ModernProjectCard from './ModernProjectCard';
 
@@ -117,7 +113,7 @@ export default function ModernProjectGrid({
 
       {/* Projects Grid */}
       <AnimatePresence mode="wait">
-        <motion.ul
+        <m.ul
           key={currentLayout}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -134,7 +130,7 @@ export default function ModernProjectGrid({
               />
             </li>
           ))}
-        </motion.ul>
+        </m.ul>
       </AnimatePresence>
     </div>
   );

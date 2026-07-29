@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import Portfolio from '@/models/Portfolio';
-import connectDB from '@/lib/mongoose';
-
 /**
  * GET /api/admin/models - List all 3D models
  */
@@ -20,8 +18,6 @@ export async function GET(_req: NextRequest) {
                 { status: 401 }
             );
         }
-
-        await connectDB();
 
         // Fetch portfolios that have 3D models
         const portfolios = await Portfolio.find({

@@ -38,12 +38,12 @@ const defaultConfig: ISocialMediaConfig = {
 };
 
 const socialFields = [
-  { key: 'twitter' as const, label: 'Twitter / X', icon: Globe, placeholder: 'https://twitter.com/kullaniciadi', color: 'text-sky-500' },
-  { key: 'instagram' as const, label: 'Instagram', icon: Globe, placeholder: 'https://instagram.com/kullaniciadi', color: 'text-pink-500' },
-  { key: 'linkedin' as const, label: 'LinkedIn', icon: Globe, placeholder: 'https://linkedin.com/in/kullaniciadi', color: 'text-blue-600' },
-  { key: 'github' as const, label: 'GitHub', icon: Globe, placeholder: 'https://github.com/kullaniciadi', color: 'text-gray-800 dark:text-gray-200' },
-  { key: 'facebook' as const, label: 'Facebook', icon: Globe, placeholder: 'https://facebook.com/kullaniciadi', color: 'text-blue-500' },
-  { key: 'youtube' as const, label: 'YouTube', icon: Globe, placeholder: 'https://youtube.com/@kullaniciadi', color: 'text-red-500' },
+  { key: 'twitter' as const, label: 'Twitter / X', icon: Globe, placeholder: 'https://twitter.com/kullaniciadi', color: 'text-muted-foreground' },
+  { key: 'instagram' as const, label: 'Instagram', icon: Globe, placeholder: 'https://instagram.com/kullaniciadi', color: 'text-muted-foreground' },
+  { key: 'linkedin' as const, label: 'LinkedIn', icon: Globe, placeholder: 'https://linkedin.com/in/kullaniciadi', color: 'text-muted-foreground' },
+  { key: 'github' as const, label: 'GitHub', icon: Globe, placeholder: 'https://github.com/kullaniciadi', color: 'text-muted-foreground' },
+  { key: 'facebook' as const, label: 'Facebook', icon: Globe, placeholder: 'https://facebook.com/kullaniciadi', color: 'text-muted-foreground' },
+  { key: 'youtube' as const, label: 'YouTube', icon: Globe, placeholder: 'https://youtube.com/@kullaniciadi', color: 'text-muted-foreground' },
 ];
 
 export default function AdminSocialMediaPage() {
@@ -141,8 +141,8 @@ export default function AdminSocialMediaPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-indigo-100 flex items-center justify-center">
-            <Share2 className="w-6 h-6 text-indigo-600" />
+          <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+            <Share2 className="w-6 h-6 text-primary" />
           </div>
           <div>
             <h1 className="text-2xl font-bold text-foreground">Sosyal Medya Ayarları</h1>
@@ -154,7 +154,7 @@ export default function AdminSocialMediaPage() {
         <Button
           onClick={handleSave}
           disabled={saving}
-          className="px-6 py-2.5 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 transition-colors disabled:opacity-50 flex items-center gap-2"
+          className="px-6 py-2.5 bg-primary text-primary-foreground font-medium rounded-xl hover:bg-primary/90 transition-colors disabled:opacity-50 flex items-center gap-2"
         >
           {saving ? 'Kaydediliyor...' : (
             <>
@@ -169,8 +169,8 @@ export default function AdminSocialMediaPage() {
       {message && (
         <div className={`p-4 rounded-xl border flex items-center gap-3 ${
           message.type === 'success'
-            ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
-            : 'bg-red-50 border-red-200 text-red-800'
+            ? 'bg-success/10 border-success/30 text-success'
+            : 'bg-destructive/10 border-destructive/30 text-destructive'
         }`}>
           {message.type === 'success' ? <Check className="w-5 h-5" /> : <Share2 className="w-5 h-5" />}
           {message.text}
@@ -180,15 +180,15 @@ export default function AdminSocialMediaPage() {
       {/* Stats Bar */}
       <div className="bg-card rounded-xl shadow-sm border border-border/60 p-4 flex items-center gap-6">
         <div className="flex items-center gap-2 text-sm">
-          <Link className="w-4 h-4 text-indigo-500" />
+          <Link className="w-4 h-4 text-primary" />
           <span className="text-muted-foreground">Aktif bağlantılar:</span>
           <span className="font-semibold text-foreground">{filledCount} / {socialFields.length}</span>
         </div>
         <div className="h-4 w-px bg-border" />
         <div className="flex items-center gap-2 text-sm">
-          <ToggleLeft className="w-4 h-4 text-indigo-500" />
+          <ToggleLeft className="w-4 h-4 text-primary" />
           <span className="text-muted-foreground">Paylaşım:</span>
-          <span className={`font-semibold ${config.enableSharing ? 'text-emerald-600' : 'text-slate-400'}`}>
+          <span className={`font-semibold ${config.enableSharing ? 'text-success' : 'text-muted-foreground'}`}>
             {config.enableSharing ? 'Açık' : 'Kapalı'}
           </span>
         </div>
@@ -197,8 +197,8 @@ export default function AdminSocialMediaPage() {
       {/* Social Links Card */}
       <div className="bg-card rounded-xl shadow-sm border border-border/60 p-6">
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-lg bg-indigo-100 flex items-center justify-center">
-            <Link className="w-5 h-5 text-indigo-600" />
+          <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+            <Link className="w-5 h-5 text-primary" />
           </div>
           <div>
             <h2 className="text-lg font-bold text-foreground">Sosyal Medya Bağlantıları</h2>
@@ -217,7 +217,7 @@ export default function AdminSocialMediaPage() {
                 type="url"
                 value={config[key]}
                 onChange={(e) => updateField(key, e.target.value)}
-                className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
                 placeholder={placeholder}
               />
             </div>
@@ -228,8 +228,8 @@ export default function AdminSocialMediaPage() {
       {/* Sharing Settings Card */}
       <div className="bg-card rounded-xl shadow-sm border border-border/60 p-6">
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-lg bg-violet-100 flex items-center justify-center">
-            <Share2 className="w-5 h-5 text-violet-600" />
+          <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+            <Share2 className="w-5 h-5 text-primary" />
           </div>
           <div>
             <h2 className="text-lg font-bold text-foreground">Paylaşım Ayarları</h2>
@@ -248,10 +248,10 @@ export default function AdminSocialMediaPage() {
             <button
               onClick={() => updateField('enableSharing', !config.enableSharing)}
               className={`w-12 h-6 rounded-full relative transition-colors ${
-                config.enableSharing ? 'bg-indigo-600' : 'bg-slate-300'
+                config.enableSharing ? 'bg-primary' : 'bg-muted'
               }`}
             >
-              <div className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${
+              <div className={`absolute top-1 left-1 w-4 h-4 bg-card rounded-full transition-transform ${
                 config.enableSharing ? 'translate-x-6' : ''
               }`} />
             </button>
@@ -267,10 +267,10 @@ export default function AdminSocialMediaPage() {
             <button
               onClick={() => updateField('showShareCount', !config.showShareCount)}
               className={`w-12 h-6 rounded-full relative transition-colors ${
-                config.showShareCount ? 'bg-indigo-600' : 'bg-slate-300'
+                config.showShareCount ? 'bg-primary' : 'bg-muted'
               }`}
             >
-              <div className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${
+              <div className={`absolute top-1 left-1 w-4 h-4 bg-card rounded-full transition-transform ${
                 config.showShareCount ? 'translate-x-6' : ''
               }`} />
             </button>
@@ -283,11 +283,11 @@ export default function AdminSocialMediaPage() {
         <Button
           onClick={handleSave}
           disabled={saving}
-          className="px-8 py-3 bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+          className="px-8 py-3 bg-primary text-primary-foreground font-semibold rounded-xl hover:shadow-lg hover:shadow-primary/25 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
         >
           {saving ? (
             <>
-              <div className="animate-spin rounded-full h-4 w-4 border-2 border-white" />
+              <div className="animate-spin rounded-full h-4 w-4 border-2 border-current border-t-transparent" />
               <span>Kaydediliyor...</span>
             </>
           ) : (

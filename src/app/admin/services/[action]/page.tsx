@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
+import { FormPageSkeleton } from '@/components/admin/admin-skeletons';
 
 /**
  * Legacy catch-all route — redirects to the proper new/edit pages.
@@ -22,12 +23,5 @@ export default function ServiceActionRedirect() {
     }
   }, [params, router]);
 
-  return (
-    <div className="flex items-center justify-center min-h-[400px]">
-      <div className="relative">
-        <div className="w-16 h-16 border-4 border-border rounded-full" />
-        <div className="absolute top-0 left-0 w-16 h-16 border-4 border-transparent border-t-primary rounded-full animate-spin" />
-      </div>
-    </div>
-  );
+  return <FormPageSkeleton />;
 }

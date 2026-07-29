@@ -1,4 +1,3 @@
-import connectDB from './mongoose';
 import News from '@/models/News';
 import { logger } from '@/core/lib/logger';
 
@@ -19,8 +18,6 @@ export async function generateNewsSitemapEntries(): Promise<
   }>
 > {
   try {
-    await connectDB();
-
     const articles = await News.find({ status: 'published' })
       .select('slug updatedAt publishedAt')
       .lean();

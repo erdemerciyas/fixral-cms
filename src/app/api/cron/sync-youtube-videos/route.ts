@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import Video from "@/models/Video";
-import connectDB from "@/lib/mongoose";
-
 async function fetchYouTubeVideos() {
   const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
   const YOUTUBE_CHANNEL_ID = process.env.YOUTUBE_CHANNEL_ID;
@@ -45,8 +43,6 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    await connectDB();
-
     const youtubeVideos = await fetchYouTubeVideos();
     const videoIds = youtubeVideos.map((video: { videoId: string }) => video.videoId);
     const existingVideos = await Video.find({ videoId: { $in: videoIds } });

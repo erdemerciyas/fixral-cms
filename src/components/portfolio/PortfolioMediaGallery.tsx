@@ -3,18 +3,18 @@
 import { useState, useEffect, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
-import {
-  MagnifyingGlassIcon,
-  XMarkIcon,
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  PhotoIcon,
-  CubeIcon,
-  ArrowDownTrayIcon
-} from '@heroicons/react/24/outline';
-import ModelViewer from '../3DModelViewer';
+import { m } from 'framer-motion';
+import { Search as MagnifyingGlassIcon, X as XMarkIcon, ChevronLeft as ChevronLeftIcon, ChevronRight as ChevronRightIcon, Image as PhotoIcon, Box as CubeIcon, Download as ArrowDownTrayIcon } from 'lucide-react';
+import dynamic from 'next/dynamic';
 import { Model3D } from '../../types/portfolio';
+
+// three/fiber/drei senkron bundle'a girmesin diye 3D görüntüleyici lazy yüklenir
+const ModelViewer = dynamic(() => import('../3DModelViewer'), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-96 bg-gray-100 rounded-lg animate-pulse" aria-label="3D model yükleniyor" />
+  ),
+});
 
 interface MediaItem {
   type: 'image' | '3d-model';
@@ -179,7 +179,7 @@ export default function PortfolioMediaGallery({
     <div>
       <div className="space-y-6">
         {/* Main Media Display */}
-        <motion.div
+        <m.div
           key={`main-media-${selectedItem?.url || 'loading'}`}
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -208,7 +208,7 @@ export default function PortfolioMediaGallery({
                   />
                   {/* Hover overlay for images */}
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center">
-                    <motion.div
+                    <m.div
                       initial={{ opacity: 0, scale: 0.8 }}
                       whileHover={{ opacity: 1, scale: 1 }}
                       className="opacity-0 group-hover:opacity-100 transition-opacity duration-300"
@@ -216,7 +216,7 @@ export default function PortfolioMediaGallery({
                       <div className="bg-white/90 backdrop-blur-sm rounded-full p-4 shadow-xl">
                         <MagnifyingGlassIcon className="w-8 h-8 text-slate-700" />
                       </div>
-                    </motion.div>
+                    </m.div>
                   </div>
                 </div>
               ) : (
@@ -244,7 +244,7 @@ export default function PortfolioMediaGallery({
                   </div>
                   {/* Hover overlay for 3D models */}
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center">
-                    <motion.div
+                    <m.div
                       initial={{ opacity: 0, scale: 0.8 }}
                       whileHover={{ opacity: 1, scale: 1 }}
                       className="opacity-0 group-hover:opacity-100 transition-opacity duration-300"
@@ -252,7 +252,7 @@ export default function PortfolioMediaGallery({
                       <div className="bg-white/90 backdrop-blur-sm rounded-full p-4 shadow-xl">
                         <CubeIcon className="w-8 h-8 text-blue-600" />
                       </div>
-                    </motion.div>
+                    </m.div>
                   </div>
                 </>
               )}
@@ -265,11 +265,11 @@ export default function PortfolioMediaGallery({
               </div>
             </div>
           )}
-        </motion.div>
+        </m.div>
 
         {/* Media Thumbnail Gallery */}
         {allMediaItems.length > 1 && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
@@ -287,7 +287,7 @@ export default function PortfolioMediaGallery({
 
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
               {allMediaItems.map((item, index) => (
-                <motion.button
+                <m.button
                   key={`thumb-${index}-${item.url}`}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -335,16 +335,16 @@ export default function PortfolioMediaGallery({
                   <div className="absolute top-1 right-1 bg-black/50 text-white text-xs px-2 py-1 rounded-full pointer-events-none">
                     {index + 1}
                   </div>
-                </motion.button>
+                </m.button>
               ))}
             </div>
-          </motion.div>
+          </m.div>
         )}
       </div>
 
       {/* Lightbox Modal */}
       {mounted && lightboxOpen && createPortal(
-        <motion.div
+        <m.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -363,7 +363,7 @@ export default function PortfolioMediaGallery({
           <div className="relative w-screen h-screen flex items-center justify-center p-4" style={{ width: '100vw', height: '100vh' }}>
 
             {/* Close Button */}
-            <motion.button
+            <m.button
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2 }}
@@ -372,10 +372,10 @@ export default function PortfolioMediaGallery({
               title="Kapat (ESC)"
             >
               <XMarkIcon className="w-6 h-6" />
-            </motion.button>
+            </m.button>
 
             {/* Media Counter */}
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
@@ -387,11 +387,11 @@ export default function PortfolioMediaGallery({
                 <PhotoIcon className="w-5 h-5" />
               )}
               <span>{lightboxItemIndex + 1} / {allMediaItems.length}</span>
-            </motion.div>
+            </m.div>
 
             {/* Download Button for 3D Models */}
             {allMediaItems[lightboxItemIndex]?.type === '3d-model' && allMediaItems[lightboxItemIndex]?.downloadable && (
-              <motion.button
+              <m.button
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
@@ -401,12 +401,12 @@ export default function PortfolioMediaGallery({
               >
                 <ArrowDownTrayIcon className="w-5 h-5" />
                 <span>İndir</span>
-              </motion.button>
+              </m.button>
             )}
 
             {/* Previous Button */}
             {allMediaItems.length > 1 && (
-              <motion.button
+              <m.button
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.4 }}
@@ -415,11 +415,11 @@ export default function PortfolioMediaGallery({
                 title="Önceki (←)"
               >
                 <ChevronLeftIcon className="w-8 h-8" />
-              </motion.button>
+              </m.button>
             )}
 
             {/* Main Media Container */}
-            <motion.div
+            <m.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5 }}
@@ -446,11 +446,11 @@ export default function PortfolioMediaGallery({
                   </div>
                 </div>
               )}
-            </motion.div>
+            </m.div>
 
             {/* Next Button */}
             {allMediaItems.length > 1 && (
-              <motion.button
+              <m.button
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.4 }}
@@ -459,11 +459,11 @@ export default function PortfolioMediaGallery({
                 title="Sonraki (→)"
               >
                 <ChevronRightIcon className="w-8 h-8" />
-              </motion.button>
+              </m.button>
             )}
 
             {/* Media Title and Info */}
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
@@ -487,7 +487,7 @@ export default function PortfolioMediaGallery({
                   </>
                 )}
               </div>
-            </motion.div>
+            </m.div>
 
             {/* Click outside to close */}
             <div
@@ -495,7 +495,7 @@ export default function PortfolioMediaGallery({
               onClick={() => setLightboxOpen(false)}
             />
           </div>
-        </motion.div>,
+        </m.div>,
         document.body
       )}
     </div>

@@ -2,7 +2,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import Message from '@/models/Message';
-import connectDB from '@/lib/mongoose';
 import { authOptions } from '@/lib/auth'; // Ensure this path is correct, might be in a different place
 
 export async function DELETE(
@@ -18,8 +17,6 @@ export async function DELETE(
                 { status: 401 }
             );
         }
-
-        await connectDB();
 
         const { id } = params;
 

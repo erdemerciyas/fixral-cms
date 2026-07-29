@@ -26,7 +26,7 @@ import {
 import Link from 'next/link';
 import { Category } from '@/types/portfolio';
 import slugify from 'slugify';
-import { useToast } from '../ui/useToast';
+import { toast } from 'sonner';
 import { useConfirm } from '@/hooks/use-confirm';
 import { useActiveLanguages } from '@/hooks/useActiveLanguages';
 import LanguageTabs from '@/components/admin/LanguageTabs';
@@ -105,7 +105,6 @@ export default function PortfolioForm({
   onSubmit,
   submitting,
 }: PortfolioFormProps) {
-  const { show: showToast } = useToast();
   const { confirm } = useConfirm();
   const [error, setError] = useState('');
   const [categories, setCategories] = useState<Category[]>([]);
@@ -288,7 +287,7 @@ export default function PortfolioForm({
       setFieldErrors(errs);
       const firstErr = Object.values(errs)[0];
       setError(firstErr);
-      showToast({ variant: 'danger', title: 'Form hatası', description: firstErr });
+      toast.error('Form hatası', { description: firstErr });
       return;
     }
 
@@ -314,7 +313,7 @@ export default function PortfolioForm({
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Bir hata oluştu';
       setError(msg);
-      showToast({ variant: 'danger', title: 'İşlem başarısız', description: msg });
+      toast.error('İşlem başarısız', { description: msg });
     }
   };
 
@@ -418,12 +417,12 @@ export default function PortfolioForm({
         }]
       }));
 
-      showToast({ variant: 'success', title: 'Başarılı', description: '3D model başarıyla yüklendi' });
+      toast.success('Başarılı', { description: '3D model başarıyla yüklendi' });
       event.target.value = '';
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Yükleme sırasında bir hata oluştu';
       setError(msg);
-      showToast({ variant: 'danger', title: 'Yükleme hatası', description: msg });
+      toast.error('Yükleme hatası', { description: msg });
     } finally {
       setUploadingModel(false);
     }
@@ -455,11 +454,11 @@ export default function PortfolioForm({
         models3D: prev.models3D.filter((_, i) => i !== index)
       }));
 
-      showToast({ variant: 'success', title: 'Başarılı', description: '3D model silindi' });
+      toast.success('Başarılı', { description: '3D model silindi' });
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Silme sırasında bir hata oluştu';
       setError(msg);
-      showToast({ variant: 'danger', title: 'Silme hatası', description: msg });
+      toast.error('Silme hatası', { description: msg });
     }
   };
 
@@ -488,15 +487,15 @@ export default function PortfolioForm({
         <div className="flex items-center gap-4">
           <Link
             href="/admin/portfolio"
-            className="p-2 hover:bg-white hover:shadow-sm rounded-xl transition-all border border-transparent hover:border-border"
+            className="p-2 hover:bg-card hover:shadow-sm rounded-xl transition-all border border-transparent hover:border-border"
           >
-            <ArrowLeft className="w-5 h-5 text-gray-500" />
+            <ArrowLeft className="w-5 h-5 text-muted-foreground" />
           </Link>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
+            <h1 className="text-2xl font-bold text-foreground tracking-tight">
               {mode === 'create' ? 'Yeni Proje' : 'Projeyi Düzenle'}
             </h1>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-muted-foreground">
               {mode === 'create'
                 ? 'Portfolyonuza yeni bir eser ekleyin'
                 : formData.title || 'Proje düzenleniyor...'}
@@ -506,7 +505,7 @@ export default function PortfolioForm({
         <div className="flex items-center gap-3">
           <Link
             href="/admin/portfolio"
-            className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
+            className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
           >
             İptal
           </Link>
@@ -532,10 +531,10 @@ export default function PortfolioForm({
       </div>
 
       {error && (
-        <div className="mb-8 bg-red-50 border border-red-200 text-red-800 p-4 rounded-xl flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
+        <div className="mb-8 bg-destructive/10 border border-destructive/30 text-destructive p-4 rounded-xl flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
           <AlertTriangle className="w-5 h-5 shrink-0" />
           <span className="font-medium">{error}</span>
-          <button onClick={() => setError('')} className="ml-auto text-red-400 hover:text-red-600">
+          <button onClick={() => setError('')} className="ml-auto text-destructive hover:text-destructive">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -547,7 +546,7 @@ export default function PortfolioForm({
           {/* Image Gallery */}
           <Card className="rounded-xl overflow-hidden p-0">
             <CardHeader className="p-4 border-b border-border-subtle bg-surface-secondary/50 flex flex-row items-center justify-between space-y-0">
-              <CardTitle className="font-semibold text-gray-900 flex items-center gap-2">
+              <CardTitle className="font-semibold text-foreground flex items-center gap-2">
                 <ImageIcon className="w-5 h-5 text-brand-500" />
                 Medya Galeri
               </CardTitle>
@@ -564,19 +563,19 @@ export default function PortfolioForm({
                 disabled={submitting}
                 pageContext="portfolio"
               />
-              {fieldErrors.images && <p className="mt-2 text-xs text-red-600 font-medium">{fieldErrors.images}</p>}
-              {fieldErrors.coverImage && <p className="mt-1 text-xs text-red-600 font-medium">{fieldErrors.coverImage}</p>}
+              {fieldErrors.images && <p className="mt-2 text-xs text-destructive font-medium">{fieldErrors.images}</p>}
+              {fieldErrors.coverImage && <p className="mt-1 text-xs text-destructive font-medium">{fieldErrors.coverImage}</p>}
             </CardContent>
           </Card>
 
           {/* 3D Models */}
           <Card className="rounded-xl overflow-hidden p-0">
             <CardHeader className="p-4 border-b border-border-subtle bg-surface-secondary/50 flex flex-row items-center justify-between space-y-0">
-              <CardTitle className="font-semibold text-gray-900 flex items-center gap-2">
-                <Box className="w-5 h-5 text-blue-500" />
+              <CardTitle className="font-semibold text-foreground flex items-center gap-2">
+                <Box className="w-5 h-5 text-info" />
                 3D Varlıklar
               </CardTitle>
-              <label className={`cursor-pointer inline-flex items-center px-3 py-1.5 text-xs font-medium bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-lg transition-colors ${uploadingModel ? 'opacity-50 cursor-not-allowed' : ''}`}>
+              <label className={`cursor-pointer inline-flex items-center px-3 py-1.5 text-xs font-medium bg-info/10 text-info hover:bg-info/15 rounded-lg transition-colors ${uploadingModel ? 'opacity-50 cursor-not-allowed' : ''}`}>
                 <input
                   type="file"
                   accept=".stl,.obj,.gltf,.glb"
@@ -595,21 +594,21 @@ export default function PortfolioForm({
             <CardContent className="p-4 space-y-3">
               {formData.models3D && formData.models3D.length > 0 ? (
                 formData.models3D.map((model, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 border border-border-subtle rounded-xl bg-surface-secondary hover:border-gray-300 transition-colors group">
+                  <div key={index} className="flex items-center justify-between p-3 border border-border-subtle rounded-xl bg-surface-secondary hover:border-input transition-colors group">
                     <div className="flex items-center gap-3 min-w-0">
-                      <div className="w-10 h-10 bg-white border border-border rounded-lg flex items-center justify-center shrink-0">
-                        <Box className="w-5 h-5 text-gray-400" />
+                      <div className="w-10 h-10 bg-card border border-border rounded-lg flex items-center justify-center shrink-0">
+                        <Box className="w-5 h-5 text-muted-foreground" />
                       </div>
                       <div className="min-w-0">
-                        <p className="text-sm font-medium text-gray-900 truncate" title={model.name}>{model.name}</p>
-                        <p className="text-xs text-gray-500 uppercase">{model.format} &bull; {formatFileSize(model.size)}</p>
+                        <p className="text-sm font-medium text-foreground truncate" title={model.name}>{model.name}</p>
+                        <p className="text-xs text-muted-foreground uppercase">{model.format} &bull; {formatFileSize(model.size)}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                       <button
                         type="button"
                         onClick={() => toggle3DModelDownloadable(index)}
-                        className={`p-1.5 rounded-lg transition-colors ${model.downloadable ? 'text-success-dark bg-success-light' : 'text-gray-400 hover:bg-white'}`}
+                        className={`p-1.5 rounded-lg transition-colors ${model.downloadable ? 'text-success-dark bg-success-light' : 'text-muted-foreground hover:bg-card'}`}
                         title={model.downloadable ? 'İndirilebilir' : 'İndirilemez'}
                       >
                         <Download className="w-4 h-4" />
@@ -617,7 +616,7 @@ export default function PortfolioForm({
                       <button
                         type="button"
                         onClick={() => remove3DModel(index)}
-                        className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        className="p-1.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -626,8 +625,8 @@ export default function PortfolioForm({
                 ))
               ) : (
                 <div className="text-center py-8 border-2 border-dashed border-border-subtle rounded-xl">
-                  <Box className="w-8 h-8 text-gray-300 mx-auto mb-2" />
-                  <p className="text-sm text-gray-400">Henüz 3D model eklenmemiş</p>
+                  <Box className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
+                  <p className="text-sm text-muted-foreground">Henüz 3D model eklenmemiş</p>
                 </div>
               )}
             </CardContent>
@@ -652,7 +651,7 @@ export default function PortfolioForm({
             <div className="space-y-5">
               {/* Title */}
               <div>
-                <label htmlFor="title" className="block text-sm font-semibold text-gray-900 mb-1.5">
+                <label htmlFor="title" className="block text-sm font-semibold text-foreground mb-1.5">
                   Proje Başlığı
                   {activeLanguage && (
                     <Badge variant="default" className="ml-2 text-xs">
@@ -680,18 +679,18 @@ export default function PortfolioForm({
                     }
                   }}
                   onBlur={() => validateField('title')}
-                  className={`w-full h-11 px-3.5 text-sm border rounded-lg bg-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all ${fieldErrors.title ? 'border-red-300 focus:ring-red-500/20 focus:border-red-500' : 'border-border'}`}
+                  className={`w-full h-11 px-3.5 text-sm border rounded-lg bg-card placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all ${fieldErrors.title ? 'border-destructive/40 focus:ring-destructive focus:border-destructive' : 'border-border'}`}
                   placeholder="Projenize bir isim verin"
                 />
-                {fieldErrors.title && <p className="mt-1.5 text-xs text-red-600">{fieldErrors.title}</p>}
+                {fieldErrors.title && <p className="mt-1.5 text-xs text-destructive">{fieldErrors.title}</p>}
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 {/* URL Slug */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-900 mb-1.5">URL Slug</label>
-                  <div className={`flex items-center h-11 border rounded-lg bg-white px-3.5 transition-all ${fieldErrors.slug ? 'border-red-300 focus-within:ring-red-500/20 focus-within:border-red-500' : 'border-border focus-within:ring-2 focus-within:ring-brand-500/20 focus-within:border-brand-500'}`}>
-                    <span className="text-gray-400 text-sm mr-1 shrink-0">/portfolio/</span>
+                  <label className="block text-sm font-semibold text-foreground mb-1.5">URL Slug</label>
+                  <div className={`flex items-center h-11 border rounded-lg bg-card px-3.5 transition-all ${fieldErrors.slug ? 'border-destructive/40 focus-within:ring-destructive focus-within:border-destructive' : 'border-border focus-within:ring-2 focus-within:ring-brand-500/20 focus-within:border-brand-500'}`}>
+                    <span className="text-muted-foreground text-sm mr-1 shrink-0">/portfolio/</span>
                     <input
                       type="text"
                       value={formData.slug}
@@ -700,27 +699,27 @@ export default function PortfolioForm({
                         setFormData(prev => ({ ...prev, slug: e.target.value }));
                       }}
                       readOnly={slugLocked}
-                      className="flex-1 bg-transparent border-none text-sm text-gray-700 focus:outline-none focus:ring-0 p-0 min-w-0"
+                      className="flex-1 bg-transparent border-none text-sm text-foreground focus:outline-none focus:ring-0 p-0 min-w-0"
                     />
                     <button
                       type="button"
                       onClick={() => setSlugLocked(!slugLocked)}
-                      className="ml-2 shrink-0 text-gray-400 hover:text-brand-600 transition-colors"
+                      className="ml-2 shrink-0 text-muted-foreground hover:text-brand-600 transition-colors"
                       title={slugLocked ? 'Slug düzenlemeyi aç' : 'Slug otomatik moduna dön'}
                     >
                       {slugLocked ? <Pencil className="w-4 h-4" /> : <Check className="w-4 h-4" />}
                     </button>
                   </div>
-                  <p className="text-xs text-gray-400 mt-1.5">
+                  <p className="text-xs text-muted-foreground mt-1.5">
                     {slugLocked ? 'Başlıktan otomatik oluşturulur' : 'Manuel düzenleme modu'}
                   </p>
                 </div>
 
                 {/* Client */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-900 mb-1.5">Müşteri</label>
+                  <label className="block text-sm font-semibold text-foreground mb-1.5">Müşteri</label>
                   <div className="relative">
-                    <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                    <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
                     <input
                       type="text"
                       value={formData.client}
@@ -729,17 +728,17 @@ export default function PortfolioForm({
                         setFormData(prev => ({ ...prev, client: e.target.value }));
                       }}
                       onBlur={() => validateField('client')}
-                      className={`w-full h-11 pl-10 pr-3.5 text-sm border rounded-lg bg-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all ${fieldErrors.client ? 'border-red-300 focus:ring-red-500/20 focus:border-red-500' : 'border-border'}`}
+                      className={`w-full h-11 pl-10 pr-3.5 text-sm border rounded-lg bg-card placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all ${fieldErrors.client ? 'border-destructive/40 focus:ring-destructive focus:border-destructive' : 'border-border'}`}
                       placeholder="Şirket veya Kişi Adı"
                     />
                   </div>
-                  {fieldErrors.client && <p className="mt-1.5 text-xs text-red-600">{fieldErrors.client}</p>}
+                  {fieldErrors.client && <p className="mt-1.5 text-xs text-destructive">{fieldErrors.client}</p>}
                 </div>
               </div>
 
               {/* Description Editor */}
               <div>
-                <label className="block text-sm font-semibold text-gray-900 mb-1.5">Açıklama</label>
+                <label className="block text-sm font-semibold text-foreground mb-1.5">Açıklama</label>
                 <UniversalEditor
                   key={activeLanguage}
                   value={currentTranslation.description}
@@ -753,12 +752,12 @@ export default function PortfolioForm({
                   placeholder="Projenin hikayesini anlatın..."
                   minHeight="300px"
                 />
-                {fieldErrors.description && <p className="mt-1.5 text-xs text-red-600">{fieldErrors.description}</p>}
+                {fieldErrors.description && <p className="mt-1.5 text-xs text-destructive">{fieldErrors.description}</p>}
               </div>
 
               {/* Excerpt */}
               <div>
-                <label className="block text-sm font-semibold text-gray-900 mb-1.5">Kısa Açıklama (Özet)</label>
+                <label className="block text-sm font-semibold text-foreground mb-1.5">Kısa Açıklama (Özet)</label>
                 <textarea
                   rows={2}
                   value={currentTranslation.excerpt}
@@ -769,14 +768,14 @@ export default function PortfolioForm({
                       [activeLanguage]: { ...prev[activeLanguage], excerpt: e.target.value }
                     }));
                   }}
-                  className="w-full px-3.5 py-2.5 text-sm border border-border rounded-lg bg-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all resize-y"
+                  className="w-full px-3.5 py-2.5 text-sm border border-border rounded-lg bg-card placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all resize-y"
                   placeholder="Proje için kısa açıklama..."
                 />
               </div>
 
               {/* Meta Description */}
               <div>
-                <label className="block text-sm font-semibold text-gray-900 mb-1.5">Meta Açıklaması (SEO)</label>
+                <label className="block text-sm font-semibold text-foreground mb-1.5">Meta Açıklaması (SEO)</label>
                 <textarea
                   rows={2}
                   maxLength={160}
@@ -788,10 +787,10 @@ export default function PortfolioForm({
                       [activeLanguage]: { ...prev[activeLanguage], metaDescription: e.target.value }
                     }));
                   }}
-                  className="w-full px-3.5 py-2.5 text-sm border border-border rounded-lg bg-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all resize-y"
+                  className="w-full px-3.5 py-2.5 text-sm border border-border rounded-lg bg-card placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all resize-y"
                   placeholder="SEO meta açıklaması..."
                 />
-                <p className="text-xs text-gray-400 mt-1.5">{currentTranslation.metaDescription.length}/160 karakter</p>
+                <p className="text-xs text-muted-foreground mt-1.5">{currentTranslation.metaDescription.length}/160 karakter</p>
               </div>
             </div>
           </Card>
@@ -802,14 +801,14 @@ export default function PortfolioForm({
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Categories */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-900 mb-2.5 flex items-center gap-2">
+                  <label className="block text-sm font-semibold text-foreground mb-2.5 flex items-center gap-2">
                     <Tag className="w-4 h-4 text-success" />
                     Kategoriler
                   </label>
                   {loadingCategories ? (
                     <div className="flex gap-2">
                       {[1, 2, 3].map(i => (
-                        <div key={i} className="h-8 w-20 bg-gray-100 rounded-full animate-pulse" />
+                        <div key={i} className="h-8 w-20 bg-muted rounded-full animate-pulse" />
                       ))}
                     </div>
                   ) : (
@@ -824,7 +823,7 @@ export default function PortfolioForm({
                           }}
                           className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${formData.categoryIds.includes(cat._id)
                             ? 'bg-success-light border-success/20 text-success-dark'
-                            : 'bg-white border-border text-gray-600 hover:border-success/20'
+                            : 'bg-card border-border text-muted-foreground hover:border-success/20'
                             }`}
                         >
                           {cat.name}
@@ -833,12 +832,12 @@ export default function PortfolioForm({
                       ))}
                     </div>
                   )}
-                  {fieldErrors.categoryIds && <p className="mt-2 text-xs text-red-600">{fieldErrors.categoryIds}</p>}
+                  {fieldErrors.categoryIds && <p className="mt-2 text-xs text-destructive">{fieldErrors.categoryIds}</p>}
                 </div>
 
                 {/* Date */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-900 mb-2.5 flex items-center gap-2">
+                  <label className="block text-sm font-semibold text-foreground mb-2.5 flex items-center gap-2">
                     <Calendar className="w-4 h-4 text-warning" />
                     Tamamlanma Tarihi
                   </label>
@@ -850,29 +849,29 @@ export default function PortfolioForm({
                       setFormData(prev => ({ ...prev, completionDate: e.target.value }));
                     }}
                     onBlur={() => validateField('completionDate')}
-                    className={`w-full h-11 px-3.5 text-sm border rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all ${fieldErrors.completionDate ? 'border-red-300 focus:ring-red-500/20 focus:border-red-500' : 'border-border'}`}
+                    className={`w-full h-11 px-3.5 text-sm border rounded-lg bg-card focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all ${fieldErrors.completionDate ? 'border-destructive/40 focus:ring-destructive focus:border-destructive' : 'border-border'}`}
                   />
-                  {fieldErrors.completionDate && <p className="mt-1.5 text-xs text-red-600">{fieldErrors.completionDate}</p>}
+                  {fieldErrors.completionDate && <p className="mt-1.5 text-xs text-destructive">{fieldErrors.completionDate}</p>}
                 </div>
               </div>
 
               {/* Technologies - Tag/Chip UI */}
               <div>
-                <label className="block text-sm font-semibold text-gray-900 mb-2.5 flex items-center gap-2">
-                  <Hash className="w-4 h-4 text-violet-500" />
+                <label className="block text-sm font-semibold text-foreground mb-2.5 flex items-center gap-2">
+                  <Hash className="w-4 h-4 text-primary" />
                   Teknolojiler
                 </label>
-                <div className={`flex flex-wrap items-center gap-2 px-3.5 py-2.5 border rounded-lg bg-white transition-all min-h-[44px] focus-within:ring-2 focus-within:ring-brand-500/20 focus-within:border-brand-500 ${formData.technologies.length === 0 ? 'border-border' : 'border-border'}`}>
+                <div className={`flex flex-wrap items-center gap-2 px-3.5 py-2.5 border rounded-lg bg-card transition-all min-h-[44px] focus-within:ring-2 focus-within:ring-brand-500/20 focus-within:border-brand-500 ${formData.technologies.length === 0 ? 'border-border' : 'border-border'}`}>
                   {formData.technologies.map((tech, index) => (
                     <span
                       key={`${tech}-${index}`}
-                      className="inline-flex items-center gap-1 px-2.5 py-1 bg-violet-50 text-violet-700 border border-violet-200 rounded-md text-xs font-medium"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 bg-primary/10 text-primary border border-primary/30 rounded-md text-xs font-medium"
                     >
                       {tech}
                       <button
                         type="button"
                         onClick={() => removeTechnology(index)}
-                        className="text-violet-400 hover:text-violet-700 transition-colors"
+                        className="text-primary hover:text-primary transition-colors"
                       >
                         <X className="w-3 h-3" />
                       </button>
@@ -887,10 +886,10 @@ export default function PortfolioForm({
                       if (techInput.trim()) addTechnology(techInput);
                     }}
                     placeholder={formData.technologies.length === 0 ? 'Teknoloji ekle...' : 'Ekle...'}
-                    className="flex-1 min-w-[100px] bg-transparent border-none text-sm focus:outline-none focus:ring-0 p-0 placeholder:text-gray-400"
+                    className="flex-1 min-w-[100px] bg-transparent border-none text-sm focus:outline-none focus:ring-0 p-0 placeholder:text-muted-foreground"
                   />
                 </div>
-                <p className="text-xs text-gray-400 mt-1.5">Enter ile ekleyin, Backspace ile son etiketi silin</p>
+                <p className="text-xs text-muted-foreground mt-1.5">Enter ile ekleyin, Backspace ile son etiketi silin</p>
               </div>
             </div>
           </Card>

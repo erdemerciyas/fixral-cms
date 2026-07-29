@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import Service from '@/models/Service';
-import connectDB from '@/lib/mongoose';
 import slugify from 'slugify';
 
 /**
@@ -18,8 +17,6 @@ export async function GET(_req: NextRequest) {
         { status: 401 }
       );
     }
-
-    await connectDB();
 
     const services = await Service.find()
       .sort({ order: 1, createdAt: -1 });
@@ -47,8 +44,6 @@ export async function POST(req: NextRequest) {
         { status: 401 }
       );
     }
-
-    await connectDB();
 
     const body = await req.json();
 
@@ -107,8 +102,6 @@ export async function PUT(req: NextRequest) {
     }
 
     const items: { id: string; order: number }[] = await req.json();
-    await connectDB();
-
     const updatePromises = items.map((item) =>
       Service.findByIdAndUpdate(item.id, { order: item.order }, { new: true })
     );

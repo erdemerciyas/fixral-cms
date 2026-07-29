@@ -1,8 +1,9 @@
 'use client'
 
+import * as React from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Plus, FileText, Image as ImageIcon, Box, Layers } from 'lucide-react'
+import { Plus, Search, FileText, Image as ImageIcon, Box, Layers } from 'lucide-react'
 import { Separator } from '@/components/ui/separator'
 import { SidebarTrigger } from '@/components/ui/sidebar'
 import {
@@ -20,6 +21,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { CommandPalette } from '@/components/admin/command-palette'
 import dynamic from 'next/dynamic'
 
 const ThemeToggle = dynamic(
@@ -37,7 +39,6 @@ const ROUTE_LABELS: Record<string, string> = {
   models: '3D Modeller',
   media: 'Medya',
   videos: 'Videolar',
-  'theme-customize': 'Tema Özelleştirme',
   slider: 'Slider',
   footer: 'Alt Bilgi',
   seo: 'SEO',
@@ -48,14 +49,11 @@ const ROUTE_LABELS: Record<string, string> = {
   settings: 'Ayarlar',
   sitemap: 'Sitemap',
   languages: 'Dil Ayarları',
-  updates: 'Güncellemeler',
   messages: 'Mesajlar',
   contact: 'İletişim',
   profile: 'Profil',
   backup: 'Yedekleme',
-  monitoring: 'İzleme',
   content: 'İçerik',
-  editor: 'Editör',
   create: 'Oluştur',
   new: 'Yeni',
   edit: 'Düzenle',
@@ -104,14 +102,26 @@ const quickCreateActions = [
 export function AdminHeader() {
   const pathname = usePathname()
   const breadcrumbs = getBreadcrumbs(pathname || '/admin/dashboard')
+  const [paletteOpen, setPaletteOpen] = React.useState(false)
+
+  React.useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if ((e.key === 'k' || e.key === 'K') && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault()
+        setPaletteOpen((open) => !open)
+      }
+    }
+    document.addEventListener('keydown', onKeyDown)
+    return () => document.removeEventListener('keydown', onKeyDown)
+  }, [])
 
   return (
-    <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
-      <div className="flex items-center gap-2">
+    <header className="sticky top-0 z-40 flex h-14 shrink-0 items-center gap-2 rounded-t-xl border-b bg-background/80 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="flex min-w-0 items-center gap-2">
         <SidebarTrigger className="-ml-1" />
-        <Separator orientation="vertical" className="mr-2 h-4" />
-        <Breadcrumb>
-          <BreadcrumbList>
+        <Separator orientation="vertical" className="mr-1 h-4" />
+        <Breadcrumb className="min-w-0">
+          <BreadcrumbList className="flex-nowrap">
             <BreadcrumbItem className="hidden md:block">
               <BreadcrumbLink asChild>
                 <Link href="/admin/dashboard">Admin</Link>
@@ -120,11 +130,13 @@ export function AdminHeader() {
             {breadcrumbs.map((crumb, index) => (
               <span key={crumb.href} className="contents">
                 <BreadcrumbSeparator className="hidden md:block" />
-                <BreadcrumbItem>
+                <BreadcrumbItem className="min-w-0">
                   {index === breadcrumbs.length - 1 ? (
-                    <BreadcrumbPage>{crumb.label}</BreadcrumbPage>
+                    <BreadcrumbPage className="truncate">
+                      {crumb.label}
+                    </BreadcrumbPage>
                   ) : (
-                    <BreadcrumbLink asChild>
+                    <BreadcrumbLink asChild className="hidden truncate sm:block">
                       <Link href={crumb.href}>{crumb.label}</Link>
                     </BreadcrumbLink>
                   )}
@@ -134,13 +146,35 @@ export function AdminHeader() {
           </BreadcrumbList>
         </Breadcrumb>
       </div>
-      <div className="ml-auto flex items-center gap-2">
+      <div className="ml-auto flex items-center gap-1.5 sm:gap-2">
+        {/* Komut paleti tetikleyici: masaüstünde arama kutusu, mobilde ikon */}
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setPaletteOpen(true)}
+          className="hidden h-8 w-56 justify-start gap-2 px-3 text-muted-foreground md:inline-flex"
+        >
+          <Search className="h-3.5 w-3.5" />
+          <span className="text-sm font-normal">Ara veya komut çalıştır...</span>
+          <kbd className="pointer-events-none ml-auto inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground">
+            <span className="text-xs">⌘</span>K
+          </kbd>
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => setPaletteOpen(true)}
+          aria-label="Komut paletini aç"
+          className="md:hidden"
+        >
+          <Search className="h-5 w-5" />
+        </Button>
         <ThemeToggle />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button size="sm" className="hidden md:inline-flex">
-              <Plus className="mr-1 h-4 w-4" />
-              Yeni İçerik
+            <Button size="sm" className="h-8">
+              <Plus className="h-4 w-4 md:mr-1" />
+              <span className="hidden md:inline">Yeni İçerik</span>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48">
@@ -155,6 +189,7 @@ export function AdminHeader() {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
+      <CommandPalette open={paletteOpen} onOpenChange={setPaletteOpen} />
     </header>
   )
 }

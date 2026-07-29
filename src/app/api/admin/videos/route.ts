@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import Video from "@/models/Video";
-import connectDB from "@/lib/mongoose";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 
@@ -27,8 +26,6 @@ export async function GET(_req: Request) {
     }
 
     // Connect to database
-    await connectDB();
-
     // Get videos from database only (no YouTube API)
     const dbVideos = await getVideosFromDatabase();
     
@@ -53,8 +50,6 @@ export async function POST(req: Request) {
     }
 
     // Connect to database
-    await connectDB();
-
     // Get video data from request body
     const videoData = await req.json();
 

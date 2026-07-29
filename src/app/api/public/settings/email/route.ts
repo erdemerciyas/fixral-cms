@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import connectDB from '@/lib/mongoose';
 import User from '@/models/User';
 import bcrypt from 'bcryptjs';
 
@@ -22,8 +21,6 @@ export async function POST(request: Request) {
       }, { status: 401 });
     }
 
-    await connectDB();
-    
     const body: EmailSettingsRequest = await request.json();
     const { email: newEmail, emailPassword } = body;
 
@@ -74,8 +71,6 @@ export async function PUT(request: Request) {
       }, { status: 401 });
     }
 
-    await connectDB();
-    
     const body = await request.json();
     const { newEmail, currentPassword } = body;
 

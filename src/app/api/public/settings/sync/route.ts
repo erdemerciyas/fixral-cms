@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import connectDB from '@/lib/mongoose';
 import Settings from '@/models/Settings';
 import SiteSettings from '@/models/SiteSettings';
 
@@ -15,8 +14,6 @@ export async function POST() {
         { status: 401 }
       );
     }
-
-    await connectDB();
 
     // Settings verisini al
     const settings = await Settings.findOne({ isActive: true });

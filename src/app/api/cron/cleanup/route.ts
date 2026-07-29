@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import connectDB from '@/lib/mongoose';
 import fs from 'fs';
 import path from 'path';
 
@@ -19,8 +18,6 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    await connectDB();
-    
     const results = {
       tempFilesDeleted: 0,
       oldLogsDeleted: 0,

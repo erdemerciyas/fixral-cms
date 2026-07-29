@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import connectDB from '@/lib/mongoose';
 import User from '@/models/User';
 import nodemailer from 'nodemailer';
 import crypto from 'crypto';
@@ -25,8 +24,6 @@ export async function POST(req: NextRequest) {
                 { status: 400 }
             );
         }
-
-        await connectDB();
 
         const user = await User.findById(userId);
 

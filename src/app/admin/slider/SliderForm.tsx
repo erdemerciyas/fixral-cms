@@ -179,11 +179,11 @@ export default function SliderForm({ initialData, isEditing = false }: SliderFor
                         <Card className="rounded-xl overflow-hidden p-0">
                             <CardHeader className="p-4 border-b border-border/60 bg-muted/30 flex flex-row items-center justify-between space-y-0">
                                 <CardTitle className="font-semibold text-foreground flex items-center gap-2 text-base">
-                                    <ImageIcon className="w-5 h-5 text-indigo-500" />
+                                    <ImageIcon className="w-5 h-5 text-primary" />
                                     Slider Görseli
                                 </CardTitle>
                                 {formData.imageUrl && (
-                                    <Badge variant="outline" className="text-xs font-medium text-emerald-600 border-emerald-200 bg-emerald-50">
+                                    <Badge variant="outline" className="text-xs font-medium text-success border-success/30 bg-success/10">
                                         Görsel Yüklendi
                                     </Badge>
                                 )}
@@ -202,7 +202,7 @@ export default function SliderForm({ initialData, isEditing = false }: SliderFor
                                             <button
                                                 type="button"
                                                 onClick={handleRemoveImage}
-                                                className="opacity-0 group-hover:opacity-100 transition-opacity p-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+                                                className="opacity-0 group-hover:opacity-100 transition-opacity p-2 bg-destructive text-destructive-foreground rounded-lg hover:bg-destructive/90"
                                             >
                                                 <Trash2 className="w-4 h-4" />
                                             </button>
@@ -224,7 +224,7 @@ export default function SliderForm({ initialData, isEditing = false }: SliderFor
                         {/* Title & Subtitle */}
                         <Card className="rounded-xl overflow-hidden p-0">
                             <CardHeader className="p-4 border-b border-border/60 bg-muted/30 flex flex-row items-center gap-2 space-y-0">
-                                <Type className="w-5 h-5 text-indigo-500" />
+                                <Type className="w-5 h-5 text-primary" />
                                 <CardTitle className="font-semibold text-foreground text-base">
                                     İçerik Bilgileri
                                 </CardTitle>
@@ -281,7 +281,7 @@ export default function SliderForm({ initialData, isEditing = false }: SliderFor
                         {/* Button Settings */}
                         <Card className="rounded-xl overflow-hidden p-0">
                             <CardHeader className="p-4 border-b border-border/60 bg-muted/30 flex flex-row items-center gap-2 space-y-0">
-                                <MousePointerClick className="w-5 h-5 text-indigo-500" />
+                                <MousePointerClick className="w-5 h-5 text-primary" />
                                 <CardTitle className="font-semibold text-foreground text-base">
                                     Buton Ayarları
                                 </CardTitle>
@@ -325,7 +325,7 @@ export default function SliderForm({ initialData, isEditing = false }: SliderFor
                         {/* Status & Settings */}
                         <Card className="rounded-xl overflow-hidden p-0 xl:sticky xl:top-24 z-10">
                             <CardHeader className="p-4 border-b border-border/60 bg-muted/30 flex flex-row items-center gap-2 space-y-0">
-                                <Settings2 className="w-5 h-5 text-indigo-500" />
+                                <Settings2 className="w-5 h-5 text-primary" />
                                 <CardTitle className="font-semibold text-foreground text-base">
                                     Ayarlar
                                 </CardTitle>

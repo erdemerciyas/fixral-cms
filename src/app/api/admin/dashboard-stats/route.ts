@@ -1,7 +1,6 @@
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
-import connectDB from '../../../../lib/mongoose';
 import Portfolio from '../../../../models/Portfolio';
 import Service from '../../../../models/Service';
 import Message from '../../../../models/Message';
@@ -12,8 +11,6 @@ import { withSecurity, SecurityConfigs } from '../../../../lib/security-middlewa
 
 export const GET = withSecurity(SecurityConfigs.admin)(async () => {
   try {
-    await connectDB();
-
     // Medya sayılarını Cloudinary'den al
     let mediaCount = 0;
 

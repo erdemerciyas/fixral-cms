@@ -1,9 +1,9 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowRight, MagnifyingGlass, Newspaper } from '@phosphor-icons/react'
+import { ArrowRight, Search as MagnifyingGlass, Newspaper } from 'lucide-react';
 import EyebrowTag from '@/components/ui/EyebrowTag'
 import { cn } from '@/lib/utils'
 
@@ -46,7 +46,7 @@ function HeroCard({ article, lang, newsT }: { article: ArticleData; lang: string
   const translation = article.translations?.tr || { title: '', excerpt: '', content: '', keywords: [] }
 
   return (
-    <motion.div
+    <m.div
       initial={{ opacity: 0, y: 32, filter: 'blur(6px)' }}
       whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
       viewport={{ once: true, margin: '-40px' }}
@@ -94,12 +94,12 @@ function HeroCard({ article, lang, newsT }: { article: ArticleData; lang: string
               style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
             >
               {newsT.readMore || 'Devamını Oku'}
-              <ArrowRight size={16} weight="light" />
+              <ArrowRight size={16} />
             </span>
           </div>
         </div>
       </Link>
-    </motion.div>
+    </m.div>
   )
 }
 
@@ -120,7 +120,7 @@ function ArticleCard({
   const isLarge = variant === 'large'
 
   return (
-    <motion.li
+    <m.li
       initial={{ opacity: 0, y: 28, filter: 'blur(4px)' }}
       whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
       viewport={{ once: true, margin: '-60px' }}
@@ -184,12 +184,12 @@ function ArticleCard({
               style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
             >
               {newsT.readMore || 'Devamını Oku'}
-              <ArrowRight size={14} weight="light" />
+              <ArrowRight size={14} />
             </span>
           </div>
         </div>
       </Link>
-    </motion.li>
+    </m.li>
   )
 }
 
@@ -210,7 +210,7 @@ export default function NewsListClient({
   return (
     <div className="space-y-10">
       {/* Search + Filters */}
-      <motion.div
+      <m.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
@@ -221,7 +221,6 @@ export default function NewsListClient({
           <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
             <MagnifyingGlass
               size={18}
-              weight="light"
               className="text-zinc-400 transition-colors duration-700 group-focus-within:text-[#003450]"
               style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
             />
@@ -272,11 +271,11 @@ export default function NewsListClient({
             ))}
           </div>
         )}
-      </motion.div>
+      </m.div>
 
       {/* Results Info */}
       {(search || tag) && (
-        <motion.div
+        <m.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5 }}
@@ -288,7 +287,7 @@ export default function NewsListClient({
           <strong className="text-zinc-600">
             {(newsT.resultsFound || '{count} sonuç bulundu').replace('{count}', String(total))}
           </strong>
-        </motion.div>
+        </m.div>
       )}
 
       {/* Articles */}
@@ -324,7 +323,7 @@ export default function NewsListClient({
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <motion.nav
+            <m.nav
               initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -367,18 +366,18 @@ export default function NewsListClient({
                   {commonT.next || 'Sonraki'}
                 </Link>
               )}
-            </motion.nav>
+            </m.nav>
           )}
         </>
       ) : (
-        <motion.div
+        <m.div
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.7, ease }}
           className="text-center py-20 rounded-3xl border border-dashed border-zinc-200 bg-white"
         >
           <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-zinc-100 text-zinc-400 mb-4">
-            <Newspaper size={28} weight="light" />
+            <Newspaper size={28} />
           </div>
           <h3 className="text-lg font-medium text-zinc-900 mb-1">
             {newsT.noResults || 'Sonuç Bulunamadı'}
@@ -393,7 +392,7 @@ export default function NewsListClient({
           >
             {newsT.showAll || 'Tüm Haberleri Göster'}
           </Link>
-        </motion.div>
+        </m.div>
       )}
     </div>
   )

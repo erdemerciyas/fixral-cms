@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import connectDB from '@/lib/mongoose';
 import Language from '@/models/Language';
 
 // GET /api/admin/languages
@@ -11,7 +10,6 @@ export async function GET() {
     return NextResponse.json({ success: false, error: 'Yetkisiz.' }, { status: 401 });
   }
 
-  await connectDB();
   const languages = await Language.find().sort({ isDefault: -1, label: 1 }).lean();
   return NextResponse.json({ success: true, data: languages });
 }
@@ -22,8 +20,6 @@ export async function POST(req: NextRequest) {
   if (!session?.user) {
     return NextResponse.json({ success: false, error: 'Yetkisiz.' }, { status: 401 });
   }
-
-  await connectDB();
 
   let body: Record<string, unknown>;
   try {

@@ -2,7 +2,6 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import connectDB from '@/lib/mongoose';
 import User from '@/models/User';
 import { authenticator } from '@/lib/otp';
 import qrcode from 'qrcode';
@@ -19,7 +18,6 @@ export async function POST(req: Request) {
         }
 
         console.log('Connecting DB...');
-        await connectDB();
         console.log('Finding user...');
         const user = await User.findOne({ email: session.user.email });
 
@@ -105,7 +103,6 @@ export async function PUT(req: Request) {
         }
 
         console.log('Connecting DB in PUT...');
-        await connectDB();
         const user = await User.findOne({ email: session.user.email }).select('+twoFactorSecret');
 
         if (!user || !user.twoFactorSecret) {
@@ -164,7 +161,6 @@ export async function DELETE(req: Request) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        await connectDB();
         const user = await User.findOne({ email: session.user.email });
 
         if (!user) return NextResponse.json({ error: 'User not found' }, { status: 404 });

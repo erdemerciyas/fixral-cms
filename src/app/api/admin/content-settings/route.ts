@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../../../../lib/auth';
-import connectDB from '../../../../lib/mongoose';
 import ContentSettings from '../../../../models/ContentSettings';
 
 // Force dynamic rendering
@@ -11,8 +10,6 @@ export const runtime = 'nodejs';
 // GET: İçerik ayarlarını getir
 export async function GET() {
   try {
-    await connectDB();
-    
     const settings = await ContentSettings.getContentSettings();
     
     return NextResponse.json(settings, { status: 200 });
@@ -37,8 +34,6 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    await connectDB();
-    
     const updateData = await request.json();
     const settings = await ContentSettings.updateContentSettings(updateData);
     

@@ -2,7 +2,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import Message from '@/models/Message';
-import connectDB from '@/lib/mongoose';
 import { authOptions } from '@/lib/auth';
 
 export async function POST(
@@ -18,8 +17,6 @@ export async function POST(
                 { status: 401 }
             );
         }
-
-        await connectDB();
 
         const { id } = params;
 

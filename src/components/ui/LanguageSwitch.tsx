@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ChevronDownIcon, GlobeAltIcon } from '@heroicons/react/24/outline';
+import { ChevronDown as ChevronDownIcon, Globe as GlobeAltIcon } from 'lucide-react';
 
 interface Language {
   code: string;

@@ -2,7 +2,6 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import connectDB from '@/lib/mongoose';
 import User from '@/models/User';
 import bcrypt from 'bcryptjs';
 
@@ -23,7 +22,6 @@ export async function PUT(req: Request) {
             return NextResponse.json({ error: 'Password too short' }, { status: 400 });
         }
 
-        await connectDB();
         const user = await User.findOne({ email: session.user.email });
 
         if (!user) {

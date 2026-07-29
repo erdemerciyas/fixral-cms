@@ -51,7 +51,6 @@ const nextConfig = {
       '@sentry/nextjs': 'commonjs @sentry/nextjs',
       'utf-8-validate': 'commonjs utf-8-validate',
       'bufferutil': 'commonjs bufferutil',
-      'archiver': 'commonjs archiver',
     });
 
     // Three.js için webpack konfigürasyonu
@@ -110,6 +109,11 @@ const nextConfig = {
     scrollRestoration: true,
     // Enable instrumentation for Sentry
     instrumentationHook: true,
+    // Tree-shaking yardımı: barrel import'ları kullanılan modüllere indirger
+    optimizePackageImports: [
+      'lucide-react',
+      'framer-motion',
+    ],
   },
   // Performance: Enable compression
   compress: true,

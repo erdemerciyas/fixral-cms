@@ -13,7 +13,7 @@ export default function NoticiasError({ error, reset }: { error: Error; reset: (
                 <p className="text-slate-500 mb-8">Hubo un problema al cargar la pagina. Por favor, intentelo de nuevo.</p>
                 <button
                     onClick={reset}
-                    className="px-6 py-2.5 bg-fixral-primary text-white rounded-lg font-medium hover:opacity-90 transition-opacity"
+                    className="px-6 py-2.5 bg-primary text-primary-foreground rounded-lg font-medium hover:opacity-90 transition-opacity"
                 >
                     Intentar de nuevo
                 </button>

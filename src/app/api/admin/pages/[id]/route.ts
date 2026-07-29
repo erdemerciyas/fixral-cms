@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import connectDB from '@/lib/mongoose';
 import PageSetting from '@/models/PageSetting';
 
 /**
@@ -21,7 +20,6 @@ export async function GET(
       );
     }
 
-    await connectDB();
     const page = await PageSetting.findById(params.id);
 
     if (!page) {
@@ -59,8 +57,6 @@ export async function PUT(
     }
 
     const body = await req.json();
-    await connectDB();
-    
     const page = await PageSetting.findByIdAndUpdate(
       params.id,
       { ...body, updatedAt: new Date() },
@@ -101,7 +97,6 @@ export async function DELETE(
       );
     }
 
-    await connectDB();
     const page = await PageSetting.findByIdAndDelete(params.id);
 
     if (!page) {

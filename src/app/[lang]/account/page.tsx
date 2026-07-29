@@ -3,9 +3,9 @@
 import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { MapPinIcon, UserIcon, ArrowRightOnRectangleIcon, XCircleIcon, ChatBubbleLeftIcon, TrashIcon, EnvelopeIcon, MegaphoneIcon } from '@heroicons/react/24/outline';
-import toast from 'react-hot-toast';
-import Swal from 'sweetalert2';
+import { MapPin as MapPinIcon, User as UserIcon, LogOut as ArrowRightOnRectangleIcon, XCircle as XCircleIcon, MessageSquare as ChatBubbleLeftIcon, Trash2 as TrashIcon, Mail as EnvelopeIcon, Megaphone as MegaphoneIcon } from 'lucide-react';
+import { toast } from 'sonner';
+import { useConfirm } from '@/hooks/use-confirm';
 
 function Modal({ isOpen, onClose, title, children }: { isOpen: boolean; onClose: () => void; title: string; children: React.ReactNode }) {
     if (!isOpen) return null;
@@ -28,6 +28,7 @@ function Modal({ isOpen, onClose, title, children }: { isOpen: boolean; onClose:
 
 export default function AccountPage() {
     const { data: session, status } = useSession();
+    const { confirm } = useConfirm();
     const router = useRouter();
     const [activeTab, setActiveTab] = useState('messages');
 
@@ -108,17 +109,14 @@ export default function AccountPage() {
     };
 
     const handleBulkDeleteMessages = async () => {
-        const result = await Swal.fire({
+        const confirmed = await confirm({
             title: 'Seçilenleri Sil?',
-            text: `${selectedMessages.size} mesajı silmek istediğinize emin misiniz?`,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Evet, sil!',
-            cancelButtonText: 'Vazgeç'
+            description: `${selectedMessages.size} mesajı silmek istediğinize emin misiniz?`,
+            confirmText: 'Evet, sil!',
+            cancelText: 'Vazgeç',
+            variant: 'destructive',
         });
-        if (!result.isConfirmed) return;
+        if (!confirmed) return;
         setActionLoading(true);
         try {
             const promises = Array.from(selectedMessages).map(id =>
@@ -181,17 +179,14 @@ export default function AccountPage() {
     };
 
     const handleDeleteAddress = async (id: string) => {
-        const result = await Swal.fire({
+        const confirmed = await confirm({
             title: 'Emin misiniz?',
-            text: "Bu adresi silmek istediğinize emin misiniz?",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Evet, sil!',
-            cancelButtonText: 'Vazgeç'
+            description: 'Bu adresi silmek istediğinize emin misiniz?',
+            confirmText: 'Evet, sil!',
+            cancelText: 'Vazgeç',
+            variant: 'destructive',
         });
-        if (!result.isConfirmed) return;
+        if (!confirmed) return;
         setActionLoading(true);
         try {
             const res = await fetch(`/api/public/user/addresses/${id}`, { method: 'DELETE' });

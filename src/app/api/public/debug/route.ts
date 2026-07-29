@@ -1,4 +1,3 @@
-import connectDB from '@/lib/mongoose';
 import { NextResponse } from 'next/server';
 
 export async function GET() {
@@ -21,7 +20,6 @@ export async function GET() {
     let mongoError: string | null = null;
     
     try {
-      await connectDB();
       mongoStatus = '✅ Connected';
     } catch (error) {
       mongoError = error instanceof Error ? error.message : 'Unknown error';

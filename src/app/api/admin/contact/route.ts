@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import connectDB from '@/lib/mongoose';
 import SiteSettings from '@/models/SiteSettings';
 import { withSecurity, SecurityConfigs } from '@/lib/security-middleware';
 
@@ -8,8 +7,6 @@ export const runtime = 'nodejs';
 
 export const GET = withSecurity(SecurityConfigs.admin)(async () => {
   try {
-    await connectDB();
-
     const siteSettings = await SiteSettings.getSiteSettings();
     const socialMediaConfig = siteSettings.socialMediaConfig || {};
 
@@ -37,8 +34,6 @@ export const GET = withSecurity(SecurityConfigs.admin)(async () => {
 
 export const POST = withSecurity(SecurityConfigs.admin)(async (request: NextRequest) => {
   try {
-    await connectDB();
-
     const body = await request.json();
     const { email, phone, address, socialLinks } = body;
 

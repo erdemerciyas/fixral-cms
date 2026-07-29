@@ -141,7 +141,7 @@ export default function AdminVideosPage() {
         </div>
         <button
           onClick={() => router.push('/admin/content')}
-          className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-200"
+          className="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground font-semibold rounded-xl hover:shadow-lg hover:shadow-primary/25 transition-all duration-200"
         >
           <Plus className="w-5 h-5 mr-2" />
           Add Video
@@ -158,14 +158,14 @@ export default function AdminVideosPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search videos..."
-              className="w-full pl-12 pr-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+              className="w-full pl-12 pr-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
             />
           </div>
           <div className="flex space-x-2 bg-muted p-1 rounded-xl">
             <button
               onClick={() => setStatusFilter('all')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${statusFilter === 'all'
-                ? 'bg-card text-indigo-600 shadow-sm'
+                ? 'bg-card text-primary shadow-sm'
                 : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
@@ -174,7 +174,7 @@ export default function AdminVideosPage() {
             <button
               onClick={() => setStatusFilter('published')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${statusFilter === 'published'
-                ? 'bg-card text-indigo-600 shadow-sm'
+                ? 'bg-card text-primary shadow-sm'
                 : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
@@ -183,7 +183,7 @@ export default function AdminVideosPage() {
             <button
               onClick={() => setStatusFilter('draft')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${statusFilter === 'draft'
-                ? 'bg-card text-indigo-600 shadow-sm'
+                ? 'bg-card text-primary shadow-sm'
                 : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
@@ -201,7 +201,7 @@ export default function AdminVideosPage() {
             className="bg-card rounded-xl shadow-sm border border-border/60 overflow-hidden hover:shadow-lg transition-all duration-300 group"
           >
             {/* Thumbnail */}
-            <div className="relative aspect-video bg-gradient-to-br from-purple-100 to-indigo-100 dark:from-purple-950 dark:to-indigo-950">
+            <div className="relative aspect-video bg-gradient-to-br from-primary/10 to-primary/10">
               {video.thumbnail ? (
                 <img
                   src={video.thumbnail}
@@ -210,13 +210,13 @@ export default function AdminVideosPage() {
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
-                  <VideoIcon className="w-16 h-16 text-purple-300" />
+                  <VideoIcon className="w-16 h-16 text-primary" />
                 </div>
               )}
               <div className="absolute top-3 right-3">
                 <span className={`px-2 py-1 text-xs font-semibold rounded-full ${video.status === 'published'
-                  ? 'bg-emerald-500 text-white'
-                  : 'bg-amber-500 text-white'
+                  ? 'bg-success text-success-foreground'
+                  : 'bg-warning text-warning-foreground'
                   }`}>
                   {video.status}
                 </span>
@@ -225,7 +225,7 @@ export default function AdminVideosPage() {
 
             {/* Content */}
             <div className="p-5">
-              <h3 className="text-lg font-bold text-foreground mb-2 group-hover:text-indigo-600 transition-colors line-clamp-1">
+              <h3 className="text-lg font-bold text-foreground mb-2 group-hover:text-primary transition-colors line-clamp-1">
                 {video.title}
               </h3>
               <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
@@ -249,7 +249,7 @@ export default function AdminVideosPage() {
               <div className="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
                 <button
                   onClick={() => handleDelete(video._id)}
-                  className="p-2 hover:bg-red-100 dark:hover:bg-red-950/50 rounded-lg transition-colors"
+                  className="p-2 hover:bg-destructive/10 rounded-lg transition-colors"
                 >
                   <Trash2 className="w-4 h-4 text-muted-foreground" />
                 </button>
@@ -273,7 +273,7 @@ export default function AdminVideosPage() {
           {!searchQuery && statusFilter === 'all' && (
             <button
               onClick={() => router.push('/admin/content')}
-              className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-200"
+              className="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground font-semibold rounded-xl hover:shadow-lg hover:shadow-primary/25 transition-all duration-200"
             >
               <Plus className="w-5 h-5 mr-2" />
               Add Video

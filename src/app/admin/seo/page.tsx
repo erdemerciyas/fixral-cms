@@ -131,8 +131,8 @@ export default function AdminSeoPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-indigo-100 flex items-center justify-center">
-            <Search className="w-6 h-6 text-indigo-600" />
+          <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+            <Search className="w-6 h-6 text-primary" />
           </div>
           <div>
             <h1 className="text-2xl font-bold text-foreground">SEO Ayarları</h1>
@@ -144,11 +144,11 @@ export default function AdminSeoPage() {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="px-6 py-2.5 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 transition-colors disabled:opacity-50 flex items-center gap-2 self-start sm:self-auto"
+          className="px-6 py-2.5 bg-primary text-primary-foreground font-medium rounded-xl hover:bg-primary/90 transition-colors disabled:opacity-50 flex items-center gap-2 self-start sm:self-auto"
         >
           {saving ? (
             <>
-              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
               Kaydediliyor...
             </>
           ) : (
@@ -165,8 +165,8 @@ export default function AdminSeoPage() {
         <div
           className={`p-4 rounded-xl border flex items-center gap-3 ${
             message.type === 'success'
-              ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
-              : 'bg-red-50 border-red-200 text-red-800'
+              ? 'bg-success/10 border-success/30 text-success'
+              : 'bg-destructive/10 border-destructive/30 text-destructive'
           }`}
         >
           {message.type === 'success' ? (
@@ -181,8 +181,8 @@ export default function AdminSeoPage() {
       {/* Meta Tags Section */}
       <div className="bg-card rounded-xl shadow-sm border border-border/60 p-6">
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
-            <Search className="w-5 h-5 text-blue-600" />
+          <div className="w-10 h-10 rounded-lg bg-info/15 flex items-center justify-center">
+            <Search className="w-5 h-5 text-info" />
           </div>
           <div>
             <h2 className="text-lg font-bold text-foreground">Meta Etiketleri</h2>
@@ -201,7 +201,7 @@ export default function AdminSeoPage() {
               type="text"
               value={config.metaTitleSuffix}
               onChange={(e) => setConfig((prev) => ({ ...prev, metaTitleSuffix: e.target.value }))}
-              className="w-full px-3 py-2 bg-transparent border border-input rounded-lg text-foreground text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-shadow"
+              className="w-full px-3 py-2 bg-transparent border border-input rounded-lg text-foreground text-sm focus:ring-2 focus:ring-ring focus:border-transparent outline-none transition-shadow"
               placeholder=" | Fixral"
             />
             <p className="text-xs text-muted-foreground mt-1.5">
@@ -219,7 +219,7 @@ export default function AdminSeoPage() {
                 setConfig((prev) => ({ ...prev, globalMetaDescription: e.target.value }))
               }
               rows={3}
-              className="w-full px-3 py-2 bg-transparent border border-input rounded-lg text-foreground text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-shadow resize-none"
+              className="w-full px-3 py-2 bg-transparent border border-input rounded-lg text-foreground text-sm focus:ring-2 focus:ring-ring focus:border-transparent outline-none transition-shadow resize-none"
               placeholder="Sitenizin genel açıklamasını girin..."
             />
             <div className="flex justify-between mt-1.5">
@@ -229,7 +229,7 @@ export default function AdminSeoPage() {
               <span
                 className={`text-xs ${
                   config.globalMetaDescription.length > 160
-                    ? 'text-amber-600'
+                    ? 'text-warning'
                     : 'text-muted-foreground'
                 }`}
               >
@@ -243,8 +243,8 @@ export default function AdminSeoPage() {
       {/* Keywords Section */}
       <div className="bg-card rounded-xl shadow-sm border border-border/60 p-6">
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-lg bg-violet-100 flex items-center justify-center">
-            <span className="text-violet-600 font-bold text-sm">#</span>
+          <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+            <span className="text-primary font-bold text-sm">#</span>
           </div>
           <div>
             <h2 className="text-lg font-bold text-foreground">Anahtar Kelimeler</h2>
@@ -261,12 +261,12 @@ export default function AdminSeoPage() {
               value={keywordInput}
               onChange={(e) => setKeywordInput(e.target.value)}
               onKeyDown={handleKeywordKeyDown}
-              className="flex-1 px-3 py-2 bg-transparent border border-input rounded-lg text-foreground text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-shadow"
+              className="flex-1 px-3 py-2 bg-transparent border border-input rounded-lg text-foreground text-sm focus:ring-2 focus:ring-ring focus:border-transparent outline-none transition-shadow"
               placeholder="Anahtar kelime ekleyin (virgülle ayırarak birden fazla ekleyebilirsiniz)"
             />
             <button
               onClick={addKeyword}
-              className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors flex items-center gap-1.5 text-sm font-medium shrink-0"
+              className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors flex items-center gap-1.5 text-sm font-medium shrink-0"
             >
               <Plus className="w-4 h-4" />
               Ekle
@@ -278,12 +278,12 @@ export default function AdminSeoPage() {
               {config.globalKeywords.map((keyword) => (
                 <span
                   key={keyword}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg text-sm border border-slate-200 dark:border-slate-700"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-muted text-foreground rounded-lg text-sm border border-border"
                 >
                   {keyword}
                   <button
                     onClick={() => removeKeyword(keyword)}
-                    className="text-slate-400 hover:text-red-500 transition-colors"
+                    className="text-muted-foreground hover:text-destructive transition-colors"
                   >
                     <X className="w-3.5 h-3.5" />
                   </button>
@@ -301,8 +301,8 @@ export default function AdminSeoPage() {
       {/* Structured Data & Social Section */}
       <div className="bg-card rounded-xl shadow-sm border border-border/60 p-6">
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center">
-            <span className="text-emerald-600 font-bold text-base">{ }</span>
+          <div className="w-10 h-10 rounded-lg bg-success/15 flex items-center justify-center">
+            <span className="text-success font-bold text-base">{ }</span>
           </div>
           <div>
             <h2 className="text-lg font-bold text-foreground">Yapılandırılmış Veri & Sosyal</h2>
@@ -324,11 +324,11 @@ export default function AdminSeoPage() {
             <button
               onClick={() => toggleField('enableSchemaMarkup')}
               className={`w-12 h-6 rounded-full relative transition-colors shrink-0 ${
-                config.enableSchemaMarkup ? 'bg-indigo-600' : 'bg-slate-300'
+                config.enableSchemaMarkup ? 'bg-primary' : 'bg-muted'
               }`}
             >
               <div
-                className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${
+                className={`absolute top-1 left-1 w-4 h-4 bg-card rounded-full transition-transform ${
                   config.enableSchemaMarkup ? 'translate-x-6' : ''
                 }`}
               />
@@ -346,11 +346,11 @@ export default function AdminSeoPage() {
             <button
               onClick={() => toggleField('enableOpenGraph')}
               className={`w-12 h-6 rounded-full relative transition-colors shrink-0 ${
-                config.enableOpenGraph ? 'bg-indigo-600' : 'bg-slate-300'
+                config.enableOpenGraph ? 'bg-primary' : 'bg-muted'
               }`}
             >
               <div
-                className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${
+                className={`absolute top-1 left-1 w-4 h-4 bg-card rounded-full transition-transform ${
                   config.enableOpenGraph ? 'translate-x-6' : ''
                 }`}
               />
@@ -368,11 +368,11 @@ export default function AdminSeoPage() {
             <button
               onClick={() => toggleField('enableTwitterCards')}
               className={`w-12 h-6 rounded-full relative transition-colors shrink-0 ${
-                config.enableTwitterCards ? 'bg-indigo-600' : 'bg-slate-300'
+                config.enableTwitterCards ? 'bg-primary' : 'bg-muted'
               }`}
             >
               <div
-                className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${
+                className={`absolute top-1 left-1 w-4 h-4 bg-card rounded-full transition-transform ${
                   config.enableTwitterCards ? 'translate-x-6' : ''
                 }`}
               />
@@ -386,11 +386,11 @@ export default function AdminSeoPage() {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="px-8 py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 transition-colors disabled:opacity-50 flex items-center gap-2"
+          className="px-8 py-3 bg-primary text-primary-foreground font-medium rounded-xl hover:bg-primary/90 transition-colors disabled:opacity-50 flex items-center gap-2"
         >
           {saving ? (
             <>
-              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
               Kaydediliyor...
             </>
           ) : (

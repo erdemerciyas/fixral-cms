@@ -1,7 +1,7 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { m, AnimatePresence, useReducedMotion } from 'framer-motion';
 
 interface PageTransitionWrapperProps {
   children: React.ReactNode;
@@ -17,7 +17,7 @@ export default function PageTransitionWrapper({ children }: PageTransitionWrappe
 
   return (
     <AnimatePresence mode="wait">
-      <motion.div
+      <m.div
         key={pathname}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -29,7 +29,7 @@ export default function PageTransitionWrapper({ children }: PageTransitionWrappe
         className="relative"
       >
         {children}
-      </motion.div>
+      </m.div>
     </AnimatePresence>
   );
 }

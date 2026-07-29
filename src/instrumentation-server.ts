@@ -25,9 +25,7 @@ if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
 async function initializeSiteSettings() {
   try {
     const SiteSettings = (await import('./models/SiteSettings')).default;
-    const connectDB = (await import('./lib/mongoose')).default;
 
-    await connectDB();
     await SiteSettings.getSiteSettings();
     console.log('✓ SiteSettings initialized');
   } catch (error) {

@@ -1,12 +1,6 @@
 'use client';
 import Link from 'next/link';
-import { 
-  MagnifyingGlassIcon, 
-  HomeIcon, 
-  ArrowLeftIcon,
-  SparklesIcon,
-  ExclamationCircleIcon 
-} from '@heroicons/react/24/outline';
+import { Search as MagnifyingGlassIcon, Home as HomeIcon, ArrowLeft as ArrowLeftIcon, Sparkles as SparklesIcon, AlertCircle as ExclamationCircleIcon } from 'lucide-react';
 import { useLocale } from '@/hooks/useLocale';
 
 export default function NotFound() {

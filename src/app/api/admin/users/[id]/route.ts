@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../../../../../lib/auth';
-import connectDB from '../../../../../lib/mongoose';
 import User from '../../../../../models/User';
+import bcrypt from 'bcryptjs';
 
 export async function PUT(
   request: NextRequest,
@@ -15,8 +15,9 @@ export async function PUT(
       return NextResponse.json({ message: 'Yetkisiz erişim' }, { status: 401 });
     }
 
-    const { name, email, role, isActive, password } = await request.json();
+    const { name, email: rawEmail, role, isActive, password } = await request.json();
     const { id } = params;
+    const email = typeof rawEmail === 'string' ? rawEmail.trim().toLowerCase() : rawEmail;
 
     if (!name || !email) {
       return NextResponse.json(
@@ -24,8 +25,6 @@ export async function PUT(
         { status: 400 }
       );
     }
-
-    await connectDB();
 
     // Check if email is already used by another user
     const existingUser = await User.findOne({ email, _id: { $ne: id } });
@@ -50,7 +49,8 @@ export async function PUT(
     if (isActive !== undefined) userToUpdate.isActive = isActive;
 
     if (password && password.trim() !== '') {
-      userToUpdate.password = password; // The pre-save hook in User model should handle hashing
+      // Prisma adapter'ında pre-save hook yok; şifre burada hash'lenmeli
+      userToUpdate.password = await bcrypt.hash(password, 10);
     }
 
     await userToUpdate.save();
@@ -102,8 +102,6 @@ export async function DELETE(
         { status: 400 }
       );
     }
-
-    await connectDB();
 
     const user = await User.findByIdAndDelete(id);
 

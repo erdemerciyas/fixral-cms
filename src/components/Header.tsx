@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { List, X, MagnifyingGlass, PaperPlaneTilt, User, SignOut, GearSix } from '@phosphor-icons/react';
+import { Menu as List, X, Search as MagnifyingGlass, Send as PaperPlaneTilt, User, LogOut as SignOut, Settings as GearSix } from 'lucide-react';
 import { resolveIcon, getIconForPage } from '../lib/icons';
 import DesktopNav from './layout/DesktopNav';
 import TopBar from './layout/TopBar';
@@ -13,7 +13,7 @@ import SearchModal from './layout/SearchModal';
 import ProjectModal from './features/ProjectModal';
 import { locales } from '@/i18n';
 import { useAppTranslations } from '@/hooks/useAppTranslations';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m, AnimatePresence } from 'framer-motion';
 
 interface SiteSettings {
   siteName: string;
@@ -233,7 +233,7 @@ const Header: React.FC = () => {
           visible={!isScrolled}
         />
 
-        <motion.div
+        <m.div
           animate={{
             backgroundColor: showFloatingPill ? 'rgba(255, 255, 255, 0.85)' : 'rgba(255, 255, 255, 0)',
             backdropFilter: showFloatingPill ? 'blur(20px)' : 'blur(0px)',
@@ -318,31 +318,31 @@ const Header: React.FC = () => {
               >
                 <AnimatePresence mode="wait">
                   {isMobileMenuOpen ? (
-                    <motion.div
+                    <m.div
                       key="close"
                       initial={{ rotate: -90, opacity: 0 }}
                       animate={{ rotate: 0, opacity: 1 }}
                       exit={{ rotate: 90, opacity: 0 }}
                       transition={{ type: 'spring', stiffness: 300, damping: 25 }}
                     >
-                      <X size={24} weight="light" />
-                    </motion.div>
+                      <X size={24} />
+                    </m.div>
                   ) : (
-                    <motion.div
+                    <m.div
                       key="menu"
                       initial={{ rotate: 90, opacity: 0 }}
                       animate={{ rotate: 0, opacity: 1 }}
                       exit={{ rotate: -90, opacity: 0 }}
                       transition={{ type: 'spring', stiffness: 300, damping: 25 }}
                     >
-                      <List size={24} weight="light" />
-                    </motion.div>
+                      <List size={24} />
+                    </m.div>
                   )}
                 </AnimatePresence>
               </button>
             </div>
           </div>
-        </motion.div>
+        </m.div>
       </header>
 
       <MobileNav

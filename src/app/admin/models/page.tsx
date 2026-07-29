@@ -205,7 +205,7 @@ export default function AdminModelsPage() {
         </div>
         <Link
           href="/admin/portfolio/new"
-          className="inline-flex items-center px-6 py-3 bg-slate-900 text-white font-semibold rounded-xl hover:bg-slate-800 hover:shadow-lg hover:shadow-slate-900/20 transition-all duration-200"
+          className="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground font-semibold rounded-xl hover:bg-primary/90 transition-all duration-200"
         >
           <Download className="w-5 h-5 mr-2" />
           Model Yükle
@@ -224,7 +224,7 @@ export default function AdminModelsPage() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Model ara..."
-                className="w-full pl-10 pr-4 py-2.5 bg-muted/50 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 focus:bg-card transition-all shadow-sm"
+                className="w-full pl-10 pr-4 py-2.5 bg-muted/50 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring/50 focus:border-ring focus:bg-card transition-all shadow-sm"
               />
             </div>
 
@@ -243,8 +243,8 @@ export default function AdminModelsPage() {
                   key={fmt}
                   onClick={() => setFormatFilter(fmt)}
                   className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${formatFilter === fmt
-                    ? 'bg-indigo-50 text-indigo-700 shadow-sm'
-                    : 'text-muted-foreground hover:text-indigo-700'
+                    ? 'bg-primary/10 text-primary shadow-sm'
+                    : 'text-muted-foreground hover:text-primary'
                     }`}
                 >
                   {fmt}
@@ -262,7 +262,7 @@ export default function AdminModelsPage() {
                 </span>
                 <button
                   onClick={handleBulkDelete}
-                  className="flex items-center px-4 py-2.5 bg-red-50 text-red-600 font-medium rounded-xl hover:bg-red-100 transition-colors"
+                  className="flex items-center px-4 py-2.5 bg-destructive/10 text-destructive font-medium rounded-xl hover:bg-destructive/20 transition-colors"
                 >
                   <Trash2 className="w-4 h-4 mr-2" />
                   Sil
@@ -273,14 +273,14 @@ export default function AdminModelsPage() {
             <div className="flex bg-muted border border-border/50 rounded-xl p-1 shadow-sm shrink-0">
               <button
                 onClick={() => setViewMode('grid')}
-                className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-card text-indigo-600 shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+                className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-card text-primary shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
                 title="Grid Görünümü"
               >
                 <LayoutGrid className="w-5 h-5" />
               </button>
               <button
                 onClick={() => setViewMode('list')}
-                className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-card text-indigo-600 shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+                className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-card text-primary shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
                 title="Liste Görünümü"
               >
                 <List className="w-5 h-5" />
@@ -305,7 +305,7 @@ export default function AdminModelsPage() {
           {(searchQuery || formatFilter !== 'all') && (
             <button
               onClick={() => { setSearchQuery(''); setFormatFilter('all'); }}
-              className="text-indigo-600 hover:text-indigo-700 font-medium hover:underline"
+              className="text-primary hover:text-primary font-medium hover:underline"
             >
               Filtreleri Temizle
             </button>
@@ -319,15 +319,15 @@ export default function AdminModelsPage() {
                 <li
                   key={model._id}
                   className={`group relative bg-card rounded-xl border transition-all duration-300 hover:shadow-xl overflow-hidden
-                         ${selectedItems.has(model._id) ? 'border-indigo-500 ring-1 ring-indigo-500' : 'border-border hover:border-border'}
+                         ${selectedItems.has(model._id) ? 'border-primary ring-1 ring-ring' : 'border-border hover:border-border'}
                       `}
                 >
                   {/* Icon Cover */}
                   <div className="aspect-[4/3] bg-muted/50 relative overflow-hidden group-hover:bg-muted transition-colors flex items-center justify-center p-8">
                     <div className="relative z-0">
-                      <Box className="w-24 h-24 text-indigo-200 group-hover:text-indigo-300 transition-colors" strokeWidth={1} />
+                      <Box className="w-24 h-24 text-primary-foreground/80 group-hover:text-primary transition-colors" strokeWidth={1} />
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="text-sm font-bold text-indigo-600 uppercase tracking-wider">{model.format}</span>
+                        <span className="text-sm font-bold text-primary uppercase tracking-wider">{model.format}</span>
                       </div>
                     </div>
 
@@ -339,7 +339,7 @@ export default function AdminModelsPage() {
                            `}
                     >
                       <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center
-                               ${selectedItems.has(model._id) ? 'bg-indigo-600 border-indigo-600 text-white' : 'bg-transparent border-white text-transparent hover:bg-card/20'}
+                               ${selectedItems.has(model._id) ? 'bg-primary border-primary text-primary-foreground' : 'bg-transparent border-white text-transparent hover:bg-white/20'}
                             `}>
                         <CheckCircle2 className="w-5 h-5" />
                       </div>
@@ -351,22 +351,22 @@ export default function AdminModelsPage() {
                     <div className="flex items-center gap-2 text-xs text-muted-foreground mb-3">
                       <Calendar className="w-4 h-4" />
                       <span>{formatDate(model.createdAt)}</span>
-                      <span className="w-1 h-1 bg-slate-300 rounded-full" />
+                      <span className="w-1 h-1 bg-muted rounded-full" />
                       <span className="text-muted-foreground font-medium">{formatFileSize(model.fileSize)}</span>
                     </div>
 
-                    <h3 className="text-lg font-bold text-foreground mb-2 line-clamp-1 group-hover:text-indigo-600 transition-colors">
+                    <h3 className="text-lg font-bold text-foreground mb-2 line-clamp-1 group-hover:text-primary transition-colors">
                       {model.name}
                     </h3>
                     <p className="text-xs text-muted-foreground line-clamp-1 mb-4 h-5">
                       {model.portfolioTitle ? `Proje: ${model.portfolioTitle}` : 'Bağlı proje yok'}
                     </p>
 
-                    <div className="flex items-center justify-between pt-4 border-t border-slate-100">
+                    <div className="flex items-center justify-between pt-4 border-t border-border">
                       <a
                         href={model.file}
                         download
-                        className="flex items-center text-xs font-medium text-indigo-600 hover:text-indigo-800"
+                        className="flex items-center text-xs font-medium text-primary hover:text-primary"
                       >
                         <Download className="w-3.5 h-3.5 mr-1" />
                         İndir
@@ -374,7 +374,7 @@ export default function AdminModelsPage() {
 
                       <button
                         onClick={() => handleDelete(model._id)}
-                        className="p-2 text-muted-foreground hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        className="p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
                         title="Sil"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -395,7 +395,7 @@ export default function AdminModelsPage() {
                         type="checkbox"
                         checked={selectedItems.size === filteredModels.length}
                         onChange={(e) => handleSelectAll(e.target.checked)}
-                        className="rounded border-border text-indigo-600 focus:ring-indigo-500"
+                        className="rounded border-border text-primary focus:ring-ring"
                       />
                     </th>
                     <th className="px-6 py-4">Model Detayı</th>
@@ -405,27 +405,27 @@ export default function AdminModelsPage() {
                     <th className="px-6 py-4 w-32 text-right">İşlemler</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-border">
                   {filteredModels.map(model => (
                     <tr
                       key={model._id}
-                      className={`group transition-colors ${selectedItems.has(model._id) ? 'bg-indigo-50/50' : 'hover:bg-muted/50'}`}
+                      className={`group transition-colors ${selectedItems.has(model._id) ? 'bg-primary/5' : 'hover:bg-muted/50'}`}
                     >
                       <td className="px-6 py-4">
                         <input
                           type="checkbox"
                           checked={selectedItems.has(model._id)}
                           onChange={() => handleSelectItem(model._id)}
-                          className="rounded border-border text-indigo-600 focus:ring-indigo-500"
+                          className="rounded border-border text-primary focus:ring-ring"
                         />
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-4">
-                          <div className="w-10 h-10 bg-indigo-50 rounded-lg flex items-center justify-center flex-shrink-0 text-indigo-600">
+                          <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0 text-primary">
                             <Box className="w-6 h-6" />
                           </div>
                           <div>
-                            <h4 className="text-sm font-semibold text-foreground group-hover:text-indigo-600 transition-colors">
+                            <h4 className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">
                               {model.name}
                             </h4>
                             <p className="text-xs text-muted-foreground mt-0.5">
@@ -455,14 +455,14 @@ export default function AdminModelsPage() {
                           <a
                             href={model.file}
                             download
-                            className="p-1.5 text-muted-foreground hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                            className="p-1.5 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
                             title="İndir"
                           >
                             <Download className="w-4 h-4" />
                           </a>
                           <button
                             onClick={() => handleDelete(model._id)}
-                            className="p-1.5 text-muted-foreground hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                            className="p-1.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
                             title="Sil"
                           >
                             <Trash2 className="w-4 h-4" />

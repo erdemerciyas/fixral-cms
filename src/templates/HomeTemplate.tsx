@@ -2,8 +2,8 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { ArrowRight } from '@phosphor-icons/react';
-import { motion } from 'framer-motion';
+import { ArrowRight } from 'lucide-react';
+import { m } from 'framer-motion';
 import HeroSlider from '@/components/home/HeroSlider';
 import ServicesGrid from '@/components/home/ServicesGrid';
 import HomePortfolioSection from '@/components/portfolio/HomePortfolioSection';
@@ -72,7 +72,6 @@ export default function HomeTemplate({
                 >
                   <ArrowRight
                     size={14}
-                    weight="bold"
                     className="text-white group-hover:translate-x-0.5 group-hover:-translate-y-[1px]"
                     style={{ transition: 'transform 300ms cubic-bezier(0.22, 1, 0.36, 1)' }}
                   />
@@ -117,7 +116,6 @@ export default function HomeTemplate({
                 >
                   <ArrowRight
                     size={14}
-                    weight="bold"
                     className="text-zinc-500 group-hover:translate-x-0.5 group-hover:-translate-y-[1px]"
                     style={{ transition: 'transform 300ms cubic-bezier(0.32, 0.72, 0, 1)' }}
                   />
@@ -158,7 +156,7 @@ export default function HomeTemplate({
           </div>
 
           <div className="relative z-10 max-w-[1400px] mx-auto px-6 sm:px-8 lg:px-12">
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -205,7 +203,6 @@ export default function HomeTemplate({
                   >
                     <ArrowRight
                       size={14}
-                      weight="bold"
                       className="group-hover:translate-x-0.5 group-hover:-translate-y-[1px]"
                       style={{ transition: 'transform 300ms cubic-bezier(0.32, 0.72, 0, 1)' }}
                     />
@@ -225,7 +222,7 @@ export default function HomeTemplate({
                   Projelerimizi İnceleyin
                 </Link>
               </div>
-            </motion.div>
+            </m.div>
           </div>
         </section>
       </main>

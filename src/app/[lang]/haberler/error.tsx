@@ -13,7 +13,7 @@ export default function NewsError({ error, reset }: { error: Error; reset: () =>
                 <p className="text-slate-500 mb-8">Sayfa yüklenirken bir sorun oluştu. Lütfen tekrar deneyin.</p>
                 <button
                     onClick={reset}
-                    className="px-6 py-2.5 bg-fixral-primary text-white rounded-lg font-medium hover:opacity-90 transition-opacity"
+                    className="px-6 py-2.5 bg-primary text-primary-foreground rounded-lg font-medium hover:opacity-90 transition-opacity"
                 >
                     Tekrar Dene
                 </button>

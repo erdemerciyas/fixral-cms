@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import connectDB from '@/lib/mongoose';
 import News from '@/models/News';
 import { ensureModels } from '@/lib/ensure-models';
 import { ApiResponse } from '@/types/news';
@@ -32,7 +31,6 @@ export async function GET(
   { params }: { params: { slug: string } }
 ) {
   try {
-    await connectDB();
     await ensureModels('Portfolio', 'News');
 
     let news;

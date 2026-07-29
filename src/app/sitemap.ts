@@ -1,5 +1,4 @@
 import { MetadataRoute } from 'next';
-import connectDB from '../lib/mongoose';
 import News from '../models/News';
 import Portfolio from '../models/Portfolio';
 import { SITE_URL } from '../lib/seo-utils';
@@ -39,8 +38,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const dynamicUrls: MetadataRoute.Sitemap = [];
 
     try {
-        await connectDB();
-
         // Haber / Makale URL'leri (TR: haberler, ES: noticias)
         const newsItems = await News.find({ status: 'published' }).select('slug updatedAt createdAt').lean();
         newsItems.forEach((post: any) => {

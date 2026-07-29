@@ -5,16 +5,12 @@ import Video from "@/models/Video";
 import News from "@/models/News";
 import Service from "@/models/Service";
 import Portfolio from "@/models/Portfolio";
-import connectDB from "@/lib/mongoose";
-
 export async function GET() {
   try {
     const session = await getServerSession(authOptions);
     if (!session) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-
-    await connectDB();
 
     const [news, services, portfolios] = await Promise.all([
       News.find().select('title status isActive updatedAt createdAt').sort({ createdAt: -1 }).lean(),
@@ -144,8 +140,6 @@ export async function POST(req: Request) {
     if (!session) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-
-    await connectDB();
 
     const { content } = await req.json();
     

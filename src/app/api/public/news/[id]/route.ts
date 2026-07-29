@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import connectDB from '@/lib/mongoose';
 import News from '@/models/News';
 import { ApiResponse, UpdateNewsInput } from '@/types/news';
 import { logger } from '@/core/lib/logger';
@@ -33,8 +32,6 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    await connectDB();
-
     const news = await News.findById(params.id);
 
     if (!news) {
@@ -126,8 +123,6 @@ export async function PUT(
         { status: 401 }
       );
     }
-
-    await connectDB();
 
     const news = await News.findById(params.id);
 
@@ -274,8 +269,6 @@ export async function DELETE(
         { status: 401 }
       );
     }
-
-    await connectDB();
 
     const news = await News.findByIdAndDelete(params.id);
 

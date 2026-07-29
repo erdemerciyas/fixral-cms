@@ -19,8 +19,9 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
+import { AdminPageLayout } from '@/components/admin/admin-page-layout';
 import { useConfirm } from '@/hooks/use-confirm';
-import { useToast } from '@/components/ui/useToast';
+import { toast } from 'sonner';
 
 interface PortfolioItem {
   _id: string;
@@ -39,7 +40,6 @@ export default function AdminPortfolioPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const { confirm } = useConfirm();
-  const { show: showToast } = useToast();
   const [loading, setLoading] = useState(true);
   const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -104,13 +104,13 @@ export default function AdminPortfolioPage() {
           newSelected.delete(itemId);
           setSelectedItems(newSelected);
         }
-        showToast({ variant: 'success', title: 'Silindi', description: `"${item?.title}" başarıyla silindi` });
+        toast.success('Silindi', { description: `"${item?.title}" başarıyla silindi` });
       } else {
-        showToast({ variant: 'danger', title: 'Hata', description: 'Proje silinirken bir hata oluştu' });
+        toast.error('Hata', { description: 'Proje silinirken bir hata oluştu' });
       }
     } catch (error) {
       console.error('Proje silinirken hata:', error);
-      showToast({ variant: 'danger', title: 'Hata', description: 'Proje silinirken bir hata oluştu' });
+      toast.error('Hata', { description: 'Proje silinirken bir hata oluştu' });
     }
   };
 
@@ -143,21 +143,13 @@ export default function AdminPortfolioPage() {
       setSelectedItems(new Set());
 
       if (failed > 0) {
-        showToast({
-          variant: 'danger',
-          title: 'Kısmi Başarı',
-          description: `${succeeded.length} proje silindi, ${failed} proje silinemedi`,
-        });
+        toast.error('Kısmi Başarı', { description: `${succeeded.length} proje silindi, ${failed} proje silinemedi` });
       } else {
-        showToast({
-          variant: 'success',
-          title: 'Silindi',
-          description: `${succeeded.length} proje başarıyla silindi`,
-        });
+        toast.success('Silindi', { description: `${succeeded.length} proje başarıyla silindi` });
       }
     } catch (error) {
       console.error('Projeler silinirken hata:', error);
-      showToast({ variant: 'danger', title: 'Hata', description: 'Projeler silinirken bir hata oluştu' });
+      toast.error('Hata', { description: 'Projeler silinirken bir hata oluştu' });
     }
   };
 
@@ -209,14 +201,11 @@ export default function AdminPortfolioPage() {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-foreground">Portfolyo</h1>
-          <p className="text-muted-foreground mt-1">Projelerinizi yönetin ve düzenleyin</p>
-        </div>
-        <div className="flex items-center gap-3">
+    <AdminPageLayout
+      title="Portfolyo"
+      description="Projelerinizi yönetin ve düzenleyin"
+      actions={
+        <>
           {selectedItems.size > 0 && (
             <Button variant="destructive" size="sm" onClick={handleBulkDelete} className="hidden sm:inline-flex">
               <Trash2 className="w-4 h-4" />
@@ -227,9 +216,9 @@ export default function AdminPortfolioPage() {
             <Plus className="w-5 h-5" />
             Yeni Proje
           </Button>
-        </div>
-      </div>
-
+        </>
+      }
+    >
       {/* Toolbar */}
       <Card className="sticky top-24 z-10 p-3">
         <div className="flex flex-col lg:flex-row gap-3 items-center justify-between">
@@ -289,7 +278,7 @@ export default function AdminPortfolioPage() {
             <span className="text-sm font-medium text-muted-foreground">{selectedItems.size} seçildi</span>
             <button
               onClick={handleBulkDelete}
-              className="text-sm font-medium text-red-600 bg-red-50 px-3 py-1.5 rounded-lg"
+              className="text-sm font-medium text-destructive bg-destructive/10 px-3 py-1.5 rounded-lg"
             >
               Sil
             </button>
@@ -309,7 +298,7 @@ export default function AdminPortfolioPage() {
             {!searchQuery && statusFilter === 'all' && (
               <Link
                 href="/admin/portfolio/new"
-                className="inline-flex items-center px-6 py-3 bg-brand-600 text-white font-semibold rounded-xl hover:bg-brand-700 transition-colors"
+                className="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground font-semibold rounded-xl hover:bg-primary/90 transition-colors"
               >
                 <Plus className="w-5 h-5 mr-2" />
                 İlk Projeyi Ekle
@@ -360,14 +349,14 @@ export default function AdminPortfolioPage() {
                       <Link
                         href={`/admin/portfolio/edit/${item._id}`}
                         onClick={(e) => e.stopPropagation()}
-                        className="p-2 bg-card/20 backdrop-blur-md text-white rounded-xl hover:bg-card hover:text-foreground transition-colors"
+                        className="p-2 bg-white/15 backdrop-blur-md text-white rounded-xl hover:bg-card hover:text-foreground transition-colors"
                         title="Düzenle"
                       >
                         <Pencil className="w-5 h-5" />
                       </Link>
                       <button
                         onClick={(e) => { e.stopPropagation(); handleDelete(item._id); }}
-                        className="p-2 bg-card/20 backdrop-blur-md text-white rounded-xl hover:bg-red-500 hover:text-white transition-colors"
+                        className="p-2 bg-white/15 backdrop-blur-md text-white rounded-xl hover:bg-destructive hover:text-destructive-foreground transition-colors"
                         title="Sil"
                       >
                         <Trash2 className="w-5 h-5" />
@@ -376,9 +365,9 @@ export default function AdminPortfolioPage() {
 
                     {/* Status Badge */}
                     <div className="absolute top-3 right-3">
-                      <span className={`px-2.5 py-1 rounded-full text-xs font-semibold backdrop-blur-md border border-white/10 shadow-sm ${item.status === 'published'
-                          ? 'bg-success/90 text-white'
-                          : 'bg-warning/90 text-white'
+                      <span className={`px-2.5 py-1 rounded-full text-xs font-semibold backdrop-blur-md border border-white/20 shadow-sm ${item.status === 'published'
+                          ? 'bg-success/90 text-success-foreground'
+                          : 'bg-warning/90 text-warning-foreground'
                         }`}>
                         {item.status === 'published' ? 'Yayında' : 'Taslak'}
                       </span>
@@ -494,7 +483,7 @@ export default function AdminPortfolioPage() {
                             </Link>
                             <button
                               onClick={(e) => { e.stopPropagation(); handleDelete(item._id); }}
-                              className="p-1.5 text-muted-foreground hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                              className="p-1.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
                               title="Sil"
                             >
                               <Trash2 className="w-4 h-4" />
@@ -510,6 +499,6 @@ export default function AdminPortfolioPage() {
           )}
         </>
       )}
-    </div>
+    </AdminPageLayout>
   );
 }

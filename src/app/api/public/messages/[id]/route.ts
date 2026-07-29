@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import connectDB from '@/lib/mongoose';
 import Message from '@/models/Message';
 
 // GET /api/messages/[id] - Tek mesaj getir
@@ -20,8 +19,6 @@ export async function GET(
 
     const { id } = params;
 
-    await connectDB();
-    
     const message = await Message.findById(id);
     if (!message) {
       return NextResponse.json(
@@ -66,8 +63,6 @@ export async function PUT(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    await connectDB();
-    
     const body: MessageUpdateRequest = await request.json();
     
     const message = await Message.findByIdAndUpdate(
@@ -105,8 +100,6 @@ export async function PATCH(
     }
 
     const { id } = params;
-    
-    await connectDB();
     
     const body = await request.json();
     const { status } = body;
@@ -156,8 +149,6 @@ export async function DELETE(
     }
 
     const { id } = params;
-    
-    await connectDB();
     
     const message = await Message.findByIdAndDelete(id);
     if (!message) {

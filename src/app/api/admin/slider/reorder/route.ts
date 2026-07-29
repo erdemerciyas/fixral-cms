@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import connectDB from '@/lib/mongoose';
 import Slider from '@/models/Slider';
 
 export async function POST(request: Request) {
@@ -22,8 +21,6 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
-
-    await connectDB();
 
     const updates = sliders.map((id: string, index: number) =>
       Slider.findByIdAndUpdate(id, { order: index })

@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import connectDB from '@/lib/mongoose';
 import User from '@/models/User';
 import { 
   verifyRefreshToken, 
@@ -86,8 +85,6 @@ import {
  */
 export async function POST(request: NextRequest) {
   try {
-    await connectDB();
-
     // Get refresh token from cookie or request body
     let refreshToken = extractRefreshTokenFromCookies(request);
     

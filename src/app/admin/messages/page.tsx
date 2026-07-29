@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useEffect, Fragment } from 'react';
+import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { Dialog, Transition } from '@headlessui/react';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import {
   MessageSquare,
   Search,
@@ -23,6 +23,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Skeleton } from '@/components/ui/skeleton';
+import { AdminPageLayout } from '@/components/admin/admin-page-layout';
 
 interface Message {
   _id: string;
@@ -222,10 +223,10 @@ export default function AdminMessagesPage() {
 
   const getUrgencyBadge = (urgency?: string) => {
     switch (urgency) {
-      case 'urgent': return <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800">Acil</span>;
-      case 'high': return <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-orange-100 text-orange-800">Yüksek</span>;
-      case 'medium': return <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800">Orta</span>;
-      default: return <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">Düşük</span>;
+      case 'urgent': return <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-destructive/10 text-destructive">Acil</span>;
+      case 'high': return <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-warning/10 text-warning">Yüksek</span>;
+      case 'medium': return <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-warning/10 text-warning">Orta</span>;
+      default: return <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-success/15 text-success">Düşük</span>;
     }
   };
 
@@ -252,20 +253,15 @@ export default function AdminMessagesPage() {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-foreground">Mesajlar</h1>
-          <p className="text-muted-foreground mt-1">Gelen kutusu ve proje başvuruları</p>
-        </div>
-        <div className="flex items-center space-x-2">
-          <span className="text-sm text-muted-foreground bg-card px-3 py-1 rounded-full border border-border shadow-sm">
-            {unreadCount} okunmamış
-          </span>
-        </div>
-      </div>
-
+    <AdminPageLayout
+      title="Mesajlar"
+      description="Gelen kutusu ve proje başvuruları"
+      actions={
+        <span className="text-sm text-muted-foreground bg-card px-3 py-1 rounded-full border border-border shadow-sm">
+          {unreadCount} okunmamış
+        </span>
+      }
+    >
       {/* Search and Filter Bar */}
       <div className="bg-card rounded-xl shadow-sm border border-border/60 p-4">
         <div className="flex flex-col sm:flex-row gap-4">
@@ -276,14 +272,14 @@ export default function AdminMessagesPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Mesajlarda ara..."
-              className="w-full pl-12 pr-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+              className="w-full pl-12 pr-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
             />
           </div>
           <div className="flex space-x-2 bg-muted p-1 rounded-xl">
             <button
               onClick={() => setStatusFilter('all')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${statusFilter === 'all'
-                ? 'bg-card text-indigo-600 shadow-sm'
+                ? 'bg-card text-primary shadow-sm'
                 : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
@@ -292,7 +288,7 @@ export default function AdminMessagesPage() {
             <button
               onClick={() => setStatusFilter('unread')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${statusFilter === 'unread'
-                ? 'bg-card text-indigo-600 shadow-sm'
+                ? 'bg-card text-primary shadow-sm'
                 : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
@@ -301,7 +297,7 @@ export default function AdminMessagesPage() {
             <button
               onClick={() => setStatusFilter('read')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${statusFilter === 'read'
-                ? 'bg-card text-indigo-600 shadow-sm'
+                ? 'bg-card text-primary shadow-sm'
                 : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
@@ -319,7 +315,7 @@ export default function AdminMessagesPage() {
             <Button
               type="button"
               onClick={handleBulkDelete}
-              className="flex items-center px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors text-sm font-medium"
+              className="flex items-center px-4 py-2 bg-destructive/10 text-destructive rounded-lg hover:bg-destructive/20 transition-colors text-sm font-medium"
             >
               <Trash2 className="w-4 h-4 mr-2" />
               Seçilenleri Sil
@@ -343,15 +339,15 @@ export default function AdminMessagesPage() {
                     setSelectedMessages(new Set());
                   }
                 }}
-                className="w-4 h-4 text-indigo-600 border-border rounded focus:ring-indigo-500 mr-4 cursor-pointer"
+                className="w-4 h-4 text-primary border-border rounded focus:ring-ring mr-4 cursor-pointer"
               />
               <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Tümünü Seç</span>
             </div>
-            <div className="divide-y divide-slate-100">
+            <div className="divide-y divide-border">
               {filteredMessages.map((message) => (
                 <div
                   key={message._id}
-                  className={`group p-6 hover:bg-muted/50 transition-colors cursor-pointer relative ${message.status === 'unread' || message.status === 'new' ? 'bg-indigo-50/40' : ''
+                  className={`group p-6 hover:bg-muted/50 transition-colors cursor-pointer relative ${message.status === 'unread' || message.status === 'new' ? 'bg-primary/5' : ''
                     }`}
                   onClick={() => openMessageDetail(message)}
                 >
@@ -369,14 +365,14 @@ export default function AdminMessagesPage() {
                           }
                           setSelectedMessages(newSelected);
                         }}
-                        className="w-4 h-4 text-indigo-600 border-border rounded focus:ring-indigo-500 cursor-pointer"
+                        className="w-4 h-4 text-primary border-border rounded focus:ring-ring cursor-pointer"
                       />
                     </div>
 
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between mb-1.5">
                         <div className="flex items-center gap-2">
-                          <h3 className={`text-sm font-semibold ${(message.status === 'unread' || message.status === 'new') ? 'text-indigo-900' : 'text-foreground'}`}>
+                          <h3 className={`text-sm font-semibold ${(message.status === 'unread' || message.status === 'new') ? 'text-foreground' : 'text-foreground'}`}>
                             {message.name}
                           </h3>
                           {message.company && (
@@ -386,7 +382,7 @@ export default function AdminMessagesPage() {
                             </span>
                           )}
                           {message.projectType && (
-                            <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-blue-50 text-blue-700 border border-blue-100">
+                            <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-info/10 text-info border border-info/30">
                               <Briefcase className="w-3 h-3 mr-1" />
                               {message.projectType}
                             </span>
@@ -403,10 +399,10 @@ export default function AdminMessagesPage() {
                           {message.subject}
                         </h4>
                         {(message.status === 'unread' || message.status === 'new') && (
-                          <span className="w-2 h-2 rounded-full bg-indigo-600"></span>
+                          <span className="w-2 h-2 rounded-full bg-primary"></span>
                         )}
                         {message.status === 'replied' && (
-                          <span className="text-xs text-green-600 flex items-center gap-0.5 bg-green-50 px-1.5 py-0.5 rounded">
+                          <span className="text-xs text-success flex items-center gap-0.5 bg-success/10 px-1.5 py-0.5 rounded">
                             <Check className="w-3 h-3" />
                             Yanıtlandı
                           </span>
@@ -425,7 +421,7 @@ export default function AdminMessagesPage() {
                           e.stopPropagation();
                           handleDelete(message._id);
                         }}
-                        className="p-2 text-muted-foreground hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        className="p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
                         title="Sil"
                       >
                         <Trash2 className="w-5 h-5" />
@@ -453,40 +449,16 @@ export default function AdminMessagesPage() {
       </div>
 
       {/* Detail / Reply Modal */}
-      <Transition show={isModalOpen} as={Fragment}>
-        <Dialog as="div" className="relative z-50" onClose={() => setIsModalOpen(false)}>
-          <Transition.Child
-            as={Fragment}
-            enter="ease-out duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" />
-          </Transition.Child>
-
-          <div className="fixed inset-0 overflow-y-auto">
-            <div className="flex min-h-full items-center justify-center p-4 text-center">
-              <Transition.Child
-                as={Fragment}
-                enter="ease-out duration-300"
-                enterFrom="opacity-0 scale-95"
-                enterTo="opacity-100 scale-100"
-                leave="ease-in duration-200"
-                leaveFrom="opacity-100 scale-100"
-                leaveTo="opacity-0 scale-95"
-              >
-                <Dialog.Panel className="w-full max-w-2xl transform overflow-hidden rounded-xl bg-card text-left align-middle shadow-xl transition-all">
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="max-w-2xl p-0 gap-0 overflow-hidden rounded-xl bg-card">
                   {viewMessage && (
                     <div className="flex flex-col max-h-[90vh]">
                       {/* Modal Header */}
-                      <div className="px-6 py-4 border-b border-slate-100 bg-muted/50 flex items-center justify-between">
+                      <div className="px-6 py-4 border-b border-border bg-muted/50 flex items-center justify-between">
                         <div>
-                          <Dialog.Title as="h3" className="text-lg font-bold text-foreground">
+                          <DialogTitle className="text-lg font-bold text-foreground">
                             {viewMessage.subject}
-                          </Dialog.Title>
+                          </DialogTitle>
                           <div className="text-xs text-muted-foreground mt-1 flex items-center gap-2">
                             <span>{formatDate(viewMessage.createdAt)}</span>
                             {viewMessage.urgency && (
@@ -494,25 +466,15 @@ export default function AdminMessagesPage() {
                             )}
                           </div>
                         </div>
-                        <Button
-                          type="button"
-                          onClick={() => setIsModalOpen(false)}
-                          className="text-muted-foreground hover:text-muted-foreground"
-                        >
-                          <span className="sr-only">Kapat</span>
-                          <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                          </svg>
-                        </Button>
                       </div>
 
                       <div className="flex-1 overflow-y-auto p-6 space-y-6">
                         {/* Sender Info Card */}
-                        <div className="bg-muted/50 rounded-xl p-4 border border-slate-100">
+                        <div className="bg-muted/50 rounded-xl p-4 border border-border">
                           <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3">Gönderen Bilgileri</h4>
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div className="flex items-center gap-3">
-                              <div className="w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-sm font-bold">
+                              <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm font-bold">
                                 {viewMessage.name.charAt(0).toUpperCase()}
                               </div>
                               <div>
@@ -539,18 +501,18 @@ export default function AdminMessagesPage() {
 
                         {/* Project Details (if applicable) */}
                         {(viewMessage.projectType || viewMessage.budget) && (
-                          <div className="bg-blue-50/50 rounded-xl p-4 border border-blue-100/50">
-                            <h4 className="text-xs font-bold text-blue-500 uppercase tracking-wider mb-2">Proje Detayları</h4>
+                          <div className="bg-info/10 rounded-xl p-4 border border-info/30">
+                            <h4 className="text-xs font-bold text-info uppercase tracking-wider mb-2">Proje Detayları</h4>
                             <div className="flex flex-wrap gap-4 text-sm">
                               {viewMessage.projectType && (
-                                <div className="flex items-center gap-2 bg-card px-3 py-1.5 rounded-lg border border-blue-100 shadow-sm text-blue-900">
-                                  <Flame className="w-4 h-4 text-orange-500" />
+                                <div className="flex items-center gap-2 bg-card px-3 py-1.5 rounded-lg border border-info/30 shadow-sm text-info">
+                                  <Flame className="w-4 h-4 text-warning" />
                                   <span className="font-medium">{viewMessage.projectType}</span>
                                 </div>
                               )}
                               {viewMessage.budget && (
-                                <div className="flex items-center gap-2 bg-card px-3 py-1.5 rounded-lg border border-blue-100 shadow-sm text-blue-900">
-                                  <DollarSign className="w-4 h-4 text-green-500" />
+                                <div className="flex items-center gap-2 bg-card px-3 py-1.5 rounded-lg border border-info/30 shadow-sm text-info">
+                                  <DollarSign className="w-4 h-4 text-success" />
                                   <span className="font-medium">Bütçe: {viewMessage.budget}</span>
                                 </div>
                               )}
@@ -568,13 +530,13 @@ export default function AdminMessagesPage() {
 
                         {/* Previous Admin Reply */}
                         {viewMessage.adminReply && (
-                          <div className="pl-4 border-l-4 border-green-500 bg-green-50 rounded-r-xl p-4">
-                            <h4 className="text-xs font-bold text-green-700 uppercase tracking-wider mb-2 flex items-center gap-2">
+                          <div className="pl-4 border-l-4 border-success bg-success/10 rounded-r-xl p-4">
+                            <h4 className="text-xs font-bold text-success uppercase tracking-wider mb-2 flex items-center gap-2">
                               <Check className="w-4 h-4" />
                               Gönderilen Yanıt
-                              <span className="text-green-600/70 font-normal lowercase ml-auto">{viewMessage.repliedAt && formatDate(viewMessage.repliedAt)}</span>
+                              <span className="text-success/70 font-normal lowercase ml-auto">{viewMessage.repliedAt && formatDate(viewMessage.repliedAt)}</span>
                             </h4>
-                            <div className="text-green-900 text-sm whitespace-pre-wrap">
+                            <div className="text-success text-sm whitespace-pre-wrap">
                               {viewMessage.adminReply}
                             </div>
                           </div>
@@ -584,20 +546,20 @@ export default function AdminMessagesPage() {
                       {/* Reply Form */}
                       <div className="p-6 bg-muted/50 border-t border-border">
                         <h4 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
-                          <Send className="w-4 h-4 text-indigo-600" />
+                          <Send className="w-4 h-4 text-primary" />
                           Yanıt Gönder
                         </h4>
                         <Textarea
                           value={replyText}
                           onChange={(e) => setReplyText(e.target.value)}
-                          className="w-full rounded-xl border border-border shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm p-3 min-h-[100px]"
+                          className="w-full rounded-xl border border-border shadow-sm focus:border-ring focus:ring-ring text-sm p-3 min-h-[100px]"
                           placeholder="Müşteriye gönderilecek yanıtınızı buraya yazın..."
                         />
                         <div className="mt-3 flex justify-end gap-3">
                           <Button
                             type="button"
                             onClick={() => setIsModalOpen(false)}
-                            className="px-4 py-2 text-sm font-medium text-foreground hover:bg-slate-200 rounded-lg transition-colors"
+                            className="px-4 py-2 text-sm font-medium text-foreground hover:bg-muted rounded-lg transition-colors"
                           >
                             Kapat
                           </Button>
@@ -605,11 +567,11 @@ export default function AdminMessagesPage() {
                             type="button"
                             onClick={handleSendReply}
                             disabled={!replyText.trim() || sendingReply}
-                            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-primary-foreground bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring disabled:opacity-50 disabled:cursor-not-allowed"
                           >
                             {sendingReply ? (
                               <>
-                                <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                                <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-current" fill="none" viewBox="0 0 24 24">
                                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                 </svg>
@@ -626,12 +588,8 @@ export default function AdminMessagesPage() {
                       </div>
                     </div>
                   )}
-                </Dialog.Panel>
-              </Transition.Child>
-            </div>
-          </div>
-        </Dialog>
-      </Transition>
-    </div>
+        </DialogContent>
+      </Dialog>
+    </AdminPageLayout>
   );
 }

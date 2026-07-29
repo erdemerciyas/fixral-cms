@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Reorder, useDragControls } from 'framer-motion';
+import dynamic from 'next/dynamic';
 import {
   Box,
   Plus,
@@ -16,14 +16,28 @@ import {
   List,
   CheckCircle,
   DollarSign,
-  GripVertical,
   Save,
   Loader2,
   ArrowUpDown,
 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { AdminPageLayout } from '@/components/admin/admin-page-layout';
 import { toast } from 'sonner';
 import { useConfirm } from '@/hooks/use-confirm';
+
+// Reorder (framer-motion) yalnızca sıralama modunda gerekli — izole dynamic import ile yüklenir
+const ServiceReorderList = dynamic(() => import('@/components/admin/ServiceReorderList'), {
+  ssr: false,
+  loading: () => (
+    <div className="divide-y divide-border">
+      {[...Array(4)].map((_, i) => (
+        <div key={i} className="px-4 sm:px-6 py-4">
+          <Skeleton className="h-12 w-full" />
+        </div>
+      ))}
+    </div>
+  ),
+}) as typeof import('@/components/admin/ServiceReorderList').default;
 
 interface ServiceItem {
   _id: string;
@@ -228,19 +242,16 @@ export default function AdminServicesPage() {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sticky top-0 z-20 bg-muted/80 backdrop-blur-sm py-4">
-        <div>
-          <h1 className="text-2xl font-bold text-foreground tracking-tight">Hizmet Yönetimi</h1>
-          <p className="text-muted-foreground mt-1">Hizmetlerinizi yönetin ve sıralayın</p>
-        </div>
-        <div className="flex gap-3">
+    <AdminPageLayout
+      title="Hizmet Yönetimi"
+      description="Hizmetlerinizi yönetin ve sıralayın"
+      actions={
+        <>
           {hasReordered && (
             <button
               onClick={saveOrder}
               disabled={savingOrder}
-              className="inline-flex items-center px-5 py-3 bg-emerald-600 text-white font-semibold rounded-xl hover:bg-emerald-700 hover:shadow-lg hover:shadow-emerald-600/20 transition-all duration-200 disabled:opacity-60"
+              className="inline-flex items-center px-5 py-3 bg-success text-success-foreground font-semibold rounded-xl hover:bg-success-dark hover:shadow-lg hover:shadow-success/20 transition-all duration-200 disabled:opacity-60"
             >
               {savingOrder ? (
                 <Loader2 className="w-5 h-5 mr-2 animate-spin" />
@@ -252,14 +263,14 @@ export default function AdminServicesPage() {
           )}
           <Link
             href="/admin/services/new"
-            className="inline-flex items-center px-6 py-3 bg-slate-900 text-white font-semibold rounded-xl hover:bg-slate-800 hover:shadow-lg hover:shadow-slate-900/20 transition-all duration-200"
+            className="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground font-semibold rounded-xl hover:bg-primary/90 transition-all duration-200"
           >
             <Plus className="w-5 h-5 mr-2" />
             Yeni Hizmet Ekle
           </Link>
-        </div>
-      </div>
-
+        </>
+      }
+    >
       {/* Toolbar */}
       <div className="bg-card rounded-xl shadow-sm border border-border p-2 sm:p-3 sticky top-24 z-10 transition-all duration-300">
         <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
@@ -290,8 +301,8 @@ export default function AdminServicesPage() {
               <button
                 onClick={() => setStatusFilter('published')}
                 className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${statusFilter === 'published'
-                  ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300 shadow-sm'
-                  : 'text-muted-foreground hover:text-emerald-700'
+                  ? 'bg-success/15 text-success shadow-sm'
+                  : 'text-muted-foreground hover:text-success'
                   }`}
               >
                 Yayında
@@ -300,8 +311,8 @@ export default function AdminServicesPage() {
               <button
                 onClick={() => setStatusFilter('draft')}
                 className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${statusFilter === 'draft'
-                  ? 'bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-300 shadow-sm'
-                  : 'text-muted-foreground hover:text-amber-700'
+                  ? 'bg-warning/15 text-warning shadow-sm'
+                  : 'text-muted-foreground hover:text-warning'
                   }`}
               >
                 Taslak
@@ -318,7 +329,7 @@ export default function AdminServicesPage() {
                 </span>
                 <button
                   onClick={handleBulkDelete}
-                  className="flex items-center px-4 py-2.5 bg-red-50 text-red-600 font-medium rounded-xl hover:bg-red-100 transition-colors"
+                  className="flex items-center px-4 py-2.5 bg-destructive/10 text-destructive font-medium rounded-xl hover:bg-destructive/20 transition-colors"
                 >
                   <Trash2 className="w-4 h-4 mr-2" />
                   Sil
@@ -345,8 +356,8 @@ export default function AdminServicesPage() {
           </div>
         </div>
         {viewMode === 'list' && !isReorderEnabled && (
-          <div className="mt-2 text-xs text-amber-600 dark:text-amber-400 flex items-center">
-            <div className="w-1.5 h-1.5 rounded-full bg-amber-500 mr-2" />
+          <div className="mt-2 text-xs text-warning flex items-center">
+            <div className="w-1.5 h-1.5 rounded-full bg-warning mr-2" />
             Sıralama yapmak için filtreleri temizleyin (Arama yaparken sıralama devre dışıdır)
           </div>
         )}
@@ -374,7 +385,7 @@ export default function AdminServicesPage() {
           ) : (
             <Link
               href="/admin/services/new"
-              className="inline-flex items-center px-6 py-3 bg-slate-900 text-white font-semibold rounded-xl hover:bg-slate-800 transition-all"
+              className="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground font-semibold rounded-xl hover:bg-primary/90 transition-all"
             >
               <Plus className="w-5 h-5 mr-2" />
               Hizmet Ekle
@@ -386,17 +397,12 @@ export default function AdminServicesPage() {
           {viewMode === 'list' ? (
             <div className="bg-card rounded-xl shadow-sm border border-border overflow-hidden">
               {isReorderEnabled ? (
-                <Reorder.Group axis="y" values={filteredServices} onReorder={handleReorder} className="divide-y divide-border">
-                  {filteredServices.map((service, index) => (
-                    <DraggableServiceItem
-                      key={service._id}
-                      service={service}
-                      index={index}
-                      onDelete={handleDelete}
-                      formatDate={formatDate}
-                    />
-                  ))}
-                </Reorder.Group>
+                <ServiceReorderList
+                  services={filteredServices}
+                  onReorder={handleReorder}
+                  onDelete={handleDelete}
+                  formatDate={formatDate}
+                />
               ) : (
                 <div className="divide-y divide-border">
                   {filteredServices.map((service, index) => (
@@ -444,7 +450,7 @@ export default function AdminServicesPage() {
                            `}
                     >
                       <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center
-                               ${selectedItems.has(service._id) ? 'bg-primary border-primary text-primary-foreground' : 'bg-transparent border-white text-transparent hover:bg-card/20'}
+                               ${selectedItems.has(service._id) ? 'bg-primary border-primary text-primary-foreground' : 'bg-transparent border-white text-transparent hover:bg-white/20'}
                             `}>
                         <CheckCircle className="w-5 h-5" />
                       </div>
@@ -453,7 +459,7 @@ export default function AdminServicesPage() {
                     {/* Status Badge */}
                     <div className="absolute top-3 right-3 pointer-events-none">
                       <span className={`px-2.5 py-1 rounded-lg text-xs font-semibold backdrop-blur-md shadow-sm border border-white/20
-                               ${service.status === 'published' ? 'bg-emerald-500/90 text-white' : 'bg-amber-400/90 text-white'}
+                               ${service.status === 'published' ? 'bg-success/90 text-success-foreground' : 'bg-warning/90 text-warning-foreground'}
                             `}>
                         {service.status === 'published' ? 'Yayında' : 'Taslak'}
                       </span>
@@ -485,7 +491,7 @@ export default function AdminServicesPage() {
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => handleDelete(service._id)}
-                          className="p-2 text-muted-foreground hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                          className="p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
                           title="Sil"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -506,86 +512,7 @@ export default function AdminServicesPage() {
           )}
         </>
       )}
-    </div>
-  );
-}
-
-function DraggableServiceItem({
-  service,
-  index,
-  onDelete,
-  formatDate,
-}: {
-  service: ServiceItem;
-  index: number;
-  onDelete: (id: string) => void;
-  formatDate: (d: string) => string;
-}) {
-  const dragControls = useDragControls();
-
-  return (
-    <Reorder.Item
-      value={service}
-      dragListener={false}
-      dragControls={dragControls}
-      className="bg-card"
-    >
-      <div className="flex items-center justify-between px-4 sm:px-6 py-4 hover:bg-muted/50 transition-colors group">
-        <div className="flex items-center gap-4 flex-1 min-w-0">
-          <div
-            onPointerDown={(e) => dragControls.start(e)}
-            className="cursor-grab p-1.5 text-muted-foreground hover:text-foreground active:cursor-grabbing touch-none"
-          >
-            <GripVertical className="w-5 h-5" />
-          </div>
-
-          <span className="w-7 h-7 rounded-lg bg-muted text-muted-foreground text-xs font-bold flex items-center justify-center shrink-0">
-            {index + 1}
-          </span>
-
-          <div className="w-12 h-12 bg-muted rounded-xl overflow-hidden flex-shrink-0 border border-border flex items-center justify-center">
-            {service.image ? (
-              <img src={service.image} alt="" className="w-full h-full object-cover" />
-            ) : (
-              <Box className="w-5 h-5 text-primary" />
-            )}
-          </div>
-
-          <div className="flex-1 min-w-0">
-            <h3 className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors truncate">
-              {service.title}
-            </h3>
-            <div className="flex items-center gap-2 mt-1">
-              <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium
-                ${service.status === 'published'
-                  ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300'
-                  : 'bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300'}
-              `}>
-                {service.status === 'published' ? 'Yayında' : 'Taslak'}
-              </span>
-              <span className="text-xs text-muted-foreground hidden sm:inline">{formatDate(service.createdAt)}</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
-          <Link
-            href={`/admin/services/edit/${service._id}`}
-            className="p-2 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
-            title="Düzenle"
-          >
-            <Pencil className="w-4 h-4" />
-          </Link>
-          <button
-            onClick={() => onDelete(service._id)}
-            className="p-2 text-muted-foreground hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-            title="Sil"
-          >
-            <Trash2 className="w-4 h-4" />
-          </button>
-        </div>
-      </div>
-    </Reorder.Item>
+    </AdminPageLayout>
   );
 }
 
@@ -622,8 +549,8 @@ function StaticServiceItem({
           <div className="flex items-center gap-2 mt-1">
             <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium
               ${service.status === 'published'
-                ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300'
-                : 'bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300'}
+                ? 'bg-success/15 text-success'
+                : 'bg-warning/15 text-warning'}
             `}>
               {service.status === 'published' ? 'Yayında' : 'Taslak'}
             </span>
@@ -642,7 +569,7 @@ function StaticServiceItem({
         </Link>
         <button
           onClick={() => onDelete(service._id)}
-          className="p-2 text-muted-foreground hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+          className="p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
           title="Sil"
         >
           <Trash2 className="w-4 h-4" />

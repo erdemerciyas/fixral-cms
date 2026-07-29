@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import connectDB from '@/lib/mongoose';
 import slugify from 'slugify';
 
 import { logger } from '@/core/lib/logger';
@@ -25,7 +24,6 @@ export const GET = asyncHandler(async (req: Request) => {
     return NextResponse.json(cached);
   }
 
-  await connectDB();
   const services = await Service.find({})
     .sort({ createdAt: -1 });
 
@@ -64,8 +62,6 @@ export const POST = withSecurity(SecurityConfigs.admin)(asyncHandler(async (requ
   if (body.description.length > 2000) {
     throw createError.validation('Açıklama çok uzun (maksimum 2000 karakter)');
   }
-
-  await connectDB();
 
   const imageUrl = body.image || '';
 

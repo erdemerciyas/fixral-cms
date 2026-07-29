@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../../../../../lib/auth';
-import connectDB from '../../../../../lib/mongoose';
 import User from '../../../../../models/User';
 import bcrypt from 'bcryptjs';
 import { withSecurity, SecurityConfigs } from '../../../../../lib/security-middleware';
@@ -42,8 +41,6 @@ export const PUT = withSecurity(SecurityConfigs.authenticated)(async (request: R
         { status: 400 }
       );
     }
-
-    await connectDB();
 
     const user = await User.findById(userId);
 

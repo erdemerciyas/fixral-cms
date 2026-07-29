@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import Portfolio from '@/models/Portfolio';
-import connectDB from '@/lib/mongoose';
 import slugify from 'slugify';
 
 /**
@@ -18,8 +17,6 @@ export async function GET(_req: NextRequest) {
         { status: 401 }
       );
     }
-
-    await connectDB();
 
     const portfolioItems = await Portfolio.find()
       .sort({ createdAt: -1 });
@@ -47,8 +44,6 @@ export async function POST(req: NextRequest) {
         { status: 401 }
       );
     }
-
-    await connectDB();
 
     const body = await req.json();
 

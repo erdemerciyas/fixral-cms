@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import connectDB from '@/lib/mongoose';
 import News from '@/models/News';
 import { ApiResponse, BulkActionRequest, BulkActionResponse } from '@/types/news';
 import { logger } from '@/core/lib/logger';
@@ -52,8 +51,6 @@ export async function POST(request: NextRequest) {
         { status: 401 }
       );
     }
-
-    await connectDB();
 
     const body = await request.json();
 

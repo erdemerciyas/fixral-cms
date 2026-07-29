@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { cacheManager, CACHE_KEYS } from '../lib/cache-manager';
+import { cache, CacheKeys } from '../lib/cache';
 
 interface UseApiOptions {
   cacheKey?: string;
@@ -40,7 +40,7 @@ export function useApi<T>(
 
       // Check cache first
       if (cacheKey) {
-        const cachedData = cacheManager.get<T>(cacheKey);
+        const cachedData = cache.get<T>(cacheKey);
         if (cachedData) {
           setData(cachedData);
           setLoading(false);
@@ -58,7 +58,7 @@ export function useApi<T>(
       
       // Cache the result
       if (cacheKey) {
-        cacheManager.set(cacheKey, result, cacheTTL);
+        cache.set(cacheKey, result, cacheTTL);
       }
 
       setData(result);
@@ -98,7 +98,7 @@ export function useApi<T>(
 // Specialized hooks for common API calls
 export function useSliderItems() {
   return useApi('/api/public/slider', {
-    cacheKey: CACHE_KEYS.SLIDER_ITEMS,
+    cacheKey: CacheKeys.SLIDER,
     cacheTTL: 10 * 60 * 1000 // 10 minutes for slider
   });
 }
@@ -115,7 +115,7 @@ export function usePortfolioItems(options?: {
   if (options?.random) params.append('random', 'true');
   
   const url = `/api/portfolio${params.toString() ? `?${params.toString()}` : ''}`;
-  const cacheKey = `${CACHE_KEYS.PORTFOLIO_ITEMS}_${params.toString()}`;
+  const cacheKey = `${CacheKeys.PORTFOLIO}_${params.toString()}`;
   
   return useApi(url, {
     cacheKey,
@@ -125,14 +125,14 @@ export function usePortfolioItems(options?: {
 
 export function useServices() {
   return useApi('/api/public/services', {
-    cacheKey: CACHE_KEYS.SERVICES,
+    cacheKey: CacheKeys.SERVICES,
     cacheTTL: 10 * 60 * 1000 // 10 minutes
   });
 }
 
 export function useSiteSettings() {
   return useApi('/api/admin/site-settings', {
-    cacheKey: CACHE_KEYS.SITE_SETTINGS,
+    cacheKey: CacheKeys.SITE_SETTINGS,
     cacheTTL: 15 * 60 * 1000 // 15 minutes
   });
 }

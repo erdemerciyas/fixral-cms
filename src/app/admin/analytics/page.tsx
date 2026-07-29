@@ -115,8 +115,8 @@ export default function AdminAnalyticsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-indigo-100 flex items-center justify-center">
-            <BarChart3 className="w-6 h-6 text-indigo-600" />
+          <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+            <BarChart3 className="w-6 h-6 text-primary" />
           </div>
           <div>
             <h1 className="text-2xl font-bold text-foreground">Analitik Ayarları</h1>
@@ -128,11 +128,11 @@ export default function AdminAnalyticsPage() {
         <Button
           onClick={handleSave}
           disabled={saving}
-          className="px-6 py-2.5 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 transition-colors disabled:opacity-50 flex items-center gap-2"
+          className="px-6 py-2.5 bg-primary text-primary-foreground font-medium rounded-xl hover:bg-primary/90 transition-colors disabled:opacity-50 flex items-center gap-2"
         >
           {saving ? (
             <>
-              <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" />
+              <div className="animate-spin rounded-full h-4 w-4 border-2 border-current border-t-transparent" />
               Kaydediliyor...
             </>
           ) : (
@@ -149,8 +149,8 @@ export default function AdminAnalyticsPage() {
         <div
           className={`p-4 rounded-xl border flex items-center gap-3 ${
             message.type === 'success'
-              ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
-              : 'bg-red-50 border-red-200 text-red-800'
+              ? 'bg-success/10 border-success/30 text-success'
+              : 'bg-destructive/10 border-destructive/30 text-destructive'
           }`}
         >
           {message.type === 'success' ? (
@@ -165,8 +165,8 @@ export default function AdminAnalyticsPage() {
       {/* Google Analytics */}
       <div className="bg-card rounded-xl shadow-sm border border-border/60 p-6">
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
-            <BarChart3 className="w-5 h-5 text-blue-600" />
+          <div className="w-10 h-10 rounded-lg bg-info/15 flex items-center justify-center">
+            <BarChart3 className="w-5 h-5 text-info" />
           </div>
           <div>
             <h2 className="text-lg font-bold text-foreground">Google Analytics</h2>
@@ -183,7 +183,7 @@ export default function AdminAnalyticsPage() {
               type="text"
               value={config.googleAnalyticsId}
               onChange={(e) => updateField('googleAnalyticsId', e.target.value)}
-              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-ring outline-none"
               placeholder="G-XXXXXXXXXX"
             />
             <p className="text-xs text-muted-foreground mt-1">
@@ -199,7 +199,7 @@ export default function AdminAnalyticsPage() {
               type="text"
               value={config.googleTagManagerId}
               onChange={(e) => updateField('googleTagManagerId', e.target.value)}
-              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-ring outline-none"
               placeholder="GTM-XXXXXXX"
             />
             <p className="text-xs text-muted-foreground mt-1">
@@ -212,8 +212,8 @@ export default function AdminAnalyticsPage() {
       {/* Site Verification */}
       <div className="bg-card rounded-xl shadow-sm border border-border/60 p-6">
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center">
-            <Check className="w-5 h-5 text-emerald-600" />
+          <div className="w-10 h-10 rounded-lg bg-success/15 flex items-center justify-center">
+            <Check className="w-5 h-5 text-success" />
           </div>
           <div>
             <h2 className="text-lg font-bold text-foreground">Site Doğrulama</h2>
@@ -229,7 +229,7 @@ export default function AdminAnalyticsPage() {
             type="text"
             value={config.googleSiteVerification}
             onChange={(e) => updateField('googleSiteVerification', e.target.value)}
-            className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+            className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-ring outline-none"
             placeholder="Doğrulama meta tag içeriği"
           />
           <p className="text-xs text-muted-foreground mt-1">
@@ -241,8 +241,8 @@ export default function AdminAnalyticsPage() {
       {/* Tracking Options */}
       <div className="bg-card rounded-xl shadow-sm border border-border/60 p-6">
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-lg bg-violet-100 flex items-center justify-center">
-            <BarChart3 className="w-5 h-5 text-violet-600" />
+          <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+            <BarChart3 className="w-5 h-5 text-primary" />
           </div>
           <div>
             <h2 className="text-lg font-bold text-foreground">İzleme Seçenekleri</h2>
@@ -261,11 +261,11 @@ export default function AdminAnalyticsPage() {
             type="button"
             onClick={() => updateField('enablePageViewTracking', !config.enablePageViewTracking)}
             className={`w-12 h-6 rounded-full relative transition-colors ${
-              config.enablePageViewTracking ? 'bg-indigo-600' : 'bg-slate-300'
+              config.enablePageViewTracking ? 'bg-primary' : 'bg-muted'
             }`}
           >
             <div
-              className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${
+              className={`absolute top-1 left-1 w-4 h-4 bg-card rounded-full transition-transform ${
                 config.enablePageViewTracking ? 'translate-x-6' : ''
               }`}
             />
@@ -274,9 +274,9 @@ export default function AdminAnalyticsPage() {
       </div>
 
       {/* Info Box */}
-      <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-5">
-        <h3 className="font-semibold text-indigo-900 mb-1.5">Nasıl Çalışır?</h3>
-        <ul className="text-sm text-indigo-700 space-y-1 list-disc list-inside">
+      <div className="bg-primary/10 border border-primary/30 rounded-xl p-5">
+        <h3 className="font-semibold text-foreground mb-1.5">Nasıl Çalışır?</h3>
+        <ul className="text-sm text-primary space-y-1 list-disc list-inside">
           <li>Google Analytics ID girildiğinde, tüm sayfalara GA4 izleme kodu otomatik eklenir.</li>
           <li>Tag Manager ID girildiğinde, GTM konteyner kodu sayfa başına yerleştirilir.</li>
           <li>Site doğrulama kodu, Google Search Console sahiplik doğrulaması için kullanılır.</li>

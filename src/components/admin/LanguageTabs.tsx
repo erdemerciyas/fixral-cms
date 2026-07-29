@@ -23,11 +23,11 @@ export default function LanguageTabs({
   // Show error state
   if (error) {
     return (
-      <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-center space-x-3">
-        <ExclamationTriangleIcon className="w-5 h-5 text-red-500 flex-shrink-0" />
+      <div className="bg-destructive/10 border border-destructive/30 rounded-xl p-4 flex items-center space-x-3">
+        <ExclamationTriangleIcon className="w-5 h-5 text-destructive flex-shrink-0" />
         <div>
-          <p className="text-sm font-medium text-red-800">Diller yüklenemedi</p>
-          <p className="text-xs text-red-600 mt-0.5">{error}</p>
+          <p className="text-sm font-medium text-destructive">Diller yüklenemedi</p>
+          <p className="text-xs text-destructive mt-0.5">{error}</p>
         </div>
       </div>
     );
@@ -36,16 +36,16 @@ export default function LanguageTabs({
   // Show empty state with link to language settings
   if (languages.length === 0) {
     return (
-      <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-start space-x-3">
-        <LanguageIcon className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+      <div className="bg-warning/10 border border-warning/30 rounded-xl p-4 flex items-start space-x-3">
+        <LanguageIcon className="w-5 h-5 text-warning flex-shrink-0 mt-0.5" />
         <div>
-          <p className="text-sm font-medium text-amber-800">Henüz dil tanımlanmamış</p>
-          <p className="text-xs text-amber-700 mt-1">
+          <p className="text-sm font-medium text-warning">Henüz dil tanımlanmamış</p>
+          <p className="text-xs text-warning mt-1">
             Çoklu dil desteği için önce dil ayarlarından en az bir dil eklemeniz gerekiyor.
           </p>
           <Link
             href="/admin/languages"
-            className="inline-flex items-center mt-2 text-xs font-semibold text-amber-800 bg-amber-100 hover:bg-amber-200 px-3 py-1.5 rounded-lg transition-colors"
+            className="inline-flex items-center mt-2 text-xs font-semibold text-warning bg-warning/15 hover:bg-warning/20 px-3 py-1.5 rounded-lg transition-colors"
           >
             Dil Ayarlarına Git →
           </Link>
@@ -55,8 +55,8 @@ export default function LanguageTabs({
   }
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200/60 dark:border-slate-700 overflow-hidden">
-      <div className="flex border-b border-slate-200/60">
+    <div className="bg-card rounded-xl shadow-sm border border-border overflow-hidden">
+      <div className="flex border-b border-border">
         {languages.map((lang) => {
           const isActive = activeLanguage === lang.code;
           const hasContent = translations?.[lang.code]?.title?.trim();
@@ -68,8 +68,8 @@ export default function LanguageTabs({
               onClick={() => onLanguageChange(lang.code)}
               className={`flex-1 px-6 py-4 text-sm font-semibold transition-all duration-200 flex items-center justify-center gap-2 ${
                 isActive
-                  ? 'bg-gradient-to-r from-indigo-500 to-violet-600 text-white'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-700'
+                  ? 'bg-primary text-primary-foreground'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
               }`}
             >
               <span>{lang.flag}</span>
@@ -78,8 +78,8 @@ export default function LanguageTabs({
                 <span
                   className={`text-xs px-1.5 py-0.5 rounded-full ${
                     isActive
-                      ? 'bg-white/20 text-white'
-                      : 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300'
+                      ? 'bg-primary-foreground/20 text-primary-foreground'
+                      : 'bg-primary/10 text-primary'
                   }`}
                 >
                   Varsayılan
@@ -89,10 +89,10 @@ export default function LanguageTabs({
                 <span
                   className={`w-2 h-2 rounded-full ${
                     hasContent
-                      ? 'bg-emerald-400'
+                      ? 'bg-success'
                       : isActive
-                        ? 'bg-white/40'
-                        : 'bg-slate-300 dark:bg-slate-600'
+                        ? 'bg-primary-foreground/40'
+                        : 'bg-muted'
                   }`}
                 />
               )}

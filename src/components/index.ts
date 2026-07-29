@@ -7,7 +7,6 @@ export { default as PortfolioImageGallery } from './PortfolioImageGallery';
 export { default as ModernPortfolioImageGallery } from './portfolio/PortfolioImageGallery';
 export { default as Logo } from './Logo';
 export { default as ProjectCard } from './ProjectCard';
-export { default as ClientWrapper } from './ClientWrapper';
 export { default as ProjectGrid } from './ProjectGrid';
 
 // Modern Portfolio Components
@@ -30,7 +29,7 @@ export { default as Breadcrumbs } from './Breadcrumbs';
 // Loading System exports
 
 export { default as LoadingBar } from '@/core/components/LoadingBar';
-export { default as AdminLoader, PageLoader, CardLoader, InlineLoader } from './AdminLoader';
+export { Spinner } from './ui/spinner';
 
 // UI Component exports
 export * from './ui'; 

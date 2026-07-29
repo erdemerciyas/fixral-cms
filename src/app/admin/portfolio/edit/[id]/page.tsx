@@ -3,13 +3,13 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { useToast } from '@/components/ui/useToast';
+import { toast } from 'sonner';
 import PortfolioForm, { PortfolioFormData } from '@/components/admin/PortfolioForm';
+import { FormPageSkeleton } from '@/components/admin/admin-skeletons';
 
 export default function EditPortfolioItem({ params }: { params: { id: string } }) {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const { show: showToast } = useToast();
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [initialData, setInitialData] = useState<PortfolioFormData | undefined>();
@@ -59,11 +59,11 @@ export default function EditPortfolioItem({ params }: { params: { id: string } }
       });
     } catch (err) {
       console.error(err);
-      showToast({ variant: 'danger', title: 'Hata', description: 'Portfolyo öğesi yüklenemedi' });
+      toast.error('Hata', { description: 'Portfolyo öğesi yüklenemedi' });
     } finally {
       setLoading(false);
     }
-  }, [params.id, showToast]);
+  }, [params.id]);
 
   useEffect(() => {
     if (status === 'authenticated') {
@@ -87,7 +87,7 @@ export default function EditPortfolioItem({ params }: { params: { id: string } }
         throw new Error(result.error || 'Bir hata oluştu');
       }
 
-      showToast({ variant: 'success', title: 'Başarılı', description: 'Portfolyo öğesi güncellendi' });
+      toast.success('Başarılı', { description: 'Portfolyo öğesi güncellendi' });
       router.push('/admin/portfolio');
     } finally {
       setSubmitting(false);
@@ -95,14 +95,7 @@ export default function EditPortfolioItem({ params }: { params: { id: string } }
   };
 
   if (status === 'loading' || loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-brand-200 border-t-brand-600 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-gray-500 font-medium">Portfolyo Yükleniyor...</p>
-        </div>
-      </div>
-    );
+    return <FormPageSkeleton />;
   }
 
   return (

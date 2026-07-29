@@ -2,7 +2,6 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import connectDB from '@/lib/mongoose';
 import News from '@/models/News';
 import { ensureModels } from '@/lib/ensure-models';
 import { NewsItem } from '@/types/news';
@@ -40,8 +39,6 @@ function normalizeTranslations(translations: any): Record<string, any> {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug, lang } = await params;
   try {
-    await connectDB();
-
     const newsDoc = await News.findOne({ slug }).lean();
 
     if (!newsDoc) {
@@ -100,8 +97,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
  */
 export async function generateStaticParams() {
   try {
-    await connectDB();
-
     // Fetch all published news articles without limit
     // This ensures all articles get static paths generated
     const news = await News.find({ status: 'published' })
@@ -132,7 +127,6 @@ export const dynamic = 'force-dynamic';
 export default async function NewsDetailPage({ params: paramsPromise }: PageProps) {
   const { slug, lang } = await paramsPromise;
   try {
-    await connectDB();
     await ensureModels('Portfolio', 'News');
 
     let news: any = null;
@@ -269,7 +263,7 @@ export default async function NewsDetailPage({ params: paramsPromise }: PageProp
 
                   {/* Excerpt */}
                   {translation.excerpt && (
-                    <div className="text-lg md:text-xl text-slate-600 italic border-l-4 border-fixral-primary pl-4 mb-8">
+                    <div className="text-lg md:text-xl text-slate-600 italic border-l-4 border-primary pl-4 mb-8">
                       {translation.excerpt}
                     </div>
                   )}
@@ -303,7 +297,7 @@ export default async function NewsDetailPage({ params: paramsPromise }: PageProp
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
                         <div className="absolute bottom-0 left-0 p-4 w-full">
-                          <h3 className="text-white font-semibold text-lg line-clamp-1 group-hover:text-fixral-secondary transition-colors">
+                          <h3 className="text-white font-semibold text-lg line-clamp-1 group-hover:text-primary transition-colors">
                             {portfolio.title}
                           </h3>
                         </div>
@@ -322,7 +316,7 @@ export default async function NewsDetailPage({ params: paramsPromise }: PageProp
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                 <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Autor</h3>
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-fixral-primary/10 rounded-full flex items-center justify-center text-fixral-primary font-bold text-xl">
+                  <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold text-xl">
                     {news.author?.name?.charAt(0) || 'F'}
                   </div>
                   <div>
@@ -393,7 +387,7 @@ export default async function NewsDetailPage({ params: paramsPromise }: PageProp
                           />
                         </div>
                         <div>
-                          <h4 className="text-sm font-medium text-slate-900 group-hover:text-fixral-primary line-clamp-2 leading-snug">
+                          <h4 className="text-sm font-medium text-slate-900 group-hover:text-primary line-clamp-2 leading-snug">
                             {relatedNews.translations?.es?.title || ''}
                           </h4>
                           <div className="text-xs text-slate-500 mt-1">Leer más →</div>

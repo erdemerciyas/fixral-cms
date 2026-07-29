@@ -1,4 +1,4 @@
-import { PlayIcon } from '@heroicons/react/24/solid';
+import { Play as PlayIcon } from 'lucide-react';
 
 interface VideoCardProps {
   video: {

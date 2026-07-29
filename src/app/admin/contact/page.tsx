@@ -139,8 +139,8 @@ export default function AdminContactPage() {
       {message && (
         <div className={`p-4 rounded-xl border ${
           message.type === 'success'
-            ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
-            : 'bg-red-50 border-red-200 text-red-800'
+            ? 'bg-success/10 border-success/30 text-success'
+            : 'bg-destructive/10 border-destructive/30 text-destructive'
         }`}>
           {message.text}
         </div>
@@ -159,7 +159,7 @@ export default function AdminContactPage() {
               type="email"
               value={settings.email}
               onChange={(e) => handleInputChange('email', e.target.value)}
-              className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+              className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
               placeholder="contact@example.com"
             />
           </div>
@@ -172,7 +172,7 @@ export default function AdminContactPage() {
               type="tel"
               value={settings.phone}
               onChange={(e) => handleInputChange('phone', e.target.value)}
-              className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+              className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
               placeholder="+1 234 567 8900"
             />
           </div>
@@ -185,7 +185,7 @@ export default function AdminContactPage() {
               value={settings.address}
               onChange={(e) => handleInputChange('address', e.target.value)}
               rows={3}
-              className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all resize-none"
+              className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all resize-none"
               placeholder="Your business address"
             />
           </div>
@@ -205,7 +205,7 @@ export default function AdminContactPage() {
               type="url"
               value={settings.socialLinks.twitter || ''}
               onChange={(e) => handleSocialLinkChange('twitter', e.target.value)}
-              className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+              className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
               placeholder="https://twitter.com/yourhandle"
             />
           </div>
@@ -218,7 +218,7 @@ export default function AdminContactPage() {
               type="url"
               value={settings.socialLinks.facebook || ''}
               onChange={(e) => handleSocialLinkChange('facebook', e.target.value)}
-              className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+              className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
               placeholder="https://facebook.com/yourpage"
             />
           </div>
@@ -231,7 +231,7 @@ export default function AdminContactPage() {
               type="url"
               value={settings.socialLinks.linkedin || ''}
               onChange={(e) => handleSocialLinkChange('linkedin', e.target.value)}
-              className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+              className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
               placeholder="https://linkedin.com/in/yourprofile"
             />
           </div>
@@ -244,7 +244,7 @@ export default function AdminContactPage() {
               type="url"
               value={settings.socialLinks.instagram || ''}
               onChange={(e) => handleSocialLinkChange('instagram', e.target.value)}
-              className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+              className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
               placeholder="https://instagram.com/yourhandle"
             />
           </div>
@@ -256,11 +256,11 @@ export default function AdminContactPage() {
         <Button
           onClick={handleSave}
           disabled={saving}
-          className="px-8 py-3 bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+          className="px-8 py-3 bg-primary text-primary-foreground font-semibold rounded-xl hover:shadow-lg hover:shadow-primary/25 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
         >
           {saving ? (
             <>
-              <div className="animate-spin rounded-full h-4 w-4 border-2 border-white"></div>
+              <div className="animate-spin rounded-full h-4 w-4 border-2 border-current border-t-transparent"></div>
               <span>Saving...</span>
             </>
           ) : (

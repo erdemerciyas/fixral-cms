@@ -3,7 +3,12 @@
 import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Check, Key, Lock, Mail, X } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, KeyRound, Lock, Mail, XCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 
 function ResetPasswordContent() {
   const router = useRouter();
@@ -33,14 +38,13 @@ function ResetPasswordContent() {
       if (response.ok) {
         setMessage({
           type: 'success',
-          text: data.message || 'Password reset email sent! Please check your inbox.'
+          text: data.message || 'Sıfırlama bağlantısı gönderildi. Gelen kutunuzu kontrol edin.',
         });
       } else {
-        setMessage({ type: 'error', text: data.error || 'Failed to send reset email' });
+        setMessage({ type: 'error', text: data.error || 'Sıfırlama e-postası gönderilemedi' });
       }
-    } catch (error) {
-      console.error('Reset password request error:', error);
-      setMessage({ type: 'error', text: 'An error occurred. Please try again.' });
+    } catch {
+      setMessage({ type: 'error', text: 'Bir hata oluştu. Lütfen tekrar deneyin.' });
     } finally {
       setLoading(false);
     }
@@ -50,7 +54,7 @@ function ResetPasswordContent() {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      setMessage({ type: 'error', text: 'Passwords do not match' });
+      setMessage({ type: 'error', text: 'Şifreler eşleşmiyor' });
       return;
     }
 
@@ -69,191 +73,146 @@ function ResetPasswordContent() {
       if (response.ok) {
         setMessage({
           type: 'success',
-          text: 'Password successfully updated! Redirecting to login...'
+          text: 'Şifreniz güncellendi. Giriş sayfasına yönlendiriliyorsunuz...',
         });
         setTimeout(() => {
           router.push('/admin/login');
         }, 2000);
       } else {
-        setMessage({ type: 'error', text: data.error || 'Failed to reset password' });
+        setMessage({ type: 'error', text: data.error || 'Şifre sıfırlanamadı' });
       }
-    } catch (error) {
-      console.error('Reset password error:', error);
-      setMessage({ type: 'error', text: 'An error occurred. Please try again.' });
+    } catch {
+      setMessage({ type: 'error', text: 'Bir hata oluştu. Lütfen tekrar deneyin.' });
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-500 via-violet-500 to-purple-600 flex items-center justify-center p-4">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-white/10 rounded-full blur-3xl"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-white/10 rounded-full blur-3xl"></div>
-      </div>
-
-      {/* Reset Password Card */}
-      <div className="relative w-full max-w-md">
-        <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl shadow-indigo-500/30 p-8">
-          {/* Logo */}
-          <div className="flex flex-col items-center mb-8">
-            <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-lg shadow-indigo-500/30 mb-4">
-              <span className="text-white font-bold text-3xl">A</span>
+    <div className="flex min-h-screen items-center justify-center bg-muted/50 p-4">
+      <div className="w-full max-w-md space-y-6">
+        <Card className="shadow-lg">
+          <CardHeader className="items-center text-center">
+            <div className="mb-2 flex size-14 items-center justify-center rounded-xl bg-primary text-primary-foreground">
+              <KeyRound className="size-7" />
             </div>
-            <h1 className="text-3xl font-bold text-slate-900 mb-2">
-              {token ? 'Set New Password' : 'Reset Password'}
-            </h1>
-            <p className="text-slate-500 text-center">
+            <CardTitle className="text-2xl">
+              {token ? 'Yeni Şifre Belirle' : 'Şifre Sıfırlama'}
+            </CardTitle>
+            <CardDescription>
               {token
-                ? 'Please enter your new password below'
-                : "Enter your email address and we'll send you a link to reset your password"
-              }
-            </p>
-          </div>
+                ? 'Lütfen yeni şifrenizi girin'
+                : 'E-posta adresinizi girin, size sıfırlama bağlantısı gönderelim'}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {message && (
+              <div
+                role="alert"
+                className={`mb-6 flex items-start gap-3 rounded-lg border p-3 text-sm ${
+                  message.type === 'success'
+                    ? 'border-success/30 bg-success/10 text-success'
+                    : 'border-destructive/30 bg-destructive/10 text-destructive'
+                }`}
+              >
+                {message.type === 'success' ? (
+                  <CheckCircle2 className="mt-0.5 size-4 shrink-0" />
+                ) : (
+                  <XCircle className="mt-0.5 size-4 shrink-0" />
+                )}
+                <span>{message.text}</span>
+              </div>
+            )}
 
-          {/* Success/Error Message */}
-          {message && (
-            <div className={`mb-6 p-4 rounded-xl border flex items-start gap-3 ${message.type === 'success'
-              ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
-              : 'bg-red-50 border-red-200 text-red-800'
-              }`}>
-              {message.type === 'success' ? (
-                <Check className="w-5 h-5 mt-0.5 flex-shrink-0" />
-              ) : (
-                <X className="w-5 h-5 mt-0.5 flex-shrink-0" />
-              )}
-              <span>{message.text}</span>
+            {!token ? (
+              <form onSubmit={handleRequestReset} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="email">E-posta</Label>
+                  <div className="relative">
+                    <Mail className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                    <Input
+                      id="email"
+                      type="email"
+                      autoComplete="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                      className="pl-9"
+                      placeholder="admin@example.com"
+                    />
+                  </div>
+                </div>
+
+                <Button type="submit" disabled={loading} className="w-full">
+                  {loading ? 'Gönderiliyor...' : 'Sıfırlama Bağlantısı Gönder'}
+                </Button>
+              </form>
+            ) : (
+              <form onSubmit={handleResetPassword} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="password">Yeni Şifre</Label>
+                  <div className="relative">
+                    <Lock className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                    <Input
+                      id="password"
+                      type="password"
+                      autoComplete="new-password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      minLength={6}
+                      className="pl-9"
+                      placeholder="••••••••"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="confirmPassword">Yeni Şifre (Tekrar)</Label>
+                  <div className="relative">
+                    <Lock className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                    <Input
+                      id="confirmPassword"
+                      type="password"
+                      autoComplete="new-password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      required
+                      minLength={6}
+                      className="pl-9"
+                      placeholder="••••••••"
+                    />
+                  </div>
+                </div>
+
+                <Button type="submit" disabled={loading} className="w-full">
+                  {loading ? 'Güncelleniyor...' : 'Şifreyi Sıfırla'}
+                </Button>
+              </form>
+            )}
+
+            <div className="mt-6 space-y-3 border-t pt-4">
+              <Link
+                href="/admin/login"
+                className="flex items-center justify-center text-sm text-muted-foreground transition-colors hover:text-foreground"
+              >
+                <ArrowLeft className="mr-2 size-4" />
+                Giriş sayfasına dön
+              </Link>
+              <Link
+                href="/"
+                className="flex items-center justify-center text-sm text-muted-foreground transition-colors hover:text-foreground"
+              >
+                <ArrowLeft className="mr-2 size-4" />
+                Siteye dön
+              </Link>
             </div>
-          )}
+          </CardContent>
+        </Card>
 
-          {/* Form */}
-          {!token ? (
-            <form onSubmit={handleRequestReset} className="space-y-6">
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-2">
-                  Email Address
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <Mail className="h-5 w-5 text-slate-400" />
-                  </div>
-                  <input
-                    id="email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    className="w-full pl-12 pr-4 py-3.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
-                    placeholder="admin@example.com"
-                  />
-                </div>
-              </div>
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full py-3.5 px-4 bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {loading ? (
-                  <div className="flex items-center justify-center space-x-2">
-                    <div className="animate-spin rounded-full h-5 w-5 border-2 border-white"></div>
-                    <span>Sending...</span>
-                  </div>
-                ) : (
-                  <div className="flex items-center justify-center space-x-2">
-                    <Mail className="w-5 h-5" />
-                    <span>Send Reset Link</span>
-                  </div>
-                )}
-              </button>
-            </form>
-          ) : (
-            <form onSubmit={handleResetPassword} className="space-y-6">
-              <div>
-                <label htmlFor="password" className="block text-sm font-medium text-slate-700 mb-2">
-                  New Password
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <Lock className="h-5 w-5 text-slate-400" />
-                  </div>
-                  <input
-                    id="password"
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    minLength={6}
-                    className="w-full pl-12 pr-4 py-3.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
-                    placeholder="••••••••"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label htmlFor="confirmPassword" className="block text-sm font-medium text-slate-700 mb-2">
-                  Confirm Password
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <Lock className="h-5 w-5 text-slate-400" />
-                  </div>
-                  <input
-                    id="confirmPassword"
-                    type="password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    required
-                    minLength={6}
-                    className="w-full pl-12 pr-4 py-3.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
-                    placeholder="••••••••"
-                  />
-                </div>
-              </div>
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full py-3.5 px-4 bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {loading ? (
-                  <div className="flex items-center justify-center space-x-2">
-                    <div className="animate-spin rounded-full h-5 w-5 border-2 border-white"></div>
-                    <span>Updating...</span>
-                  </div>
-                ) : (
-                  <div className="flex items-center justify-center space-x-2">
-                    <Key className="w-5 h-5" />
-                    <span>Reset Password</span>
-                  </div>
-                )}
-              </button>
-            </form>
-          )}
-
-          {/* Back to Login */}
-          <div className="mt-8 pt-6 border-t border-slate-200">
-            <Link
-              href="/admin/login"
-              className="flex items-center justify-center text-sm text-slate-600 hover:text-indigo-600 transition-colors"
-            >
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Login
-            </Link>
-          </div>
-
-          {/* Back to Site */}
-          <div className="mt-4">
-            <Link
-              href="/"
-              className="flex items-center justify-center text-sm text-slate-500 hover:text-slate-700 transition-colors"
-            >
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to website
-            </Link>
-          </div>
-        </div>
+        <p className="text-center text-sm text-muted-foreground">
+          © {new Date().getFullYear()} — Tüm hakları saklıdır
+        </p>
       </div>
     </div>
   );
@@ -261,11 +220,13 @@ function ResetPasswordContent() {
 
 export default function AdminResetPasswordPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
-      </div>
-    }>
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center bg-muted/50 p-4">
+          <Skeleton className="h-96 w-full max-w-md rounded-xl" />
+        </div>
+      }
+    >
       <ResetPasswordContent />
     </Suspense>
   );

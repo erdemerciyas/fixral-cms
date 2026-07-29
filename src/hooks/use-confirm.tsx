@@ -1,6 +1,7 @@
 'use client'
 
 import * as React from 'react'
+import { AlertTriangle, HelpCircle } from 'lucide-react'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -68,8 +69,21 @@ export function ConfirmProvider({ children }: { children: React.ReactNode }) {
           if (!open) handleAction(false)
         }}
       >
-        <AlertDialogContent>
+        <AlertDialogContent className="sm:max-w-md">
           <AlertDialogHeader>
+            <div
+              className={
+                state.variant === 'destructive'
+                  ? 'mx-auto flex size-11 items-center justify-center rounded-full bg-destructive/10 text-destructive sm:mx-0'
+                  : 'mx-auto flex size-11 items-center justify-center rounded-full bg-primary/10 text-primary sm:mx-0'
+              }
+            >
+              {state.variant === 'destructive' ? (
+                <AlertTriangle className="size-5" />
+              ) : (
+                <HelpCircle className="size-5" />
+              )}
+            </div>
             <AlertDialogTitle>{state.title}</AlertDialogTitle>
             <AlertDialogDescription>{state.description}</AlertDialogDescription>
           </AlertDialogHeader>

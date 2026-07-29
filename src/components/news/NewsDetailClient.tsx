@@ -1,9 +1,9 @@
 'use client'
 
-import { motion, useScroll, useSpring } from 'framer-motion'
+import { m, useScroll, useSpring } from 'framer-motion'
 import Link from 'next/link'
 import Image from 'next/image'
-import { CalendarBlank, ArrowRight, ShareNetwork, ArrowLeft, User as UserIcon, Tag } from '@phosphor-icons/react'
+import { Calendar as CalendarBlank, ArrowRight, Share2 as ShareNetwork, ArrowLeft, User as UserIcon, Tag } from 'lucide-react';
 import EyebrowTag from '@/components/ui/EyebrowTag'
 import Breadcrumbs from '@/components/Breadcrumbs'
 import { SITE_URL } from '@/lib/seo-utils'
@@ -42,7 +42,7 @@ function ReadingProgressBar() {
   })
 
   return (
-    <motion.div
+    <m.div
       className="fixed top-0 left-0 right-0 h-[3px] bg-[#003450] origin-left z-50"
       style={{ scaleX }}
     />
@@ -78,7 +78,7 @@ export default function NewsDetailClient({ lang, news, translation }: NewsDetail
             <div className="w-full mx-auto px-6 sm:px-8 lg:px-16 pb-12 md:pb-16 pt-32 md:pt-40" style={{ maxWidth: '1400px' }}>
               <div className="max-w-3xl space-y-5">
                 {/* Tags */}
-                <motion.div
+                <m.div
                   initial={{ opacity: 0, y: 16, filter: 'blur(4px)' }}
                   animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
                   transition={{ duration: 0.7, delay: 0.15, ease }}
@@ -87,39 +87,39 @@ export default function NewsDetailClient({ lang, news, translation }: NewsDetail
                   {news.tags?.map((t) => (
                     <EyebrowTag key={t} variant="light">{t}</EyebrowTag>
                   ))}
-                </motion.div>
+                </m.div>
 
                 {/* Title */}
-                <motion.h1
+                <m.h1
                   initial={{ opacity: 0, y: 24, filter: 'blur(6px)' }}
                   animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
                   transition={{ duration: 0.8, delay: 0.25, ease }}
                   className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] font-semibold text-white leading-[1.1] tracking-tight"
                 >
                   {translation.title}
-                </motion.h1>
+                </m.h1>
 
                 {/* Excerpt */}
                 {translation.excerpt && (
-                  <motion.p
+                  <m.p
                     initial={{ opacity: 0, y: 16, filter: 'blur(4px)' }}
                     animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
                     transition={{ duration: 0.7, delay: 0.35, ease }}
                     className="text-base md:text-lg text-white/60 leading-relaxed max-w-2xl"
                   >
                     {translation.excerpt}
-                  </motion.p>
+                  </m.p>
                 )}
 
                 {/* Meta row */}
-                <motion.div
+                <m.div
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.7, delay: 0.45, ease }}
                   className="flex flex-wrap items-center gap-x-5 gap-y-2 pt-2"
                 >
                   <div className="flex items-center gap-1.5 text-white/40">
-                    <CalendarBlank size={15} weight="light" />
+                    <CalendarBlank size={15} />
                     <time
                       dateTime={new Date(news.publishedAt || news.createdAt).toISOString()}
                       className="font-mono text-[13px] tracking-wide"
@@ -129,11 +129,11 @@ export default function NewsDetailClient({ lang, news, translation }: NewsDetail
                   </div>
                   {news.author?.name && (
                     <div className="flex items-center gap-1.5 text-white/40">
-                      <UserIcon size={15} weight="light" />
+                      <UserIcon size={15} />
                       <span className="text-white/55">{news.author.name}</span>
                     </div>
                   )}
-                </motion.div>
+                </m.div>
               </div>
             </div>
           </div>
@@ -152,7 +152,7 @@ export default function NewsDetailClient({ lang, news, translation }: NewsDetail
 
             {/* Featured Image (below hero) */}
             {hasImage && (
-              <motion.div
+              <m.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.2, ease }}
@@ -166,11 +166,11 @@ export default function NewsDetailClient({ lang, news, translation }: NewsDetail
                   className="object-cover"
                   sizes="(max-width: 768px) 100vw, 1152px"
                 />
-              </motion.div>
+              </m.div>
             )}
 
             {/* Article body */}
-            <motion.article
+            <m.article
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-40px' }}
@@ -194,11 +194,11 @@ export default function NewsDetailClient({ lang, news, translation }: NewsDetail
                     : (translation.content ? JSON.stringify(translation.content) : ''),
                 }}
               />
-            </motion.article>
+            </m.article>
 
             {/* Tags footer */}
             {news.tags && news.tags.length > 0 && (
-              <motion.div
+              <m.div
                 initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -206,7 +206,7 @@ export default function NewsDetailClient({ lang, news, translation }: NewsDetail
                 className="mt-12 pt-8 border-t border-zinc-200/60"
               >
                 <div className="flex items-center gap-2 mb-3">
-                  <Tag size={16} weight="light" className="text-zinc-400" />
+                  <Tag size={16} className="text-zinc-400" />
                   <span className="text-xs font-medium uppercase tracking-[0.15em] text-zinc-400">Konular</span>
                 </div>
                 <div className="flex flex-wrap gap-2">
@@ -221,11 +221,11 @@ export default function NewsDetailClient({ lang, news, translation }: NewsDetail
                     </Link>
                   ))}
                 </div>
-              </motion.div>
+              </m.div>
             )}
 
             {/* Share */}
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -233,7 +233,7 @@ export default function NewsDetailClient({ lang, news, translation }: NewsDetail
               className="mt-8 pt-8 border-t border-zinc-200/60"
             >
               <div className="flex items-center gap-2 mb-4">
-                <ShareNetwork size={16} weight="light" className="text-zinc-400" />
+                <ShareNetwork size={16} className="text-zinc-400" />
                 <span className="text-xs font-medium uppercase tracking-[0.15em] text-zinc-400">Bu Haberi Paylaş</span>
               </div>
               <div className="flex gap-3">
@@ -279,10 +279,10 @@ export default function NewsDetailClient({ lang, news, translation }: NewsDetail
                   </a>
                 ))}
               </div>
-            </motion.div>
+            </m.div>
 
             {/* Back link */}
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -294,15 +294,15 @@ export default function NewsDetailClient({ lang, news, translation }: NewsDetail
                 className="inline-flex items-center gap-2 text-sm font-medium text-zinc-400 hover:text-[#003450] transition-all duration-700 group"
                 style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
               >
-                <ArrowLeft size={14} weight="light" className="transition-transform duration-700 group-hover:-translate-x-1" style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }} />
+                <ArrowLeft size={14} className="transition-transform duration-700 group-hover:-translate-x-1" style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }} />
                 Tüm Haberlere Dön
               </Link>
-            </motion.div>
+            </m.div>
         </div>
 
         {/* Related Portfolio */}
         {news.relatedPortfolioIds && news.relatedPortfolioIds.length > 0 && (
-          <motion.section
+          <m.section
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-60px' }}
@@ -316,7 +316,7 @@ export default function NewsDetailClient({ lang, news, translation }: NewsDetail
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               {(news.relatedPortfolioIds as any[]).filter(Boolean).map((portfolio, i) => (
-                <motion.div
+                <m.div
                   key={portfolio._id}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -342,16 +342,16 @@ export default function NewsDetailClient({ lang, news, translation }: NewsDetail
                       </h3>
                     </div>
                   </Link>
-                </motion.div>
+                </m.div>
               ))}
             </div>
-          </motion.section>
+          </m.section>
         )}
 
         {/* Related News - Horizontal scroll */}
         {news.relatedNewsIds && news.relatedNewsIds.length > 0 && (
           <section className="mx-auto px-6 sm:px-8 lg:px-16 pb-16" style={{ maxWidth: '1400px' }}>
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-60px' }}
@@ -361,13 +361,13 @@ export default function NewsDetailClient({ lang, news, translation }: NewsDetail
                 <h2 className="text-xl font-semibold text-zinc-900 tracking-tight">İlginizi Çekebilir</h2>
                 <div className="h-px bg-zinc-200 flex-grow" />
               </div>
-            </motion.div>
+            </m.div>
 
             <div className="flex gap-5 overflow-x-auto pb-4 -mx-2 px-2 snap-x snap-mandatory scrollbar-hide"
               style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
               {(news.relatedNewsIds as any[]).filter(Boolean).map((relatedNews, i) => (
-                <motion.div
+                <m.div
                   key={relatedNews._id}
                   initial={{ opacity: 0, x: 24 }}
                   whileInView={{ opacity: 1, x: 0 }}
@@ -400,11 +400,11 @@ export default function NewsDetailClient({ lang, news, translation }: NewsDetail
                         style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
                       >
                         Okumaya başla
-                        <ArrowRight size={12} weight="light" />
+                        <ArrowRight size={12} />
                       </span>
                     </div>
                   </Link>
-                </motion.div>
+                </m.div>
               ))}
             </div>
           </section>

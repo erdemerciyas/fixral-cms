@@ -2,17 +2,8 @@
 
 import { useState, useRef } from 'react';
 import Image from 'next/image';
-import { InlineLoader } from './AdminLoader';
-import {
-  ArrowUpTrayIcon,
-  ExclamationTriangleIcon,
-  CheckIcon,
-  TrashIcon,
-  StarIcon,
-  Bars3Icon,
-  PhotoIcon
-} from '@heroicons/react/24/outline';
-import { StarIcon as StarIconSolid } from '@heroicons/react/24/solid';
+import { Spinner } from './ui/spinner';
+import { Upload as ArrowUpTrayIcon, AlertTriangle as ExclamationTriangleIcon, Check as CheckIcon, Trash2 as TrashIcon, Star as StarIcon, Menu as Bars3Icon, Image as PhotoIcon, Star as StarIconSolid } from 'lucide-react';
 import MediaBrowser from './MediaBrowser';
 
 interface PortfolioImageGalleryProps {
@@ -275,7 +266,7 @@ const PortfolioImageGallery: React.FC<PortfolioImageGalleryProps> = ({
 
       {loading ? (
         <div className="flex items-center justify-center py-12">
-          <InlineLoader text="Görseller yükleniyor..." />
+          <Spinner text="Görseller yükleniyor..." />
         </div>
       ) : (
         // Yükleme ve medya kütüphanesi butonları

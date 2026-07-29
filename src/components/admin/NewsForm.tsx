@@ -29,8 +29,8 @@ const ModernEditor = dynamic(() => import('@/components/admin/ModernEditor'), {
   ssr: false,
   loading: () => (
     <div className="animate-pulse">
-      <div className="h-12 bg-slate-200 dark:bg-slate-700 rounded-t-lg mb-2" />
-      <div className="h-64 bg-slate-100 dark:bg-slate-800 rounded-b-lg" />
+      <div className="h-12 bg-muted rounded-t-lg mb-2" />
+      <div className="h-64 bg-muted rounded-b-lg" />
     </div>
   ),
 });
@@ -315,8 +315,8 @@ export default function NewsForm({ initialData, onSubmit, isLoading = false }: N
   if (langsLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="animate-spin rounded-full h-8 w-8 border-2 border-indigo-600 border-t-transparent" />
-        <span className="ml-3 text-slate-600 dark:text-slate-400">Diller yükleniyor...</span>
+        <div className="animate-spin rounded-full h-8 w-8 border-2 border-primary border-t-transparent" />
+        <span className="ml-3 text-muted-foreground">Diller yükleniyor...</span>
       </div>
     );
   }
@@ -324,28 +324,28 @@ export default function NewsForm({ initialData, onSubmit, isLoading = false }: N
   const translation = formData.translations[activeLanguage] || emptyTranslation();
 
   const inputBase =
-    'w-full px-4 py-2.5 border bg-transparent text-slate-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all text-sm';
-  const inputNormal = `${inputBase} border-slate-200 dark:border-slate-700 dark:bg-slate-900`;
-  const inputError = `${inputBase} border-red-400 dark:border-red-500 ring-1 ring-red-400`;
+    'w-full px-4 py-2.5 border bg-transparent text-foreground rounded-xl focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all text-sm';
+  const inputNormal = `${inputBase} border-border`;
+  const inputError = `${inputBase} border-destructive dark:border-destructive ring-1 ring-destructive`;
 
   return (
     <form onSubmit={handleSubmit} className="relative">
       {/* Alerts */}
       {error && (
-        <div className="mb-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-800 dark:text-red-300 p-4 rounded-xl flex items-start space-x-3 animate-in fade-in slide-in-from-top-2 duration-300">
+        <div className="mb-6 bg-destructive/10 border border-destructive/30 text-destructive p-4 rounded-xl flex items-start space-x-3 animate-in fade-in slide-in-from-top-2 duration-300">
           <AlertIcon className="w-5 h-5 flex-shrink-0 mt-0.5" />
           <div className="flex-1">
             <p className="font-semibold text-sm">Hata</p>
             <p className="text-sm mt-0.5 opacity-90">{error}</p>
           </div>
-          <button type="button" onClick={() => setError(null)} className="p-1 hover:bg-red-100 dark:hover:bg-red-800/30 rounded-lg transition-colors">
+          <button type="button" onClick={() => setError(null)} className="p-1 hover:bg-destructive/20 rounded-lg transition-colors">
             <XMarkIcon className="w-4 h-4" />
           </button>
         </div>
       )}
 
       {success && (
-        <div className="mb-6 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 p-4 rounded-xl flex items-start space-x-3 animate-in fade-in slide-in-from-top-2 duration-300">
+        <div className="mb-6 bg-success/10 border border-success/30 text-success p-4 rounded-xl flex items-start space-x-3 animate-in fade-in slide-in-from-top-2 duration-300">
           <CheckIcon className="w-5 h-5 flex-shrink-0 mt-0.5" />
           <div className="flex-1">
             <p className="font-semibold text-sm">Başarılı</p>
@@ -370,9 +370,9 @@ export default function NewsForm({ initialData, onSubmit, isLoading = false }: N
         {/* === LEFT COLUMN: Main content === */}
         <div className="space-y-6 min-w-0">
           {/* Title */}
-          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200/60 dark:border-slate-700 p-5">
-            <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
-              Başlık <span className="text-red-500">*</span>
+          <div className="bg-card rounded-xl shadow-sm border border-border p-5">
+            <label className="block text-sm font-semibold text-foreground mb-2">
+              Başlık <span className="text-destructive">*</span>
             </label>
             <input
               type="text"
@@ -395,18 +395,18 @@ export default function NewsForm({ initialData, onSubmit, isLoading = false }: N
             />
             <div className="flex items-center justify-between mt-1.5">
               {validationErrors.title && hasAttemptedSubmit ? (
-                <p className="text-xs text-red-500 font-medium">{validationErrors.title}</p>
+                <p className="text-xs text-destructive font-medium">{validationErrors.title}</p>
               ) : (
                 <span />
               )}
-              <p className="text-xs text-slate-400">{translation.title.length}/200</p>
+              <p className="text-xs text-muted-foreground">{translation.title.length}/200</p>
             </div>
           </div>
 
           {/* Content Editor */}
-          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200/60 dark:border-slate-700 p-5">
+          <div className="bg-card rounded-xl shadow-sm border border-border p-5">
             <div className="flex items-center justify-between mb-3">
-              <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300">
+              <label className="block text-sm font-semibold text-foreground">
                 İçerik
               </label>
             </div>
@@ -423,8 +423,8 @@ export default function NewsForm({ initialData, onSubmit, isLoading = false }: N
           </div>
 
           {/* Excerpt */}
-          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200/60 dark:border-slate-700 p-5">
-            <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+          <div className="bg-card rounded-xl shadow-sm border border-border p-5">
+            <label className="block text-sm font-semibold text-foreground mb-2">
               Özet
             </label>
             <textarea
@@ -446,23 +446,23 @@ export default function NewsForm({ initialData, onSubmit, isLoading = false }: N
               rows={3}
               className={`${inputNormal} resize-none`}
             />
-            <p className="text-xs text-slate-400 mt-1.5 text-right">{translation.excerpt.length}/300</p>
+            <p className="text-xs text-muted-foreground mt-1.5 text-right">{translation.excerpt.length}/300</p>
           </div>
         </div>
 
         {/* === RIGHT COLUMN: Sidebar === */}
         <div className="space-y-5">
           {/* Action Buttons - sticky at top */}
-          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200/60 dark:border-slate-700 p-4 xl:sticky xl:top-24 z-10">
+          <div className="bg-card rounded-xl shadow-sm border border-border p-4 xl:sticky xl:top-24 z-10">
             <div className="flex flex-col gap-2.5">
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full px-5 py-2.5 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700 hover:shadow-lg hover:shadow-indigo-500/25 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl transition-all font-semibold text-sm flex items-center justify-center gap-2"
+                className="w-full px-5 py-2.5 bg-primary hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/25 disabled:opacity-50 disabled:cursor-not-allowed text-primary-foreground rounded-xl transition-all font-semibold text-sm flex items-center justify-center gap-2"
               >
                 {loading ? (
                   <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" />
+                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-current border-t-transparent" />
                     Kaydediliyor...
                   </>
                 ) : (
@@ -475,25 +475,25 @@ export default function NewsForm({ initialData, onSubmit, isLoading = false }: N
               <button
                 type="button"
                 onClick={handleCancel}
-                className="w-full px-5 py-2.5 border border-slate-200 dark:border-slate-600 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-all font-medium text-sm text-slate-600 dark:text-slate-400 flex items-center justify-center gap-2"
+                className="w-full px-5 py-2.5 border border-border rounded-xl hover:bg-muted/50 transition-all font-medium text-sm text-muted-foreground flex items-center justify-center gap-2"
               >
                 <ArrowLeftIcon className="w-4 h-4" />
                 İptal
               </button>
             </div>
             {isDirty && (
-              <p className="text-xs text-amber-600 dark:text-amber-400 mt-2.5 text-center font-medium flex items-center justify-center gap-1">
-                <span className="w-1.5 h-1.5 bg-amber-500 rounded-full animate-pulse" />
+              <p className="text-xs text-warning mt-2.5 text-center font-medium flex items-center justify-center gap-1">
+                <span className="w-1.5 h-1.5 bg-warning rounded-full animate-pulse" />
                 Kaydedilmemiş değişiklikler
               </p>
             )}
           </div>
 
           {/* Status */}
-          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200/60 dark:border-slate-700 p-4">
+          <div className="bg-card rounded-xl shadow-sm border border-border p-4">
             <div className="flex items-center gap-2 mb-3">
-              <SettingsIcon className="w-4 h-4 text-slate-500" />
-              <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Durum</label>
+              <SettingsIcon className="w-4 h-4 text-muted-foreground" />
+              <label className="text-sm font-semibold text-foreground">Durum</label>
             </div>
             <div className="flex gap-2">
               <button
@@ -501,8 +501,8 @@ export default function NewsForm({ initialData, onSubmit, isLoading = false }: N
                 onClick={() => setFormData((prev) => ({ ...prev, status: 'draft' }))}
                 className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                   formData.status === 'draft'
-                    ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300 ring-1 ring-amber-300 dark:ring-amber-700'
-                    : 'bg-slate-50 dark:bg-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-600'
+                    ? 'bg-warning/15 text-warning ring-1 ring-warning/30 dark:ring-warning'
+                    : 'bg-muted/50 text-muted-foreground hover:bg-muted'
                 }`}
               >
                 Taslak
@@ -512,8 +512,8 @@ export default function NewsForm({ initialData, onSubmit, isLoading = false }: N
                 onClick={() => setFormData((prev) => ({ ...prev, status: 'published' }))}
                 className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                   formData.status === 'published'
-                    ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300 ring-1 ring-emerald-300 dark:ring-emerald-700'
-                    : 'bg-slate-50 dark:bg-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-600'
+                    ? 'bg-success/15 text-success ring-1 ring-success/30 dark:ring-success'
+                    : 'bg-muted/50 text-muted-foreground hover:bg-muted'
                 }`}
               >
                 Yayınla
@@ -522,15 +522,15 @@ export default function NewsForm({ initialData, onSubmit, isLoading = false }: N
           </div>
 
           {/* Featured Image */}
-          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200/60 dark:border-slate-700 p-4">
+          <div className="bg-card rounded-xl shadow-sm border border-border p-4">
             <div className="flex items-center gap-2 mb-3">
-              <PhotoIcon className="w-4 h-4 text-slate-500" />
-              <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Öne Çıkan Resim</label>
+              <PhotoIcon className="w-4 h-4 text-muted-foreground" />
+              <label className="text-sm font-semibold text-foreground">Öne Çıkan Resim</label>
             </div>
 
             {formData.featuredImage.url ? (
               <div className="mb-3">
-                <div className="relative aspect-video rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-700 group">
+                <div className="relative aspect-video rounded-lg overflow-hidden bg-muted group">
                   <Image
                     src={formData.featuredImage.url}
                     alt={formData.featuredImage.altText}
@@ -541,7 +541,7 @@ export default function NewsForm({ initialData, onSubmit, isLoading = false }: N
                     <button
                       type="button"
                       onClick={handleRemoveFeaturedImage}
-                      className="opacity-0 group-hover:opacity-100 transition-opacity p-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+                      className="opacity-0 group-hover:opacity-100 transition-opacity p-2 bg-destructive text-destructive-foreground rounded-lg hover:bg-destructive/90"
                       title="Resmi Kaldır"
                     >
                       <TrashIcon className="w-4 h-4" />
@@ -561,7 +561,7 @@ export default function NewsForm({ initialData, onSubmit, isLoading = false }: N
             />
 
             <div className="mt-3">
-              <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1.5">
+              <label className="block text-xs font-medium text-muted-foreground mb-1.5">
                 Alt Metin (SEO)
               </label>
               <input
@@ -583,17 +583,17 @@ export default function NewsForm({ initialData, onSubmit, isLoading = false }: N
           </div>
 
           {/* Tags */}
-          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200/60 dark:border-slate-700 p-4">
+          <div className="bg-card rounded-xl shadow-sm border border-border p-4">
             <div className="flex items-center gap-2 mb-3">
-              <TagIcon className="w-4 h-4 text-slate-500" />
-              <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Etiketler</label>
+              <TagIcon className="w-4 h-4 text-muted-foreground" />
+              <label className="text-sm font-semibold text-foreground">Etiketler</label>
             </div>
             {formData.tags.length > 0 && (
               <div className="flex flex-wrap gap-1.5 mb-3">
                 {formData.tags.map((tag, index) => (
                   <span
                     key={index}
-                    className="inline-flex items-center gap-1 px-2.5 py-1 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg text-xs font-medium border border-slate-200 dark:border-slate-600"
+                    className="inline-flex items-center gap-1 px-2.5 py-1 bg-muted text-foreground rounded-lg text-xs font-medium border border-border"
                   >
                     {tag}
                     <button
@@ -604,7 +604,7 @@ export default function NewsForm({ initialData, onSubmit, isLoading = false }: N
                           tags: prev.tags.filter((_, i) => i !== index),
                         }))
                       }
-                      className="hover:text-red-500 transition-colors ml-0.5"
+                      className="hover:text-destructive transition-colors ml-0.5"
                     >
                       <XMarkIcon className="w-3 h-3" />
                     </button>
@@ -633,37 +633,37 @@ export default function NewsForm({ initialData, onSubmit, isLoading = false }: N
           </div>
 
           {/* SEO Section - Collapsible */}
-          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200/60 dark:border-slate-700 overflow-hidden">
+          <div className="bg-card rounded-xl shadow-sm border border-border overflow-hidden">
             <button
               type="button"
               onClick={() => setSeoExpanded(!seoExpanded)}
-              className="w-full p-4 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors"
+              className="w-full p-4 flex items-center justify-between hover:bg-muted/50 transition-colors"
             >
               <div className="flex items-center gap-2">
-                <SparklesIcon className="w-4 h-4 text-violet-500" />
-                <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">SEO Metadata</span>
+                <SparklesIcon className="w-4 h-4 text-primary" />
+                <span className="text-sm font-semibold text-foreground">SEO Metadata</span>
               </div>
               {seoExpanded ? (
-                <ChevronUp className="w-4 h-4 text-slate-400" />
+                <ChevronUp className="w-4 h-4 text-muted-foreground" />
               ) : (
-                <ChevronDown className="w-4 h-4 text-slate-400" />
+                <ChevronDown className="w-4 h-4 text-muted-foreground" />
               )}
             </button>
 
             {seoExpanded && (
-              <div className="px-4 pb-4 space-y-3 border-t border-slate-100 dark:border-slate-700 pt-3">
+              <div className="px-4 pb-4 space-y-3 border-t border-border pt-3">
                 <button
                   type="button"
                   onClick={handleGenerateMetadata}
                   disabled={generatingMetadata || loading}
-                  className="w-full bg-gradient-to-r from-violet-500 to-purple-600 hover:shadow-lg hover:shadow-violet-500/20 disabled:opacity-50 disabled:cursor-not-allowed text-white px-4 py-2 rounded-xl font-semibold transition-all flex items-center justify-center gap-2 text-sm"
+                  className="w-full bg-gradient-to-r from-primary to-primary hover:shadow-lg hover:shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed text-primary-foreground px-4 py-2 rounded-xl font-semibold transition-all flex items-center justify-center gap-2 text-sm"
                 >
                   <SparklesIcon className="w-4 h-4" />
                   {generatingMetadata ? 'Oluşturuluyor...' : 'AI ile Oluştur'}
                 </button>
 
                 <div>
-                  <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1.5">
+                  <label className="block text-xs font-medium text-muted-foreground mb-1.5">
                     Meta Açıklaması
                   </label>
                   <textarea
@@ -685,11 +685,11 @@ export default function NewsForm({ initialData, onSubmit, isLoading = false }: N
                     rows={2}
                     className={`${inputNormal} text-xs resize-none`}
                   />
-                  <p className="text-[11px] text-slate-400 mt-1 text-right">{translation.metaDescription.length}/160</p>
+                  <p className="text-[11px] text-muted-foreground mt-1 text-right">{translation.metaDescription.length}/160</p>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1.5">
+                  <label className="block text-xs font-medium text-muted-foreground mb-1.5">
                     Anahtar Kelimeler
                   </label>
                   {translation.keywords.length > 0 && (
@@ -697,7 +697,7 @@ export default function NewsForm({ initialData, onSubmit, isLoading = false }: N
                       {translation.keywords.map((keyword, index) => (
                         <span
                           key={index}
-                          className="inline-flex items-center gap-1 px-2 py-0.5 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-md text-xs font-medium border border-indigo-200 dark:border-indigo-700"
+                          className="inline-flex items-center gap-1 px-2 py-0.5 bg-primary/10 text-primary rounded-md text-xs font-medium border border-primary/30"
                         >
                           {keyword}
                           <button
@@ -714,7 +714,7 @@ export default function NewsForm({ initialData, onSubmit, isLoading = false }: N
                                 },
                               }))
                             }
-                            className="hover:text-red-500 transition-colors"
+                            className="hover:text-destructive transition-colors"
                           >
                             <XMarkIcon className="w-3 h-3" />
                           </button>
@@ -746,7 +746,7 @@ export default function NewsForm({ initialData, onSubmit, isLoading = false }: N
                     }}
                     className={`${inputNormal} text-xs`}
                   />
-                  <p className="text-[11px] text-slate-400 mt-1 text-right">{translation.keywords.length}/10</p>
+                  <p className="text-[11px] text-muted-foreground mt-1 text-right">{translation.keywords.length}/10</p>
                 </div>
               </div>
             )}

@@ -3,14 +3,8 @@
 import { useState, useEffect, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
-import {
-  MagnifyingGlassIcon,
-  XMarkIcon,
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  PhotoIcon
-} from '@heroicons/react/24/outline';
+import { m } from 'framer-motion';
+import { Search as MagnifyingGlassIcon, X as XMarkIcon, ChevronLeft as ChevronLeftIcon, ChevronRight as ChevronRightIcon, Image as PhotoIcon } from 'lucide-react';
 
 interface PortfolioImageGalleryProps {
   images: string[];
@@ -121,7 +115,7 @@ export default function PortfolioImageGallery({
     <div>
       <div className="space-y-6">
         {/* Main Image */}
-        <motion.div
+        <m.div
           key={`main-image-${selectedImage || 'loading'}`}
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -148,7 +142,7 @@ export default function PortfolioImageGallery({
               />
               {/* Hover overlay */}
               <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center">
-                <motion.div
+                <m.div
                   initial={{ opacity: 0, scale: 0.8 }}
                   whileHover={{ opacity: 1, scale: 1 }}
                   className="opacity-0 group-hover:opacity-100 transition-opacity duration-300"
@@ -156,7 +150,7 @@ export default function PortfolioImageGallery({
                   <div className="bg-white/90 backdrop-blur-sm rounded-full p-4 shadow-xl">
                     <MagnifyingGlassIcon className="w-8 h-8 text-slate-700" />
                   </div>
-                </motion.div>
+                </m.div>
               </div>
             </>
           ) : (
@@ -167,11 +161,11 @@ export default function PortfolioImageGallery({
               </div>
             </div>
           )}
-        </motion.div>
+        </m.div>
 
         {/* Thumbnail Gallery */}
         {allImages.length > 1 && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
@@ -184,7 +178,7 @@ export default function PortfolioImageGallery({
 
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
               {allImages.map((image, index) => (
-                <motion.button
+                <m.button
                   key={`thumb-${index}-${image}`}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -216,16 +210,16 @@ export default function PortfolioImageGallery({
                   <div className="absolute top-1 right-1 bg-black/50 text-white text-xs px-2 py-1 rounded-full pointer-events-none">
                     {index + 1}
                   </div>
-                </motion.button>
+                </m.button>
               ))}
             </div>
-          </motion.div>
+          </m.div>
         )}
       </div>
 
       {/* Lightbox Modal */}
       {mounted && lightboxOpen && createPortal(
-        <motion.div
+        <m.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -244,7 +238,7 @@ export default function PortfolioImageGallery({
           <div className="relative w-screen h-screen flex items-center justify-center p-4" style={{ width: '100vw', height: '100vh' }}>
 
             {/* Close Button */}
-            <motion.button
+            <m.button
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2 }}
@@ -253,21 +247,21 @@ export default function PortfolioImageGallery({
               title="Kapat (ESC)"
             >
               <XMarkIcon className="w-6 h-6" />
-            </motion.button>
+            </m.button>
 
             {/* Image Counter */}
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
               className="absolute top-6 left-6 z-10 bg-black/50 text-white px-6 py-3 rounded-full text-lg font-medium"
             >
               {lightboxImageIndex + 1} / {allImages.length}
-            </motion.div>
+            </m.div>
 
             {/* Previous Button */}
             {allImages.length > 1 && (
-              <motion.button
+              <m.button
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.4 }}
@@ -276,11 +270,11 @@ export default function PortfolioImageGallery({
                 title="Önceki (←)"
               >
                 <ChevronLeftIcon className="w-8 h-8" />
-              </motion.button>
+              </m.button>
             )}
 
             {/* Main Image Container */}
-            <motion.div
+            <m.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5 }}
@@ -295,11 +289,11 @@ export default function PortfolioImageGallery({
                 sizes="100vw"
                 priority
               />
-            </motion.div>
+            </m.div>
 
             {/* Next Button */}
             {allImages.length > 1 && (
-              <motion.button
+              <m.button
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.4 }}
@@ -308,11 +302,11 @@ export default function PortfolioImageGallery({
                 title="Sonraki (→)"
               >
                 <ChevronRightIcon className="w-8 h-8" />
-              </motion.button>
+              </m.button>
             )}
 
             {/* Image Title */}
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
@@ -320,11 +314,11 @@ export default function PortfolioImageGallery({
             >
               <h3 className="font-bold text-xl mb-2 text-white">{title}</h3>
               <p className="text-sm text-gray-300">Görsel {lightboxImageIndex + 1} / {allImages.length}</p>
-            </motion.div>
+            </m.div>
 
             {/* Thumbnail Strip */}
             {allImages.length > 1 && (
-              <motion.div
+              <m.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6 }}
@@ -355,7 +349,7 @@ export default function PortfolioImageGallery({
                     </button>
                   ))}
                 </div>
-              </motion.div>
+              </m.div>
             )}
 
             {/* Click outside to close */}
@@ -364,7 +358,7 @@ export default function PortfolioImageGallery({
               onClick={() => setLightboxOpen(false)}
             />
           </div>
-        </motion.div>,
+        </m.div>,
         document.body
       )}
     </div>

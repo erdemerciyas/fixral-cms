@@ -95,7 +95,59 @@
     "title": "Servicios",
     "pageTitle": "Nuestros Servicios",
     "pageDescription": "Descubre nuestras soluciones tecnológicas modernas y servicios profesionales",
-    "explore": "Ver servicios"
+    "explore": "Ver servicios",
+    "3d-tarama": {
+      "title": "Escaneo 3D",
+      "shortDescription": "Cree gemelos digitales precisos con tecnología de escaneo 3D industrial"
+    },
+    "tersine-muhendislik": {
+      "title": "Ingeniería Inversa",
+      "shortDescription": "Reconstruya modelos CAD originales a partir de piezas existentes"
+    },
+    "3d-baski-hizmetleri": {
+      "title": "Impresión 3D",
+      "shortDescription": "Impresión 3D profesional con tecnologías FDM, SLA y SLS"
+    },
+    "prototipleme-hizmetleri": {
+      "title": "Prototipado",
+      "shortDescription": "Soporte profesional desde la idea hasta el prototipo funcional"
+    },
+    "plastik-restorasyon": {
+      "title": "Restauración de Plásticos",
+      "shortDescription": "Restauración profesional y renovación de superficies de piezas plásticas dañadas"
+    },
+    "3d-modelleme-hizmetleri": {
+      "title": "Modelado 3D",
+      "shortDescription": "Diseños digitales listos para producción con modelado CAD profesional"
+    },
+    "arac-restorasyon": {
+      "title": "Restauración de Vehículos",
+      "shortDescription": "Restauración integral de vehículos clásicos y vintage"
+    },
+    "restorasyon-danismanlik": {
+      "title": "Consultoría de Restauración",
+      "shortDescription": "Consultoría experta y asesoría técnica para sus proyectos de restauración"
+    },
+    "dijital-yapay-zeka-cozumleri": {
+      "title": "Soluciones de IA Digital",
+      "shortDescription": "Soluciones de inteligencia artificial y automatización para su empresa"
+    },
+    "web-interaktif-cozumler": {
+      "title": "Soluciones Web e Interactivas",
+      "shortDescription": "Experiencias digitales impactantes con tecnologías web modernas"
+    },
+    "extreme-ecu-cozumleri": {
+      "title": "Soluciones Extreme ECU",
+      "shortDescription": "Optimización de software y hardware para ECU de vehículos"
+    },
+    "kurumsal-bireysel-yazilim": {
+      "title": "Software Corporativo y Personal",
+      "shortDescription": "Soluciones de software web, móvil y de escritorio a medida"
+    },
+    "markalama-danismanligi": {
+      "title": "Consultoría de Marca",
+      "shortDescription": "Haga que su marca destaque en el mundo digital y físico"
+    }
   },
   "contact": {
     "title": "Contacto",

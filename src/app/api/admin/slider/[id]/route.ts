@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../../../../../lib/auth';
-import connectDB from '../../../../../lib/mongoose';
 import Slider from '../../../../../models/Slider';
 
 // GET /api/admin/slider/[id] - Tek slider getir
@@ -20,8 +19,6 @@ export async function GET(
 
     const { id } = params;
 
-    await connectDB();
-    
     const slider = await Slider.findById(id);
     if (!slider) {
       return NextResponse.json(
@@ -70,8 +67,6 @@ export async function PUT(
       duration,
       isActive 
     } = body;
-
-    await connectDB();
 
     const existing = await Slider.findById(id);
     if (!existing) {
@@ -136,8 +131,6 @@ export async function POST(
     const { id } = params;
     const body = await request.json();
 
-    await connectDB();
-
     const updateData: Record<string, unknown> = {};
     if (body.status !== undefined) updateData.status = body.status;
     if (body.isActive !== undefined) updateData.isActive = body.isActive;
@@ -175,8 +168,6 @@ export async function DELETE(
     }
 
     const { id } = params;
-    
-    await connectDB();
     
     const slider = await Slider.findByIdAndDelete(id);
     if (!slider) {

@@ -389,92 +389,147 @@ async function main() {
   // ── 5. Services (11 — Fixral hizmetleri) ──
   const services = [
     {
-      title: 'Tersine Mühendislik',
-      slug: 'tersine-muhendislik',
-      desc: '<p>Mevcut parçalar mühendislik bakış açısıyla analiz edilerek yeniden tasarlanır ve üretilebilir dijital modellere dönüştürülür. Özellikle üretimi durdurulmuş veya bulunamayan parçalar için yüksek doğrulukta çözümler sunulur.</p>',
-      icon: 'ArrowPathIcon',
-      features: ['Fiziksel parça analizi', 'CAD modelleme', 'Yeniden üretim altyapısı', 'Tasarım optimizasyonu', 'Endüstriyel çözümler'],
-      excerpt: 'Mevcut parçaları analiz ederek üretilebilir dijital modellere dönüştürürüz.',
-    },
-    {
       title: '3D Tarama',
       slug: '3d-tarama',
-      desc: '<p>Fiziksel objeler yüksek hassasiyetle taranarak dijital ortama aktarılır ve üretim süreçlerine hazır hale getirilir.</p>',
+      description: `<p>Endüstriyel 3D tarama teknolojileri ile fiziksel nesnelerin hassas dijital ikizlerini oluşturun. Yüksek çözünürlüklü yapılandırılmış ışık ve lazer tabanlı tarama sistemlerimiz, mikron seviyesinde doğrulukla yüzey ölçümü ve geometrik veri yakalama imkanı sunar. Otomotiv parçalarından endüstriyel bileşenlere, tarihi eserlerden mimari yapılara kadar geniş bir yelpazede profesyonel 3D dijitalleştirme hizmeti sağlıyoruz.</p>`,
       icon: 'ViewfinderCircleIcon',
-      features: ['Yüksek hassasiyet', 'Karmaşık geometri tarama', 'Dijital arşivleme', 'Veri doğruluğu', 'Hızlı işlem'],
-      excerpt: 'Objeleri yüksek hassasiyetle dijital ortama aktarırız.',
+      features: ['Yapılandırılmış ışık ile mikron hassasiyetinde tarama', 'Lazer tabanlı yüzey ölçüm teknolojisi', 'Nokta bulutu ve mesh veri çıktısı', 'Kalite kontrol ve boyutsal doğrulama', 'Büyük ölçekli nesne tarama kapasitesi', 'STL, OBJ, PLY formatlarında teslimat'],
+      image: 'https://res.cloudinary.com/dlgnbhq8l/image/upload/v1785162495/fixral/hizmetler/z3nodfnfekpapxcn2mof.jpg',
+      translations: {
+        tr: { title: '3D Tarama', description: `<p>Endüstriyel 3D tarama teknolojileri ile fiziksel nesnelerin hassas dijital ikizlerini oluşturun. Yüksek çözünürlüklü yapılandırılmış ışık ve lazer tabanlı tarama sistemlerimiz, mikron seviyesinde doğrulukla yüzey ölçümü ve geometrik veri yakalama imkanı sunar. Otomotiv parçalarından endüstriyel bileşenlere, tarihi eserlerden mimari yapılara kadar geniş bir yelpazede profesyonel 3D dijitalleştirme hizmeti sağlıyoruz.</p>` }
+      }
     },
     {
-      title: '3D Modelleme',
-      slug: '3d-modelleme',
-      desc: '<p>Üretime uygun, mühendislik tabanlı 3D modeller tasarlanır ve optimize edilir.</p>',
-      icon: 'CubeIcon',
-      features: ['CAD modelleme', 'Üretim odaklı tasarım', 'Dayanıklılık optimizasyonu', 'Prototip uyumu', 'Özel tasarım çözümleri'],
-      excerpt: 'Üretime uygun teknik 3D modeller tasarlarız.',
+      title: 'Tersine Mühendislik',
+      slug: 'tersine-muhendislik',
+      description: `<p>Mevcut parça ve ürünlerin 3D tarama verilerinden yola çıkarak orijinal CAD modellerini yeniden oluşturun. Tersine mühendislik süreçlerimiz ile artık üretilmeyen, temin edilemeyen veya modifiye edilmesi gereken parçaların dijital tasarımlarını hassas şekilde yeniden oluşturuyoruz. Otomotiv yedek parçalarından endüstriyel makine bileşenlerine kadar her ölçekte tersine mühendislik çözümleri sunuyoruz.</p>`,
+      icon: 'ArrowPathIcon',
+      features: ['3D tarama verisinden CAD model oluşturma', 'Parametrik katı model reconstructüsyonu', 'Yüzey kalitesi optimizasyonu', 'Tolerans analizi ve doğrulama', 'Parça bazlı ve assembly düzeyinde modelleme', 'Üretilebilir CAD formatları (STEP, IGES, Parasolid)'],
+      image: 'https://res.cloudinary.com/dlgnbhq8l/image/upload/v1775806412/personal-blog/services/1775806412268_6b310a2d_reverse-engineering.png.png',
+      translations: {
+        tr: { title: 'Tersine Mühendislik', description: `<p>Mevcut parça ve ürünlerin 3D tarama verilerinden yola çıkarak orijinal CAD modellerini yeniden oluşturun. Tersine mühendislik süreçlerimiz ile artık üretilmeyen, temin edilemeyen veya modifiye edilmesi gereken parçaların dijital tasarımlarını hassas şekilde yeniden oluşturuyoruz. Otomotiv yedek parçalarından endüstriyel makine bileşenlerine kadar her ölçekte tersine mühendislik çözümleri sunuyoruz.</p>` }
+      }
     },
     {
-      title: '3D Baskı',
-      slug: '3d-baski',
-      desc: '<p>Farklı malzemeler ile fonksiyonel ve özel parçalar 3D baskı teknolojisiyle üretilir.</p>',
+      title: '3D Baskı Hizmetleri',
+      slug: '3d-baski-hizmetleri',
+      description: `<p>FDM, SLA ve SLS teknolojileri ile prototipten seri üretime kadar her ölçekte profesyonel 3D baskı hizmeti. Endüstriyel standart malzemelerden özel mühendislik polimerlerine kadar geniş malzeme yelpazesiyle, fonksiyonel test parçalarından son kullanım ürünlerine kadar yüksek kaliteli katmanlı imalat çözümleri sunuyoruz.</p>`,
       icon: 'PrinterIcon',
-      features: ['Hızlı üretim', 'Farklı malzeme seçenekleri', 'Prototipleme', 'Düşük adet üretim', 'Yüksek kalite'],
-      excerpt: '3D baskı ile özel üretim yaparız.',
+      features: ['FDM, SLA ve SLS baskı teknolojileri', 'PLA, ABS, PETG, Nylon, Reçine malzeme seçenekleri', '0.05mm katman kalınlığına kadar hassasiyet', 'Büyük format baskı kapasitesi', 'Post-proses: zımpara, boyama, kaplama', 'Prototipten kısa seri üretime geçiş desteği'],
+      image: 'https://res.cloudinary.com/dlgnbhq8l/image/upload/v1775825588/personal-blog/services/1775825587750_7bd3e5bb_3d-print.jpg.jpg',
+      translations: {
+        tr: { title: '3D Baskı Hizmetleri', description: `<p>FDM, SLA ve SLS teknolojileri ile prototipten seri üretime kadar her ölçekte profesyonel 3D baskı hizmeti. Endüstriyel standart malzemelerden özel mühendislik polimerlerine kadar geniş malzeme yelpazesiyle, fonksiyonel test parçalarından son kullanım ürünlerine kadar yüksek kaliteli katmanlı imalat çözümleri sunuyoruz.</p>` }
+      }
     },
     {
-      title: 'Restorasyon & Parça Yenileme',
-      slug: 'restorasyon-parca-yenileme',
-      desc: '<p>Hasar görmüş parçalar analiz edilerek restore edilir veya yeniden üretilir.</p>',
-      icon: 'WrenchIcon',
-      features: ['Hasar analizi', 'Yeniden üretim', 'Estetik onarım', 'Uzun ömürlü kullanım', 'Dijital destekli süreç'],
-      excerpt: 'Hasarlı parçaları onarır veya yeniden üretiriz.',
-    },
-    {
-      title: 'Klasik Araç Restorasyonu',
-      slug: 'klasik-arac-restorasyonu',
-      desc: '<p>Klasik araç parçaları orijinal yapısına sadık kalınarak yeniden üretilir.</p>',
-      icon: 'CogIcon',
-      features: ['Orijinal sadakat', 'Parça üretimi', 'Teknik uyum', 'Koleksiyon projeleri', 'Detaylı işçilik'],
-      excerpt: 'Klasik araç parçalarını birebir yeniden üretiriz.',
-    },
-    {
-      title: 'Plastik Trim & Parça Tamiri',
-      slug: 'plastik-trim-parca-tamiri',
-      desc: '<p>Plastik parçalar profesyonel tekniklerle onarılır veya yeniden üretilir.</p>',
-      icon: 'WrenchScrewdriverIcon',
-      features: ['Kırık ve çatlak tamiri', 'Yüzey yenileme', 'Parça üretimi', 'Estetik koruma', 'Dayanıklılık artırma'],
-      excerpt: 'Plastik parçaları profesyonel şekilde tamir ederiz.',
-    },
-    {
-      title: 'Yazılım & Web Geliştirme',
-      slug: 'yazilim-web-gelistirme',
-      desc: '<p>Modern, hızlı ve ölçeklenebilir web yazılımları geliştirilir.</p>',
-      icon: 'CodeBracketIcon',
-      features: ['Next.js ve modern stack', 'Performans optimizasyonu', 'SEO uyumlu yapı', 'UX/UI tasarım', 'Özel yazılım çözümleri'],
-      excerpt: 'Modern yazılım çözümleri geliştiririz.',
-    },
-    {
-      title: 'Dijital Danışmanlık',
-      slug: 'dijital-danismanlik',
-      desc: '<p>Dijital dönüşüm süreçlerinde stratejik destek sağlanır.</p>',
-      icon: 'LightBulbIcon',
-      features: ['Teknoloji seçimi', 'Süreç optimizasyonu', 'Strateji geliştirme', 'Verimlilik artırma', 'Proje planlama'],
-      excerpt: 'Dijital dönüşüm süreçlerinde destek veririz.',
-    },
-    {
-      title: 'Prototipleme & Özel Üretim',
-      slug: 'prototipleme-ozel-uretim',
-      desc: '<p>Fikirler hızlı ve doğru şekilde fiziksel prototiplere dönüştürülür.</p>',
+      title: 'Prototipleme Hizmetleri',
+      slug: 'prototipleme-hizmetleri',
+      description: `<p>Fikir aşamasından fonksiyonel prototipe, görsel mockup'tan test edilebilir son kullanıma kadar her aşamada kapsamlı prototipleme hizmetleri. Ürün geliştirme sürecinizin her adımında yanınızda olarak, tasarım doğrulama, fonksiyon testi ve pazar sunumu için profesyonel prototipler üretiyoruz.</p>`,
       icon: 'BeakerIcon',
-      features: ['Hızlı üretim süreci', 'Test edilebilir prototipler', 'Ürün geliştirme', 'Maliyet optimizasyonu', 'Ar-Ge destek'],
-      excerpt: 'Fikirleri hızlı prototiplere dönüştürürüz.',
+      features: ['Kavramsal model ve görsel prototip', 'Fonksiyonel test prototipleri', 'Form-fit-function prototipleri', 'Elektronik entegrasyon desteği', 'Hızlı iterasyon ve revizyon döngüleri', 'Üretim öncesi doğrulama ve test'],
+      image: 'https://res.cloudinary.com/dlgnbhq8l/image/upload/v1775827072/personal-blog/services/1775827071596_4ce188c0_prototipleme.jpg.jpg',
+      translations: {
+        tr: { title: 'Prototipleme Hizmetleri', description: `<p>Fikir aşamasından fonksiyonel prototipe, görsel mockup'tan test edilebilir son kullanıma kadar her aşamada kapsamlı prototipleme hizmetleri. Ürün geliştirme sürecinizin her adımında yanınızda olarak, tasarım doğrulama, fonksiyon testi ve pazar sunumu için profesyonel prototipler üretiyoruz.</p>` }
+      }
     },
     {
-      title: 'Araç Body Kit Tasarımı',
-      slug: 'arac-body-kit-tasarimi',
-      desc: '<p>Araçlar için estetik ve aerodinamik açıdan optimize edilmiş özel body kit tasarımları geliştirilir.</p>',
-      icon: 'SwatchIcon',
-      features: ['Araç modeline özel tasarım', 'Aerodinamik yapı', '3D modelleme', 'Estetik görünüm', 'Kişiselleştirme'],
-      excerpt: 'Araçlar için özel body kit tasarlarız.',
+      title: 'Plastik Restorasyon',
+      slug: 'plastik-restorasyon',
+      description: `<p>Hasar görmüş, deforme olmuş veya zamanla yıpranmış plastik parçaların profesyonel restorasyonu. Otomobil iç ve dış trim parçalarından endüstriyel plastik bileşenlere, vintage plastik aksamlardan günlük kullanım ürünlerine kadar geniş bir yelpazede plastik restorasyon hizmeti sunuyoruz. İleri düzey dolgu, zımpara, astar ve boyama teknikleriyle plastik yüzeylerde fabrika çıkış kalitesine yakın sonuçlar elde ediyoruz.</p>`,
+      icon: 'WrenchIcon',
+      features: ['Trim ve plastik aksam restorasyonu', 'Çatlak tamiri ve kaynak teknolojisi', 'Yüzey yenileme ve doku eşleştirme', 'UV korumalı boya ve kaplama', 'Renk eşleştirme ve tonlama', 'Orijinal yüzey dokusunun yeniden oluşturulması'],
+      image: 'https://res.cloudinary.com/dlgnbhq8l/image/upload/v1775826033/personal-blog/services/1775826032360_5af642a0_plastic-restoration.jpg.jpg',
+      translations: {
+        tr: { title: 'Plastik Restorasyon', description: `<p>Hasar görmüş, deforme olmuş veya zamanla yıpranmış plastik parçaların profesyonel restorasyonu. Otomobil iç ve dış trim parçalarından endüstriyel plastik bileşenlere, vintage plastik aksamlardan günlük kullanım ürünlerine kadar geniş bir yelpazede plastik restorasyon hizmeti sunuyoruz. İleri düzey dolgu, zımpara, astar ve boyama teknikleriyle plastik yüzeylerde fabrika çıkış kalitesine yakın sonuçlar elde ediyoruz.</p>` }
+      }
+    },
+    {
+      title: '3D Modelleme Hizmetleri',
+      slug: '3d-modelleme-hizmetleri',
+      description: `<p>Profesyonel CAD ve 3D modelleme hizmetleriyle fikirlerinizi üretim-ready dijital tasarımlara dönüştürün. Mekanik tasarım, endüstriyel modelleme, organik şekil oluşturma ve teknik çizim hazırlama konularında uzman ekibimiz, projenizin gereksinimlerine uygun parametrik veya yüzey tabanlı modelleme çözümleri sunar.</p>`,
+      icon: 'CubeIcon',
+      features: ['Parametrik katı model tasarımı (SolidWorks, Fusion 360)', 'Yüzey modelleme ve organik şekillendirme', 'Teknik resim ve üretim çizimleri', 'Montaj ve mekanizma simülasyonu', 'Render ve fotorealistik görselleştirme', 'Üretime uygun dosya formatları (STEP, IGES, STL)'],
+      image: 'https://res.cloudinary.com/dlgnbhq8l/image/upload/v1775807984/personal-blog/services/1775807983971_f5c061de_3d-modelling.png.png',
+      translations: {
+        tr: { title: '3D Modelleme Hizmetleri', description: `<p>Profesyonel CAD ve 3D modelleme hizmetleriyle fikirlerinizi üretim-ready dijital tasarımlara dönüştürün. Mekanik tasarım, endüstriyel modelleme, organik şekil oluşturma ve teknik çizim hazırlama konularında uzman ekibimiz, projenizin gereksinimlerine uygun parametrik veya yüzey tabanlı modelleme çözümleri sunar.</p>` }
+      }
+    },
+    {
+      title: 'Araç Restorasyon',
+      slug: 'arac-restorasyon',
+      description: `<p>Klasik ve vintage araçların orijinaline sadık kalarak kapsamlı restorasyonu. Body kit tasarımından mekanik yenilemeye, iç trim restorasyonundan boya ve kaplama işlerine kadar araç restorasyon sürecinin her aşamasında profesyonel çözümler sunuyoruz. 3D tarama ve tersine mühendislik teknolojilerimizi geleneksel ustalık ile birleştirerek, artık temin edilemeyen parçaları yeniden üretebiliyoruz.</p>`,
+      icon: 'CogIcon',
+      features: ['Klasik & vintage araç restorasyonu', 'Body kit ve genişletme tasarımı', 'İç trim ve plastik aksam yenileme', '3D tarama ile kayıp parça üretimi', 'Mekanik parça restorasyonu ve yeniden üretim', 'Orijinal renk ve doku eşleştirme'],
+      image: 'https://res.cloudinary.com/dlgnbhq8l/image/upload/v1775826302/personal-blog/services/1775826301318_65222b63_klasik-arac-restoration.jpg.jpg',
+      translations: {
+        tr: { title: 'Araç Restorasyon', description: `<p>Klasik ve vintage araçların orijinaline sadık kalarak kapsamlı restorasyonu. Body kit tasarımından mekanik yenilemeye, iç trim restorasyonundan boya ve kaplama işlerine kadar araç restorasyon sürecinin her aşamasında profesyonel çözümler sunuyoruz. 3D tarama ve tersine mühendislik teknolojilerimizi geleneksel ustalık ile birleştirerek, artık temin edilemeyen parçaları yeniden üretebiliyoruz.</p>` }
+      }
+    },
+    {
+      title: 'Restorasyon Danışmanlık',
+      slug: 'restorasyon-danismanlik',
+      description: `<p>Restorasyon projeleriniz için uzman danışmanlık hizmeti. Proje planlama, maliyet analizi, malzeme seçimi, teknoloji belirleme ve süreç yönetimi konularında deneyimli ekibimizle yanınızdayız. Klasik araç restorasyonundan endüstriyel ekipman yenilemeye, tarihi eser korumadan modern plastik yüzey restorasyonuna kadar her projede doğru yöntem ve kaynak seçimi konusunda rehberlik ediyoruz.</p>`,
+      icon: 'ClipboardDocumentListIcon',
+      features: ['Proje fizibilite analizi ve raporlama', 'Maliyet ve zaman planlaması', 'Malzeme ve teknoloji seçimi danışmanlığı', 'Kalite kontrol protokolleri oluşturma', 'Tedarik zinciri ve kaynak yönlendirme', 'Süreç izleme ve teknik süpervizyon'],
+      image: 'https://res.cloudinary.com/dlgnbhq8l/image/upload/v1775826441/personal-blog/services/1775826439680_b3732477_parca-yenileme.jpg.jpg',
+      translations: {
+        tr: { title: 'Restorasyon Danışmanlık', description: `<p>Restorasyon projeleriniz için uzman danışmanlık hizmeti. Proje planlama, maliyet analizi, malzeme seçimi, teknoloji belirleme ve süreç yönetimi konularında deneyimli ekibimizle yanınızdayız. Klasik araç restorasyonundan endüstriyel ekipman yenilemeye, tarihi eser korumadan modern plastik yüzey restorasyonuna kadar her projede doğru yöntem ve kaynak seçimi konusunda rehberlik ediyoruz.</p>` }
+      }
+    },
+    {
+      title: 'Dijital Yapay Zeka Çözümleri',
+      slug: 'dijital-yapay-zeka-cozumleri',
+      description: `<p>İşletmenizin verimliliğini artırmak ve rekabet avantajı elde etmek için özelleştirilmiş yapay zeka çözümleri. Görüntü işleme, doğal dil işleme, tahmine dayalı analitik ve otomasyon alanlarında modern AI teknolojilerini iş süreçlerinize entegre ediyoruz. 3D model tanıma, kalite kontrol otomasyonu ve veri analitiği gibi endüstriyel uygulamalardan müşteri deneyimi iyileştirme gibi dijital çözümlere kadar geniş bir AI hizmet portföyü sunuyoruz.</p>`,
+      icon: 'SparklesIcon',
+      features: ['Görüntü işleme ve bilgisayarlı görü çözümleri', 'Doğal dil işleme ve metin analitiği', 'Tahmine dayalı analitik ve modelleme', 'İş süreci otomasyonu (RPA + AI)', 'Özel AI modeli eğitimi ve optimizasyonu', 'Mevcut sistemlere AI entegrasyonu'],
+      image: 'https://res.cloudinary.com/dlgnbhq8l/image/upload/v1775826634/personal-blog/services/1775826633380_f5afa721_software-design.jpg.jpg',
+      translations: {
+        tr: { title: 'Dijital Yapay Zeka Çözümleri', description: `<p>İşletmenizin verimliliğini artırmak ve rekabet avantajı elde etmek için özelleştirilmiş yapay zeka çözümleri. Görüntü işleme, doğal dil işleme, tahmine dayalı analitik ve otomasyon alanlarında modern AI teknolojilerini iş süreçlerinize entegre ediyoruz. 3D model tanıma, kalite kontrol otomasyonu ve veri analitiği gibi endüstriyel uygulamalardan müşteri deneyimi iyileştirme gibi dijital çözümlere kadar geniş bir AI hizmet portföyü sunuyoruz.</p>` }
+      }
+    },
+    {
+      title: 'Web ve İnteraktif Çözümler',
+      slug: 'web-interaktif-cozumler',
+      description: `<p>Modern web teknolojileri ile etkileyici dijital deneyimler tasarlıyor ve geliştiriyoruz. Kurumsal web sitelerinden e-ticaret platformlarına, interaktif 3D web uygulamalarından progresif web uygulamalarına (PWA) kadar geniş bir yelpazede dijital çözümler sunuyoruz. Next.js, React ve Three.js gibi güncel teknolojilerle performanslı, erişilebilir ve SEO dostu web uygulamaları geliştiriyoruz.</p>`,
+      icon: 'GlobeAltIcon',
+      features: ['Modern framework\'ler ile web geliştirme (Next.js, React)', '3D web deneyimleri ve interaktif görselleştirme', 'E-ticaret ve dijital pazarlama altyapısı', 'PWA ve mobil uyumlu tasarım', 'SEO optimizasyonu ve performans tuning', 'CMS entegrasyonu ve içerik yönetimi'],
+      image: 'https://res.cloudinary.com/dlgnbhq8l/image/upload/v1759999363/personal-blog/services/1759999362302_fd6d19d6_file_yzznyx.png.jpg',
+      translations: {
+        tr: { title: 'Web ve İnteraktif Çözümler', description: `<p>Modern web teknolojileri ile etkileyici dijital deneyimler tasarlıyor ve geliştiriyoruz. Kurumsal web sitelerinden e-ticaret platformlarına, interaktif 3D web uygulamalarından progresif web uygulamalarına (PWA) kadar geniş bir yelpazede dijital çözümler sunuyoruz. Next.js, React ve Three.js gibi güncel teknolojilerle performanslı, erişilebilir ve SEO dostu web uygulamaları geliştiriyoruz.</p>` }
+      }
+    },
+    {
+      title: 'Extreme ECU Çözümleri',
+      slug: 'extreme-ecu-cozumleri',
+      description: `<p>Araç elektronik kontrol üniteleri (ECU) için profesyonel yazılım ve donanım çözümleri. Motor performans optimizasyonu, chiptuning, DSG şanzıman yazılımları, AdBlue çözümleri, DPF/EGR hizmetleri ve arıza teşhis konularında uzman kadromuzla hizmet veriyoruz. Extreme ECU teknolojileri ile aracınızın performans potansiyelini güvenli sınırlar içinde maksimize ederken, yakıt verimliliği ve sürüş konforunu da artırıyoruz. Detaylı bilgi için extremeecu.com adresini ziyaret edebilirsiniz.</p>`,
+      icon: 'CpuChipIcon',
+      features: ['ECU yazılım optimizasyonu ve chiptuning', 'DSG/TCU şanzıman yazılımları', 'Motor performans ve tork optimizasyonu', 'DPF, EGR ve AdBlue çözümleri', 'Arıza teşhis ve elektronik analiz', 'Bireysel ve filo bazlı kalibrasyon hizmetleri'],
+      image: 'https://res.cloudinary.com/dlgnbhq8l/image/upload/v1768250346/personal-blog/products/images/extreme.jpg-1768250346463.jpg',
+      translations: {
+        tr: { title: 'Extreme ECU Çözümleri', description: `<p>Araç elektronik kontrol üniteleri (ECU) için profesyonel yazılım ve donanım çözümleri. Motor performans optimizasyonu, chiptuning, DSG şanzıman yazılımları, AdBlue çözümleri, DPF/EGR hizmetleri ve arıza teşhis konularında uzman kadromuzla hizmet veriyoruz. Extreme ECU teknolojileri ile aracınızın performans potansiyelini güvenli sınırlar içinde maksimize ederken, yakıt verimliliği ve sürüş konforunu da artırıyoruz. Detaylı bilgi için extremeecu.com adresini ziyaret edebilirsiniz.</p>` }
+      }
+    },
+    {
+      title: 'Kurumsal & Bireysel Yazılım Çözümleri',
+      slug: 'kurumsal-bireysel-yazilim',
+      description: `<p>İşletmenizin veya bireysel ihtiyaçlarınızın gereksinimlerine özel yazılım çözümleri geliştiriyoruz. Web uygulamaları, mobil uygulamalar, masaüstü yazılımlar, API entegrasyonları ve otomasyon sistemleri konularında uçtan uca yazılım hizmetleri sunuyoruz. Modern teknoloji stack'leri ve çevik geliştirme metodolojileri ile projenizi fikir aşamasından canlıya taşıyor, sürdürülebilir ve ölçeklenebilir yazılım mimarileri tasarlıyoruz.</p>`,
+      icon: 'CodeBracketIcon',
+      features: ['Özel web uygulaması geliştirme', 'Mobil uygulama (iOS & Android)', 'API geliştirme ve üçüncü parti entegrasyonlar', 'Otomasyon ve iş akışı sistemleri', 'Veritabanı tasarımı ve optimizasyonu', 'Bulut altyapısı ve DevOps hizmetleri'],
+      image: 'https://res.cloudinary.com/dlgnbhq8l/image/upload/v1759999346/personal-blog/services/1759999346128_5474bdf7_file_lsnnsv.png.jpg',
+      translations: {
+        tr: { title: 'Kurumsal & Bireysel Yazılım Çözümleri', description: `<p>İşletmenizin veya bireysel ihtiyaçlarınızın gereksinimlerine özel yazılım çözümleri geliştiriyoruz. Web uygulamaları, mobil uygulamalar, masaüstü yazılımlar, API entegrasyonları ve otomasyon sistemleri konularında uçtan uca yazılım hizmetleri sunuyoruz. Modern teknoloji stack'leri ve çevik geliştirme metodolojileri ile projenizi fikir aşamasından canlıya taşıyor, sürdürülebilir ve ölçeklenebilir yazılım mimarileri tasarlıyoruz.</p>` }
+      }
+    },
+    {
+      title: 'Markalaşma Danışmanlığı',
+      slug: 'markalama-danismanligi',
+      description: `<p>Markanızın dijital ve fiziksel dünyada güçlü bir iz bırakması için stratejik markalaşma danışmanlığı. Marka kimliği tasarımı, görsel dil oluşturma, dijital pazarlama stratejisi, sosyal medya yönetimi ve içerik üretimi konularında kapsamlı hizmetler sunuyoruz. Endüstriyel ve teknik sektörlerde uzmanlaşmış ekibimiz, B2B ve B2C markaların hedef kitleleriyle etkili iletişim kurmasını sağlayarak marka bilinirliğini ve itibarını artırmaya odaklanır.</p>`,
+      icon: 'PaintBrushIcon',
+      features: ['Marka kimliği ve görsel dil tasarımı', 'Dijital pazarlama stratejisi', 'Sosyal medya yönetimi ve içerik üretimi', 'Web sitesi ve dijital varlık optimizasyonu', 'SEO ve içerik pazarlama stratejileri', 'Marka konumlandırma ve rekabet analizi'],
+      image: 'https://res.cloudinary.com/dlgnbhq8l/image/upload/v1785162393/fixral/hizmetler/lxfep3d7oardaxrh4n4f.png',
+      translations: {
+        tr: { title: 'Markalaşma Danışmanlığı', description: `<p>Markanızın dijital ve fiziksel dünyada güçlü bir iz bırakması için stratejik markalaşma danışmanlığı. Marka kimliği tasarımı, görsel dil oluşturma, dijital pazarlama stratejisi, sosyal medya yönetimi ve içerik üretimi konularında kapsamlı hizmetler sunuyoruz. Endüstriyel ve teknik sektörlerde uzmanlaşmış ekibimiz, B2B ve B2C markaların hedef kitleleriyle etkili iletişim kurmasını sağlayarak marka bilinirliğini ve itibarını artırmaya odaklanır.</p>` }
+      }
     },
   ];
 
@@ -484,40 +539,25 @@ async function main() {
       where: { slug: s.slug },
       update: {
         title: s.title,
-        description: s.desc,
+        description: s.description,
         icon: s.icon,
         features: s.features,
+        image: s.image,
         isActive: true,
         order: i + 1,
-        translations: {
-          tr: {
-            title: s.title,
-            description: s.desc,
-            excerpt: s.excerpt,
-            metaDescription: s.excerpt,
-            keywords: s.features.slice(0, 5),
-          },
-        },
+        translations: s.translations,
       },
       create: {
         id: seedId('svc', i + 1),
         title: s.title,
         slug: s.slug,
-        description: s.desc,
+        description: s.description,
         icon: s.icon,
-        image: '',
+        image: s.image,
         features: s.features,
         isActive: true,
         order: i + 1,
-        translations: {
-          tr: {
-            title: s.title,
-            description: s.desc,
-            excerpt: s.excerpt,
-            metaDescription: s.excerpt,
-            keywords: s.features.slice(0, 5),
-          },
-        },
+        translations: s.translations,
       },
     });
   }

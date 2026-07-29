@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import connectDB from '../../../../lib/mongoose';
 import FooterSettings from '../../../../models/FooterSettings';
 import { withSecurity, SecurityConfigs } from '../../../../lib/security-middleware';
 
@@ -11,7 +10,6 @@ export const runtime = 'nodejs';
 export const GET = withSecurity(SecurityConfigs.admin)(async () => {
   try {
     console.log('🔄 Footer settings GET request started');
-    await connectDB();
     console.log('✅ Database connected');
     
     const settings = await FooterSettings.getSingleton();
@@ -37,7 +35,6 @@ export const PUT = withSecurity(SecurityConfigs.admin)(async (request: Request) 
     console.log('🔄 Footer settings PUT request started');
     
     console.log('🔗 Connecting to database...');
-    await connectDB();
     console.log('✅ Database connected');
     
     console.log('📥 Reading request body...');
@@ -151,8 +148,6 @@ export const PUT = withSecurity(SecurityConfigs.admin)(async (request: Request) 
 // POST: Footer ayarlarını sıfırla (varsayılan değerlere döndür)
 export const POST = withSecurity(SecurityConfigs.admin)(async () => {
   try {
-    await connectDB();
-    
     // Mevcut ayarları sil ve yenilerini oluştur
     await FooterSettings.deleteMany({});
     const newSettings = await FooterSettings.create({});

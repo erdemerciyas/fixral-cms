@@ -3,8 +3,8 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
-import { ArrowRight, Clock, Star, CheckCircle, Sparkle } from '@phosphor-icons/react';
+import { m } from 'framer-motion';
+import { ArrowRight, Clock, Star, CheckCircle, Sparkles as Sparkle } from 'lucide-react';
 import HTMLContent from '@/components/HTMLContent';
 import EyebrowTag from '@/components/ui/EyebrowTag';
 import { ScrollReveal, ScrollRevealItem } from '@/components/ui/ScrollReveal';
@@ -130,7 +130,7 @@ function ServiceSection({ service, index }: { service: Service; index: number })
 
             {/* Features */}
             {service.features && service.features.length > 0 && (
-              <motion.ul
+              <m.ul
                 variants={featureVariants}
                 initial="hidden"
                 whileInView="visible"
@@ -138,19 +138,18 @@ function ServiceSection({ service, index }: { service: Service; index: number })
                 className="space-y-3 mb-8"
               >
                 {service.features.map((feature, idx) => (
-                  <motion.li
+                  <m.li
                     key={idx}
                     variants={featureItemVariants}
                     className="flex items-start gap-3 text-zinc-600 text-[15px]"
                   >
                     <CheckCircle
-                      weight="light"
                       className="w-5 h-5 text-[#003450] mt-0.5 flex-shrink-0"
                     />
                     <span>{feature}</span>
-                  </motion.li>
+                  </m.li>
                 ))}
-              </motion.ul>
+              </m.ul>
             )}
 
             {/* Meta strip */}
@@ -162,13 +161,13 @@ function ServiceSection({ service, index }: { service: Service; index: number })
                 >
                   {service.duration && (
                     <div className="flex items-center gap-2 text-zinc-500 text-sm">
-                      <Clock weight="light" className="w-4 h-4" />
+                      <Clock className="w-4 h-4" />
                       <span>{service.duration}</span>
                     </div>
                   )}
                   {service.rating && (
                     <div className="flex items-center gap-2 text-zinc-500 text-sm">
-                      <Star weight="light" className="w-4 h-4 text-amber-500" />
+                      <Star className="w-4 h-4 text-amber-500" />
                       <span>{service.rating}/5</span>
                     </div>
                   )}
@@ -194,7 +193,6 @@ function ServiceSection({ service, index }: { service: Service; index: number })
               >
                 <span>Detaylı Bilgi Al</span>
                 <ArrowRight
-                  weight="light"
                   className="w-4 h-4 transition-transform duration-700 group-hover:translate-x-1"
                   style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
                 />
@@ -236,7 +234,7 @@ export default function ServicesClient({ services, hero }: ServicesClientProps) 
           <div className="container-content text-center">
             <ScrollReveal>
               <div className="w-20 h-20 rounded-2xl bg-zinc-100 flex items-center justify-center mx-auto mb-6">
-                <Sparkle weight="light" className="w-8 h-8 text-zinc-400" />
+                <Sparkle className="w-8 h-8 text-zinc-400" />
               </div>
               <h2
                 className="text-2xl font-semibold text-zinc-800 mb-3"
@@ -298,7 +296,7 @@ export default function ServicesClient({ services, hero }: ServicesClientProps) 
                 transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)',
               }}
             >
-              <Sparkle weight="light" className="w-4 h-4" />
+              <Sparkle className="w-4 h-4" />
               <span>Proje Teklifi Al</span>
             </Link>
 
@@ -313,7 +311,6 @@ export default function ServicesClient({ services, hero }: ServicesClientProps) 
             >
               <span>Örnek Projelerimizi İnceleyin</span>
               <ArrowRight
-                weight="light"
                 className="w-4 h-4 transition-transform duration-700 group-hover:translate-x-1"
                 style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
               />

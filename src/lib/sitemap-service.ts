@@ -1,5 +1,4 @@
 
-import connectDB from '@/lib/mongoose';
 import SiteSettings from '@/models/SiteSettings';
 import News from '@/models/News';
 import Portfolio from '@/models/Portfolio';
@@ -27,8 +26,6 @@ export class SitemapService {
     ];
 
     static async generateSitemapXML(): Promise<string> {
-        await connectDB();
-
         // 1. Get Base URL
         const settings = await SiteSettings.getSiteSettings();
         const baseUrl = (settings.siteUrl || process.env.NEXT_PUBLIC_APP_URL || 'https://www.fixral.com').replace(/\/$/, '');

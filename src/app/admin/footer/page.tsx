@@ -218,13 +218,13 @@ export default function AdminFooterPage() {
       {/* Toast Notification */}
       {notification && (
         <div className={`fixed top-4 right-4 z-50 px-6 py-4 rounded-xl shadow-2xl border flex items-center gap-3 animate-fade-in-down ${notification.type === 'success'
-            ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
-            : 'bg-red-50 border-red-200 text-red-800'
+            ? 'bg-success/10 border-success/30 text-success'
+            : 'bg-destructive/10 border-destructive/30 text-destructive'
           }`}>
           {notification.type === 'success' ? (
-            <Check className="w-6 h-6 text-emerald-600" />
+            <Check className="w-6 h-6 text-success" />
           ) : (
-            <X className="w-6 h-6 text-red-600" />
+            <X className="w-6 h-6 text-destructive" />
           )}
           <div>
             <h4 className="font-semibold">{notification.type === 'success' ? 'Başarılı' : 'Hata'}</h4>
@@ -244,7 +244,7 @@ export default function AdminFooterPage() {
         <Button
           onClick={handleSave}
           disabled={saving}
-          className="flex items-center space-x-2 bg-indigo-600 text-white px-6 py-2.5 rounded-xl hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+          className="flex items-center space-x-2 bg-primary text-primary-foreground px-6 py-2.5 rounded-xl hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
         >
           {saving ? (
             <RefreshCw className="w-5 h-5 animate-spin" />
@@ -264,7 +264,7 @@ export default function AdminFooterPage() {
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all ${activeTab === tab.id
-                    ? 'bg-indigo-50 text-indigo-700 font-medium'
+                    ? 'bg-primary/10 text-primary font-medium'
                     : 'text-muted-foreground hover:bg-muted/50 hover:text-foreground'
                   }`}
               >
@@ -290,7 +290,7 @@ export default function AdminFooterPage() {
                   rows={4}
                   value={settings.mainDescription}
                   onChange={(e) => handleChange('mainDescription', null, e.target.value)}
-                  className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all"
+                  className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-ring focus:border-transparent outline-none transition-all"
                   placeholder="Şirketiniz hakkında kısa bir açıklama..."
                 />
                 <p className="text-xs text-muted-foreground mt-2">Footer sol tarafında logo altında görünen metin.</p>
@@ -309,7 +309,7 @@ export default function AdminFooterPage() {
                     type="email"
                     value={settings.contactInfo.email}
                     onChange={(e) => handleChange('contactInfo', 'email', e.target.value)}
-                    className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
+                    className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-ring outline-none"
                     placeholder="ornek@sirket.com"
                   />
                 </div>
@@ -319,7 +319,7 @@ export default function AdminFooterPage() {
                     type="text"
                     value={settings.contactInfo.phone}
                     onChange={(e) => handleChange('contactInfo', 'phone', e.target.value)}
-                    className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
+                    className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-ring outline-none"
                     placeholder="+90 555 123 45 67"
                   />
                 </div>
@@ -329,7 +329,7 @@ export default function AdminFooterPage() {
                     rows={3}
                     value={settings.contactInfo.address}
                     onChange={(e) => handleChange('contactInfo', 'address', e.target.value)}
-                    className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
+                    className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-ring outline-none"
                     placeholder="Şirket adresi..."
                   />
                 </div>
@@ -344,7 +344,7 @@ export default function AdminFooterPage() {
                 <h2 className="text-xl font-bold text-foreground">Hızlı Linkler</h2>
                 <button
                   onClick={addQuickLink}
-                  className="flex items-center text-sm font-medium text-indigo-600 hover:text-indigo-700 bg-indigo-50 px-3 py-1.5 rounded-lg transition-colors"
+                  className="flex items-center text-sm font-medium text-primary hover:text-primary bg-primary/10 px-3 py-1.5 rounded-lg transition-colors"
                 >
                   <Plus className="w-4 h-4 mr-1.5" />
                   Yeni Link Ekle
@@ -359,7 +359,7 @@ export default function AdminFooterPage() {
               ) : (
                 <div className="space-y-4">
                   {settings.quickLinks.map((link, index) => (
-                    <div key={index} className="flex gap-4 p-4 bg-muted/50 rounded-xl border border-slate-100 items-start group">
+                    <div key={index} className="flex gap-4 p-4 bg-muted/50 rounded-xl border border-border items-start group">
                       <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         <div>
                           <Label className="block text-xs font-medium text-muted-foreground mb-1">Başlık</Label>
@@ -367,7 +367,7 @@ export default function AdminFooterPage() {
                             type="text"
                             value={link.title}
                             onChange={(e) => updateQuickLink(index, 'title', e.target.value)}
-                            className="w-full px-3 py-2 bg-card border border-border rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
+                            className="w-full px-3 py-2 bg-card border border-border rounded-lg text-sm focus:ring-2 focus:ring-ring outline-none"
                             placeholder="Anasayfa"
                           />
                         </div>
@@ -377,7 +377,7 @@ export default function AdminFooterPage() {
                             type="text"
                             value={link.url}
                             onChange={(e) => updateQuickLink(index, 'url', e.target.value)}
-                            className="w-full px-3 py-2 bg-card border border-border rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
+                            className="w-full px-3 py-2 bg-card border border-border rounded-lg text-sm focus:ring-2 focus:ring-ring outline-none"
                             placeholder="/anasayfa veya https://..."
                           />
                         </div>
@@ -387,7 +387,7 @@ export default function AdminFooterPage() {
                               type="checkbox"
                               checked={link.isExternal}
                               onChange={(e) => updateQuickLink(index, 'isExternal', e.target.checked)}
-                              className="rounded border-border text-indigo-600 focus:ring-indigo-500"
+                              className="rounded border-border text-primary focus:ring-ring"
                             />
                             <span className="text-sm text-muted-foreground">Dış Bağlantı</span>
                           </Label>
@@ -395,7 +395,7 @@ export default function AdminFooterPage() {
                       </div>
                       <button
                         onClick={() => removeQuickLink(index)}
-                        className="mt-1 p-2 text-muted-foreground hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                        className="mt-1 p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
                         title="Sil"
                       >
                         <Trash2 className="w-5 h-5" />
@@ -426,7 +426,7 @@ export default function AdminFooterPage() {
                       type="text"
                       value={(settings.socialLinks as any)[social.key] || ''}
                       onChange={(e) => handleChange('socialLinks', social.key, e.target.value)}
-                      className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none"
+                      className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-ring outline-none"
                       placeholder={`https://${social.key.toLowerCase()}.com/...`}
                     />
                   </div>
@@ -447,7 +447,7 @@ export default function AdminFooterPage() {
                       type="text"
                       value={settings.copyrightInfo.companyName}
                       onChange={(e) => handleChange('copyrightInfo', 'companyName', e.target.value)}
-                      className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                      className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-ring outline-none"
                     />
                   </div>
                   <div>
@@ -456,7 +456,7 @@ export default function AdminFooterPage() {
                       type="number"
                       value={settings.copyrightInfo.year}
                       onChange={(e) => handleChange('copyrightInfo', 'year', parseInt(e.target.value))}
-                      className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                      className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-ring outline-none"
                     />
                   </div>
                   <div className="md:col-span-2">
@@ -465,7 +465,7 @@ export default function AdminFooterPage() {
                       type="text"
                       value={settings.copyrightInfo.additionalText}
                       onChange={(e) => handleChange('copyrightInfo', 'additionalText', e.target.value)}
-                      className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                      className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-ring outline-none"
                       placeholder="Tüm Hakları Saklıdır."
                     />
                   </div>
@@ -481,7 +481,7 @@ export default function AdminFooterPage() {
                       type="text"
                       value={settings.developerInfo.name}
                       onChange={(e) => handleChange('developerInfo', 'name', e.target.value)}
-                      className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                      className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-ring outline-none"
                     />
                   </div>
                   <div>
@@ -490,7 +490,7 @@ export default function AdminFooterPage() {
                       type="text"
                       value={settings.developerInfo.companyName}
                       onChange={(e) => handleChange('developerInfo', 'companyName', e.target.value)}
-                      className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                      className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-ring outline-none"
                     />
                   </div>
                   <div className="md:col-span-2">
@@ -499,7 +499,7 @@ export default function AdminFooterPage() {
                       type="text"
                       value={settings.developerInfo.website}
                       onChange={(e) => handleChange('developerInfo', 'website', e.target.value)}
-                      className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                      className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-ring outline-none"
                     />
                   </div>
                 </div>
@@ -511,7 +511,7 @@ export default function AdminFooterPage() {
           {activeTab === 'visibility' && (
             <div className="space-y-6">
               <h2 className="text-xl font-bold text-foreground border-b pb-4 mb-6">Görünürlük Ayarları</h2>
-              <div className="bg-orange-50 text-orange-800 p-4 rounded-xl mb-6">
+              <div className="bg-warning/10 text-warning p-4 rounded-xl mb-6">
                 <p className="text-sm">Buradaki ayarlar, footerdaki ilgili bölümlerin gösterilip gösterilmeyeceğini belirler.</p>
               </div>
 
@@ -522,13 +522,13 @@ export default function AdminFooterPage() {
                   { key: 'showContactInfo', label: 'İletişim Bilgilerini Göster', desc: 'Adres, telefon ve email bilgilerini içeren alan.' },
                   { key: 'showDeveloperInfo', label: 'Geliştirici İmzasını Göster', desc: 'En alttaki "Geliştiren: ..." yazısı.' },
                 ].map((item) => (
-                  <Label key={item.key} className="flex items-start p-4 bg-muted/50 rounded-xl border border-slate-100 cursor-pointer hover:bg-muted transition-colors">
+                  <Label key={item.key} className="flex items-start p-4 bg-muted/50 rounded-xl border border-border cursor-pointer hover:bg-muted transition-colors">
                     <div className="flex items-center h-5 mt-1">
                       <input
                         type="checkbox"
                         checked={(settings.visibility as any)[item.key]}
                         onChange={(e) => handleChange('visibility', item.key, e.target.checked)}
-                        className="w-5 h-5 text-indigo-600 border-border rounded focus:ring-indigo-500"
+                        className="w-5 h-5 text-primary border-border rounded focus:ring-ring"
                       />
                     </div>
                     <div className="ml-4">

@@ -238,10 +238,10 @@ export default function ProfilePage() {
     return (
         <div className="space-y-6">
             {/* Header */}
-            <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl p-8 text-white shadow-lg">
+            <div className="bg-gradient-to-r from-primary to-primary rounded-xl p-8 text-primary-foreground shadow-lg">
                 <div className="flex items-center gap-6">
                     <div className="relative group">
-                        <div className="w-20 h-20 rounded-full border-4 border-white/30 overflow-hidden bg-card/10 backdrop-blur-sm flex items-center justify-center relative">
+                        <div className="w-20 h-20 rounded-full border-4 border-primary-foreground/30 overflow-hidden bg-primary-foreground/10 backdrop-blur-sm flex items-center justify-center relative">
                             {userData.avatar ? (
                                 <img src={userData.avatar} alt={userData.name} className="w-full h-full object-cover" />
                             ) : (
@@ -256,9 +256,9 @@ export default function ProfilePage() {
                         </div>
                     </div>
                     <div>
-                        <h1 className="text-3xl font-bold mb-1 text-white">{userData.name}</h1>
-                        <p className="text-indigo-100 opacity-90">{userData.email}</p>
-                        <div className="mt-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-card/20 text-white">
+                        <h1 className="text-3xl font-bold mb-1 text-primary-foreground">{userData.name}</h1>
+                        <p className="text-primary-foreground/80 opacity-90">{userData.email}</p>
+                        <div className="mt-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary-foreground/15 text-primary-foreground">
                             {userData.role.toUpperCase()}
                         </div>
                     </div>
@@ -270,7 +270,7 @@ export default function ProfilePage() {
                 <Button
                     onClick={() => setActiveTab('profile')}
                     className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors flex items-center gap-2 ${activeTab === 'profile'
-                        ? 'border-indigo-600 text-indigo-600'
+                        ? 'border-primary text-primary'
                         : 'border-transparent text-muted-foreground hover:text-foreground'
                         }`}
                 >
@@ -280,7 +280,7 @@ export default function ProfilePage() {
                 <Button
                     onClick={() => setActiveTab('security')}
                     className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors flex items-center gap-2 ${activeTab === 'security'
-                        ? 'border-indigo-600 text-indigo-600'
+                        ? 'border-primary text-primary'
                         : 'border-transparent text-muted-foreground hover:text-foreground'
                         }`}
                 >
@@ -290,7 +290,7 @@ export default function ProfilePage() {
                 <Button
                     onClick={() => setActiveTab('2fa')}
                     className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors flex items-center gap-2 ${activeTab === '2fa'
-                        ? 'border-indigo-600 text-indigo-600'
+                        ? 'border-primary text-primary'
                         : 'border-transparent text-muted-foreground hover:text-foreground'
                         }`}
                 >
@@ -301,7 +301,7 @@ export default function ProfilePage() {
 
             {/* Messages */}
             {message && (
-                <div className={`p-4 rounded-xl border flex items-center gap-3 animate-in fade-in slide-in-from-top-2 ${message.type === 'success' ? 'bg-green-50 border-green-200 text-green-700' : 'bg-red-50 border-red-200 text-red-700'
+                <div className={`p-4 rounded-xl border flex items-center gap-3 animate-in fade-in slide-in-from-top-2 ${message.type === 'success' ? 'bg-success/10 border-success/30 text-success' : 'bg-destructive/10 border-destructive/30 text-destructive'
                     }`}>
                     {message.type === 'success' ? <CheckCircle className="w-5 h-5" /> : <XCircle className="w-5 h-5" />}
                     {message.text}
@@ -325,7 +325,7 @@ export default function ProfilePage() {
                                         type="text"
                                         value={userData.name}
                                         onChange={(e) => setUserData({ ...userData, name: e.target.value })}
-                                        className="pl-10 w-full rounded-xl border-border focus:ring-indigo-500 focus:border-indigo-500"
+                                        className="pl-10 w-full rounded-xl border-border focus:ring-ring focus:border-ring"
                                         placeholder="Adınız Soyadınız"
                                     />
                                 </div>
@@ -341,7 +341,7 @@ export default function ProfilePage() {
                                         type="email"
                                         value={userData.email}
                                         onChange={(e) => setUserData({ ...userData, email: e.target.value })}
-                                        className="pl-10 w-full rounded-xl border-border focus:ring-indigo-500 focus:border-indigo-500"
+                                        className="pl-10 w-full rounded-xl border-border focus:ring-ring focus:border-ring"
                                         placeholder="ornek@email.com"
                                     />
                                 </div>
@@ -352,7 +352,7 @@ export default function ProfilePage() {
                             <Button
                                 type="submit"
                                 disabled={loading}
-                                className="px-6 py-2.5 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors disabled:opacity-50 font-medium shadow-sm hover:shadow-indigo-500/30"
+                                className="px-6 py-2.5 bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 transition-colors disabled:opacity-50 font-medium shadow-sm hover:shadow-primary/25"
                             >
                                 {loading ? 'Kaydediliyor...' : 'Değişiklikleri Kaydet'}
                             </Button>
@@ -369,7 +369,7 @@ export default function ProfilePage() {
                                 type="password"
                                 value={passwords.current}
                                 onChange={(e) => setPasswords({ ...passwords, current: e.target.value })}
-                                className="w-full rounded-xl border-border focus:ring-indigo-500 focus:border-indigo-500"
+                                className="w-full rounded-xl border-border focus:ring-ring focus:border-ring"
                                 placeholder="••••••••"
                             />
                         </div>
@@ -379,7 +379,7 @@ export default function ProfilePage() {
                                 type="password"
                                 value={passwords.new}
                                 onChange={(e) => setPasswords({ ...passwords, new: e.target.value })}
-                                className="w-full rounded-xl border-border focus:ring-indigo-500 focus:border-indigo-500"
+                                className="w-full rounded-xl border-border focus:ring-ring focus:border-ring"
                                 placeholder="••••••••"
                             />
                         </div>
@@ -389,7 +389,7 @@ export default function ProfilePage() {
                                 type="password"
                                 value={passwords.confirm}
                                 onChange={(e) => setPasswords({ ...passwords, confirm: e.target.value })}
-                                className="w-full rounded-xl border-border focus:ring-indigo-500 focus:border-indigo-500"
+                                className="w-full rounded-xl border-border focus:ring-ring focus:border-ring"
                                 placeholder="••••••••"
                             />
                         </div>
@@ -398,7 +398,7 @@ export default function ProfilePage() {
                             <Button
                                 type="submit"
                                 disabled={loading}
-                                className="px-6 py-2.5 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors disabled:opacity-50 font-medium shadow-sm hover:shadow-indigo-500/30"
+                                className="px-6 py-2.5 bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 transition-colors disabled:opacity-50 font-medium shadow-sm hover:shadow-primary/25"
                             >
                                 {loading ? 'Güncelleniyor...' : 'Şifreyi Güncelle'}
                             </Button>
@@ -409,14 +409,14 @@ export default function ProfilePage() {
                 {/* 3. 2FA Tab */}
                 {activeTab === '2fa' && (
                     <div className="max-w-2xl animate-in fade-in">
-                        <div className="bg-indigo-50 rounded-xl p-6 mb-8 border border-indigo-100">
+                        <div className="bg-primary/10 rounded-xl p-6 mb-8 border border-primary/20">
                             <div className="flex items-center gap-4">
-                                <div className="p-3 bg-card rounded-full shadow-sm text-indigo-600">
+                                <div className="p-3 bg-card rounded-full shadow-sm text-primary">
                                     <ShieldCheck className="w-8 h-8" />
                                 </div>
                                 <div>
-                                    <h3 className="text-lg font-bold text-indigo-900">Hesabınızı Koruyun</h3>
-                                    <p className="text-indigo-700 text-sm">
+                                    <h3 className="text-lg font-bold text-foreground">Hesabınızı Koruyun</h3>
+                                    <p className="text-primary text-sm">
                                         İki aşamalı doğrulama, hesabınıza yetkisiz erişimi engellemek için ekstra bir güvenlik katmanı sağlar.
                                     </p>
                                 </div>
@@ -428,16 +428,16 @@ export default function ProfilePage() {
                                 <Button
                                     onClick={startSetup}
                                     disabled={loading}
-                                    className="flex items-center justify-center gap-3 w-full sm:w-auto px-8 py-4 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/40 transform hover:-translate-y-0.5"
+                                    className="flex items-center justify-center gap-3 w-full sm:w-auto px-8 py-4 bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 hover:shadow-primary/25 transform hover:-translate-y-0.5"
                                 >
                                     <Smartphone className="w-6 h-6" />
                                     <span className="font-semibold text-lg">{loading ? 'Hazırlanıyor...' : '2FA Kurulumunu Başlat'}</span>
                                 </Button>
 
-                                <div className="mt-4 pt-4 border-t border-slate-100">
+                                <div className="mt-4 pt-4 border-t border-border">
                                     <Button
                                         onClick={disable2FA}
-                                        className="text-sm text-red-500 hover:text-red-700 font-medium flex items-center gap-2 px-2 py-1 rounded hover:bg-red-50 transition-colors"
+                                        className="text-sm text-destructive hover:text-destructive font-medium flex items-center gap-2 px-2 py-1 rounded hover:bg-destructive/10 transition-colors"
                                     >
                                         <XCircle className="w-4 h-4" />
                                         Mevcut 2FA Kurulumunu Kaldır / Devre Dışı Bırak
@@ -446,7 +446,7 @@ export default function ProfilePage() {
                             </div>
                         ) : setupData ? (
                             <div className="space-y-8">
-                                <ol className="list-decimal list-inside space-y-4 text-muted-foreground border-l-2 border-slate-100 pl-4">
+                                <ol className="list-decimal list-inside space-y-4 text-muted-foreground border-l-2 border-border pl-4">
                                     <li>Telefonunuza <strong>Google Authenticator</strong> veya benzeri bir uygulama indirin.</li>
                                     <li>Uygulamadan "QR Kodu Tara" seçeneğini seçin.</li>
                                     <li>Aşağıdaki QR kodu taratın veya manuel kodu girin.</li>
@@ -480,13 +480,13 @@ export default function ProfilePage() {
                                             value={verificationCode}
                                             onChange={(e) => setVerificationCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
                                             placeholder="000 000"
-                                            className="flex-1 px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-center tracking-[0.5em] text-xl font-mono"
+                                            className="flex-1 px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-ring outline-none text-center tracking-[0.5em] text-xl font-mono"
                                         />
                                     </div>
                                     <Button
                                         onClick={verifyAndEnable}
                                         disabled={loading || verificationCode.length !== 6}
-                                        className="mt-4 w-full py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors disabled:opacity-50 font-semibold shadow-lg shadow-indigo-500/20"
+                                        className="mt-4 w-full py-3 bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 transition-colors disabled:opacity-50 font-semibold shadow-lg shadow-primary/20"
                                     >
                                         Doğrula ve Etkinleştir
                                     </Button>
@@ -494,22 +494,22 @@ export default function ProfilePage() {
 
                                 <Button
                                     onClick={() => setSetupData(null)}
-                                    className="text-muted-foreground text-sm hover:text-muted-foreground underline decoration-slate-300 underline-offset-4"
+                                    className="text-muted-foreground text-sm hover:text-muted-foreground underline decoration-border underline-offset-4"
                                 >
                                     Kurulumu İptal Et
                                 </Button>
                             </div>
                         ) : (
-                            <div className="bg-emerald-50 p-8 rounded-xl border border-emerald-100 text-center">
-                                <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4 text-emerald-600">
+                            <div className="bg-success/10 p-8 rounded-xl border border-success/30 text-center">
+                                <div className="w-16 h-16 bg-success/15 rounded-full flex items-center justify-center mx-auto mb-4 text-success">
                                     <CheckCircle className="w-8 h-8" />
                                 </div>
-                                <h3 className="text-xl font-bold text-emerald-800 mb-2">Kurulum Başarıyla Tamamlandı!</h3>
-                                <p className="text-emerald-700 mb-6 max-w-md mx-auto">
+                                <h3 className="text-xl font-bold text-success mb-2">Kurulum Başarıyla Tamamlandı!</h3>
+                                <p className="text-success mb-6 max-w-md mx-auto">
                                     Hesabınız artık 2FA ile korunuyor. Erişimini kaybetmeniz durumunda kullanabileceğiniz yedek kodlar aşağıdadır.
                                 </p>
 
-                                <div className="bg-card p-6 rounded-xl border border-emerald-100 shadow-sm max-w-lg mx-auto mb-6">
+                                <div className="bg-card p-6 rounded-xl border border-success/30 shadow-sm max-w-lg mx-auto mb-6">
                                     <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-4 border-b pb-2">Kurtarma Kodları</p>
                                     <div className="grid grid-cols-2 gap-3 font-mono text-muted-foreground">
                                         {backupCodes?.map((code, i) => (
@@ -520,7 +520,7 @@ export default function ProfilePage() {
 
                                 <Button
                                     onClick={() => setBackupCodes(null)}
-                                    className="px-8 py-3 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 transition-colors font-medium shadow-lg shadow-emerald-500/20"
+                                    className="px-8 py-3 bg-success text-success-foreground rounded-xl hover:bg-success-dark transition-colors font-medium shadow-lg shadow-success/20"
                                 >
                                     Kodları Güvenli Bir Yere Kaydettim
                                 </Button>

@@ -1,18 +1,9 @@
 'use client';
 
 import { useState, useMemo, useRef } from 'react';
-import { motion, AnimatePresence, useInView } from 'framer-motion';
+import { m, AnimatePresence, useInView } from 'framer-motion';
 import Link from 'next/link';
-import {
-  MagnifyingGlass,
-  X,
-  Sparkle,
-  ArrowRight,
-  FunnelSimple,
-  SortAscending,
-  CaretDown,
-  Cube,
-} from '@phosphor-icons/react';
+import { Search as MagnifyingGlass, X, Sparkles as Sparkle, ArrowRight, Filter as FunnelSimple, ArrowUpNarrowWide as SortAscending, ChevronDown as CaretDown, Box as Cube } from 'lucide-react';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import PageHero from '@/components/common/PageHero';
 import EyebrowTag from '@/components/ui/EyebrowTag';
@@ -35,7 +26,7 @@ function ScrollReveal({ children, delay = 0, className = '' }: {
   const isInView = useInView(ref, { once: true, margin: '-80px' });
 
   return (
-    <motion.div
+    <m.div
       ref={ref}
       initial={{ opacity: 0, y: 32 }}
       animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 32 }}
@@ -43,7 +34,7 @@ function ScrollReveal({ children, delay = 0, className = '' }: {
       className={className}
     >
       {children}
-    </motion.div>
+    </m.div>
   );
 }
 
@@ -85,7 +76,7 @@ function CategoryFilterBar({ categories, activeCategories, onToggle }: {
         style={{ transitionDuration: '700ms', transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
       >
         {allActive && (
-          <motion.div
+          <m.div
             layoutId="category-indicator"
             className="absolute inset-0 rounded-2xl bg-[#003450]"
             transition={{ type: 'spring', stiffness: 380, damping: 30 }}
@@ -106,7 +97,7 @@ function CategoryFilterBar({ categories, activeCategories, onToggle }: {
             style={{ transitionDuration: '700ms', transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
           >
             {isActive && (
-              <motion.div
+              <m.div
                 layoutId="category-indicator"
                 className="absolute inset-0 rounded-2xl bg-[#003450]"
                 transition={{ type: 'spring', stiffness: 380, damping: 30 }}
@@ -312,7 +303,7 @@ export default function PortfolioTemplate(props: any) {
             <div className="flex flex-col md:flex-row gap-3">
               {/* Search */}
               <div className="flex-1 relative">
-                <MagnifyingGlass weight="light" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400" />
+                <MagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400" />
                 <input
                   type="text"
                   placeholder="Proje ara..."
@@ -328,14 +319,14 @@ export default function PortfolioTemplate(props: any) {
                     onClick={() => setFilters({ ...filters, search: '' })}
                     className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-zinc-100 transition-colors"
                   >
-                    <X weight="light" className="w-4 h-4 text-zinc-400" />
+                    <X className="w-4 h-4 text-zinc-400" />
                   </button>
                 )}
               </div>
 
               {/* Sort */}
               <div className="relative">
-                <SortAscending weight="light" className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 pointer-events-none" />
+                <SortAscending className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 pointer-events-none" />
                 <select
                   value={`${filters.sortBy}-${filters.sortOrder}`}
                   onChange={(e) => {
@@ -352,7 +343,7 @@ export default function PortfolioTemplate(props: any) {
                   <option value="title-desc">Z-A</option>
                   <option value="category-asc">Kategoriye Göre</option>
                 </select>
-                <CaretDown weight="light" className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 pointer-events-none" />
+                <CaretDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 pointer-events-none" />
               </div>
 
               {/* Advanced toggle */}
@@ -366,7 +357,7 @@ export default function PortfolioTemplate(props: any) {
                 style={{ transitionDuration: '700ms', transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
                 aria-expanded={showAdvanced}
               >
-                <FunnelSimple weight="light" className="w-4 h-4" />
+                <FunnelSimple className="w-4 h-4" />
                 Filtreler
                 {activeFiltersCount > 0 && (
                   <span className="ml-1 px-1.5 py-0.5 text-[10px] rounded-full bg-white/20 font-semibold">
@@ -379,7 +370,7 @@ export default function PortfolioTemplate(props: any) {
             {/* Advanced filters panel */}
             <AnimatePresence>
               {showAdvanced && (
-                <motion.div
+                <m.div
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
                   exit={{ opacity: 0, height: 0 }}
@@ -450,7 +441,7 @@ export default function PortfolioTemplate(props: any) {
                       </div>
                     </div>
                   </div>
-                </motion.div>
+                </m.div>
               )}
             </AnimatePresence>
 
@@ -475,7 +466,7 @@ export default function PortfolioTemplate(props: any) {
             {loading ? (
               <MasonrySkeleton />
             ) : mappedProjects.length > 0 ? (
-              <motion.div
+              <m.div
                 key="grid"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -495,9 +486,9 @@ export default function PortfolioTemplate(props: any) {
                     </div>
                   );
                 })}
-              </motion.div>
+              </m.div>
             ) : portfolioItems.length > 0 ? (
-              <motion.div
+              <m.div
                 key="empty"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -505,7 +496,7 @@ export default function PortfolioTemplate(props: any) {
                 className="text-center py-20"
               >
                 <div className="w-20 h-20 bg-zinc-100 rounded-full flex items-center justify-center mx-auto mb-5">
-                  <MagnifyingGlass weight="light" className="w-8 h-8 text-zinc-400" />
+                  <MagnifyingGlass className="w-8 h-8 text-zinc-400" />
                 </div>
                 <h3 className="font-[family-name:var(--font-geist-sans)] text-xl font-semibold text-zinc-800 mb-3">
                   Arama Sonucu Bulunamadı
@@ -516,7 +507,7 @@ export default function PortfolioTemplate(props: any) {
                 <button onClick={clearAll} className="px-5 py-2.5 rounded-2xl border border-zinc-200 text-sm font-medium text-zinc-600 hover:border-zinc-300 hover:text-zinc-800 transition-colors">
                   Filtreleri Temizle
                 </button>
-              </motion.div>
+              </m.div>
             ) : null}
           </AnimatePresence>
         </div>
@@ -545,7 +536,7 @@ export default function PortfolioTemplate(props: any) {
                 className="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-white text-[#003450] rounded-2xl text-sm font-semibold hover:bg-zinc-100 transition-colors"
                 style={{ transitionDuration: '700ms', transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
               >
-                <Sparkle weight="light" className="w-4 h-4" />
+                <Sparkle className="w-4 h-4" />
                 Proje Başlatalım
               </Link>
               <Link
@@ -554,7 +545,7 @@ export default function PortfolioTemplate(props: any) {
                 style={{ transitionDuration: '700ms', transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
               >
                 Hizmetlerimizi İnceleyin
-                <ArrowRight weight="light" className="w-4 h-4" />
+                <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
           </ScrollReveal>

@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import PrefetchLink from '../PrefetchLink';
 
 interface MobileNavLinkProps {
@@ -52,7 +52,7 @@ export default function MobileNavLink({
     );
 
     return (
-        <motion.div
+        <m.div
             initial={{ y: 15, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.1 + index * 0.04, duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
@@ -78,6 +78,6 @@ export default function MobileNavLink({
                     {content}
                 </PrefetchLink>
             )}
-        </motion.div>
+        </m.div>
     );
 }

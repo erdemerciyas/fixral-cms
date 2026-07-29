@@ -26,7 +26,7 @@ import {
 } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Skeleton } from '@/components/ui/skeleton'
+import { DashboardSkeleton } from '@/components/admin/admin-skeletons'
 
 interface RecentItem {
   id: string
@@ -173,21 +173,11 @@ export default function AdminDashboard() {
   ]
 
   if (loading) {
-    return (
-      <div className="space-y-6">
-        <Skeleton className="h-32 w-full" />
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <Skeleton key={i} className="h-28" />
-          ))}
-        </div>
-        <Skeleton className="h-64" />
-      </div>
-    )
+    return <DashboardSkeleton />
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 duration-300 animate-in fade-in-0 slide-in-from-bottom-1 motion-reduce:animate-none">
       {/* Welcome Section */}
       <Card className="bg-primary text-primary-foreground">
         <CardContent className="flex items-start justify-between p-6">
@@ -329,11 +319,11 @@ export default function AdminDashboard() {
                     <div
                       className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${
                         activity.type === 'success'
-                          ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400'
+                          ? 'bg-success/15 text-success'
                           : activity.type === 'info'
-                            ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400'
+                            ? 'bg-info/15 text-info'
                             : activity.type === 'message'
-                              ? 'bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400'
+                              ? 'bg-warning/15 text-warning'
                               : 'bg-muted text-muted-foreground'
                       }`}
                     >
@@ -379,10 +369,10 @@ export default function AdminDashboard() {
                   <div
                     className={`h-2 w-2 rounded-full ${
                       system.status === 'operational'
-                        ? 'bg-emerald-500'
+                        ? 'bg-success'
                         : system.status === 'warning'
-                          ? 'bg-amber-500'
-                          : 'bg-red-500'
+                          ? 'bg-warning'
+                          : 'bg-destructive'
                     }`}
                   />
                   <span className="text-xs font-medium text-muted-foreground">

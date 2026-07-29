@@ -158,6 +158,87 @@ export const getResponsiveNewsImageUrl = (publicId: string, width: number, heigh
 };
 
 /**
+ * Backup helpers — full account listing & buffer re-upload
+ */
+
+export interface BackupCloudinaryResource {
+  public_id: string;
+  secure_url: string;
+  resource_type: 'image' | 'video' | 'raw';
+  format?: string;
+  bytes: number;
+  created_at: string;
+}
+
+/**
+ * List ALL resources of a given type using Admin API cursor pagination
+ */
+export const listAllCloudinaryResources = async (
+  resourceType: 'image' | 'video' | 'raw'
+): Promise<BackupCloudinaryResource[]> => {
+  const all: BackupCloudinaryResource[] = [];
+  let nextCursor: string | undefined;
+  let page = 0;
+  const MAX_PAGES = 20; // güvenlik sınırı: 20 x 500 = 10.000 kayıt / tip
+
+  do {
+    const result = await cloudinary.api.resources({
+      resource_type: resourceType,
+      type: 'upload',
+      max_results: 500,
+      next_cursor: nextCursor,
+    });
+
+    if (Array.isArray(result.resources)) {
+      for (const r of result.resources) {
+        all.push({
+          public_id: r.public_id,
+          secure_url: r.secure_url,
+          resource_type: resourceType,
+          format: r.format,
+          bytes: r.bytes || 0,
+          created_at: r.created_at,
+        });
+      }
+    }
+    nextCursor = result.next_cursor;
+    page += 1;
+  } while (nextCursor && page < MAX_PAGES);
+
+  return all;
+};
+
+/**
+ * Upload a raw buffer back to Cloudinary preserving the original public_id
+ * (used by backup restore so existing DB URLs keep working)
+ */
+export const uploadBufferToCloudinary = async (
+  buffer: Buffer,
+  publicId: string,
+  resourceType: 'image' | 'video' | 'raw'
+): Promise<void> => {
+  await new Promise<void>((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      {
+        public_id: publicId,
+        resource_type: resourceType,
+        overwrite: true,
+        invalidate: true,
+      },
+      (error) => (error ? reject(error) : resolve())
+    );
+    stream.end(buffer);
+  });
+};
+
+export const isCloudinaryConfigured = (): boolean =>
+  Boolean(
+    process.env.CLOUDINARY_CLOUD_NAME &&
+    process.env.CLOUDINARY_API_KEY &&
+    process.env.CLOUDINARY_API_SECRET
+  );
+
+/**
  * Generate Cloudinary upload signature for client-side uploads
  */
 export const generateUploadSignature = (timestamp: number): { signature: string; timestamp: number } => {

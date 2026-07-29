@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { ChevronDownIcon } from '@heroicons/react/24/outline';
+import { ChevronDown as ChevronDownIcon } from 'lucide-react';
 
 interface SelectOption {
   value: string;
@@ -36,13 +36,13 @@ const Select: React.FC<SelectProps> = ({
   };
 
   const variantClasses = {
-    default: 'bg-white border-slate-300 text-slate-700 focus:border-brand-primary-600 focus:ring-brand-primary-600',
-    dark: 'bg-slate-800 border-slate-600 text-white focus:border-brand-primary-600 focus:ring-brand-primary-600'
+    default: 'bg-background border-input text-foreground focus:border-ring focus:ring-ring/25',
+    dark: 'bg-slate-800 border-slate-600 text-white focus:border-ring focus:ring-ring/25'
   };
 
   const baseClasses = `
     relative w-full rounded-xl border appearance-none cursor-pointer
-    focus:outline-none focus:ring-2 focus:ring-opacity-50
+    focus:outline-none focus:ring-2
     transition-all duration-200
     disabled:cursor-not-allowed disabled:opacity-50
     pr-10
@@ -80,7 +80,7 @@ const Select: React.FC<SelectProps> = ({
       <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
         <ChevronDownIcon 
           className={`w-4 h-4 ${
-            variant === 'dark' ? 'text-slate-400' : 'text-slate-500'
+            variant === 'dark' ? 'text-slate-400' : 'text-muted-foreground'
           }`} 
         />
       </div>

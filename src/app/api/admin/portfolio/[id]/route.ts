@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import connectDB from '@/lib/mongoose';
 import Portfolio from '@/models/Portfolio';
 
 /**
@@ -21,7 +20,6 @@ export async function GET(
       );
     }
 
-    await connectDB();
     const portfolio = await Portfolio.findById(params.id);
 
     if (!portfolio) {
@@ -58,7 +56,6 @@ export async function PUT(
       );
     }
 
-    await connectDB();
     const body = await req.json();
     const portfolio = await Portfolio.findByIdAndUpdate(
       params.id,
@@ -100,7 +97,6 @@ export async function DELETE(
       );
     }
 
-    await connectDB();
     const portfolio = await Portfolio.findByIdAndDelete(params.id);
 
     if (!portfolio) {

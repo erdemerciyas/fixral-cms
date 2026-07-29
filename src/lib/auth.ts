@@ -1,6 +1,5 @@
 import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import connectDB from './mongoose';
 import UserModel from '../models/User';
 import bcrypt from 'bcryptjs';
 
@@ -44,7 +43,6 @@ export const authOptions: NextAuthOptions = {
 
         // ... (logging parts omitted for brevity, keeping simple flow)
 
-        await connectDB();
         const user = await UserModel.findOne({ email });
 
         if (!user) {

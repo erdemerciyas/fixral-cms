@@ -1,9 +1,9 @@
 'use client';
 
 import { useState, useEffect, Suspense } from 'react';
-import { motion } from 'framer-motion';
-import { MapPin, EnvelopeSimple, Phone, Clock, ArrowRight, CheckCircle, WarningCircle } from '@phosphor-icons/react';
-import ContentSkeleton from '@/components/ContentSkeleton';
+import { m } from 'framer-motion';
+import { MapPin, Mail as EnvelopeSimple, Phone, Clock, ArrowRight, CheckCircle, AlertCircle as WarningCircle } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
 import PageHero from '@/components/common/PageHero';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import EyebrowTag from '@/components/ui/EyebrowTag';
@@ -241,7 +241,7 @@ function ContactPageContent() {
                     />
                   </div>
 
-                  <motion.button
+                  <m.button
                     type="submit"
                     disabled={isSubmitting}
                     whileTap={{ scale: 0.98 }}
@@ -258,35 +258,34 @@ function ContactPageContent() {
                       <>
                         <span>Mesajı Gönder</span>
                         <ArrowRight
-                          weight="light"
                           className="h-4.5 w-4.5 transition-transform duration-700 group-hover:translate-x-0.5"
                           style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
                         />
                       </>
                     )}
-                  </motion.button>
+                  </m.button>
 
                   {submitStatus === 'success' && submitMessage && (
-                    <motion.div
+                    <m.div
                       initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.5, ease }}
                       className="flex items-start gap-3 rounded-xl border border-emerald-200 bg-emerald-50/80 p-4 text-sm text-emerald-800"
                     >
-                      <CheckCircle weight="light" className="mt-0.5 h-5 w-5 flex-shrink-0 text-emerald-600" />
+                      <CheckCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-emerald-600" />
                       <span>{submitMessage}</span>
-                    </motion.div>
+                    </m.div>
                   )}
                   {submitStatus === 'error' && submitMessage && (
-                    <motion.div
+                    <m.div
                       initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.5, ease }}
                       className="flex items-start gap-3 rounded-xl border border-red-200 bg-red-50/80 p-4 text-sm text-red-800"
                     >
-                      <WarningCircle weight="light" className="mt-0.5 h-5 w-5 flex-shrink-0 text-red-600" />
+                      <WarningCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-red-600" />
                       <span>{submitMessage}</span>
-                    </motion.div>
+                    </m.div>
                   )}
                 </form>
               </div>
@@ -300,14 +299,24 @@ function ContactPageContent() {
                     İletişim Bilgilerimiz
                   </h3>
                   {contactLoading ? (
-                    <ContentSkeleton type="list" count={4} />
+                    <div className="space-y-5">
+                      {Array.from({ length: 4 }).map((_, i) => (
+                        <div key={i} className="flex items-start gap-4">
+                          <Skeleton className="h-10 w-10 rounded-xl shrink-0" />
+                          <div className="flex-1 space-y-2">
+                            <Skeleton className="h-4 w-1/3" />
+                            <Skeleton className="h-4 w-2/3" />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   ) : (
                     <ScrollReveal as="div" stagger className="space-y-5">
                       {infoItems.map((item) => (
                         <ScrollRevealItem key={item.label}>
                           <div className="flex items-start gap-4">
                             <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#003450]/[0.06]">
-                              <item.icon weight="light" className="h-5 w-5 text-[#003450]" />
+                              <item.icon className="h-5 w-5 text-[#003450]" />
                             </span>
                             <div className="min-w-0">
                               <p className="text-xs font-medium uppercase tracking-wider text-zinc-400 mb-1">
@@ -399,19 +408,23 @@ function ContactPageContent() {
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-lg font-semibold tracking-tight text-zinc-900">Konumumuz</h3>
                 <div className="flex items-center gap-1.5 text-xs text-zinc-400">
-                  <MapPin weight="light" className="h-3.5 w-3.5" />
+                  <MapPin className="h-3.5 w-3.5" />
                   <span>Haritada göster</span>
                 </div>
               </div>
 
               {contactLoading ? (
-                <ContentSkeleton type="card" count={1} />
+                <div className="rounded-2xl bg-zinc-50/80 p-4 space-y-3">
+                  <Skeleton className="h-10 w-10 rounded-xl" />
+                  <Skeleton className="h-4 w-1/2" />
+                  <Skeleton className="h-4 w-3/4" />
+                </div>
               ) : (
                 <div className="space-y-4">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-2xl bg-zinc-50/80 p-4">
                     <div className="flex items-center gap-3">
                       <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#003450]/[0.06]">
-                        <MapPin weight="light" className="h-5 w-5 text-[#003450]" />
+                        <MapPin className="h-5 w-5 text-[#003450]" />
                       </span>
                       <div>
                         <p className="text-sm font-medium text-zinc-800">İletişim Bilgileri</p>

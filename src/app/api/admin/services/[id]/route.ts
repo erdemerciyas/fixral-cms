@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import Service from '@/models/Service';
-import connectDB from '@/lib/mongoose';
 import slugify from 'slugify';
 
 /**
@@ -21,8 +20,6 @@ export async function GET(
         { status: 401 }
       );
     }
-
-    await connectDB();
 
     const service = await Service.findById(params.id);
 
@@ -59,8 +56,6 @@ export async function PUT(
         { status: 401 }
       );
     }
-
-    await connectDB();
 
     const body = await req.json();
 
@@ -110,8 +105,6 @@ export async function DELETE(
         { status: 401 }
       );
     }
-
-    await connectDB();
 
     const service = await Service.findByIdAndDelete(params.id);
 

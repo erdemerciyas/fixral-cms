@@ -2,7 +2,6 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import connectDB from '@/lib/mongoose';
 import User from '@/models/User';
 
 export async function GET(req: Request) {
@@ -12,7 +11,6 @@ export async function GET(req: Request) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        await connectDB();
         const user = await User.findOne({ email: session.user.email });
 
         if (!user) {
@@ -40,7 +38,6 @@ export async function PUT(req: Request) {
 
         const data = await req.json();
 
-        await connectDB();
         const user = await User.findOne({ email: session.user.email });
 
         if (!user) {

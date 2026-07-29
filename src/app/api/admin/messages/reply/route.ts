@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import Message from '@/models/Message';
-import connectDB from '@/lib/mongoose';
 import { sendMessageEmail } from '@/lib/email';
 
 export const dynamic = 'force-dynamic';
@@ -19,8 +18,6 @@ export async function POST(req: NextRequest) {
         if (!messageId || !reply) {
             return NextResponse.json({ error: 'Missing fields' }, { status: 400 });
         }
-
-        await connectDB();
 
         // 1. Update the message in DB
         const message = await Message.findById(messageId);

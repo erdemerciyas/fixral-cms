@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { ExclamationTriangleIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
+import { AlertTriangle as ExclamationTriangleIcon, RefreshCw as ArrowPathIcon } from 'lucide-react';
 
 interface PortfolioErrorBoundaryState {
   hasError: boolean;

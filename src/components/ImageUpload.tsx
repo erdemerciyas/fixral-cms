@@ -3,14 +3,8 @@
 import { useState, useRef } from 'react';
 import Image from 'next/image';
 import MediaBrowser from './MediaBrowser';
-import { useToast } from './ui/useToast';
-import {
-  ArrowUpTrayIcon,
-  TrashIcon,
-  FolderOpenIcon,
-  LinkIcon,
-  XMarkIcon
-} from '@heroicons/react/24/outline';
+import { toast } from 'sonner';
+import { Upload as ArrowUpTrayIcon, Trash2 as TrashIcon, FolderOpen as FolderOpenIcon, Link as LinkIcon, X as XMarkIcon } from 'lucide-react';
 
 interface ImageUploadProps {
   // Standardized props - use only these
@@ -56,7 +50,6 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
   const [showUrlModal, setShowUrlModal] = useState(false);
   const [urlInput, setUrlInput] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { show: showToast } = useToast();
 
   // Standardized onChange handler
   const handleOnChange = (url: string | string[]) => {
@@ -65,11 +58,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
       const changeHandler = onChange || onImageUpload;
       
       if (!changeHandler) {
-        showToast({
-          title: "Hata",
-          description: "onChange handler tanımlanmamış",
-          variant: "danger"
-        });
+        toast.error("Hata", { description: "onChange handler tanımlanmamış" });
         return;
       }
 
@@ -77,39 +66,19 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
         const validUrls = url.filter(u => u && (u.startsWith('/') || u.startsWith('http://') || u.startsWith('https://')));
         if (validUrls.length > 0) {
           changeHandler(validUrls);
-          showToast({
-            title: "Başarılı",
-            description: `${validUrls.length} görsel seçildi`,
-            variant: "success"
-          });
+          toast.success("Başarılı", { description: `${validUrls.length} görsel seçildi` });
         } else {
-          showToast({
-            title: "Hata",
-            description: "Geçersiz görsel URL'leri",
-            variant: "danger"
-          });
+          toast.error("Hata", { description: "Geçersiz görsel URL'leri" });
         }
       } else if (url && (url.startsWith('/') || url.startsWith('http://') || url.startsWith('https://'))) {
         changeHandler(url);
-        showToast({
-          title: "Başarılı",
-          description: "Görsel başarıyla yüklendi",
-          variant: "success"
-        });
+        toast.success("Başarılı", { description: "Görsel başarıyla yüklendi" });
       } else {
-        showToast({
-          title: "Hata",
-          description: "Geçersiz görsel URL'i",
-          variant: "danger"
-        });
+        toast.error("Hata", { description: "Geçersiz görsel URL'i" });
       }
     } catch (error) {
       console.error('ImageUpload onChange error:', error);
-      showToast({
-        title: "Hata",
-        description: "Görsel işlenirken hata oluştu",
-        variant: "danger"
-      });
+      toast.error("Hata", { description: "Görsel işlenirken hata oluştu" });
     }
   };
 
@@ -177,11 +146,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
       
     } catch (error) {
       console.error('File upload error:', error);
-      showToast({
-        title: "Upload Hatası",
-        description: error instanceof Error ? error.message : 'Upload sırasında hata oluştu',
-        variant: "danger"
-      });
+      toast.error("Upload Hatası", { description: error instanceof Error ? error.message : 'Upload sırasında hata oluştu' });
       setUploadProgress(0);
     } finally {
       setUploading(false);
@@ -200,18 +165,10 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
         onChange('');
       }
       
-      showToast({
-        title: "Başarılı",
-        description: "Görsel başarıyla kaldırıldı",
-        variant: "success"
-      });
+      toast.success("Başarılı", { description: "Görsel başarıyla kaldırıldı" });
     } catch (error) {
       console.error('Image remove error:', error);
-      showToast({
-        title: "Hata",
-        description: "Görsel kaldırılırken hata oluştu",
-        variant: "danger"
-      });
+      toast.error("Hata", { description: "Görsel kaldırılırken hata oluştu" });
     }
   };
 
@@ -236,20 +193,12 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
   // URL Input handlers
   const handleUrlSubmit = () => {
     if (!urlInput.trim()) {
-      showToast({
-        title: "Hata",
-        description: "Geçerli bir URL girin",
-        variant: "danger"
-      });
+      toast.error("Hata", { description: "Geçerli bir URL girin" });
       return;
     }
 
     if (!urlInput.startsWith('http://') && !urlInput.startsWith('https://')) {
-      showToast({
-        title: "Hata",
-        description: "URL http:// veya https:// ile başlamalıdır",
-        variant: "danger"
-      });
+      toast.error("Hata", { description: "URL http:// veya https:// ile başlamalıdır" });
       return;
     }
 
@@ -274,7 +223,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
         </label>
       )}
 
-      {/* Toast notifications are handled by useToast hook */}
+      {/* Toast notifications are handled by sonner */}
 
       {/* Main Upload Area */}
       <div className="border border-gray-200 rounded-lg overflow-hidden bg-white">

@@ -4,14 +4,11 @@ import { getServerSession } from 'next-auth';
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
 import { authOptions } from '@/lib/auth';
-import connectDB from '@/lib/mongoose';
 import Slider from '@/models/Slider';
 
 // GET /api/slider - Slider'ları getir
 export async function GET() {
   try {
-    await connectDB();
-    
     // Aktif slider'ları order'a göre sırala
     const sliders = await Slider.find({ isActive: true })
       .sort({ order: 1, createdAt: -1 })
@@ -61,8 +58,6 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
-
-    await connectDB();
 
     // Eğer order belirtilmemişse, en son sıraya ekle
     let finalOrder = order;

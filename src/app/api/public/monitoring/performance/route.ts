@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PerformanceMonitor } from '@/lib/monitoring';
 // import { ErrorBoundary } from '@/lib/monitoring';
-import connectDB, { hasValidMongoUri } from '@/lib/mongoose';
+import { prisma, hasDatabaseUrl } from '@/lib/prisma';
 
 /**
  * @swagger
@@ -127,12 +127,12 @@ export async function GET(_request: NextRequest) {
     };
 
     // Test database connection performance
-    if (hasValidMongoUri()) {
+    if (hasDatabaseUrl()) {
       const dbStart = Date.now();
       try {
         await PerformanceMonitor.measureDatabaseQuery(
           'health_check',
-          () => connectDB(),
+          () => prisma.$queryRaw`SELECT 1`,
           { operation: 'connection_test' }
         );
         metrics.database.status = 'connected';

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import SliderForm from '../../SliderForm';
+import { FormPageSkeleton } from '@/components/admin/admin-skeletons';
 
 export default function EditSliderPage({ params }: { params: { id: string } }) {
     const router = useRouter();
@@ -32,11 +33,7 @@ export default function EditSliderPage({ params }: { params: { id: string } }) {
     }, [params.id, router]);
 
     if (loading) {
-        return (
-            <div className="flex items-center justify-center min-h-[60vh]">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
-            </div>
-        );
+        return <FormPageSkeleton />;
     }
 
     if (!slider) return null;

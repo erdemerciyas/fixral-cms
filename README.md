@@ -7,12 +7,12 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
 [![shadcn/ui](https://img.shields.io/badge/shadcn/ui-Radix-000?style=for-the-badge)](https://ui.shadcn.com/)
 [![Vercel](https://img.shields.io/badge/Vercel-Deploy-black?style=for-the-badge&logo=vercel)](https://vercel.com/)
-[![Sürüm](https://img.shields.io/badge/Sürüm-5.0.2-blue?style=for-the-badge)]()
+[![Sürüm](https://img.shields.io/badge/Sürüm-5.1.0-blue?style=for-the-badge)]()
 [![Lisans](https://img.shields.io/badge/Lisans-Özel-red?style=for-the-badge)]()
 
 **Fixral CMS**, Next.js 14 (App Router), Prisma ORM ve PostgreSQL üzerine inşa edilmiş, üretime hazır, tam kapsamlı bir İçerik Yönetim Sistemidir.
 
-Mühendislik portföyleri, 3D baskı hizmetleri ve ajans web siteleri için tasarlanmış olup; shadcn/ui ile güçlendirilmiş modern admin paneli, çoklu dil desteği, zengin içerik düzenleme deneyimi, 112+ API endpoint ve 42 admin sayfası sunar.
+Mühendislik portföyleri, 3D baskı hizmetleri ve ajans web siteleri için tasarlanmış olup; shadcn/ui ile güçlendirilmiş modern admin paneli, çoklu dil desteği, zengin içerik düzenleme deneyimi, 112+ API endpoint ve 34 admin sayfası sunar.
 
 > **Canlı:** [fixral.com](https://www.fixral.com) &nbsp;|&nbsp; **Kaynak:** [github.com/erdemerciyas/fixral-cms](https://github.com/erdemerciyas/fixral-cms)
 
@@ -59,22 +59,20 @@ Mühendislik portföyleri, 3D baskı hizmetleri ve ajans web siteleri için tasa
 - **Kategori Yönetimi:** Haber ve portföy içerikleri için esnek kategori sistemi
 - **3D Model Yönetimi:** GLB/GLTF/STL dosya yükleme, listeleme ve tarayıcı içi görüntüleme
 
-### Admin Paneli (42 Sayfa)
+### Admin Paneli (34 Sayfa)
 - **Modern Arayüz:** shadcn/ui (Radix primitives + Tailwind) ile tam donanımlı, katlanabilir kenar çubuğu navigasyonu
+- **Komut Paleti:** Klavye kısayolu ile hızlı gezinme ve arama (Command Palette)
 - **Zengin Metin Editörü:** Tiptap tabanlı editör — tablolar, kod blokları, görseller, linkler, renk ve metin hizalama desteği
-- **Medya Kütüphanesi:** Cloudinary destekli sürükle-bırak görsel yükleme, galeri görünümü ve medya yönetimi
+- **Medya Kütüphanesi:** Cloudinary destekli sürükle-bırak görsel yükleme, klasör ağacı navigasyonu, galeri görünümü ve medya yönetimi
 - **Mesaj Merkezi:** İletişim formları ve proje sorgulamalarına doğrudan panelden yanıt verme, okundu durumu takibi
 - **Yedekleme Sistemi:** Tam kapsamlı ZIP yedekleme (veritabanı + Cloudinary medya dosyaları) ve geri yükleme
 - **SEO Yönetimi:** Sayfa bazlı meta başlıklar, açıklamalar, canonical URL'ler ve Open Graph ayarları
 - **Analitik Paneli:** Site geneli istatistikler, içerik metrikleri ve dashboard
-- **Tema Özelleştirme:** Canlı renk, font ve marka kontrolleri
 - **Site Ayarları:** Logo yükleme, slogan, iletişim bilgileri, sosyal medya bağlantıları
 - **Sayfa Yönetimi:** Navigasyon sıralaması, sayfa görünürlüğü, buton yapılandırması ve şablon sistemi
 - **Footer Ayarları:** Alt bilgi alanı içerik, bağlantılar ve görünürlük yönetimi
 - **Kullanıcı Yönetimi:** Kullanıcı oluşturma, düzenleme, şifre sıfırlama ve rol tabanlı erişim
 - **Profil ve 2FA:** Admin profil düzenleme ve TOTP tabanlı iki faktörlü doğrulama
-- **Performans İzleme:** Gerçek zamanlı sunucu performans metrikleri
-- **Güncelleme Yönetimi:** Sistem güncelleme kontrolü ve uygulama
 - **Sitemap Yönetimi:** Admin panelinden sitemap içeriğini kontrol etme
 
 ### Çoklu Dil (i18n)
@@ -128,8 +126,7 @@ Next.js 14 App Router
 - **API Ayrımı:** `api/public/` kimlik doğrulaması gerektirmeyen uç noktalar, `api/admin/` korumalı uç noktalar için — her iki grupta da kapsamlı CRUD endpoint'leri
 - **Admin Arayüzü:** shadcn/ui bileşenleri (Radix + Tailwind) ile katlanabilir kenar çubuğu düzeni ve şablon tabanlı sayfa yapısı
 - **Bileşen Stratejisi:** shadcn/ui temel bileşenleri + özel Fixral bileşenleri (`GlassCard`, `MagneticButton`, `ScrollReveal` vb.)
-- **Sayfa Şablonları:** Breadcrumb'lar ve tutarlı aralıklama ile yeniden kullanılabilir admin/public sayfa düzenleri (`src/components/layouts/templates/`)
-- **Güvenlik Katmanları:** Middleware seviyesinde JWT doğrulama, rate limiting, CSP başlıkları ve kötü amaçlı istek engelleme
+- **Güvenlik Katmanları:** Middleware seviyesinde JWT doğrulama, rate limiting, CSP başlıkları ve kötü amaçlı istek engelleme (`src/middleware.ts`)
 - **Instrumentation:** Opsiyonel Sentry entegrasyonu — sunucu, edge ve istemci tarafı hata izleme
 
 ---
@@ -230,7 +227,7 @@ Admin paneli, Radix UI temel bileşenleri üzerine kurulu **shadcn/ui** bileşen
 | `Separator` | shadcn/ui | Ayırıcı çizgiler |
 | `Label` | shadcn/ui | Form etiketleri |
 
-**Özel Bileşenler:** `GlassCard`, `MagneticButton`, `ScrollReveal`, `SectionWrapper`, `EyebrowTag`, `GrainOverlay`, `UniversalEditor`, `Pagination`, `MediaBrowser`, `ImageUpload`, `PortfolioImageGallery`, `PWAInstallPrompt`, `ThemeToggle`, `ModernEditor`
+**Özel Bileşenler:** `GlassCard`, `MagneticButton`, `ScrollReveal`, `SectionWrapper`, `EyebrowTag`, `GrainOverlay`, `UniversalEditor`, `Pagination`, `MediaBrowser`, `MediaFolderTree`, `CommandPalette`, `ImageUpload`, `PortfolioImageGallery`, `PWAInstallPrompt`, `ThemeToggle`, `ModernEditor`, `EmptyState`, `DataToolbar`, `ResponsiveModal`, `Spinner`
 
 ---
 
@@ -283,7 +280,7 @@ fixral-cms/
 │   │   │   ├── login/             # Giriş sayfası
 │   │   │   ├── register/          # Kayıt sayfası
 │   │   │   └── offline/           # Çevrimdışı sayfası (PWA)
-│   │   ├── admin/                 # Admin panel sayfaları (42 sayfa)
+│   │   ├── admin/                 # Admin panel sayfaları (34 sayfa)
 │   │   │   ├── layout.tsx         # Admin düzeni (sidebar, header)
 │   │   │   ├── dashboard/         # Kontrol paneli
 │   │   │   ├── analytics/         # Analitik paneli
@@ -299,10 +296,8 @@ fixral-cms/
 │   │   │   ├── contact/           # İletişim mesajları
 │   │   │   ├── content/           # İçerik ayarları
 │   │   │   ├── pages/             # Sayfa yönetimi
-│   │   │   ├── editor/            # Sayfa editörü
 │   │   │   ├── seo/               # SEO ayarları
 │   │   │   ├── social-media/      # Sosyal medya bağlantıları
-│   │   │   ├── theme-customize/   # Tema özelleştirme
 │   │   │   ├── site-settings/     # Site yapılandırması
 │   │   │   ├── footer/            # Footer ayarları
 │   │   │   ├── settings/          # Genel ayarlar
@@ -310,8 +305,6 @@ fixral-cms/
 │   │   │   ├── users/             # Kullanıcı yönetimi
 │   │   │   ├── backup/            # Yedekleme ve geri yükleme
 │   │   │   ├── profile/           # Admin profili ve 2FA
-│   │   │   ├── monitoring/        # Performans izleme
-│   │   │   ├── updates/           # Güncelleme yönetimi
 │   │   │   ├── sitemap/           # Sitemap yönetimi
 │   │   │   ├── login/             # Admin giriş sayfası
 │   │   │   └── reset-password/    # Şifre sıfırlama
@@ -323,8 +316,7 @@ fixral-cms/
 │   │       └── admin/             # Korumalı API (50+ endpoint)
 │   ├── components/
 │   │   ├── ui/                    # shadcn/ui + özel bileşenler
-│   │   ├── admin/                 # Admin'e özel bileşenler (sidebar, header, formlar)
-│   │   ├── layouts/               # AdminLayout, PublicLayout, şablonlar
+│   │   ├── admin/                 # Admin'e özel bileşenler (sidebar, header, formlar, komut paleti)
 │   │   ├── layout/                # Navigasyon, TopBar, mobil menü
 │   │   ├── home/                  # Anasayfa bileşenleri
 │   │   ├── portfolio/             # Portföy bileşenleri
@@ -339,6 +331,8 @@ fixral-cms/
 │   │   ├── auth.ts                # NextAuth yapılandırması
 │   │   ├── admin-auth.ts          # Admin yetkilendirme yardımcıları
 │   │   ├── cloudinary.ts          # Cloudinary yapılandırması ve yardımcılar
+│   │   ├── media-folders.ts       # Cloudinary klasör ağacı yardımcıları
+│   │   ├── site-settings.ts       # Site ayarları servisi
 │   │   ├── rate-limit.ts          # Rate limiting mantığı
 │   │   ├── security-headers.ts    # CSP ve güvenlik başlıkları
 │   │   ├── security-middleware.ts # Güvenlik middleware yardımcıları
@@ -351,7 +345,6 @@ fixral-cms/
 │   │   ├── schema-markup.tsx      # JSON-LD yapılandırılmış veri
 │   │   ├── news-cache-service.ts  # Haber önbellek servisi
 │   │   ├── cache.ts               # Önbellek katmanı
-│   │   ├── cache-manager.ts       # Önbellek yöneticisi
 │   │   ├── monitoring.ts          # Performans izleme
 │   │   ├── advanced-logger.ts     # Gelişmiş loglama
 │   │   ├── jwt-utils.ts           # JWT yardımcıları
@@ -371,8 +364,8 @@ fixral-cms/
 │   ├── instrumentation.ts         # Next.js instrumentation (Sentry)
 │   ├── instrumentation-server.ts  # Sunucu tarafı instrumentation
 │   ├── instrumentation-client.ts  # İstemci tarafı instrumentation
-│   └── instrumentation-edge.ts    # Edge runtime instrumentation
-├── middleware.ts                   # Ana middleware (auth, i18n, güvenlik, rate limit)
+│   ├── instrumentation-edge.ts    # Edge runtime instrumentation
+│   └── middleware.ts              # Ana middleware (auth, i18n, güvenlik, rate limit)
 ├── next.config.js                 # Next.js yapılandırması
 ├── tailwind.config.js             # Tailwind CSS yapılandırması (dark mode, özel token'lar)
 ├── tsconfig.json                  # TypeScript yapılandırması (strict mode)
@@ -421,7 +414,7 @@ Kimlik doğrulaması gerektirmeyen uç noktalar:
 | **Videolar** | `youtube`, `youtube-health`, `channels` |
 | **3D Modeller** | `3dmodels/list`, `3dmodels/upload`, `3dmodels/delete`, `3dmodels/download/[id]` |
 | **İletişim** | `contact`, `contact-info`, `messages`, `messages/[id]` |
-| **Ayarlar** | `settings`, `settings/sync`, `settings/email`, `settings/name`, `settings/password`, `footer-settings`, `languages`, `themes/active` |
+| **Ayarlar** | `settings`, `settings/sync`, `settings/email`, `settings/name`, `settings/password`, `footer-settings`, `languages` |
 | **Kullanıcı** | `register`, `user/addresses`, `user/addresses/[id]`, `user/messages`, `user/messages/[id]` |
 | **Güvenlik** | `csrf` |
 | **AI** | `ai/generate-metadata` |
@@ -465,7 +458,6 @@ JWT korumalı uç noktalar:
 | Şifre Sıfırlama | `/admin/reset-password` | Şifre sıfırlama |
 | Dashboard | `/admin/dashboard` | Özet istatistikler ve hızlı erişim |
 | Analitik | `/admin/analytics` | Detaylı site analitiği |
-| Performans | `/admin/monitoring` | Sunucu performans metrikleri |
 | Haberler | `/admin/news` | Haber listesi |
 | Haber Oluştur | `/admin/news/create` | Yeni haber oluşturma |
 | Haber Düzenle | `/admin/news/[id]/edit` | Haber düzenleme |
@@ -486,18 +478,15 @@ JWT korumalı uç noktalar:
 | Mesajlar | `/admin/messages` | Mesaj gelen kutusu |
 | İletişim | `/admin/contact` | İletişim mesajları |
 | İçerik | `/admin/content` | İçerik ayarları |
-| Editör | `/admin/editor` | Sayfa editörü |
 | Sayfalar | `/admin/pages` | Sayfa yönetimi |
 | SEO | `/admin/seo` | SEO ayarları |
 | Sosyal Medya | `/admin/social-media` | Sosyal medya bağlantıları |
-| Tema | `/admin/theme-customize` | Tema özelleştirme |
 | Site Ayarları | `/admin/site-settings` | Site yapılandırması |
 | Footer | `/admin/footer` | Footer ayarları |
 | Genel Ayarlar | `/admin/settings` | Genel ayarlar |
 | Diller | `/admin/languages` | Dil yönetimi |
 | Profil | `/admin/profile` | Admin profili ve 2FA |
 | Yedekleme | `/admin/backup` | Yedekleme ve geri yükleme |
-| Güncellemeler | `/admin/updates` | Güncelleme kontrolü |
 | Sitemap | `/admin/sitemap` | Sitemap yönetimi |
 
 ---
@@ -913,6 +902,17 @@ npm run test:coverage
 ---
 
 ## Değişiklik Günlüğü
+
+### v5.1.0 — Premium UI/UX Yenilemesi ve Mimari Temizlik
+- **Tasarım Sistemi:** Token tabanlı tema mimarisi güncellendi; public ve admin tarafında tutarlı tasarım dili
+- **Admin Panel Modernizasyonu:** Komut paleti, veri araç çubuğu (`DataToolbar`), boş durum bileşenleri (`EmptyState`), form bölümleri ve iskelet yükleme durumları eklendi
+- **Medya Kütüphanesi:** Cloudinary klasör ağacı navigasyonu (`MediaFolderTree` + `media-folders` kütüphanesi) — klasör bazlı gezinme ve filtreleme
+- **Erişilebilirlik ve Hareket:** `MotionProvider` ile LazyMotion tabanlı animasyon altyapısı, `prefers-reduced-motion` desteği; WCAG kontrast test scripti (`scripts/contrast-test.js`)
+- **Legacy Temizlik:** `Fixral*` özel bileşen seti, `_legacy` UI bileşenleri, eski `AdminLayout`/`PublicLayout` şablonları, `ThemeContext`, `mongoose`, `redis-cache` ve `cache-manager` kaldırıldı
+- **Sayfa Temizliği:** `admin/monitoring`, `admin/editor`, `admin/updates` ve `admin/theme-customize` sayfaları kaldırıldı (34 admin sayfası)
+- **Yapısal Değişiklik:** `middleware.ts` proje kökünden `src/middleware.ts` konumuna taşındı
+- **Yeni Servisler:** `site-settings` kütüphanesi ile merkezi site ayarları erişimi; `ThemeScope` ve `PublicToaster` bileşenleri
+- **Slider:** Medya kütüphanesi entegrasyonu ve form/API düzeltmeleri
 
 ### v5.0.2 — Yedekleme Sistemi Düzeltmesi ve Hata Gidermeler
 - **Düzeltme:** Export API artık her zaman geçerli ZIP dosyası döndürür (bozuk ZIP sorunu giderildi)

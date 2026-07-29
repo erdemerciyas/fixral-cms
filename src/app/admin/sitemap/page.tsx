@@ -99,25 +99,25 @@ export default function SitemapPage() {
     return (
         <div className="space-y-8">
             {/* Header Section */}
-            <div className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-xl p-8 text-white shadow-xl">
+            <div className="bg-gradient-to-r from-primary/80 to-primary rounded-xl p-8 text-primary-foreground shadow-xl">
                 <div className="flex items-center justify-between">
                     <div>
                         <h1 className="text-3xl font-bold mb-2 flex items-center gap-3">
                             <Globe className="w-8 h-8" />
                             Sitemap Yönetimi
                         </h1>
-                        <p className="text-blue-100 text-lg opacity-90">
+                        <p className="text-primary-foreground/80 text-lg">
                             Arama motorları için site haritasını oluşturun ve yönetin.
                         </p>
                     </div>
                     <button
                         onClick={handleGenerate}
                         disabled={generating}
-                        className={`px-6 py-3 bg-card text-indigo-600 rounded-xl font-semibold hover:bg-blue-50 transition-all shadow-lg flex items-center gap-2 ${generating ? 'opacity-75 cursor-not-allowed' : ''}`}
+                        className={`px-6 py-3 bg-card text-primary rounded-xl font-semibold hover:bg-info/10 transition-all shadow-lg flex items-center gap-2 ${generating ? 'opacity-75 cursor-not-allowed' : ''}`}
                     >
                         {generating ? (
                             <>
-                                <div className="w-5 h-5 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin" />
+                                <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
                                 Oluşturuluyor...
                             </>
                         ) : (
@@ -131,11 +131,11 @@ export default function SitemapPage() {
             </div>
 
             {message && (
-                <div className={`p-4 rounded-xl border ${message.type === 'success' ? 'bg-green-50 border-green-200 text-green-700' : 'bg-red-50 border-red-200 text-red-700'} flex items-center gap-3`}>
+                <div className={`p-4 rounded-xl border ${message.type === 'success' ? 'bg-success/10 border-success/30 text-success' : 'bg-destructive/10 border-destructive/30 text-destructive'} flex items-center gap-3`}>
                     {message.type === 'success' ? (
                         <CheckCircle className="w-6 h-6" />
                     ) : (
-                        <div className="w-6 h-6 border-2 border-red-500 rounded-full flex items-center justify-center">!</div>
+                        <div className="w-6 h-6 border-2 border-destructive rounded-full flex items-center justify-center">!</div>
                     )}
                     <span className="font-medium">{message.text}</span>
                 </div>
@@ -146,22 +146,22 @@ export default function SitemapPage() {
                 <div className="lg:col-span-2 space-y-6">
                     <div className="bg-card rounded-xl p-6 shadow-sm border border-border">
                         <h2 className="text-xl font-bold text-foreground mb-6 flex items-center gap-2">
-                            <FileText className="w-6 h-6 text-indigo-600" />
+                            <FileText className="w-6 h-6 text-primary" />
                             Sitemap Durumu
                         </h2>
 
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                            <div className="p-4 bg-muted/50 rounded-xl border border-slate-100">
+                            <div className="p-4 bg-muted/50 rounded-xl border border-border">
                                 <div className="text-sm text-muted-foreground mb-1">Durum</div>
                                 <div className="flex items-center gap-2">
-                                    <div className={`w-3 h-3 rounded-full ${stats?.exists ? 'bg-green-500' : 'bg-red-500'}`} />
+                                    <div className={`w-3 h-3 rounded-full ${stats?.exists ? 'bg-success' : 'bg-destructive'}`} />
                                     <span className="font-semibold text-foreground">
                                         {stats?.exists ? 'Aktif' : 'Bulunamadı'}
                                     </span>
                                 </div>
                             </div>
 
-                            <div className="p-4 bg-muted/50 rounded-xl border border-slate-100">
+                            <div className="p-4 bg-muted/50 rounded-xl border border-border">
                                 <div className="text-sm text-muted-foreground mb-1">Son Güncelleme</div>
                                 <div className="flex items-center gap-2">
                                     <Clock className="w-4 h-4 text-muted-foreground" />
@@ -171,7 +171,7 @@ export default function SitemapPage() {
                                 </div>
                             </div>
 
-                            <div className="p-4 bg-muted/50 rounded-xl border border-slate-100">
+                            <div className="p-4 bg-muted/50 rounded-xl border border-border">
                                 <div className="text-sm text-muted-foreground mb-1">URL Sayısı</div>
                                 <div className="flex items-center gap-2">
                                     <span className="font-semibold text-foreground text-xl">
@@ -183,7 +183,7 @@ export default function SitemapPage() {
                         </div>
 
                         {stats?.exists && (
-                            <div className="mt-6 pt-6 border-t border-slate-100">
+                            <div className="mt-6 pt-6 border-t border-border">
                                 <div className="flex items-center justify-between">
                                     <div className="text-sm text-muted-foreground">
                                         <span className="font-medium">Dosya Yolu:</span> /public/sitemap.xml
@@ -193,7 +193,7 @@ export default function SitemapPage() {
                                     <a
                                         href="/sitemap.xml"
                                         target="_blank"
-                                        className="flex items-center gap-2 text-indigo-600 hover:text-indigo-700 font-medium px-4 py-2 hover:bg-indigo-50 rounded-lg transition-colors"
+                                        className="flex items-center gap-2 text-primary hover:text-primary font-medium px-4 py-2 hover:bg-primary/10 rounded-lg transition-colors"
                                     >
                                         <CloudDownload className="w-5 h-5" />
                                         Dosyayı Görüntüle
@@ -217,14 +217,14 @@ export default function SitemapPage() {
                                 { label: 'Hizmetler', desc: 'Hizmet listeleme sayfası', active: true },
                                 { label: 'Kategoriler', desc: 'Blog ve ürün kategorileri', active: false }, // Not implemented yet
                             ].map((item, idx) => (
-                                <div key={idx} className={`p-4 rounded-xl border ${item.active ? 'border-green-100 bg-green-50/50' : 'border-slate-100 bg-muted/50 opacity-60'}`}>
+                                <div key={idx} className={`p-4 rounded-xl border ${item.active ? 'border-success/30 bg-success/10' : 'border-border bg-muted/50 opacity-60'}`}>
                                     <div className="flex items-center gap-2 mb-1">
                                         {item.active ? (
-                                            <CheckCircle className="w-5 h-5 text-green-600" />
+                                            <CheckCircle className="w-5 h-5 text-success" />
                                         ) : (
                                             <div className="w-5 h-5 rounded-full border-2 border-border" />
                                         )}
-                                        <span className={`font-semibold ${item.active ? 'text-green-900' : 'text-muted-foreground'}`}>
+                                        <span className={`font-semibold ${item.active ? 'text-success' : 'text-muted-foreground'}`}>
                                             {item.label}
                                         </span>
                                     </div>
@@ -237,22 +237,22 @@ export default function SitemapPage() {
 
                 {/* Info Sidebar */}
                 <div className="space-y-6">
-                    <div className="bg-indigo-900 rounded-xl p-6 text-white shadow-lg">
+                    <div className="bg-primary rounded-xl p-6 text-primary-foreground shadow-lg">
                         <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
-                            <Globe className="w-5 h-5 text-indigo-300" />
+                            <Globe className="w-5 h-5 text-primary" />
                             SEO İpuçları
                         </h3>
-                        <ul className="space-y-4 text-sm text-indigo-100">
+                        <ul className="space-y-4 text-sm text-primary-foreground/80">
                             <li className="flex gap-3">
-                                <div className="w-1.5 h-1.5 rounded-full bg-indigo-400 mt-2 shrink-0" />
+                                <div className="w-1.5 h-1.5 rounded-full bg-primary/60 mt-2 shrink-0" />
                                 <p>Sitemap dosyanızı düzenli olarak güncelleyerek Google'ın yeni içeriklerinizi daha hızlı keşfetmesini sağlayın.</p>
                             </li>
                             <li className="flex gap-3">
-                                <div className="w-1.5 h-1.5 rounded-full bg-indigo-400 mt-2 shrink-0" />
+                                <div className="w-1.5 h-1.5 rounded-full bg-primary/60 mt-2 shrink-0" />
                                 <p>Google Search Console hesabınızda sitemap.xml dosya yolunu tanımlamayı unutmayın.</p>
                             </li>
                             <li className="flex gap-3">
-                                <div className="w-1.5 h-1.5 rounded-full bg-indigo-400 mt-2 shrink-0" />
+                                <div className="w-1.5 h-1.5 rounded-full bg-primary/60 mt-2 shrink-0" />
                                 <p>Blog yazılarınızın başlıklarını ve URL yapılarını SEO uyumlu (kısa ve açıklayıcı) tutun.</p>
                             </li>
                         </ul>

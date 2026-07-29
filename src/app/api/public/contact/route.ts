@@ -1,4 +1,3 @@
-import connectDB from '@/lib/mongoose';
 import Message from '@/models/Message';
 import { NextRequest, NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
@@ -71,8 +70,6 @@ export async function POST(request: NextRequest) {
     const safeMessage = escapeHtml(messageText).replace(/\n/g, '<br>');
 
     // Database'e bağlan
-    await connectDB();
-
     // Mesajı database'e kaydet
     const newMessage = new Message({
       name,

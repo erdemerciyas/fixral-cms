@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import connectDB from '@/lib/mongoose';
 import Portfolio from '@/models/Portfolio';
 import Category from '@/models/Category';
 
@@ -34,14 +33,6 @@ type PortfolioLean = {
 
 export async function GET(request: Request, { params }: { params: { slug: string } }) {
   try {
-    // Veritabanı bağlantısını timeout ile koru
-    await Promise.race([
-      connectDB(),
-      new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('Database connection timeout')), 10000)
-      )
-    ]);
-
     const { slug } = params;
 
     if (!slug) {

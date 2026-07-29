@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import connectDB from '@/lib/mongoose';
 import { authOptions } from '@/lib/auth';
 import Category from '@/models/Category';
 
@@ -10,8 +9,6 @@ export const dynamic = 'force-dynamic';
 // GET - Tüm kategorileri getir
 export async function GET() {
   try {
-    await connectDB();
-
     const categories = await Category.find({}).sort({ name: 1 });
 
     return NextResponse.json(categories, {
@@ -45,7 +42,6 @@ export async function POST(request: Request) {
       );
     }
 
-    await connectDB();
     const data = await request.json();
 
     if (!data.name || !data.slug) {

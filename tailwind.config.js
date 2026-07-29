@@ -1,6 +1,4 @@
 /** @type {import('tailwindcss').Config} */
-const siteConfig = require('./site.config');
-
 module.exports = {
   content: [
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
@@ -50,26 +48,18 @@ module.exports = {
           ring: 'hsl(var(--sidebar-ring))',
         },
 
-        // Fixral Design System Colors - Loaded from site.config.js
-        fixral: {
-          ...siteConfig.theme.colors.brand,
-          'primary': 'var(--theme-primary)',
-        },
-        // Backward compatibility - Use CSS custom properties for dynamic theme colors
+        // Semantic tokens (shadcn/ui CSS variables)
         primary: {
           DEFAULT: 'hsl(var(--primary))',
           foreground: 'hsl(var(--primary-foreground))',
-          legacy: 'var(--theme-primary)',
         },
         secondary: {
           DEFAULT: 'hsl(var(--secondary))',
           foreground: 'hsl(var(--secondary-foreground))',
-          legacy: 'var(--theme-secondary)',
         },
         accent: {
           DEFAULT: 'hsl(var(--accent))',
           foreground: 'hsl(var(--accent-foreground))',
-          legacy: 'var(--theme-accent)',
         },
 
         // Primary brand colors - Use CSS custom property for the base color
@@ -87,15 +77,6 @@ module.exports = {
           DEFAULT: 'var(--theme-primary)',
         },
 
-        // Admin specific colors
-        admin: {
-          bg: 'var(--admin-bg)',
-          surface: 'var(--admin-surface)',
-          border: 'var(--admin-border)',
-          'text-primary': 'var(--admin-text-primary)',
-          'text-secondary': 'var(--admin-text-secondary)',
-        },
-
         // ── Design System: Semantic Colors (CSS variable based) ──
         brand: {
           50:  'var(--color-brand-50)',
@@ -111,23 +92,27 @@ module.exports = {
         },
         success: {
           light:   'var(--color-success-light)',
-          DEFAULT: 'var(--color-success)',
+          DEFAULT: 'hsl(var(--success) / <alpha-value>)',
           dark:    'var(--color-success-dark)',
+          foreground: 'hsl(var(--success-foreground))',
         },
         warning: {
           light:   'var(--color-warning-light)',
-          DEFAULT: 'var(--color-warning)',
+          DEFAULT: 'hsl(var(--warning) / <alpha-value>)',
           dark:    'var(--color-warning-dark)',
+          foreground: 'hsl(var(--warning-foreground))',
         },
         danger: {
           light:   'var(--color-danger-light)',
-          DEFAULT: 'var(--color-danger)',
+          DEFAULT: 'hsl(var(--destructive) / <alpha-value>)',
           dark:    'var(--color-danger-dark)',
+          foreground: 'hsl(var(--destructive-foreground))',
         },
         info: {
           light:   'var(--color-info-light)',
-          DEFAULT: 'var(--color-info)',
+          DEFAULT: 'hsl(var(--info) / <alpha-value>)',
           dark:    'var(--color-info-dark)',
+          foreground: 'hsl(var(--info-foreground))',
         },
         surface: {
           primary:   'var(--color-surface-primary)',
@@ -163,20 +148,11 @@ module.exports = {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
-        'fixral': '8px',
-        'fixral-lg': '12px',
-        'fixral-xl': '16px',
-        'fixral-2xl': '20px',
         '2xl': '1rem',
         '3xl': '1.5rem',
         '4xl': '2rem',
       },
       boxShadow: {
-        'fixral': '0 2px 6px rgba(0, 0, 0, 0.05)',
-        'fixral-lg': '0 4px 12px rgba(0, 0, 0, 0.1)',
-        'fixral-xl': '0 8px 24px rgba(0, 0, 0, 0.15)',
-        'fixral-inner': 'inset 0 2px 4px rgba(0, 0, 0, 0.06)',
-        'fixral-glow': '0 0 20px rgba(0, 180, 216, 0.3)',
         'glass': '0 8px 32px rgba(0, 52, 80, 0.08)',
         'glass-lg': '0 20px 40px -15px rgba(0, 52, 80, 0.05)',
         'glass-inner': 'inset 0 1px 1px rgba(255, 255, 255, 0.15)',
@@ -186,14 +162,7 @@ module.exports = {
         'premium-xl': '0 20px 40px -15px rgba(0, 52, 80, 0.12)',
         'spotlight': '0 0 0 1px rgba(0, 52, 80, 0.05), 0 20px 40px -15px rgba(0, 52, 80, 0.1)',
       },
-      spacing: {
-        'fixral-xs': '0.5rem',
-        'fixral-sm': '1rem',
-        'fixral-md': '1.5rem',
-        'fixral-lg': '2rem',
-        'fixral-xl': '3rem',
-        'fixral-2xl': '4rem',
-      },
+      spacing: {},
       animation: {
         'fade-in': 'fadeIn 0.5s cubic-bezier(0.32, 0.72, 0, 1)',
         'slide-up': 'slideUp 0.6s cubic-bezier(0.32, 0.72, 0, 1)',
@@ -210,11 +179,7 @@ module.exports = {
         'transform-opacity': 'transform, opacity',
         'colors-transform': 'color, background-color, border-color, transform',
       },
-      backgroundImage: {
-        'fixral-gradient': 'linear-gradient(135deg, #0D1B2A 0%, #3A506B 100%)',
-        'fixral-gradient-light': 'linear-gradient(135deg, #F8F9FA 0%, #E9ECEF 100%)',
-        'fixral-gradient-turquoise': 'linear-gradient(135deg, #00B4D8 0%, #0077BE 100%)',
-      },
+      backgroundImage: {},
       keyframes: {
         fadeIn: {
           '0%': { opacity: '0' },
@@ -254,7 +219,7 @@ module.exports = {
         },
       },
       borderColor: {
-        DEFAULT: '#cbd5e1', // slate-300
+        DEFAULT: 'hsl(var(--border))',
       },
       // ── Design System: Transition Durations ──
       transitionDuration: {

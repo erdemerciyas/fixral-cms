@@ -3,8 +3,8 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowRight, CaretLeft, CaretRight, Pause, Play } from '@phosphor-icons/react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowRight, ChevronLeft as CaretLeft, ChevronRight as CaretRight, Pause, Play } from 'lucide-react';
+import { m, AnimatePresence } from 'framer-motion';
 import { useLocale } from '@/hooks/useLocale';
 
 interface SliderItem {
@@ -29,7 +29,7 @@ const defaultSlider: SliderItem[] = [
         title: 'Mühendislik Çözümleri',
         subtitle: '3D Tarama & Tersine Mühendislik',
         description: 'Profesyonel 3D tarama, modelleme ve prototipleme hizmetleri ile projelerinizi hayata geçirin.',
-        image: 'https://picsum.photos/seed/fixral-hero/1920/1080',
+        image: 'https://picsum.photos/seed/industrial-hero/1920/1080',
         buttonText: 'Projelerimizi İnceleyin',
         buttonLink: '/portfolio'
     }
@@ -147,7 +147,7 @@ export default function HeroSlider({ items = [] }: HeroSliderProps) {
                         disabled={isTransitioning}
                         aria-label="Önceki slayt"
                     >
-                        <CaretLeft size={20} weight="light" className="text-white/60" />
+                        <CaretLeft size={20} className="text-white/60" />
                     </button>
                     <button
                         onClick={nextSlide}
@@ -161,7 +161,7 @@ export default function HeroSlider({ items = [] }: HeroSliderProps) {
                         disabled={isTransitioning}
                         aria-label="Sonraki slayt"
                     >
-                        <CaretRight size={20} weight="light" className="text-white/60" />
+                        <CaretRight size={20} className="text-white/60" />
                     </button>
                 </>
             )}
@@ -171,7 +171,7 @@ export default function HeroSlider({ items = [] }: HeroSliderProps) {
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
                     <div className="md:col-span-7 lg:col-span-6">
                         <AnimatePresence mode="wait">
-                            <motion.div
+                            <m.div
                                 key={currentSlideIndex}
                                 initial="enter"
                                 animate="center"
@@ -180,7 +180,7 @@ export default function HeroSlider({ items = [] }: HeroSliderProps) {
                             >
                                 {/* Eyebrow badge */}
                                 {currentSlide.badge && (
-                                    <motion.span
+                                    <m.span
                                         variants={textVariants}
                                         transition={{ delay: 0 }}
                                         className="inline-flex items-center rounded-full px-3.5 py-1 text-[11px] uppercase font-medium tracking-[0.15em] mb-6"
@@ -191,11 +191,11 @@ export default function HeroSlider({ items = [] }: HeroSliderProps) {
                                         }}
                                     >
                                         {currentSlide.badge}
-                                    </motion.span>
+                                    </m.span>
                                 )}
 
                                 {/* Title -- massive, left-aligned */}
-                                <motion.h1
+                                <m.h1
                                     variants={textVariants}
                                     transition={{ delay: 0.05 }}
                                     className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6"
@@ -206,32 +206,32 @@ export default function HeroSlider({ items = [] }: HeroSliderProps) {
                                     }}
                                 >
                                     {currentSlide.title}
-                                </motion.h1>
+                                </m.h1>
 
                                 {/* Subtitle */}
                                 {currentSlide.subtitle && (
-                                    <motion.p
+                                    <m.p
                                         variants={textVariants}
                                         transition={{ delay: 0.1 }}
                                         className="text-xl md:text-2xl font-normal mb-6"
                                         style={{ color: 'rgba(255,255,255,0.5)' }}
                                     >
                                         {currentSlide.subtitle}
-                                    </motion.p>
+                                    </m.p>
                                 )}
 
                                 {/* Description */}
-                                <motion.p
+                                <m.p
                                     variants={textVariants}
                                     transition={{ delay: 0.15 }}
                                     className="text-base md:text-lg leading-relaxed mb-10 max-w-lg"
                                     style={{ color: 'rgba(255,255,255,0.4)' }}
                                 >
                                     {currentSlide.description}
-                                </motion.p>
+                                </m.p>
 
                                 {/* CTAs -- Button-in-Button pattern */}
-                                <motion.nav
+                                <m.nav
                                     variants={textVariants}
                                     transition={{ delay: 0.2 }}
                                     className="flex flex-col sm:flex-row gap-4 items-start"
@@ -257,7 +257,6 @@ export default function HeroSlider({ items = [] }: HeroSliderProps) {
                                         >
                                             <ArrowRight
                                                 size={14}
-                                                weight="bold"
                                                 className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-[1px]"
                                             />
                                         </span>
@@ -275,8 +274,8 @@ export default function HeroSlider({ items = [] }: HeroSliderProps) {
                                     >
                                         İletişime Geçin
                                     </Link>
-                                </motion.nav>
-                            </motion.div>
+                                </m.nav>
+                            </m.div>
                         </AnimatePresence>
                     </div>
 
@@ -305,7 +304,7 @@ export default function HeroSlider({ items = [] }: HeroSliderProps) {
                                             aria-label={`Slayt ${index + 1}'e git`}
                                         >
                                             {index === currentSlideIndex && (
-                                                <motion.div
+                                                <m.div
                                                     layoutId="hero-dot"
                                                     className="absolute inset-0 rounded-full bg-white"
                                                     transition={{ type: 'spring', stiffness: 300, damping: 30 }}
@@ -325,9 +324,9 @@ export default function HeroSlider({ items = [] }: HeroSliderProps) {
                                     aria-label={isPlaying ? 'Duraklat' : 'Oynat'}
                                 >
                                     {isPlaying ? (
-                                        <Pause size={12} weight="fill" className="text-white/50" />
+                                        <Pause size={12} className="text-white/50" />
                                     ) : (
-                                        <Play size={12} weight="fill" className="text-white/50" />
+                                        <Play size={12} className="text-white/50" />
                                     )}
                                 </button>
 

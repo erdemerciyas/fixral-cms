@@ -16,6 +16,7 @@ import {
 import { toast } from 'sonner';
 import { useConfirm } from '@/hooks/use-confirm';
 import { Skeleton } from '@/components/ui/skeleton';
+import { AdminPageLayout } from '@/components/admin/admin-page-layout';
 
 interface SliderItem {
   _id: string;
@@ -160,22 +161,19 @@ export default function AdminSliderPage() {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-foreground">Slider</h1>
-          <p className="text-muted-foreground mt-1">Manage your homepage slider</p>
-        </div>
+    <AdminPageLayout
+      title="Slider"
+      description="Manage your homepage slider"
+      actions={
         <button
           onClick={() => router.push('/admin/slider/new')}
-          className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-200"
+          className="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground font-semibold rounded-xl hover:shadow-lg hover:shadow-primary/25 transition-all duration-200"
         >
           <Plus className="w-5 h-5 mr-2" />
           Add Slider
         </button>
-      </div>
-
+      }
+    >
       {/* Search and Filter Bar */}
       <div className="bg-card rounded-xl shadow-sm border border-border/60 p-4">
         <div className="flex flex-col sm:flex-row gap-4">
@@ -186,14 +184,14 @@ export default function AdminSliderPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search sliders..."
-              className="w-full pl-12 pr-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+              className="w-full pl-12 pr-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
             />
           </div>
           <div className="flex space-x-2 bg-muted p-1 rounded-xl">
             <button
               onClick={() => setStatusFilter('all')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${statusFilter === 'all'
-                ? 'bg-card text-indigo-600 shadow-sm'
+                ? 'bg-card text-primary shadow-sm'
                 : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
@@ -202,7 +200,7 @@ export default function AdminSliderPage() {
             <button
               onClick={() => setStatusFilter('active')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${statusFilter === 'active'
-                ? 'bg-card text-indigo-600 shadow-sm'
+                ? 'bg-card text-primary shadow-sm'
                 : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
@@ -211,7 +209,7 @@ export default function AdminSliderPage() {
             <button
               onClick={() => setStatusFilter('inactive')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${statusFilter === 'inactive'
-                ? 'bg-card text-indigo-600 shadow-sm'
+                ? 'bg-card text-primary shadow-sm'
                 : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
@@ -229,7 +227,7 @@ export default function AdminSliderPage() {
             className="bg-card rounded-xl shadow-sm border border-border/60 overflow-hidden hover:shadow-lg transition-all duration-300 group"
           >
             {/* Image */}
-            <div className="relative aspect-video bg-gradient-to-br from-indigo-100 to-violet-100">
+            <div className="relative aspect-video bg-gradient-to-br from-primary/10 to-primary/10">
               {(slider.imageUrl || slider.image) ? (
                 <img
                   src={slider.imageUrl || slider.image}
@@ -238,12 +236,12 @@ export default function AdminSliderPage() {
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
-                  <ImageIcon className="w-16 h-16 text-indigo-300" />
+                  <ImageIcon className="w-16 h-16 text-primary" />
                 </div>
               )}
               <div className="absolute top-3 left-3">
                 <span className={`px-2 py-1 text-xs font-semibold rounded-full ${slider.isActive
-                  ? 'bg-emerald-500 text-white'
+                  ? 'bg-success text-success-foreground'
                   : 'bg-muted text-muted-foreground'
                   }`}>
                   {slider.isActive ? 'Aktif' : 'Pasif'}
@@ -253,7 +251,7 @@ export default function AdminSliderPage() {
 
             {/* Content */}
             <div className="p-5">
-              <h3 className="text-lg font-bold text-foreground mb-2 group-hover:text-indigo-600 transition-colors">
+              <h3 className="text-lg font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
                 {slider.title}
               </h3>
               <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
@@ -267,7 +265,7 @@ export default function AdminSliderPage() {
                   <button
                     onClick={() => handleReorder(slider._id, 'up')}
                     disabled={index === 0}
-                    className="p-2 hover:bg-indigo-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="p-2 hover:bg-primary/15 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     title="Move Up"
                   >
                     <ArrowUp className="w-4 h-4 text-muted-foreground" />
@@ -275,7 +273,7 @@ export default function AdminSliderPage() {
                   <button
                     onClick={() => handleReorder(slider._id, 'down')}
                     disabled={index === filteredSliders.length - 1}
-                    className="p-2 hover:bg-indigo-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="p-2 hover:bg-primary/15 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     title="Move Down"
                   >
                     <ArrowDown className="w-4 h-4 text-muted-foreground" />
@@ -283,8 +281,8 @@ export default function AdminSliderPage() {
                   <button
                     onClick={() => handleToggleStatus(slider._id)}
                     className={`p-2 rounded-lg transition-colors ${slider.isActive
-                      ? 'bg-amber-100 hover:bg-amber-200'
-                      : 'bg-emerald-100 hover:bg-emerald-200'
+                      ? 'bg-warning/15 hover:bg-warning/20'
+                      : 'bg-success/15 hover:bg-success/20'
                       }`}
                     title={slider.isActive ? 'Pasife Al' : 'Aktif Et'}
                   >
@@ -292,14 +290,14 @@ export default function AdminSliderPage() {
                   </button>
                   <button
                     onClick={() => router.push(`/admin/slider/${slider._id}/edit`)}
-                    className="p-2 hover:bg-indigo-100 rounded-lg transition-colors"
+                    className="p-2 hover:bg-primary/15 rounded-lg transition-colors"
                     title="Edit"
                   >
                     <Pencil className="w-4 h-4 text-muted-foreground" />
                   </button>
                   <button
                     onClick={() => handleDelete(slider._id)}
-                    className="p-2 hover:bg-red-100 rounded-lg transition-colors"
+                    className="p-2 hover:bg-destructive/20 rounded-lg transition-colors"
                     title="Delete"
                   >
                     <Trash2 className="w-4 h-4 text-muted-foreground" />
@@ -324,6 +322,6 @@ export default function AdminSliderPage() {
           </p>
         </div>
       )}
-    </div>
+    </AdminPageLayout>
   );
 }

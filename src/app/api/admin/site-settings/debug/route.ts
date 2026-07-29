@@ -1,13 +1,10 @@
 import { NextResponse } from 'next/server';
-import connectDB from '../../../../../lib/mongoose';
 import SiteSettings from '../../../../../models/SiteSettings';
 import Settings from '../../../../../models/Settings';
 
 // GET: Debug için mevcut verileri kontrol et
 export async function GET() {
   try {
-    await connectDB();
-    
     // SiteSettings verilerini al
     const siteSettings = await SiteSettings.findOne({ isActive: true });
     

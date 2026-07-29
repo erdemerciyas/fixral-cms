@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import connectDB from '@/lib/mongoose';
 import PageSetting from '@/models/PageSetting';
 
 /**
@@ -17,8 +16,6 @@ export async function GET(_req: NextRequest) {
         { status: 401 }
       );
     }
-
-    await connectDB();
 
     const pages = await PageSetting.find()
       .sort({ order: 1 })
@@ -54,8 +51,6 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    await connectDB();
-    
     const page = new PageSetting({
       ...body,
       createdAt: new Date(),
@@ -92,8 +87,6 @@ export async function PUT(req: NextRequest) {
     }
 
     const pages = await req.json();
-    await connectDB();
-
     // Update all pages with new order
     const updatePromises = pages.map((page: { pageId: string; order: number }) =>
       PageSetting.findOneAndUpdate(

@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../../../../../lib/auth';
-import connectDB from '../../../../../lib/mongoose';
-import PageSettings from '../../../../../models/PageSetting';
+import PageSetting from '../../../../../models/PageSetting';
 
 // GET - Belirli bir sayfanın ayarlarını getir
 export async function GET(
@@ -10,11 +9,9 @@ export async function GET(
   { params }: { params: { pageId: string } }
 ) {
   try {
-    await connectDB();
-    
     const { pageId } = params;
     
-    const pageSettings = await PageSettings.findOne({ pageId });
+    const pageSettings = await PageSetting.findOne({ pageId });
 
     if (!pageSettings) {
       // Sayfa ayarı bulunamazsa, varsayılan değerleri döndür
@@ -55,12 +52,10 @@ export async function PUT(
       );
     }
 
-    await connectDB();
-    
     const { pageId } = params;
     const updateData = await request.json();
     
-    const updatedPage = await PageSettings.findOneAndUpdate(
+    const updatedPage = await PageSetting.findOneAndUpdate(
       { pageId },
       { ...updateData, updatedAt: new Date() },
       { new: true, upsert: true } // upsert: true - eğer sayfa yoksa oluşturur

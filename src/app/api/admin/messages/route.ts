@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import Message from '@/models/Message';
-import connectDB from '@/lib/mongoose';
-
 export const dynamic = 'force-dynamic';
 
 /**
@@ -19,8 +17,6 @@ export async function GET(_req: NextRequest) {
         { status: 401 }
       );
     }
-
-    await connectDB();
 
     const { searchParams } = new URL(_req.url);
     const scope = searchParams.get('scope');
@@ -48,8 +44,6 @@ export async function GET(_req: NextRequest) {
  */
 export async function POST(req: NextRequest) {
   try {
-    await connectDB();
-
     const body = await req.json();
 
     if (!body.name?.trim() || !body.email?.trim()) {

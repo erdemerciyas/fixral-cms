@@ -114,10 +114,10 @@ export default function AdminContentPage() {
   const getTypeColor = (type: string) => {
     switch (type) {
       case 'news': return 'from-primary/80 to-primary';
-      case 'page': return 'from-emerald-500 to-teal-600';
-      case 'portfolio': return 'from-amber-500 to-orange-600';
-      case 'service': return 'from-rose-500 to-pink-600';
-      default: return 'from-slate-500 to-gray-600';
+      case 'page': return 'from-success/80 to-success';
+      case 'portfolio': return 'from-warning/80 to-warning';
+      case 'service': return 'from-info/80 to-info';
+      default: return 'from-muted-foreground to-muted-foreground/80';
     }
   };
 
@@ -240,8 +240,8 @@ export default function AdminContentPage() {
                     </h3>
                     <div className="flex items-center space-x-2 mt-1 text-xs text-muted-foreground">
                       <span className={`px-2 py-0.5 rounded-full font-medium ${item.status === 'published'
-                        ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300'
-                        : 'bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300'
+                        ? 'bg-success/15 text-success'
+                        : 'bg-warning/15 text-warning'
                         }`}>
                         {item.status}
                       </span>
@@ -260,7 +260,7 @@ export default function AdminContentPage() {
                   </Link>
                   <button
                     onClick={() => handleDelete(item._id)}
-                    className="p-2 hover:bg-red-100 dark:hover:bg-red-950/50 rounded-lg transition-colors"
+                    className="p-2 hover:bg-destructive/10 rounded-lg transition-colors"
                     title="Delete"
                   >
                     <Trash2 className="w-4 h-4 text-muted-foreground" />

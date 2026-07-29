@@ -1,10 +1,10 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m, AnimatePresence } from 'framer-motion';
 import PrefetchLink from '../PrefetchLink';
 import Link from 'next/link';
-import { MagnifyingGlass, User, PaperPlaneTilt, SignOut, GearSix } from '@phosphor-icons/react';
+import { Search as MagnifyingGlass, User, Send as PaperPlaneTilt, LogOut as SignOut, Settings as GearSix } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 
 interface NavLink {
@@ -65,7 +65,7 @@ export default function DesktopNav({
                         const content = (
                             <>
                                 {hoveredIndex === index && !isActive && (
-                                    <motion.span
+                                    <m.span
                                         layoutId="desktop-nav-hover"
                                         className="absolute inset-0 rounded-full"
                                         style={{
@@ -76,7 +76,7 @@ export default function DesktopNav({
                                 )}
                                 <span className="relative z-10">{link.label}</span>
                                 {isActive && (
-                                    <motion.span
+                                    <m.span
                                         layoutId="desktop-nav-active"
                                         className="absolute bottom-0 left-4 right-4 h-[1.5px] rounded-full"
                                         style={{
@@ -154,7 +154,7 @@ export default function DesktopNav({
                     onMouseLeave={(e) => e.currentTarget.style.color = isTransparent ? 'rgba(255,255,255,0.6)' : '#71717a'}
                     aria-label="Ara (Ctrl+K)"
                 >
-                    <MagnifyingGlass size={18} weight="light" />
+                    <MagnifyingGlass size={18} />
                 </button>
 
                 <div ref={accountRef} className="relative" onMouseEnter={handleAccountEnter} onMouseLeave={handleAccountLeave}>
@@ -173,12 +173,12 @@ export default function DesktopNav({
                                 {(session.user.name?.[0] || session.user.email?.[0] || 'U').toUpperCase()}
                             </div>
                         ) : (
-                            <User size={18} weight="light" />
+                            <User size={18} />
                         )}
                     </button>
                     <AnimatePresence>
                         {isAccountOpen && (
-                            <motion.div
+                            <m.div
                                 initial={{ opacity: 0, y: 8, scale: 0.96 }}
                                 animate={{ opacity: 1, y: 0, scale: 1 }}
                                 exit={{ opacity: 0, y: 8, scale: 0.96 }}
@@ -211,7 +211,7 @@ export default function DesktopNav({
                                                     style={{ transition: 'background 200ms cubic-bezier(0.32, 0.72, 0, 1)' }}
                                                     onClick={() => setIsAccountOpen(false)}
                                                 >
-                                                    <GearSix size={16} weight="light" />
+                                                    <GearSix size={16} />
                                                     <span>Admin Paneli</span>
                                                 </Link>
                                             </div>
@@ -224,7 +224,7 @@ export default function DesktopNav({
                                                 style={{ transition: 'background 200ms cubic-bezier(0.32, 0.72, 0, 1)' }}
                                                 onClick={() => setIsAccountOpen(false)}
                                             >
-                                                <User size={16} weight="light" />
+                                                <User size={16} />
                                                 <span>Hesabım</span>
                                             </Link>
                                         </div>
@@ -236,7 +236,7 @@ export default function DesktopNav({
                                                 style={{ transition: 'background 200ms cubic-bezier(0.32, 0.72, 0, 1)' }}
                                                 onClick={() => setIsAccountOpen(false)}
                                             >
-                                                <SignOut size={16} weight="light" />
+                                                <SignOut size={16} />
                                                 <span>Çıkış Yap</span>
                                             </Link>
                                         </div>
@@ -267,7 +267,7 @@ export default function DesktopNav({
                                         </Link>
                                     </div>
                                 )}
-                            </motion.div>
+                            </m.div>
                         )}
                     </AnimatePresence>
                 </div>
@@ -292,7 +292,6 @@ export default function DesktopNav({
                 >
                     <PaperPlaneTilt
                         size={14}
-                        weight="light"
                         className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
                         aria-hidden="true"
                     />

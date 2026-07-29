@@ -25,6 +25,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
+import { AdminPageLayout } from '@/components/admin/admin-page-layout';
 
 interface NewsItem {
   _id: string;
@@ -222,19 +223,16 @@ export default function AdminNewsPage() {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-foreground">Haber Yönetimi</h1>
-          <p className="text-muted-foreground mt-1">Blog yazılarını ve haberleri düzenleyin</p>
-        </div>
+    <AdminPageLayout
+      title="Haber Yönetimi"
+      description="Blog yazılarını ve haberleri düzenleyin"
+      actions={
         <Button size="lg" onClick={() => router.push('/admin/news/create')}>
           <Plus className="w-5 h-5" />
           Yeni Haber Ekle
         </Button>
-      </div>
-
+      }
+    >
       {/* Sticky Toolbar */}
       <Card className="sticky top-24 z-10 p-3">
         <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
@@ -293,7 +291,7 @@ export default function AdminNewsPage() {
                 </span>
                 <button
                   onClick={handleBulkDelete}
-                  className="flex items-center px-4 py-2.5 bg-red-50 text-red-600 font-medium rounded-xl hover:bg-red-100 transition-colors"
+                  className="flex items-center px-4 py-2.5 bg-destructive/10 text-destructive font-medium rounded-xl hover:bg-destructive/20 transition-colors"
                 >
                   <Trash2 className="w-4 h-4 mr-2" />
                   Sil
@@ -343,7 +341,7 @@ export default function AdminNewsPage() {
           ) : (
             <Link
               href="/admin/news/create"
-              className="inline-flex items-center px-6 py-3 bg-gray-900 text-white font-semibold rounded-xl hover:bg-gray-800 transition-all"
+              className="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground font-semibold rounded-xl hover:bg-primary/90 transition-all"
             >
               <Plus className="w-5 h-5 mr-2" />
               Haber Ekle
@@ -383,7 +381,7 @@ export default function AdminNewsPage() {
                            `}
                     >
                       <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center
-                               ${selectedItems.has(item._id) ? 'bg-primary border-primary text-primary-foreground' : 'bg-transparent border-white text-transparent hover:bg-card/20'}
+                               ${selectedItems.has(item._id) ? 'bg-primary border-primary text-primary-foreground' : 'bg-transparent border-white text-transparent hover:bg-white/20'}
                             `}>
                         <CheckCircle className="w-5 h-5" />
                       </div>
@@ -392,7 +390,7 @@ export default function AdminNewsPage() {
                     {/* Status Badge */}
                     <div className="absolute top-3 right-3 pointer-events-none">
                       <span className={`px-2.5 py-1 rounded-lg text-xs font-semibold backdrop-blur-md shadow-sm border border-white/20
-                               ${item.status === 'published' ? 'bg-success/90 text-white' : 'bg-warning/90 text-white'}
+                               ${item.status === 'published' ? 'bg-success/90 text-success-foreground' : 'bg-warning/90 text-warning-foreground'}
                             `}>
                         {item.status === 'published' ? 'Yayında' : 'Taslak'}
                       </span>
@@ -406,7 +404,7 @@ export default function AdminNewsPage() {
                       <span>{formatDate(item.createdAt)}</span>
                       {item.category && (
                         <>
-                          <span className="w-1 h-1 bg-gray-300 rounded-full" />
+                          <span className="w-1 h-1 bg-muted rounded-full" />
                           <span className="text-muted-foreground font-medium">{item.category}</span>
                         </>
                       )}
@@ -432,14 +430,14 @@ export default function AdminNewsPage() {
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => handleDelete(item._id)}
-                          className="p-2 text-muted-foreground hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                          className="p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
                           title="Sil"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
                         <Link
                           href={`/admin/news/${item._id}/edit`}
-                          className="flex items-center px-3 py-1.5 bg-surface-tertiary text-foreground text-sm font-medium rounded-lg hover:bg-gray-200 transition-colors"
+                          className="flex items-center px-3 py-1.5 bg-surface-tertiary text-foreground text-sm font-medium rounded-lg hover:bg-muted transition-colors"
                         >
                           <Pencil className="w-3.5 h-3.5 mr-1.5" />
                           Düzenle
@@ -542,7 +540,7 @@ export default function AdminNewsPage() {
                           </Link>
                           <button
                             onClick={() => handleDelete(item._id)}
-                            className="p-1.5 text-muted-foreground hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                            className="p-1.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
                             title="Sil"
                           >
                             <Trash2 className="w-4 h-4" />
@@ -557,6 +555,6 @@ export default function AdminNewsPage() {
           )}
         </>
       )}
-    </div>
+    </AdminPageLayout>
   );
 }

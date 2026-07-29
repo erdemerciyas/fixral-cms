@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../../../../lib/auth';
-import connectDB from '../../../../lib/mongoose';
 import Slider from '../../../../models/Slider';
 import { withSecurity, SecurityConfigs } from '../../../../lib/security-middleware';
 
@@ -12,7 +11,6 @@ export const runtime = 'nodejs';
 // GET /api/admin/slider - Tüm slider'ları getir (Admin only)
 export const GET = withSecurity(SecurityConfigs.admin)(async () => {
   try {
-    await connectDB();
     // Tüm slider'ları order'a göre sırala (aktif/pasif fark etmeksizin)
     const sliders = await Slider.find({})
       .sort({ order: 1, createdAt: -1 })
@@ -32,7 +30,6 @@ export const POST = withSecurity(SecurityConfigs.admin)(async (request: Request)
   try {
     const session = await getServerSession(authOptions); // only to capture email
 
-    await connectDB();
     const body = await request.json();
     
     // Yeni slider'ın order'ını belirle (en büyük order + 1)

@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import connectDB from '@/lib/mongoose';
 import Language from '@/models/Language';
 
 // PATCH /api/admin/languages/[id]
@@ -14,7 +13,6 @@ export async function PATCH(
     return NextResponse.json({ success: false, error: 'Yetkisiz.' }, { status: 401 });
   }
 
-  await connectDB();
   const { id } = await params;
 
   let body: Record<string, unknown>;
@@ -47,7 +45,6 @@ export async function DELETE(
     return NextResponse.json({ success: false, error: 'Yetkisiz.' }, { status: 401 });
   }
 
-  await connectDB();
   const { id } = await params;
 
   const language = await Language.findById(id);

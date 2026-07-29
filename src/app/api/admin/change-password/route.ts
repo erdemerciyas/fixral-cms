@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import connectDB from '../../../../lib/mongoose';
 import { authOptions } from '../../../../lib/auth';
 import bcrypt from 'bcryptjs';
 import { withSecurity, SecurityConfigs } from '../../../../lib/security-middleware';
@@ -25,8 +24,6 @@ export const POST = withSecurity(SecurityConfigs.admin)(async (request: Request)
         { status: 500 }
       );
     }
-
-    await connectDB();
 
     const admin = await User.findOne({ email });
 

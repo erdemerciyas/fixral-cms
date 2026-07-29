@@ -3,7 +3,6 @@ import { withSecurity, SecurityConfigs } from '@/lib/security-middleware';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
-import connectDB from '@/lib/mongoose';
 import Settings from '@/models/Settings';
 import SiteSettings, { type ISiteSettings } from '@/models/SiteSettings';
 
@@ -13,8 +12,6 @@ export async function GET() {
     console.log('🔍 GET /api/public/settings called');
   }
   try {
-    await connectDB();
-
     const siteSettings = await SiteSettings.getSiteSettings();
 
     // Map to a public-friendly response shape
@@ -56,7 +53,6 @@ export const PUT = withSecurity(SecurityConfigs.admin)(async (request: NextReque
     const body = await request.json();
     if (process.env.NODE_ENV === 'development') console.log('📝 Body keys:', Object.keys(body));
     
-    await connectDB();
     if (process.env.NODE_ENV === 'development') console.log('🔗 Database connected');
 
     const settings = await Settings.findOneAndUpdate(
@@ -144,7 +140,6 @@ export const POST = withSecurity(SecurityConfigs.admin)(async (request: NextRequ
     const body = await request.json();
     if (process.env.NODE_ENV === 'development') console.log('📝 Body keys:', Object.keys(body));
     
-    await connectDB();
     if (process.env.NODE_ENV === 'development') console.log('🔗 Database connected');
 
     const settings = await Settings.findOneAndUpdate(

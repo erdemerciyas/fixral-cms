@@ -1,36 +1,34 @@
-'use client';
+'use client'
 
-import { useTheme } from 'next-themes';
-import { useEffect, useState } from 'react';
-import { Sun as SunIcon, Moon as MoonIcon } from 'lucide-react';
+import { useTheme } from 'next-themes'
+import { useEffect, useState } from 'react'
+import { Moon, Sun } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
 
 export default function ThemeToggle() {
-    const [mounted, setMounted] = useState(false);
-    const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false)
+  const { resolvedTheme, setTheme } = useTheme()
 
-    useEffect(() => {
-        setMounted(true);
-    }, []);
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
-    if (!mounted) {
-        return (
-            <div className="w-9 h-9 flex items-center justify-center text-slate-400">
-                <div className="w-5 h-5 bg-slate-200 dark:bg-slate-700 rounded-full animate-pulse" />
-            </div>
-        );
-    }
+  if (!mounted) {
+    return <Skeleton className="h-9 w-9 rounded-md" />
+  }
 
-    return (
-        <button
-            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-            className="p-2 rounded-lg text-slate-500 hover:text-indigo-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-indigo-400 dark:hover:bg-slate-800 transition-colors"
-            aria-label="Toggle Dark Mode"
-        >
-            {theme === 'dark' ? (
-                <SunIcon className="w-5 h-5" />
-            ) : (
-                <MoonIcon className="w-5 h-5" />
-            )}
-        </button>
-    );
+  const isDark = resolvedTheme === 'dark'
+
+  return (
+    <Button
+      variant="ghost"
+      size="icon"
+      onClick={() => setTheme(isDark ? 'light' : 'dark')}
+      aria-label={isDark ? 'Açık temaya geç' : 'Koyu temaya geç'}
+      title={isDark ? 'Açık tema' : 'Koyu tema'}
+    >
+      {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+    </Button>
+  )
 }

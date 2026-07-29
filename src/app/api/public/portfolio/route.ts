@@ -4,7 +4,6 @@ import { getServerSession } from 'next-auth';
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
 import { authOptions } from '@/lib/auth';
-import connectDB from '@/lib/mongoose';
 import Portfolio from '@/models/Portfolio';
 import Category from '@/models/Category';
 
@@ -132,8 +131,6 @@ import Category from '@/models/Category';
 // GET - Tüm portfolyo öğelerini getir (çok dilli alanlar dahil)
 export async function GET(request: Request) {
   try {
-    await connectDB();
-    
     // URL'den query parameter'larını al
     const { searchParams } = new URL(request.url);
     const categorySlug = searchParams.get('category');
@@ -267,8 +264,6 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 
-    await connectDB();
-    
     const data: Record<string, unknown> = await request.json();
     
     // Çoklu kategori desteği için validation

@@ -71,7 +71,9 @@ export class SecurityHeaders {
       'gyroscope=()',
       'accelerometer=()'
     ].join(', '),
-    crossOriginEmbedderPolicy: 'credentialless',
+    // COEP 'credentialless' Google Maps gibi üçüncü parti iframe'leri bloklar (ERR_BLOCKED_BY_RESPONSE);
+    // SharedArrayBuffer ihtiyacı olmadığından 'unsafe-none' kullanılır.
+    crossOriginEmbedderPolicy: 'unsafe-none',
     crossOriginOpenerPolicy: 'same-origin',
     crossOriginResourcePolicy: 'same-origin'
   };

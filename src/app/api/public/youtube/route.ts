@@ -1,7 +1,5 @@
 import { NextResponse } from "next/server";
 import Video from "@/models/Video";
-import connectDB from "@/lib/mongoose";
-
 export const dynamic = "force-dynamic";
 
 // Function to get videos from database only (no YouTube API)
@@ -32,8 +30,6 @@ async function getVideosFromDatabase(queryParams: { limit?: number; type?: strin
 export async function GET(req: Request) {
   try {
     // Connect to database
-    await connectDB();
-
     // Parse query parameters
     const { searchParams } = new URL(req.url);
     const limit = searchParams.get("limit") ? parseInt(searchParams.get("limit")!) : 12;

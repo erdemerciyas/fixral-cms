@@ -5,8 +5,6 @@
  * News, Portfolio desteklenir.
  */
 
-import connectDB from '@/lib/mongoose';
-
 export type CloneableType = 'news' | 'portfolio';
 
 interface CloneResult {
@@ -20,8 +18,6 @@ export async function cloneContent(
   type: CloneableType,
   id: string
 ): Promise<CloneResult> {
-  await connectDB();
-
   switch (type) {
     case 'news':      return cloneNews(id);
     case 'portfolio': return clonePortfolio(id);

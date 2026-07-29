@@ -235,28 +235,28 @@ const ModernEditor: React.FC<ModernEditorProps> = ({
   if (!isMounted || !editor) {
     return (
       <div className="animate-pulse">
-        <div className="h-12 bg-slate-200 rounded-t-lg mb-2"></div>
-        <div className="h-48 bg-slate-100 rounded-b-lg"></div>
+        <div className="h-12 bg-muted rounded-t-lg mb-2"></div>
+        <div className="h-48 bg-muted rounded-b-lg"></div>
       </div>
     );
   }
 
   return (
     <div 
-      className="border border-slate-300 rounded-lg overflow-hidden bg-white tiptap-editor-container"
+      className="border border-input rounded-lg overflow-hidden bg-card tiptap-editor-container"
     >
       {/* Toolbar */}
       {showToolbar && !readOnly && (
-        <div className="border-b border-slate-200 bg-slate-50 p-3">
+        <div className="border-b border-border bg-muted/50 p-3">
           <div className="flex flex-wrap items-center gap-1">
             
             {/* Undo/Redo */}
-            <div className="flex items-center border-r border-slate-300 pr-2 mr-2">
+            <div className="flex items-center border-r border-input pr-2 mr-2">
               <button
                 type="button"
                 onClick={() => editor.chain().focus().undo().run()}
                 disabled={!editor.can().undo()}
-                className="p-2 rounded hover:bg-slate-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="p-2 rounded hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed"
                 title="Geri Al"
               >
                 <ArrowUturnLeftIcon className="w-4 h-4" />
@@ -265,7 +265,7 @@ const ModernEditor: React.FC<ModernEditorProps> = ({
                 type="button"
                 onClick={() => editor.chain().focus().redo().run()}
                 disabled={!editor.can().redo()}
-                className="p-2 rounded hover:bg-slate-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="p-2 rounded hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed"
                 title="İleri Al"
               >
                 <ArrowUturnRightIcon className="w-4 h-4" />
@@ -273,11 +273,11 @@ const ModernEditor: React.FC<ModernEditorProps> = ({
             </div>
 
             {/* Text Formatting */}
-            <div className="flex items-center border-r border-slate-300 pr-2 mr-2">
+            <div className="flex items-center border-r border-input pr-2 mr-2">
               <button
                 type="button"
                 onClick={() => editor.chain().focus().toggleBold().run()}
-                className={`p-2 rounded hover:bg-slate-200 ${editor.isActive('bold') ? 'bg-blue-100 text-blue-700' : ''}`}
+                className={`p-2 rounded hover:bg-muted ${editor.isActive('bold') ? 'bg-info/15 text-info' : ''}`}
                 title="Kalın"
               >
                 <BoldIcon className="w-4 h-4" />
@@ -285,7 +285,7 @@ const ModernEditor: React.FC<ModernEditorProps> = ({
               <button
                 type="button"
                 onClick={() => editor.chain().focus().toggleItalic().run()}
-                className={`p-2 rounded hover:bg-slate-200 ${editor.isActive('italic') ? 'bg-blue-100 text-blue-700' : ''}`}
+                className={`p-2 rounded hover:bg-muted ${editor.isActive('italic') ? 'bg-info/15 text-info' : ''}`}
                 title="İtalik"
               >
                 <ItalicIcon className="w-4 h-4" />
@@ -293,7 +293,7 @@ const ModernEditor: React.FC<ModernEditorProps> = ({
               <button
                 type="button"
                 onClick={() => editor.chain().focus().toggleUnderline().run()}
-                className={`p-2 rounded hover:bg-slate-200 ${editor.isActive('underline') ? 'bg-blue-100 text-blue-700' : ''}`}
+                className={`p-2 rounded hover:bg-muted ${editor.isActive('underline') ? 'bg-info/15 text-info' : ''}`}
                 title="Altı Çizili"
               >
                 <UnderlineIcon className="w-4 h-4" />
@@ -301,7 +301,7 @@ const ModernEditor: React.FC<ModernEditorProps> = ({
               <button
                 type="button"
                 onClick={() => editor.chain().focus().toggleStrike().run()}
-                className={`p-2 rounded hover:bg-slate-200 ${editor.isActive('strike') ? 'bg-blue-100 text-blue-700' : ''}`}
+                className={`p-2 rounded hover:bg-muted ${editor.isActive('strike') ? 'bg-info/15 text-info' : ''}`}
                 title="Üstü Çizili"
               >
                 <StrikethroughIcon className="w-4 h-4" />
@@ -309,7 +309,7 @@ const ModernEditor: React.FC<ModernEditorProps> = ({
               <button
                 type="button"
                 onClick={() => editor.chain().focus().toggleHighlight().run()}
-                className={`p-2 rounded hover:bg-slate-200 ${editor.isActive('highlight') ? 'bg-yellow-100 text-yellow-700' : ''}`}
+                className={`p-2 rounded hover:bg-muted ${editor.isActive('highlight') ? 'bg-warning/10 text-warning' : ''}`}
                 title="Vurgula"
               >
                 <HighlightIcon className="w-4 h-4" />
@@ -317,7 +317,7 @@ const ModernEditor: React.FC<ModernEditorProps> = ({
             </div>
 
             {/* Headings */}
-            <div className="flex items-center border-r border-slate-300 pr-2 mr-2">
+            <div className="flex items-center border-r border-input pr-2 mr-2">
               <select
                 onChange={(e) => {
                   const level = parseInt(e.target.value);
@@ -335,7 +335,7 @@ const ModernEditor: React.FC<ModernEditorProps> = ({
                   editor.isActive('heading', { level: 5 }) ? 5 :
                   editor.isActive('heading', { level: 6 }) ? 6 : 0
                 }
-                className="px-2 py-1 text-sm border border-slate-300 rounded hover:bg-slate-100"
+                className="px-2 py-1 text-sm border border-input rounded hover:bg-muted"
               >
                 <option value={0}>Paragraf</option>
                 <option value={1}>Başlık 1</option>
@@ -348,11 +348,11 @@ const ModernEditor: React.FC<ModernEditorProps> = ({
             </div>
 
             {/* Text Alignment */}
-            <div className="flex items-center border-r border-slate-300 pr-2 mr-2">
+            <div className="flex items-center border-r border-input pr-2 mr-2">
               <button
                 type="button"
                 onClick={() => editor.chain().focus().setTextAlign('left').run()}
-                className={`p-2 rounded hover:bg-slate-200 ${editor.isActive({ textAlign: 'left' }) ? 'bg-blue-100 text-blue-700' : ''}`}
+                className={`p-2 rounded hover:bg-muted ${editor.isActive({ textAlign: 'left' }) ? 'bg-info/15 text-info' : ''}`}
                 title="Sola Hizala"
               >
                 <Bars3BottomLeftIcon className="w-4 h-4" />
@@ -360,7 +360,7 @@ const ModernEditor: React.FC<ModernEditorProps> = ({
               <button
                 type="button"
                 onClick={() => editor.chain().focus().setTextAlign('center').run()}
-                className={`p-2 rounded hover:bg-slate-200 ${editor.isActive({ textAlign: 'center' }) ? 'bg-blue-100 text-blue-700' : ''}`}
+                className={`p-2 rounded hover:bg-muted ${editor.isActive({ textAlign: 'center' }) ? 'bg-info/15 text-info' : ''}`}
                 title="Ortala"
               >
                 <Bars3Icon className="w-4 h-4" />
@@ -368,7 +368,7 @@ const ModernEditor: React.FC<ModernEditorProps> = ({
               <button
                 type="button"
                 onClick={() => editor.chain().focus().setTextAlign('right').run()}
-                className={`p-2 rounded hover:bg-slate-200 ${editor.isActive({ textAlign: 'right' }) ? 'bg-blue-100 text-blue-700' : ''}`}
+                className={`p-2 rounded hover:bg-muted ${editor.isActive({ textAlign: 'right' }) ? 'bg-info/15 text-info' : ''}`}
                 title="Sağa Hizala"
               >
                 <Bars3BottomRightIcon className="w-4 h-4" />
@@ -376,11 +376,11 @@ const ModernEditor: React.FC<ModernEditorProps> = ({
             </div>
 
             {/* Lists */}
-            <div className="flex items-center border-r border-slate-300 pr-2 mr-2">
+            <div className="flex items-center border-r border-input pr-2 mr-2">
               <button
                 type="button"
                 onClick={() => editor.chain().focus().toggleBulletList().run()}
-                className={`p-2 rounded hover:bg-slate-200 ${editor.isActive('bulletList') ? 'bg-blue-100 text-blue-700' : ''}`}
+                className={`p-2 rounded hover:bg-muted ${editor.isActive('bulletList') ? 'bg-info/15 text-info' : ''}`}
                 title="Madde İşaretli Liste"
               >
                 <ListBulletIcon className="w-4 h-4" />
@@ -388,7 +388,7 @@ const ModernEditor: React.FC<ModernEditorProps> = ({
               <button
                 type="button"
                 onClick={() => editor.chain().focus().toggleOrderedList().run()}
-                className={`p-2 rounded hover:bg-slate-200 ${editor.isActive('orderedList') ? 'bg-blue-100 text-blue-700' : ''}`}
+                className={`p-2 rounded hover:bg-muted ${editor.isActive('orderedList') ? 'bg-info/15 text-info' : ''}`}
                 title="Numaralı Liste"
               >
                 <NumberedListIcon className="w-4 h-4" />
@@ -396,7 +396,7 @@ const ModernEditor: React.FC<ModernEditorProps> = ({
               <button
                 type="button"
                 onClick={() => editor.chain().focus().toggleBlockquote().run()}
-                className={`p-2 rounded hover:bg-slate-200 ${editor.isActive('blockquote') ? 'bg-blue-100 text-blue-700' : ''}`}
+                className={`p-2 rounded hover:bg-muted ${editor.isActive('blockquote') ? 'bg-info/15 text-info' : ''}`}
                 title="Alıntı"
               >
                 <ChatBubbleLeftIcon className="w-4 h-4" />
@@ -404,11 +404,11 @@ const ModernEditor: React.FC<ModernEditorProps> = ({
             </div>
 
             {/* Code */}
-            <div className="flex items-center border-r border-slate-300 pr-2 mr-2">
+            <div className="flex items-center border-r border-input pr-2 mr-2">
               <button
                 type="button"
                 onClick={() => editor.chain().focus().toggleCode().run()}
-                className={`p-2 rounded hover:bg-slate-200 ${editor.isActive('code') ? 'bg-blue-100 text-blue-700' : ''}`}
+                className={`p-2 rounded hover:bg-muted ${editor.isActive('code') ? 'bg-info/15 text-info' : ''}`}
                 title="Satır İçi Kod"
               >
                 <CommandLineIcon className="w-4 h-4" />
@@ -417,7 +417,7 @@ const ModernEditor: React.FC<ModernEditorProps> = ({
                 <button
                   type="button"
                   onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-                  className={`p-2 rounded hover:bg-slate-200 ${editor.isActive('codeBlock') ? 'bg-blue-100 text-blue-700' : ''}`}
+                  className={`p-2 rounded hover:bg-muted ${editor.isActive('codeBlock') ? 'bg-info/15 text-info' : ''}`}
                   title="Kod Bloğu"
                 >
                   <CodeBracketIcon className="w-4 h-4" />
@@ -426,11 +426,11 @@ const ModernEditor: React.FC<ModernEditorProps> = ({
             </div>
 
             {/* Media & Links */}
-            <div className="flex items-center border-r border-slate-300 pr-2 mr-2">
+            <div className="flex items-center border-r border-input pr-2 mr-2">
               <button
                 type="button"
                 onClick={setLink}
-                className={`p-2 rounded hover:bg-slate-200 ${editor.isActive('link') ? 'bg-blue-100 text-blue-700' : ''}`}
+                className={`p-2 rounded hover:bg-muted ${editor.isActive('link') ? 'bg-info/15 text-info' : ''}`}
                 title="Link Ekle"
               >
                 <LinkIcon className="w-4 h-4" />
@@ -439,7 +439,7 @@ const ModernEditor: React.FC<ModernEditorProps> = ({
                 <button
                   type="button"
                   onClick={() => setShowMediaBrowser(true)}
-                  className="p-2 rounded hover:bg-slate-200"
+                  className="p-2 rounded hover:bg-muted"
                   title="Resim Ekle"
                 >
                   <PhotoIcon className="w-4 h-4" />
@@ -449,7 +449,7 @@ const ModernEditor: React.FC<ModernEditorProps> = ({
                 <button
                   type="button"
                   onClick={addTable}
-                  className="p-2 rounded hover:bg-slate-200"
+                  className="p-2 rounded hover:bg-muted"
                   title="Tablo Ekle"
                 >
                   <TableCellsIcon className="w-4 h-4" />
@@ -462,7 +462,7 @@ const ModernEditor: React.FC<ModernEditorProps> = ({
               <button
                 type="button"
                 onClick={() => setShowPreview(!showPreview)}
-                className={`p-2 rounded hover:bg-slate-200 ${showPreview ? 'bg-green-100 text-green-700' : ''}`}
+                className={`p-2 rounded hover:bg-muted ${showPreview ? 'bg-success/15 text-success' : ''}`}
                 title="Önizleme"
               >
                 <EyeIcon className="w-4 h-4" />
@@ -489,7 +489,7 @@ const ModernEditor: React.FC<ModernEditorProps> = ({
             />
             {/* Placeholder */}
             {editor.isEmpty && !readOnly && (
-              <div className="absolute top-4 left-4 text-slate-400 pointer-events-none z-10">
+              <div className="absolute top-4 left-4 text-muted-foreground pointer-events-none z-10">
                 {placeholder}
               </div>
             )}

@@ -1,4 +1,4 @@
-import { Skeleton } from '@/components/ui/skeleton'
+import { ListPageSkeleton } from '@/components/admin/admin-skeletons'
 
 interface AdminPageLayoutProps {
   title: string
@@ -14,7 +14,7 @@ export function AdminPageLayout({
   children,
 }: AdminPageLayoutProps) {
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 duration-300 animate-in fade-in-0 slide-in-from-bottom-1 motion-reduce:animate-none">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0">
           <h1 className="text-2xl font-bold tracking-tight text-foreground">
@@ -33,22 +33,7 @@ export function AdminPageLayout({
   )
 }
 
+/** Geriye dönük uyumluluk: sayfa şekilli liste iskeletine yönlendirir */
 export function AdminPageLoading() {
-  return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div className="space-y-2">
-          <Skeleton className="h-8 w-48" />
-          <Skeleton className="h-4 w-64" />
-        </div>
-        <Skeleton className="h-10 w-32" />
-      </div>
-      <Skeleton className="h-14 w-full rounded-xl" />
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {Array.from({ length: 6 }).map((_, i) => (
-          <Skeleton key={i} className="h-28 rounded-xl" />
-        ))}
-      </div>
-    </div>
-  )
+  return <ListPageSkeleton />
 }

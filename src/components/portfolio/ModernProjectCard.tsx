@@ -2,9 +2,9 @@
 
 import React, { useState, useRef } from 'react';
 import Image from 'next/image';
-import { motion, useInView } from 'framer-motion';
+import { m, useInView } from 'framer-motion';
 import { usePathname } from 'next/navigation';
-import { Cube, ImageBroken } from '@phosphor-icons/react';
+import { Box as Cube, ImageOff as ImageBroken } from 'lucide-react';
 import { ProjectSummary } from '@/types/portfolio';
 import HTMLContent from '../HTMLContent';
 
@@ -49,7 +49,7 @@ export default function ModernProjectCard({
   const aspectClass = span === 'lg' ? 'aspect-[16/9]' : span === 'sm' ? 'aspect-[4/5]' : 'aspect-[3/2]';
 
   return (
-    <motion.div
+    <m.div
       ref={ref}
       initial={{ opacity: 0, y: 40 }}
       animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
@@ -85,7 +85,7 @@ export default function ModernProjectCard({
               </>
             ) : (
               <div className="absolute inset-0 bg-gradient-to-br from-zinc-100 to-zinc-200 flex items-center justify-center">
-                <ImageBroken weight="light" className="w-10 h-10 text-zinc-400" />
+                <ImageBroken className="w-10 h-10 text-zinc-400" />
               </div>
             )}
 
@@ -130,7 +130,7 @@ export default function ModernProjectCard({
               )}
               {project.models3D && project.models3D.length > 0 && (
                 <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-white/90 backdrop-blur-sm text-zinc-700 text-[10px] font-medium tracking-wide uppercase rounded-lg border border-zinc-200/50">
-                  <Cube weight="light" className="w-3 h-3" />
+                  <Cube className="w-3 h-3" />
                   3D
                 </span>
               )}
@@ -173,6 +173,6 @@ export default function ModernProjectCard({
           />
         </div>
       </div>
-    </motion.div>
+    </m.div>
   );
 }

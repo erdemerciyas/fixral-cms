@@ -2,7 +2,6 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import connectDB from '@/lib/mongoose';
 import Message from '@/models/Message';
 
 export async function DELETE(
@@ -19,8 +18,6 @@ export async function DELETE(
         if (!id) {
             return NextResponse.json({ error: 'Message ID is required' }, { status: 400 });
         }
-
-        await connectDB();
 
         // Ensure the message belongs to the user (either sent by them or sent to them)
         const message = await Message.findOne({

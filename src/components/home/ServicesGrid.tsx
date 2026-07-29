@@ -2,8 +2,8 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowRight, ArrowUpRight } from '@phosphor-icons/react';
-import { motion } from 'framer-motion';
+import { ArrowRight, ArrowUpRight } from 'lucide-react';
+import { m } from 'framer-motion';
 import HTMLContent from '../HTMLContent';
 import { resolveIconForService } from '../../lib/icons';
 import { useLocale } from '@/hooks/useLocale';
@@ -66,7 +66,7 @@ export default function ServicesGrid({ services = [] }: ServicesGridProps) {
     const FeaturedIcon = resolveIconForService(featured?.icon, featured?.title);
 
     return (
-        <motion.div
+        <m.div
             variants={containerVariants}
             initial="hidden"
             whileInView="visible"
@@ -76,7 +76,7 @@ export default function ServicesGrid({ services = [] }: ServicesGridProps) {
             aria-live="polite"
         >
             {/* Featured / Hero Service Card */}
-            <motion.div variants={itemVariants} className="mb-5" role="listitem">
+            <m.div variants={itemVariants} className="mb-5" role="listitem">
                 <Link
                     href={`/${lang}/services#${featured.title.toLowerCase().replace(/\s+/g, '-').replace(/&/g, '')}`}
                     className="group relative flex flex-col overflow-hidden rounded-2xl"
@@ -159,7 +159,7 @@ export default function ServicesGrid({ services = [] }: ServicesGridProps) {
                         )}
                     </div>
                 </Link>
-            </motion.div>
+            </m.div>
 
             {/* Service Cards Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
@@ -168,7 +168,7 @@ export default function ServicesGrid({ services = [] }: ServicesGridProps) {
                     const accent = accentColors[(index + 1) % accentColors.length];
 
                     return (
-                        <motion.div
+                        <m.div
                             key={service._id}
                             variants={itemVariants}
                             role="listitem"
@@ -293,7 +293,6 @@ export default function ServicesGrid({ services = [] }: ServicesGridProps) {
                                         </span>
                                         <ArrowRight
                                             size={13}
-                                            weight="bold"
                                             className="group-hover:translate-x-1"
                                             style={{
                                                 color: accent.text,
@@ -304,10 +303,10 @@ export default function ServicesGrid({ services = [] }: ServicesGridProps) {
                                     </div>
                                 </div>
                             </Link>
-                        </motion.div>
+                        </m.div>
                     );
                 })}
             </div>
-        </motion.div>
+        </m.div>
     );
 }

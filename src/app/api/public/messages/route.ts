@@ -4,7 +4,6 @@ import { getServerSession } from 'next-auth';
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
 import { authOptions } from '@/lib/auth';
-import connectDB from '@/lib/mongoose';
 import Message from '@/models/Message';
 import nodemailer from 'nodemailer';
 
@@ -23,8 +22,6 @@ export async function GET() {
       );
     }
 
-    await connectDB();
-    
     // Mesajları en yeniden eskiye doğru sırala
     const messages = await Message.find({})
       .sort({ createdAt: -1 })
@@ -62,8 +59,6 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
-
-    await connectDB();
 
     // Yeni mesaj oluştur
     const newMessage = await Message.create({

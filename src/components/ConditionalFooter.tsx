@@ -5,20 +5,16 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
-import { useActiveTheme } from '../providers/ActiveThemeProvider';
 import { useAppTranslations } from '@/hooks/useAppTranslations';
+import { Mail as Envelope, Phone, MapPin, ArrowUp } from 'lucide-react';
 import {
-  Envelope,
-  Phone,
-  MapPin,
-  ArrowUp,
   LinkedinLogo,
   TwitterLogo,
   InstagramLogo,
   FacebookLogo,
   GithubLogo,
   YoutubeLogo,
-} from '@phosphor-icons/react';
+} from '@/components/icons/social';
 
 const Version = dynamic(() => import('./Version'), {
   ssr: false,
@@ -90,10 +86,8 @@ const ConditionalFooter: React.FC = () => {
   const [settings, setSettings] = useState<FooterSettings | null>(null);
   const [loading, setLoading] = useState(true);
   const [site, setSite] = useState<SiteSettingsMinimal | null>(null);
-  const { theme } = useActiveTheme();
   const { t, locale } = useAppTranslations('footer');
 
-  const footerConfig = theme?.footer;
   const isAdminPage = pathname?.startsWith('/admin');
 
   useEffect(() => {
@@ -230,15 +224,13 @@ const ConditionalFooter: React.FC = () => {
     });
   };
 
-  const bgColor = footerConfig?.backgroundColor || '#09141d';
-  const textColor = footerConfig?.textColor || 'rgba(255,255,255,0.4)';
-  const headingColor = footerConfig?.headingColor || 'rgba(255,255,255,0.9)';
-  const linkColor = footerConfig?.linkColor || 'rgba(255,255,255,0.6)';
-  const accentColor = footerConfig?.accentColor || '#003450';
-  const borderColor =
-    footerConfig?.borderColor || 'rgba(255,255,255,0.06)';
-  const bottomTextColor =
-    footerConfig?.bottomTextColor || 'rgba(255,255,255,0.4)';
+  const bgColor = '#09141d';
+  const textColor = 'rgba(255,255,255,0.4)';
+  const headingColor = 'rgba(255,255,255,0.9)';
+  const linkColor = 'rgba(255,255,255,0.6)';
+  const accentColor = '#003450';
+  const borderColor = 'rgba(255,255,255,0.06)';
+  const bottomTextColor = 'rgba(255,255,255,0.4)';
 
   return (
     <footer
@@ -310,7 +302,6 @@ const ConditionalFooter: React.FC = () => {
                     }}
                   >
                     <Envelope
-                      weight="light"
                       className="h-4 w-4 shrink-0"
                       style={{ color: accentColor }}
                     />
@@ -340,7 +331,6 @@ const ConditionalFooter: React.FC = () => {
                     }}
                   >
                     <Phone
-                      weight="light"
                       className="h-4 w-4 shrink-0"
                       style={{ color: accentColor }}
                     />
@@ -366,7 +356,6 @@ const ConditionalFooter: React.FC = () => {
                     style={{ color: textColor }}
                   >
                     <MapPin
-                      weight="light"
                       className="mt-0.5 h-4 w-4 shrink-0"
                       style={{ color: accentColor }}
                     />
@@ -542,7 +531,7 @@ const ConditionalFooter: React.FC = () => {
                         }}
                       >
                         {IconComp && (
-                          <IconComp weight="light" className="h-[18px] w-[18px]" />
+                          <IconComp className="h-[18px] w-[18px]" />
                         )}
                       </a>
                     );
@@ -571,7 +560,7 @@ const ConditionalFooter: React.FC = () => {
                 e.currentTarget.style.color = linkColor;
               }}
             >
-              <ArrowUp weight="light" className="h-[18px] w-[18px]" />
+              <ArrowUp className="h-[18px] w-[18px]" />
             </button>
           </div>
         </div>

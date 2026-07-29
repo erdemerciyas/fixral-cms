@@ -309,7 +309,7 @@ export default function AdminPagesPage() {
               variant="default"
               onClick={saveOrder}
               disabled={savingOrder}
-              className="h-auto rounded-xl px-6 py-3 bg-emerald-600 text-primary-foreground hover:bg-emerald-700"
+              className="h-auto rounded-xl px-6 py-3 bg-success text-primary-foreground hover:bg-success"
             >
               {savingOrder ? (
                 <div className="mr-2 size-5 animate-spin rounded-full border-2 border-primary-foreground/30 border-t-primary-foreground" />
@@ -390,8 +390,8 @@ export default function AdminPagesPage() {
           </div>
         </div>
         {!isReorderEnabled && (
-          <div className="mt-2 text-xs text-amber-600 flex items-center">
-            <div className="w-1.5 h-1.5 rounded-full bg-amber-500 mr-2" />
+          <div className="mt-2 text-xs text-warning flex items-center">
+            <div className="w-1.5 h-1.5 rounded-full bg-warning mr-2" />
             Sıralama yapmak için filtreleri temizleyin (Arama yaparken sıralama devre dışıdır)
           </div>
         )}
@@ -623,8 +623,8 @@ function DraggablePageItem({
               <button
                 onClick={() => onStatusToggle(page)}
                 className={`inline-flex items-center px-2 py-0.5 rounded-full font-medium transition-colors cursor-pointer ${page.isActive
-                  ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200'
-                  : 'bg-amber-100 text-amber-700 hover:bg-amber-200'
+                  ? 'bg-success/15 text-success hover:bg-success/20'
+                  : 'bg-warning/15 text-warning hover:bg-warning/20'
                   }`}
               >
                 {page.isActive ? (
@@ -642,7 +642,7 @@ function DraggablePageItem({
               <span>{page.path}</span>
               <span>• Sıra: {page.order}</span>
               {!page.showInNavigation && (
-                <span className="text-amber-600">• Menüde Gizli</span>
+                <span className="text-warning">• Menüde Gizli</span>
               )}
             </div>
           </div>
@@ -665,7 +665,7 @@ function DraggablePageItem({
             variant="ghost"
             size="icon"
             onClick={() => onDelete(page._id)}
-            className="rounded-lg hover:bg-red-100"
+            className="rounded-lg hover:bg-destructive/20"
           >
             <Trash2 className="size-4 text-muted-foreground" />
           </Button>
@@ -711,8 +711,8 @@ function PageListItem({
             <button
               onClick={() => onStatusToggle(page)}
               className={`inline-flex items-center px-2 py-0.5 rounded-full font-medium transition-colors cursor-pointer ${page.isActive
-                ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200'
-                : 'bg-amber-100 text-amber-700 hover:bg-amber-200'
+                ? 'bg-success/15 text-success hover:bg-success/20'
+                : 'bg-warning/15 text-warning hover:bg-warning/20'
                 }`}
             >
               {page.isActive ? (
@@ -730,7 +730,7 @@ function PageListItem({
             <span>{page.path}</span>
             {isDraggable && <span>• Sıra: {page.order}</span>}
             {!page.showInNavigation && (
-              <span className="text-amber-600">• Menüde Gizli</span>
+              <span className="text-warning">• Menüde Gizli</span>
             )}
           </div>
         </div>
@@ -753,7 +753,7 @@ function PageListItem({
           variant="ghost"
           size="icon"
           onClick={() => onDelete(page._id)}
-          className="rounded-lg hover:bg-red-100"
+          className="rounded-lg hover:bg-destructive/20"
         >
           <Trash2 className="size-4 text-muted-foreground" />
         </Button>

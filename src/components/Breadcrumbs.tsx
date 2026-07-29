@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React from 'react';
-import { HomeIcon, ChevronRightIcon } from '@heroicons/react/20/solid';
+import { Home as HomeIcon, ChevronRight as ChevronRightIcon } from 'lucide-react';
 import { useAppTranslations } from '@/hooks/useAppTranslations';
 import { locales } from '@/i18n';
 

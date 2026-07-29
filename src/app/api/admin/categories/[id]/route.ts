@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import Category from '@/models/Category';
 import { authOptions } from '@/lib/auth';
-import connectDB from '@/lib/mongoose';
-
 /**
  * GET /api/admin/categories/[id] - Get single category
  */
@@ -20,8 +18,6 @@ export async function GET(
         { status: 401 }
       );
     }
-
-    await connectDB();
 
     const category = await Category.findById(params.id);
 
@@ -58,8 +54,6 @@ export async function PUT(
         { status: 401 }
       );
     }
-
-    await connectDB();
 
     const body = await req.json();
     const category = await Category.findByIdAndUpdate(
@@ -101,8 +95,6 @@ export async function DELETE(
         { status: 401 }
       );
     }
-
-    await connectDB();
 
     const category = await Category.findByIdAndDelete(params.id);
 

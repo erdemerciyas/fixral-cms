@@ -4,18 +4,16 @@ import { GeistMono } from 'geist/font/mono'
 import './globals.css'
 import { config } from '../core/lib/config'
 import Header from '../components/Header'
-import ClientWrapper from '../components/ClientWrapper'
+import MotionProvider from '../components/MotionProvider'
 import ConditionalFooter from '../components/ConditionalFooter'
 import Providers from '../components/Providers'
-import connectDB, { hasValidMongoUri } from '../lib/mongoose'
-import SiteSettings from '../models/SiteSettings'
+import { hasDatabaseUrl } from '../lib/prisma'
+import { getCachedSiteSettings } from '../lib/site-settings'
 import Script from 'next/script'
 import { headers } from 'next/headers'
 import GlobalBreadcrumbsJsonLd from '../components/seo/GlobalBreadcrumbsJsonLd';
 import PageTransitionWrapper from '../components/PageTransitionWrapper';
 import GrainOverlay from '../components/ui/GrainOverlay';
-
-export const dynamic = 'force-dynamic'
 
 const ENV_GOOGLE_VERIFICATION = process.env.GOOGLE_SITE_VERIFICATION
 const ENV_GA_ID = process.env.NEXT_PUBLIC_GA_ID
@@ -26,11 +24,10 @@ const geistMono = GeistMono
 
 export async function generateMetadata(): Promise<Metadata> {
   try {
-    if (!hasValidMongoUri()) {
+    if (!hasDatabaseUrl()) {
       throw new Error('DB_DISABLED');
     }
-    await connectDB();
-    const siteSettings = await SiteSettings.getSiteSettings();
+    const siteSettings = await getCachedSiteSettings();
     const seoConfig = siteSettings.seoConfig || {};
     const analyticsConfig = siteSettings.analyticsConfig || {};
 
@@ -117,12 +114,10 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
-import { ThemeProvider } from '../context/ThemeContext';
-import { ActiveThemeProvider } from '../providers/ActiveThemeProvider';
+import ThemeScope from '../components/providers/ThemeScope';
 import { LoadingBar } from '../components';
-import { ToastProvider } from '../components/ui/useToast';
-import FixralToastViewport from '../components/ui/FixralToast';
-import { Toaster } from 'react-hot-toast';
+import PublicToaster from '../components/PublicToaster';
+import { ConfirmProvider } from '../hooks/use-confirm';
 
 export default async function RootLayout({
   children,
@@ -134,10 +129,9 @@ export default async function RootLayout({
   let siteName = config.app.name;
   let siteUrl = config.app.url;
 
-  if (hasValidMongoUri()) {
+  if (hasDatabaseUrl()) {
     try {
-      await connectDB();
-      const siteSettings = await SiteSettings.getSiteSettings();
+      const siteSettings = await getCachedSiteSettings();
       siteName = siteSettings.siteName || config.app.name;
       siteUrl = siteSettings.siteUrl || config.app.url;
 
@@ -163,7 +157,7 @@ export default async function RootLayout({
   const locale = headersList.get('x-locale') || 'tr';
 
   return (
-    <html lang={locale} className="scroll-smooth">
+    <html lang={locale} className="scroll-smooth" suppressHydrationWarning>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="theme-color" content="#0f172a" />
@@ -249,7 +243,7 @@ export default async function RootLayout({
           </>
         )}
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} font-sans min-h-screen bg-page-bg flex flex-col text-zinc-800 antialiased`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} font-sans min-h-screen bg-page-bg flex flex-col text-foreground antialiased`}>
         {gtmId && (
           <noscript>
             <iframe
@@ -264,31 +258,27 @@ export default async function RootLayout({
         <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[10000] focus:bg-white focus:text-slate-900 focus:px-4 focus:py-2 focus:rounded-lg focus:shadow" aria-label="Skip to main content">
           Skip to content
         </a>
-        <ThemeProvider>
-          <ActiveThemeProvider>
-            <ToastProvider>
-              <LoadingBar />
-              <Providers>
-                <ClientWrapper>
-                  <Header />
-                  <GlobalBreadcrumbsJsonLd />
-                  <PageTransitionWrapper>
-                    <div className="relative flex-grow">
-                      <main id="main-content" className="relative z-100">
-                        <div>{children}</div>
-                      </main>
-                    </div>
-                  </PageTransitionWrapper>
+        <ThemeScope />
+        <ConfirmProvider>
+          <LoadingBar />
+          <Providers>
+            <MotionProvider>
+              <Header />
+              <GlobalBreadcrumbsJsonLd />
+              <PageTransitionWrapper>
+                <div className="relative flex-grow">
+                  <main id="main-content" className="relative z-100">
+                    <div>{children}</div>
+                  </main>
+                </div>
+              </PageTransitionWrapper>
 
-                  <ConditionalFooter />
-                  <GrainOverlay />
-                </ClientWrapper>
-              </Providers>
-              <FixralToastViewport />
-              <Toaster position="top-right" toastOptions={{ duration: 3000 }} />
-            </ToastProvider>
-          </ActiveThemeProvider>
-        </ThemeProvider>
+              <ConditionalFooter />
+              <GrainOverlay />
+            </MotionProvider>
+          </Providers>
+          <PublicToaster />
+        </ConfirmProvider>
 
         {config.isDevelopment && (
           <div id="dev-tools" className="hidden md:block fixed bottom-4 right-4 z-50 opacity-50 hover:opacity-100 transition-opacity pointer-events-none">

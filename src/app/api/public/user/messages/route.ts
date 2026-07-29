@@ -2,7 +2,6 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import connectDB from '@/lib/mongoose';
 import Message from '@/models/Message';
 
 export const dynamic = 'force-dynamic';
@@ -13,8 +12,6 @@ export async function GET(req: Request) {
         if (!session) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
-
-        await connectDB();
 
         const { searchParams } = new URL(req.url);
         const page = parseInt(searchParams.get('page') || '1');

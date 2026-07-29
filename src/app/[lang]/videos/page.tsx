@@ -2,17 +2,8 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
-import {
-  MagnifyingGlass,
-  Play,
-  VideoCamera,
-  Tag,
-  X,
-  CaretDown,
-  FilmStrip,
-  Lightning,
-} from '@phosphor-icons/react';
+import { m, AnimatePresence } from 'framer-motion';
+import { Search as MagnifyingGlass, Play, Video as VideoCamera, Tag, X, ChevronDown as CaretDown, Film as FilmStrip, Zap as Lightning } from 'lucide-react';
 import PageHero from '@/components/common/PageHero';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import { ScrollReveal } from '@/components/ui/ScrollReveal';
@@ -106,7 +97,7 @@ function VideoCardRedesigned({
       : 'md:col-span-4';
 
   return (
-    <motion.div
+    <m.div
       ref={innerRef}
       className={`col-span-12 ${colSpan} group`}
       initial={{ opacity: 0, y: 28, filter: 'blur(4px)' }}
@@ -137,7 +128,7 @@ function VideoCardRedesigned({
               className="w-14 h-14 rounded-full bg-white/90 dark:bg-zinc-950/80 backdrop-blur-sm flex items-center justify-center shadow-[0_4px_24px_rgba(0,52,80,0.2)] opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100 transition-all"
               style={{ transitionDuration: '700ms', transitionTimingFunction: 'cubic-bezier(0.32,0.72,0,1)' }}
             >
-              <Play weight="fill" className="w-6 h-6 text-[#003450] ml-0.5" />
+              <Play className="w-6 h-6 text-[#003450] ml-0.5" />
             </div>
           </div>
 
@@ -150,9 +141,9 @@ function VideoCardRedesigned({
               }`}
             >
               {video.type === 'short' ? (
-                <Lightning weight="light" className="w-3 h-3" />
+                <Lightning className="w-3 h-3" />
               ) : (
-                <FilmStrip weight="light" className="w-3 h-3" />
+                <FilmStrip className="w-3 h-3" />
               )}
               {video.type === 'short' ? 'Kısa' : 'Video'}
             </span>
@@ -221,7 +212,7 @@ function VideoCardRedesigned({
           </div>
         </div>
       </a>
-    </motion.div>
+    </m.div>
   );
 }
 
@@ -448,7 +439,6 @@ export default function VideosPage() {
               {/* Search */}
               <div className="flex-1 relative">
                 <MagnifyingGlass
-                  weight="light"
                   className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400"
                 />
                 <input
@@ -466,7 +456,7 @@ export default function VideosPage() {
                 />
                 <AnimatePresence>
                   {searchTerm && (
-                    <motion.button
+                    <m.button
                       initial={{ opacity: 0, scale: 0.8 }}
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.8 }}
@@ -475,8 +465,8 @@ export default function VideosPage() {
                       className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-full hover:bg-zinc-200 dark:hover:bg-zinc-700"
                       style={{ transitionDuration: '700ms', transitionTimingFunction: 'cubic-bezier(0.32,0.72,0,1)' }}
                     >
-                      <X weight="light" className="w-4 h-4 text-zinc-400" />
-                    </motion.button>
+                      <X className="w-4 h-4 text-zinc-400" />
+                    </m.button>
                   )}
                 </AnimatePresence>
               </div>
@@ -508,7 +498,7 @@ export default function VideosPage() {
                       }}
                     >
                       {typeFilter === btn.value && (
-                        <motion.span
+                        <m.span
                           layoutId="type-pill"
                           className="absolute inset-0 rounded-xl bg-[#003450] shadow-[0_2px_12px_rgba(0,52,80,0.3)]"
                           transition={{ type: 'spring', stiffness: 380, damping: 32 }}
@@ -547,7 +537,6 @@ export default function VideosPage() {
                       ))}
                     </select>
                     <CaretDown
-                      weight="light"
                       className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 pointer-events-none"
                     />
                   </div>
@@ -560,11 +549,11 @@ export default function VideosPage() {
               <div className="border-t border-zinc-200/60 dark:border-zinc-700/40 pt-5">
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="flex items-center gap-1.5 text-xs font-medium text-zinc-500 dark:text-zinc-400 mr-1">
-                    <Tag weight="light" className="w-3.5 h-3.5" />
+                    <Tag className="w-3.5 h-3.5" />
                     Etiketler
                   </span>
                   {availableTags.map((tag) => (
-                    <motion.button
+                    <m.button
                       key={tag}
                       onClick={() => toggleTag(tag)}
                       whileTap={{ scale: 0.95 }}
@@ -579,11 +568,11 @@ export default function VideosPage() {
                       }}
                     >
                       {tag}
-                    </motion.button>
+                    </m.button>
                   ))}
                   <AnimatePresence>
                     {(searchTerm || selectedTags.length > 0) && (
-                      <motion.button
+                      <m.button
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.9 }}
@@ -592,9 +581,9 @@ export default function VideosPage() {
                         className="px-3 py-1.5 rounded-full text-xs font-medium bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800/40 hover:bg-red-100 dark:hover:bg-red-900/30 ml-1"
                         style={{ transitionDuration: '700ms', transitionTimingFunction: 'cubic-bezier(0.32,0.72,0,1)' }}
                       >
-                        <X weight="light" className="w-3 h-3 inline mr-1 -mt-px" />
+                        <X className="w-3 h-3 inline mr-1 -mt-px" />
                         Temizle
-                      </motion.button>
+                      </m.button>
                     )}
                   </AnimatePresence>
                 </div>
@@ -604,7 +593,7 @@ export default function VideosPage() {
             {/* Results summary */}
             <div className="flex items-center justify-between pt-4 border-t border-zinc-200/60 dark:border-zinc-700/40 mt-5">
               <div className="flex items-center gap-2 text-zinc-500 dark:text-zinc-400">
-                <VideoCamera weight="light" className="w-4 h-4" />
+                <VideoCamera className="w-4 h-4" />
                 <span
                   className="text-sm tabular-nums"
                   style={{ fontFamily: 'var(--font-geist-mono)' }}
@@ -646,7 +635,7 @@ export default function VideosPage() {
             {/* Loading more skeleton */}
             <AnimatePresence>
               {loadingMore && (
-                <motion.div
+                <m.div
                   initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 16 }}
@@ -656,12 +645,12 @@ export default function VideosPage() {
                   {Array.from({ length: 3 }).map((_, i) => (
                     <SkeletonCard key={i} />
                   ))}
-                </motion.div>
+                </m.div>
               )}
             </AnimatePresence>
 
             {!hasMore && !loadingMore && filteredVideos.length > 6 && (
-              <motion.div
+              <m.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.7, ease }}
@@ -673,14 +662,14 @@ export default function VideosPage() {
                 >
                   Tüm videolar yüklendi
                 </span>
-              </motion.div>
+              </m.div>
             )}
           </>
         ) : (
           <ScrollReveal>
             <div className="text-center py-20 rounded-3xl bg-white dark:bg-zinc-900 border border-zinc-200/50 dark:border-zinc-700/30 shadow-[0_2px_20px_rgba(0,52,80,0.04)]">
               <div className="w-16 h-16 mx-auto mb-5 rounded-2xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">
-                <VideoCamera weight="light" className="w-8 h-8 text-zinc-400 dark:text-zinc-500" />
+                <VideoCamera className="w-8 h-8 text-zinc-400 dark:text-zinc-500" />
               </div>
               <h3
                 className="text-lg font-semibold text-zinc-800 dark:text-zinc-200 mb-2"

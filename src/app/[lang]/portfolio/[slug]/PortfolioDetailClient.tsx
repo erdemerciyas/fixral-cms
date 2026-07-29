@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { PortfolioItem } from '@/types/portfolio';
 import PageHero from '@/components/common/PageHero';
 import PortfolioMediaGallery from '@/components/portfolio/PortfolioMediaGallery';
@@ -69,7 +69,7 @@ export default function PortfolioDetailClient({ portfolioItem, relatedProjects, 
         <div className="container-content">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
             <div className="lg:col-span-8 space-y-12">
-              <motion.div
+              <m.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8 }}
@@ -81,9 +81,9 @@ export default function PortfolioDetailClient({ portfolioItem, relatedProjects, 
                   title={portfolioItem.title}
                   coverImage={portfolioItem.coverImage}
                 />
-              </motion.div>
+              </m.div>
 
-              <motion.div
+              <m.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.2 }}
@@ -98,10 +98,10 @@ export default function PortfolioDetailClient({ portfolioItem, relatedProjects, 
                     <HTMLContent content={portfolioItem.description} className="leading-relaxed" />
                   </div>
                 </div>
-              </motion.div>
+              </m.div>
 
               {portfolioItem.models3D && portfolioItem.models3D.length > 0 && (
-                <motion.div
+                <m.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 0.3 }}
@@ -109,12 +109,12 @@ export default function PortfolioDetailClient({ portfolioItem, relatedProjects, 
                 >
                   <h3 className="text-lg font-bold text-slate-800 mb-4">3D Modeller</h3>
                   <Portfolio3DFiles models3D={portfolioItem.models3D} />
-                </motion.div>
+                </m.div>
               )}
             </div>
 
             <div className="lg:col-span-4 space-y-8">
-              <motion.div
+              <m.div
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
@@ -189,7 +189,7 @@ export default function PortfolioDetailClient({ portfolioItem, relatedProjects, 
                     </Link>
                   </div>
                 </div>
-              </motion.div>
+              </m.div>
             </div>
           </div>
 

@@ -2,15 +2,8 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { usePathname } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
-import {
-    MagnifyingGlassIcon,
-    XMarkIcon,
-    NewspaperIcon,
-    FolderOpenIcon,
-    WrenchScrewdriverIcon,
-    ArrowRightIcon,
-} from '@heroicons/react/24/outline';
+import { m, AnimatePresence } from 'framer-motion';
+import { Search as MagnifyingGlassIcon, X as XMarkIcon, Newspaper as NewspaperIcon, FolderOpen as FolderOpenIcon, Wrench as WrenchScrewdriverIcon, ArrowRight as ArrowRightIcon } from 'lucide-react';
 import Link from 'next/link';
 import { locales } from '@/i18n';
 
@@ -138,7 +131,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
     return (
         <AnimatePresence>
             {isOpen && (
-                <motion.div
+                <m.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
@@ -150,7 +143,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                     <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" />
 
                     {/* Modal */}
-                    <motion.div
+                    <m.div
                         initial={{ opacity: 0, y: -20, scale: 0.97 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: -20, scale: 0.97 }}
@@ -284,8 +277,8 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                                 </div>
                             )}
                         </div>
-                    </motion.div>
-                </motion.div>
+                    </m.div>
+                </m.div>
             )}
         </AnimatePresence>
     );

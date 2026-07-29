@@ -1,6 +1,5 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import connectDB from '@/lib/mongoose';
 import News from '@/models/News';
 import { ensureModels } from '@/lib/ensure-models';
 import { logger } from '@/core/lib/logger';
@@ -18,8 +17,6 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
     try {
         const { slug } = await params;
-        await connectDB();
-
         let newsDoc = await News.findOne({ slug }).lean();
 
         if (!newsDoc) {
@@ -82,8 +79,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export async function generateStaticParams() {
     try {
-        await connectDB();
-
         const news = await News.find({ status: 'published' })
             .select('slug')
             .lean();
@@ -118,7 +113,6 @@ function normalizeTranslations(translations: any): Record<string, any> {
 }
 
 async function findNewsWithRetry(slug: string): Promise<any | null> {
-    await connectDB();
     await ensureModels('Portfolio', 'News');
 
     const slugsToTry = [slug];

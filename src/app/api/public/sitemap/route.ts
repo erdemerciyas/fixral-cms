@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import connectDB, { hasValidMongoUri } from '@/lib/mongoose';
+import { hasDatabaseUrl } from '@/lib/prisma';
 import Portfolio from '@/models/Portfolio';
 import Settings from '@/models/Settings';
 
@@ -15,8 +15,7 @@ export async function GET() {
     let baseUrl = process.env.NEXTAUTH_URL || 'https://erdemerciyas.com.tr';
     let portfolioItems: Array<{ slug: string; updatedAt: Date }> = [];
 
-    if (hasValidMongoUri()) {
-      await connectDB();
+    if (hasDatabaseUrl()) {
       // Base URL'i Settings'ten almayı dene
       const settingsDoc = (await Settings.findOne({ isActive: true }).lean()) as ISettingsLeanForSitemap | null;
       if (settingsDoc?.siteUrl) {

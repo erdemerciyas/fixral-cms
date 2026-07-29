@@ -1,6 +1,5 @@
 
 import { NextResponse } from 'next/server';
-import connectDB from '@/lib/mongoose';
 import FooterSettings from '@/models/FooterSettings';
 
 // Force dynamic rendering
@@ -10,8 +9,6 @@ export const runtime = 'nodejs';
 // GET: Footer ayarlarını getir (public)
 export async function GET() {
   try {
-    await connectDB();
-
     // Admin panelinden yapılandırılan FooterSettings modelini kullan
     const settings = await FooterSettings.getSingleton();
 

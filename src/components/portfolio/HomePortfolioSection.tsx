@@ -3,8 +3,8 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { motion } from 'framer-motion';
-import { ArrowRight } from '@phosphor-icons/react';
+import { m } from 'framer-motion';
+import { ArrowRight } from 'lucide-react';
 import ModernProjectCard from './ModernProjectCard';
 import EyebrowTag from '@/components/ui/EyebrowTag';
 import type { PortfolioItem } from '../../types/portfolio';
@@ -82,7 +82,7 @@ export default function HomePortfolioSection({
               className="w-20 h-20 rounded-3xl flex items-center justify-center mb-6"
               style={{ background: 'rgba(0,52,80,0.04)' }}
             >
-              <ArrowRight size={32} weight="light" className="text-zinc-300" />
+              <ArrowRight size={32} className="text-zinc-300" />
             </div>
             <h3 className="text-xl font-semibold text-zinc-700 mb-2">
               Projeler Yükleniyor
@@ -100,7 +100,7 @@ export default function HomePortfolioSection({
     <section className="py-24 md:py-32 lg:py-40 bg-zinc-50/50 relative overflow-hidden">
       <div className="max-w-[1400px] mx-auto px-6 sm:px-8 lg:px-12 relative z-10">
         {/* Header */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -118,10 +118,10 @@ export default function HomePortfolioSection({
             Tamamladığımız başarılı projelerden örnekler. Kalite ve yenilik odaklı
             çalışmalarımızı keşfedin.
           </p>
-        </motion.div>
+        </m.div>
 
         {/* Bento Grid -- 2 large + remaining smaller */}
-        <motion.div
+        <m.div
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
@@ -134,7 +134,7 @@ export default function HomePortfolioSection({
               : 'md:col-span-4';
 
             return (
-              <motion.div
+              <m.div
                 key={item._id}
                 variants={itemVariants}
                 className={spanClass}
@@ -157,13 +157,13 @@ export default function HomePortfolioSection({
                   index={index}
                   layout="grid"
                 />
-              </motion.div>
+              </m.div>
             );
           })}
-        </motion.div>
+        </m.div>
 
         {/* View All + Stats */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -187,7 +187,6 @@ export default function HomePortfolioSection({
             >
               <ArrowRight
                 size={14}
-                weight="bold"
                 className="text-zinc-500 group-hover:translate-x-0.5 group-hover:-translate-y-[1px]"
                 style={{ transition: 'transform 300ms cubic-bezier(0.32, 0.72, 0, 1)' }}
               />
@@ -210,7 +209,7 @@ export default function HomePortfolioSection({
               <div className="text-xs text-zinc-400 mt-0.5">Yıllık Deneyim</div>
             </div>
           </div>
-        </motion.div>
+        </m.div>
       </div>
     </section>
   );

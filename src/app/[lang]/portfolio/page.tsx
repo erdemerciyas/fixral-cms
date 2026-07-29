@@ -1,5 +1,4 @@
 import PortfolioTemplate from '@/templates/PortfolioTemplate';
-import connectDB from '@/lib/mongoose';
 import { getPortfolioItems } from '@/lib/data';
 import PageSetting from '@/models/PageSetting';
 import Category from '@/models/Category';
@@ -27,8 +26,6 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
 }
 
 export default async function PortfolioPage() {
-  await connectDB();
-
   try {
     const portfolioItems = await getPortfolioItems(100);
 

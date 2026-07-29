@@ -73,7 +73,7 @@ export default function NewsCarousel({
     return (
       <div className={`w-full bg-gray-100 rounded-lg ${className}`}>
         <div className="h-96 flex items-center justify-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-fixral-primary"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
         </div>
       </div>
     );
@@ -156,7 +156,7 @@ export default function NewsCarousel({
                   {/* Content Container */}
                   <div className="p-4 flex flex-col flex-grow">
                     {/* Title */}
-                    <h3 className="text-lg font-semibold text-gray-900 line-clamp-2 mb-2 hover:text-fixral-primary transition-colors">
+                    <h3 className="text-lg font-semibold text-gray-900 line-clamp-2 mb-2 hover:text-primary transition-colors">
                       {translation.title}
                     </h3>
 
@@ -180,7 +180,7 @@ export default function NewsCarousel({
 
                       {/* Tags */}
                       {item.tags && item.tags.length > 0 && (
-                        <span className="text-fixral-primary font-medium">
+                        <span className="text-primary font-medium">
                           {item.tags[0]}
                         </span>
                       )}

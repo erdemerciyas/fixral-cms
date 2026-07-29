@@ -1,17 +1,8 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import {
-  MagnifyingGlassIcon,
-  XMarkIcon,
-  TagIcon,
-  Squares2X2Icon,
-  CalendarIcon,
-  CodeBracketIcon,
-  AdjustmentsHorizontalIcon,
-  ChevronDownIcon
-} from '@heroicons/react/24/outline';
+import { m, AnimatePresence } from 'framer-motion';
+import { Search as MagnifyingGlassIcon, X as XMarkIcon, Tag as TagIcon, LayoutGrid as Squares2X2Icon, Calendar as CalendarIcon, Code as CodeBracketIcon, SlidersHorizontal as AdjustmentsHorizontalIcon, ChevronDown as ChevronDownIcon } from 'lucide-react';
 import type { Category } from '../../types/portfolio';
 
 interface FilterState {
@@ -201,7 +192,7 @@ export default function PortfolioFilters({
       {/* Active Filters Display */}
       <AnimatePresence>
         {activeFiltersCount > 0 && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
@@ -287,14 +278,14 @@ export default function PortfolioFilters({
                 Tümünü Temizle
               </button>
             </div>
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
 
       {/* Advanced Filters */}
       <AnimatePresence>
         {showAdvanced && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
@@ -388,7 +379,7 @@ export default function PortfolioFilters({
                 </div>
               </div>
             </div>
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
 

@@ -1,15 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../../../../lib/auth';
-import connectDB from '../../../../lib/mongoose';
 import PageSetting from '../../../../models/PageSetting';
 
 export async function GET() {
   try {
     // Allow public access for navigation data (no auth check for public navigation)
     // const url = new URL(request.url); // Reserved for future query parameter handling
-    await connectDB();
-
     let pages = await PageSetting.find().sort({ order: 1 });
 
     // Varsayılan sayfalar — yalnızca koleksiyon tamamen boşken seed edilir.
@@ -62,8 +59,6 @@ export async function POST(request: NextRequest) {
 
     const { pageId, ...updates } = await request.json();
 
-    await connectDB();
-
     const page = await PageSetting.findOneAndUpdate(
       { pageId },
       updates,
@@ -89,8 +84,6 @@ export async function PUT(request: NextRequest) {
     }
 
     const pages = await request.json();
-
-    await connectDB();
 
     // Update all pages with new order
     const updatePromises = pages.map((page: { pageId: string; order: number }) =>
@@ -125,7 +118,6 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ message: 'pageId gereklidir' }, { status: 400 });
     }
 
-    await connectDB();
     await PageSetting.deleteOne({ pageId });
 
     return NextResponse.json({ message: 'Sayfa silindi' });

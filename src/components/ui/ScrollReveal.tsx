@@ -1,6 +1,6 @@
 'use client'
 
-import { motion, type Variants } from 'framer-motion'
+import { m, type Variants } from 'framer-motion'
 import { type ReactNode } from 'react'
 
 const containerVariants: Variants = {
@@ -47,7 +47,7 @@ export function ScrollReveal({
   delay = 0,
   once = true,
 }: ScrollRevealProps) {
-  const Component = motion[as] as typeof motion.div
+  const Component = m[as] as typeof m.div
 
   if (stagger) {
     return (
@@ -92,8 +92,8 @@ export function ScrollRevealItem({
   className?: string
 }) {
   return (
-    <motion.div variants={itemVariants} className={className}>
+    <m.div variants={itemVariants} className={className}>
       {children}
-    </motion.div>
+    </m.div>
   )
 }

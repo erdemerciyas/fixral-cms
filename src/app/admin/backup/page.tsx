@@ -61,7 +61,7 @@ export default function AdminBackupPage() {
       const a = document.createElement('a');
       a.href = downloadUrl;
       const date = new Date().toISOString().slice(0, 10);
-      a.download = `fixral-backup-${date}.zip`;
+      a.download = `site-backup-${date}.zip`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -125,8 +125,8 @@ export default function AdminBackupPage() {
       {importResult && (
         <div className={`p-4 rounded-xl border flex items-center gap-3 ${
           importResult.type === 'success'
-            ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
-            : 'bg-red-50 border-red-200 text-red-800'
+            ? 'bg-success/10 border-success/30 text-success'
+            : 'bg-destructive/10 border-destructive/30 text-destructive'
         }`}>
           {importResult.type === 'success' ? (
             <CheckCircle2 className="w-5 h-5 flex-shrink-0" />
@@ -141,8 +141,8 @@ export default function AdminBackupPage() {
         {/* Export Card */}
         <div className="bg-card rounded-xl shadow-sm border border-border/60 p-6 flex flex-col">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 rounded-xl bg-indigo-100 flex items-center justify-center flex-shrink-0">
-              <CloudDownload className="w-6 h-6 text-indigo-600" />
+            <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+              <CloudDownload className="w-6 h-6 text-primary" />
             </div>
             <div>
               <h2 className="text-lg font-bold text-foreground">Dışa Aktar</h2>
@@ -157,11 +157,11 @@ export default function AdminBackupPage() {
             <Button
               onClick={() => handleExport(true)}
               disabled={exporting}
-              className="w-full bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {exporting ? (
                 <>
-                  <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" />
+                  <div className="animate-spin rounded-full h-4 w-4 border-2 border-current border-t-transparent" />
                   <span>Hazırlanıyor...</span>
                 </>
               ) : (
@@ -186,8 +186,8 @@ export default function AdminBackupPage() {
         {/* Import Card */}
         <div className="bg-card rounded-xl shadow-sm border border-border/60 p-6 flex flex-col">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center flex-shrink-0">
-              <CloudUpload className="w-6 h-6 text-amber-600" />
+            <div className="w-12 h-12 rounded-xl bg-warning/15 flex items-center justify-center flex-shrink-0">
+              <CloudUpload className="w-6 h-6 text-warning" />
             </div>
             <div>
               <h2 className="text-lg font-bold text-foreground">İçe Aktar</h2>
@@ -196,7 +196,7 @@ export default function AdminBackupPage() {
           </div>
           <p className="text-sm text-muted-foreground mb-6 flex-1">
             Daha önce oluşturulmuş bir yedek dosyasını yükleyerek verilerinizi geri yükleyin.
-            <span className="block mt-2 text-amber-600 font-medium">
+            <span className="block mt-2 text-warning font-medium">
               Dikkat: Mevcut veriler yedekteki verilerle değiştirilecektir.
             </span>
           </p>
@@ -211,11 +211,11 @@ export default function AdminBackupPage() {
             onClick={() => fileInputRef.current?.click()}
             disabled={importing}
             variant="outline"
-            className="w-full rounded-xl border-amber-300 text-amber-700 hover:bg-amber-50 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+            className="w-full rounded-xl border-warning/30 text-warning hover:bg-warning/10 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
           >
             {importing ? (
               <>
-                <div className="animate-spin rounded-full h-4 w-4 border-2 border-amber-600 border-t-transparent" />
+                <div className="animate-spin rounded-full h-4 w-4 border-2 border-warning border-t-transparent" />
                 <span>İçe aktarılıyor...</span>
               </>
             ) : (
@@ -229,17 +229,17 @@ export default function AdminBackupPage() {
       </div>
 
       {/* Info */}
-      <div className="bg-gradient-to-r from-indigo-50 to-violet-50 rounded-xl p-6 border border-indigo-200">
+      <div className="bg-gradient-to-r from-primary/5 to-primary/5 rounded-xl p-6 border border-primary/30">
         <div className="flex items-start space-x-4">
-          <div className="w-12 h-12 rounded-xl bg-indigo-100 flex items-center justify-center flex-shrink-0">
-            <Archive className="w-6 h-6 text-indigo-600" />
+          <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+            <Archive className="w-6 h-6 text-primary" />
           </div>
           <div>
             <h3 className="text-lg font-semibold text-foreground mb-2">Yedekleme Hakkında</h3>
             <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
-              <li><strong>Tam Yedek:</strong> Veritabanı + tüm medya dosyaları (Cloudinary&apos;den indirilir)</li>
+              <li><strong>Tam Yedek:</strong> Tüm veritabanı tabloları + Cloudinary hesabındaki tüm medya dosyaları</li>
               <li><strong>Sadece DB:</strong> Medya URL&apos;leri korunur, dosyalar indirilmez (daha hızlı)</li>
-              <li>İçe aktarma hem .zip hem .json formatını destekler</li>
+              <li>İçe aktarma hem .zip hem .json formatını destekler; tam yedekteki medya dosyaları Cloudinary&apos;ye geri yüklenir</li>
               <li>Düzenli yedek almayı unutmayın</li>
               <li>Büyük siteler için tam yedek birkaç dakika sürebilir</li>
             </ul>

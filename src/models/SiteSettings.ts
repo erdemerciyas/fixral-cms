@@ -50,7 +50,7 @@ interface ISiteSettings {
   system: {
     maxUploadSize: number;
   };
-  themeConfig: IThemeConfig;
+  themeConfig?: IThemeConfig;
   seoConfig: ISeoConfig;
   analyticsConfig: IAnalyticsConfig;
   socialMediaConfig: ISocialMediaConfig;

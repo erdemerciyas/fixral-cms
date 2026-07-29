@@ -2,6 +2,12 @@
  * Unified caching utility for improved performance
  * Provides in-memory caching with TTL support
  * Consolidates multiple caching implementations
+ *
+ * NOTE (Faz 4): Bu modül projedeki TEK cache katmanıdır (cache-manager.ts kaldırıldı).
+ * Client tarafı (useApi) ve API route'ları (api/public/services) bu modülü kullanır.
+ * Server tarafında yeni cache ihtiyacı doğduğunda Next.js'in `unstable_cache` +
+ * `revalidateTag` deseni tercih edilmelidir (örnek: src/app/layout.tsx → getCachedSiteSettings).
+ * Bu in-memory cache yalnızca process-lokal, kısa TTL'li durumlar için uygundur.
  */
 
 interface CacheItem<T> {

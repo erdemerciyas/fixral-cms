@@ -1,7 +1,7 @@
 'use client'
 
 import { useRef, type ReactNode } from 'react'
-import { motion, useMotionValue, useTransform } from 'framer-motion'
+import { m, useMotionValue, useTransform } from 'framer-motion'
 
 interface MagneticButtonProps {
   children: ReactNode
@@ -38,7 +38,7 @@ export default function MagneticButton({
   }
 
   return (
-    <motion.div
+    <m.div
       ref={ref}
       style={{ x, y, rotateX, rotateY }}
       onMouseMove={handleMouseMove}
@@ -48,6 +48,6 @@ export default function MagneticButton({
       onClick={onClick}
     >
       {children}
-    </motion.div>
+    </m.div>
   )
 }

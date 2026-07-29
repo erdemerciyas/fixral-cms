@@ -136,7 +136,7 @@ export default function AdminSiteSettingsPage() {
         <Button
           onClick={handleSave}
           disabled={saving}
-          className="px-6 py-2.5 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 transition-colors disabled:opacity-50 flex items-center gap-2"
+          className="px-6 py-2.5 bg-primary text-primary-foreground font-medium rounded-xl hover:bg-primary/90 transition-colors disabled:opacity-50 flex items-center gap-2"
         >
           {saving ? 'Kaydediliyor...' : (
             <>
@@ -149,8 +149,8 @@ export default function AdminSiteSettingsPage() {
 
       {message && (
         <div className={`p-4 rounded-xl border flex items-center gap-3 ${message.type === 'success'
-          ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
-          : 'bg-red-50 border-red-200 text-red-800'
+          ? 'bg-success/10 border-success/30 text-success'
+          : 'bg-destructive/10 border-destructive/30 text-destructive'
           }`}>
           {message.type === 'success' ? <Check className="w-5 h-5" /> : <Server className="w-5 h-5" />}
           {message.text}
@@ -166,8 +166,8 @@ export default function AdminSiteSettingsPage() {
           {/* Temel Site Ayarları */}
           <div className="bg-card rounded-xl shadow-sm border border-border/60 p-6">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-lg bg-indigo-100 flex items-center justify-center">
-                <Globe className="w-6 h-6 text-indigo-600" />
+              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                <Globe className="w-6 h-6 text-primary" />
               </div>
               <div>
                 <h2 className="text-lg font-bold text-foreground">Temel Ayarlar</h2>
@@ -178,16 +178,16 @@ export default function AdminSiteSettingsPage() {
             <div className="space-y-4">
               <div>
                 <Label className="block text-sm font-medium text-foreground mb-1">Site Adı</Label>
-                <Input type="text" value={settings.siteName} onChange={(e) => setSettings({ ...settings, siteName: e.target.value })} className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" />
+                <Input type="text" value={settings.siteName} onChange={(e) => setSettings({ ...settings, siteName: e.target.value })} className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-ring outline-none" />
                 <p className="text-xs text-muted-foreground mt-1">Tarayıcı sekmesinde ve arama sonuçlarında görünür (title)</p>
               </div>
               <div>
                 <Label className="block text-sm font-medium text-foreground mb-1">Site URL</Label>
-                <Input type="url" value={settings.siteUrl} onChange={(e) => setSettings({ ...settings, siteUrl: e.target.value })} className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="https://example.com" />
+                <Input type="url" value={settings.siteUrl} onChange={(e) => setSettings({ ...settings, siteUrl: e.target.value })} className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-ring outline-none" placeholder="https://example.com" />
               </div>
               <div>
                 <Label className="block text-sm font-medium text-foreground mb-1">Slogan</Label>
-                <Input type="text" value={settings.slogan || ''} onChange={(e) => setSettings({ ...settings, slogan: e.target.value })} className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" />
+                <Input type="text" value={settings.slogan || ''} onChange={(e) => setSettings({ ...settings, slogan: e.target.value })} className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-ring outline-none" />
                 <p className="text-xs text-muted-foreground mt-1">Arama sonuçlarında açıklama olarak görünür (meta description)</p>
               </div>
               <div className="grid grid-cols-2 gap-4">
@@ -214,8 +214,8 @@ export default function AdminSiteSettingsPage() {
           {/* Logo & Görsel Ayarlar */}
           <div className="bg-card rounded-xl shadow-sm border border-border/60 p-6">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center">
-                <ImageIcon className="w-6 h-6 text-purple-600" />
+              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                <ImageIcon className="w-6 h-6 text-primary" />
               </div>
               <div>
                 <h2 className="text-lg font-bold text-foreground">Logo & Görseller</h2>
@@ -237,7 +237,7 @@ export default function AdminSiteSettingsPage() {
 
               <div>
                 <Label className="block text-sm font-medium text-foreground mb-1">Logo Kelimesi</Label>
-                <Input type="text" value={settings.logoText || ''} onChange={(e) => setSettings({ ...settings, logoText: e.target.value })} className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Logo yanında görünecek metin" />
+                <Input type="text" value={settings.logoText || ''} onChange={(e) => setSettings({ ...settings, logoText: e.target.value })} className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-ring outline-none" placeholder="Logo yanında görünecek metin" />
                 <p className="text-xs text-muted-foreground mt-1">Navigasyonda logo yanında gösterilecek kısa isim</p>
               </div>
 
@@ -260,10 +260,10 @@ export default function AdminSiteSettingsPage() {
             <h2 className="text-lg font-bold text-foreground mb-2">İletişim & Sosyal Medya</h2>
             <p className="text-sm text-muted-foreground mb-4">Bu ayarlar ayrı sayfalardan yönetilmektedir.</p>
             <div className="flex flex-wrap gap-2">
-              <a href="/admin/contact" className="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors">
+              <a href="/admin/contact" className="inline-flex items-center px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">
                 İletişim Ayarları
               </a>
-              <a href="/admin/social-media" className="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors">
+              <a href="/admin/social-media" className="inline-flex items-center px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">
                 Sosyal Medya
               </a>
             </div>
@@ -282,7 +282,7 @@ export default function AdminSiteSettingsPage() {
                   <span className="font-medium text-foreground">Bakım Modu</span>
                   <p className="text-xs text-muted-foreground">Siteyi ziyaretçilere kapatır</p>
                 </div>
-                <button onClick={() => setSettings({ ...settings, maintenanceMode: !settings.maintenanceMode })} className={`w-12 h-6 rounded-full relative transition-colors ${settings.maintenanceMode ? 'bg-indigo-600' : 'bg-slate-300'}`}>
+                <button onClick={() => setSettings({ ...settings, maintenanceMode: !settings.maintenanceMode })} className={`w-12 h-6 rounded-full relative transition-colors ${settings.maintenanceMode ? 'bg-primary' : 'bg-muted'}`}>
                   <div className={`absolute top-1 left-1 w-4 h-4 bg-card rounded-full transition-transform ${settings.maintenanceMode ? 'translate-x-6' : ''}`}></div>
                 </button>
               </div>
@@ -292,7 +292,7 @@ export default function AdminSiteSettingsPage() {
                   <span className="font-medium text-foreground">Kayıt Olma</span>
                   <p className="text-xs text-muted-foreground">Yeni üye alımını aç/kapat</p>
                 </div>
-                <button onClick={() => setSettings({ ...settings, allowRegistration: !settings.allowRegistration })} className={`w-12 h-6 rounded-full relative transition-colors ${settings.allowRegistration ? 'bg-indigo-600' : 'bg-slate-300'}`}>
+                <button onClick={() => setSettings({ ...settings, allowRegistration: !settings.allowRegistration })} className={`w-12 h-6 rounded-full relative transition-colors ${settings.allowRegistration ? 'bg-primary' : 'bg-muted'}`}>
                   <div className={`absolute top-1 left-1 w-4 h-4 bg-card rounded-full transition-transform ${settings.allowRegistration ? 'translate-x-6' : ''}`}></div>
                 </button>
               </div>
@@ -302,7 +302,7 @@ export default function AdminSiteSettingsPage() {
                   <span className="font-medium text-foreground">Yorumlar</span>
                   <p className="text-xs text-muted-foreground">Site genelinde yorumları aç/kapat</p>
                 </div>
-                <button onClick={() => setSettings({ ...settings, enableComments: !settings.enableComments })} className={`w-12 h-6 rounded-full relative transition-colors ${settings.enableComments ? 'bg-indigo-600' : 'bg-slate-300'}`}>
+                <button onClick={() => setSettings({ ...settings, enableComments: !settings.enableComments })} className={`w-12 h-6 rounded-full relative transition-colors ${settings.enableComments ? 'bg-primary' : 'bg-muted'}`}>
                   <div className={`absolute top-1 left-1 w-4 h-4 bg-card rounded-full transition-transform ${settings.enableComments ? 'translate-x-6' : ''}`}></div>
                 </button>
               </div>
@@ -314,20 +314,20 @@ export default function AdminSiteSettingsPage() {
             </div>
           </div>
 
-          <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-6">
-            <h3 className="font-semibold text-indigo-900 mb-2">Ek Ayarlar</h3>
-            <p className="text-sm text-indigo-700 mb-4">Aşağıdaki ayarlar ayrı sayfalardan yönetilmektedir.</p>
+          <div className="bg-primary/10 border border-primary/30 rounded-xl p-6">
+            <h3 className="font-semibold text-foreground mb-2">Ek Ayarlar</h3>
+            <p className="text-sm text-primary mb-4">Aşağıdaki ayarlar ayrı sayfalardan yönetilmektedir.</p>
             <div className="flex flex-wrap gap-2">
-              <a href="/admin/seo" className="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors">
+              <a href="/admin/seo" className="inline-flex items-center px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">
                 SEO Ayarları
               </a>
-              <a href="/admin/analytics" className="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors">
+              <a href="/admin/analytics" className="inline-flex items-center px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">
                 Analitik
               </a>
-              <a href="/admin/social-media" className="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors">
+              <a href="/admin/social-media" className="inline-flex items-center px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">
                 Sosyal Medya
               </a>
-              <a href="/admin/contact" className="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors">
+              <a href="/admin/contact" className="inline-flex items-center px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">
                 İletişim
               </a>
             </div>

@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import connectDB from '@/lib/mongoose';
 import { authOptions } from '@/lib/auth';
 import Service from '@/models/Service';
 import slugify from 'slugify';
@@ -11,8 +10,6 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    await connectDB();
-
     const service = await Service.findById(params.id);
 
     if (!service) {
@@ -47,8 +44,6 @@ export async function PUT(
     }
 
     const body = await request.json();
-    await connectDB();
-
     const imageUrl = body.image || '';
 
     const updateData: Record<string, any> = {
@@ -97,8 +92,6 @@ export async function DELETE(
         { status: 401 }
       );
     }
-
-    await connectDB();
 
     const result = await Service.findByIdAndDelete(params.id);
 

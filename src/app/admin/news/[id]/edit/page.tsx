@@ -7,18 +7,14 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 import dynamicImport from 'next/dynamic';
-import connectDB from '@/lib/mongoose';
 import News from '@/models/News';
 import { NewsItem } from '@/types/news';
 import { logger } from '@/core/lib/logger';
+import { FormPageSkeleton } from '@/components/admin/admin-skeletons';
 
 const NewsForm = dynamicImport(() => import('@/components/admin/NewsForm'), {
   ssr: false,
-  loading: () => (
-    <div className="flex items-center justify-center py-12">
-      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-primary-700"></div>
-    </div>
-  )
+  loading: () => <FormPageSkeleton />
 });
 
 interface PageProps {
@@ -40,8 +36,6 @@ export default async function EditNewsPage({ params }: PageProps) {
   }
 
   try {
-    await connectDB();
-
     const news = (await News.findById(params.id).lean()) as unknown as NewsItem;
 
     if (!news) {

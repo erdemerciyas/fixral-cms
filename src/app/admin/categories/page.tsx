@@ -219,7 +219,7 @@ export default function AdminCategoriesPage() {
         </div>
         <button
           onClick={openAddModal}
-          className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-200"
+          className="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground font-semibold rounded-xl hover:shadow-lg hover:shadow-primary/25 transition-all duration-200"
         >
           <Plus className="w-5 h-5 mr-2" />
           Yeni Kategori
@@ -235,7 +235,7 @@ export default function AdminCategoriesPage() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Kategori ara..."
-            className="w-full pl-12 pr-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all bg-background"
+            className="w-full pl-12 pr-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all bg-background"
           />
         </div>
       </div>
@@ -248,27 +248,27 @@ export default function AdminCategoriesPage() {
             className="bg-card rounded-xl shadow-sm border border-border/60 p-6 hover:shadow-lg transition-all duration-300 group"
           >
             <div className="flex items-start justify-between mb-4">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center">
-                <Tag className="w-6 h-6 text-white" />
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-success/80 to-success flex items-center justify-center">
+                <Tag className="w-6 h-6 text-success-foreground" />
               </div>
               <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
                 <button
                   onClick={() => openEditModal(category)}
-                  className="p-2 hover:bg-indigo-50 dark:hover:bg-indigo-950 rounded-lg transition-colors"
+                  className="p-2 hover:bg-primary/10 rounded-lg transition-colors"
                   title="Düzenle"
                 >
-                  <Pencil className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                  <Pencil className="w-4 h-4 text-primary" />
                 </button>
                 <button
                   onClick={() => handleDelete(category._id)}
-                  className="p-2 hover:bg-red-50 dark:hover:bg-red-950 rounded-lg transition-colors"
+                  className="p-2 hover:bg-destructive/10 rounded-lg transition-colors"
                   title="Sil"
                 >
-                  <Trash2 className="w-4 h-4 text-red-500" />
+                  <Trash2 className="w-4 h-4 text-destructive" />
                 </button>
               </div>
             </div>
-            <h3 className="text-lg font-bold text-foreground mb-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+            <h3 className="text-lg font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
               {category.name}
             </h3>
             {category.description && (
@@ -335,14 +335,14 @@ export default function AdminCategoriesPage() {
                   type="text"
                   value={formData.name}
                   onChange={(e) => handleNameChange(e.target.value)}
-                  className={`w-full px-4 py-2.5 border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all bg-background ${
-                    formErrors.name ? 'border-red-400' : 'border-border'
+                  className={`w-full px-4 py-2.5 border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all bg-background ${
+                    formErrors.name ? 'border-destructive' : 'border-border'
                   }`}
                   placeholder="Kategori adı girin"
                   autoFocus
                 />
                 {formErrors.name && (
-                  <p className="mt-1 text-xs text-red-500">{formErrors.name}</p>
+                  <p className="mt-1 text-xs text-destructive">{formErrors.name}</p>
                 )}
               </div>
 
@@ -354,8 +354,8 @@ export default function AdminCategoriesPage() {
                 <div
                   className={`flex items-center border rounded-xl bg-muted/50 px-4 py-2.5 transition-colors ${
                     formErrors.slug
-                      ? 'border-red-400'
-                      : 'border-border focus-within:ring-2 focus-within:ring-indigo-500 focus-within:border-transparent'
+                      ? 'border-destructive'
+                      : 'border-border focus-within:ring-2 focus-within:ring-ring focus-within:border-transparent'
                   }`}
                 >
                   <span className="text-muted-foreground text-sm mr-1">/</span>
@@ -382,7 +382,7 @@ export default function AdminCategoriesPage() {
                   </button>
                 </div>
                 {formErrors.slug && (
-                  <p className="mt-1 text-xs text-red-500">{formErrors.slug}</p>
+                  <p className="mt-1 text-xs text-destructive">{formErrors.slug}</p>
                 )}
               </div>
 
@@ -400,7 +400,7 @@ export default function AdminCategoriesPage() {
                       description: e.target.value,
                     }))
                   }
-                  className="w-full px-4 py-2.5 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all bg-background resize-none"
+                  className="w-full px-4 py-2.5 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all bg-background resize-none"
                   placeholder="Kategori açıklaması (isteğe bağlı)"
                 />
               </div>
@@ -418,7 +418,7 @@ export default function AdminCategoriesPage() {
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="inline-flex items-center px-5 py-2 bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-200 disabled:opacity-50"
+                className="inline-flex items-center px-5 py-2 bg-primary text-primary-foreground font-semibold rounded-xl hover:shadow-lg hover:shadow-primary/25 transition-all duration-200 disabled:opacity-50"
               >
                 {saving ? (
                   <>

@@ -1,7 +1,6 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
-import connectDB from '@/lib/mongoose';
 import News from '@/models/News';
 import { NewsItem } from '@/types/news';
 import { logger } from '@/core/lib/logger';
@@ -42,8 +41,6 @@ export default async function NewsListPage({ params: paramsPromise, searchParams
   const { lang } = await paramsPromise;
   const searchParams = await searchParamsPromise;
   try {
-    await connectDB();
-
     const page = Math.max(1, parseInt(searchParams.page || '1'));
     const search = searchParams.search || '';
     const tag = searchParams.tag || '';
@@ -99,7 +96,7 @@ export default async function NewsListPage({ params: paramsPromise, searchParams
             {/* Search */}
             <form className="relative w-full md:w-96 group">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <svg className="h-5 w-5 text-gray-400 group-focus-within:text-fixral-primary transition-colors" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <svg className="h-5 w-5 text-gray-400 group-focus-within:text-primary transition-colors" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                   <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
                 </svg>
               </div>
@@ -108,7 +105,7 @@ export default async function NewsListPage({ params: paramsPromise, searchParams
                 name="search"
                 placeholder={newsT.searchPlaceholder || 'Buscar noticias...'}
                 defaultValue={search}
-                className="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-fixral-primary focus:border-transparent transition-all"
+                className="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
               />
             </form>
 
@@ -118,7 +115,7 @@ export default async function NewsListPage({ params: paramsPromise, searchParams
                 <Link
                   href={`/${lang}/noticias`}
                   className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${!tag
-                    ? 'bg-fixral-primary text-white shadow-md'
+                    ? 'bg-primary text-white shadow-md'
                     : 'bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900'
                     }`}
                 >
@@ -129,7 +126,7 @@ export default async function NewsListPage({ params: paramsPromise, searchParams
                     key={t}
                     href={`/${lang}/noticias?tag=${encodeURIComponent(t)}`}
                     className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${tag === t
-                      ? 'bg-fixral-primary text-white shadow-md'
+                      ? 'bg-primary text-white shadow-md'
                       : 'bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900'
                       }`}
                   >
@@ -143,7 +140,7 @@ export default async function NewsListPage({ params: paramsPromise, searchParams
           {/* Results Info */}
           {(search || tag) && (
             <div className="mb-6 text-sm text-slate-500 flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-fixral-primary"></span>
+              <span className="w-2 h-2 rounded-full bg-primary"></span>
               {search && <span>"{search}" {newsT.forQuery || 'para'}</span>}
               {tag && <span>"{tag}" {newsT.inTag || 'en la etiqueta'}</span>}
               <strong>{(newsT.resultsFound || '{count} resultados encontrados').replace('{count}', String(total))}</strong>
@@ -194,7 +191,7 @@ export default async function NewsListPage({ params: paramsPromise, searchParams
                         )}
 
                         {/* Title */}
-                        <h2 className="text-xl font-bold text-slate-900 mb-3 line-clamp-2 group-hover:text-fixral-primary transition-colors leading-tight">
+                        <h2 className="text-xl font-bold text-slate-900 mb-3 line-clamp-2 group-hover:text-primary transition-colors leading-tight">
                           {translation.title}
                         </h2>
 
@@ -205,7 +202,7 @@ export default async function NewsListPage({ params: paramsPromise, searchParams
 
                         {/* Footer */}
                         <div className="pt-4 mt-auto border-t border-gray-100 flex items-center justify-between text-sm">
-                          <span className="font-medium text-fixral-primary flex items-center gap-1 group-hover:gap-2 transition-all">
+                          <span className="font-medium text-primary flex items-center gap-1 group-hover:gap-2 transition-all">
                             {newsT.readMore || 'Leer más'}
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
                               <path fillRule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clipRule="evenodd" />
@@ -225,7 +222,7 @@ export default async function NewsListPage({ params: paramsPromise, searchParams
                   {page > 1 && (
                     <Link
                       href={`/${lang}/noticias?page=${page - 1}${search ? `&search=${search}` : ''}${tag ? `&tag=${tag}` : ''}`}
-                      className="px-4 py-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-fixral-primary hover:text-fixral-primary transition-all shadow-sm"
+                      className="px-4 py-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-primary hover:text-primary transition-all shadow-sm"
                     >
                       ← {commonT.previous || 'Anterior'}
                     </Link>
@@ -236,8 +233,8 @@ export default async function NewsListPage({ params: paramsPromise, searchParams
                       key={p}
                       href={`/${lang}/noticias?page=${p}${search ? `&search=${search}` : ''}${tag ? `&tag=${tag}` : ''}`}
                       className={`w-10 h-10 flex items-center justify-center rounded-lg transition-all shadow-sm ${p === page
-                        ? 'bg-fixral-primary text-white shadow-md'
-                        : 'bg-white border border-gray-200 hover:bg-gray-50 hover:border-fixral-primary hover:text-fixral-primary'
+                        ? 'bg-primary text-white shadow-md'
+                        : 'bg-white border border-gray-200 hover:bg-gray-50 hover:border-primary hover:text-primary'
                         }`}
                     >
                       {p}
@@ -247,7 +244,7 @@ export default async function NewsListPage({ params: paramsPromise, searchParams
                   {page < totalPages && (
                     <Link
                       href={`/${lang}/noticias?page=${page + 1}${search ? `&search=${search}` : ''}${tag ? `&tag=${tag}` : ''}`}
-                      className="px-4 py-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-fixral-primary hover:text-fixral-primary transition-all shadow-sm"
+                      className="px-4 py-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-primary hover:text-primary transition-all shadow-sm"
                     >
                       {commonT.next || 'Siguiente'} →
                     </Link>

@@ -2,12 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import {
-    XMarkIcon,
-    PaperAirplaneIcon,
-    EnvelopeIcon
-} from '@heroicons/react/24/outline';
-import { useToast } from '../ui/useToast';
+import { X as XMarkIcon, Send as PaperAirplaneIcon, Mail as EnvelopeIcon } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface ProjectModalProps {
     isOpen: boolean;
@@ -27,7 +23,6 @@ export default function ProjectModal({ isOpen, onClose }: ProjectModalProps) {
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
-    const { show } = useToast();
 
     useEffect(() => {
         setMounted(true);
@@ -72,12 +67,7 @@ E-posta: ${projectForm.email}
 
             if (response.ok) {
                 setSubmitStatus('success');
-                show({
-                    title: 'Başvurunuz alındı',
-                    description: 'Size en kısa sürede geri dönüş yapacağım.',
-                    variant: 'success',
-                    duration: 4000,
-                });
+                toast.success('Başvurunuz alındı', { description: 'Size en kısa sürede geri dönüş yapacağım.' });
 
                 // GA4 event tracking could be added here via props or context if needed
 
@@ -96,22 +86,12 @@ E-posta: ${projectForm.email}
                 }, 2000);
             } else {
                 setSubmitStatus('error');
-                show({
-                    title: 'Gönderilemedi',
-                    description: 'Lütfen daha sonra tekrar deneyin.',
-                    variant: 'danger',
-                    duration: 4500,
-                });
+                toast.error('Gönderilemedi', { description: 'Lütfen daha sonra tekrar deneyin.' });
             }
         } catch (error) {
             console.error('Form submission error:', error);
             setSubmitStatus('error');
-            show({
-                title: 'Bir hata oluştu',
-                description: 'Bağlantı sırasında bir sorun yaşandı.',
-                variant: 'danger',
-                duration: 4500,
-            });
+            toast.error('Bir hata oluştu', { description: 'Bağlantı sırasında bir sorun yaşandı.' });
         } finally {
             setIsSubmitting(false);
         }

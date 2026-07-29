@@ -1,4 +1,3 @@
-import connectDB from '@/lib/mongoose';
 import User from '@/models/User';
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
@@ -20,8 +19,6 @@ export async function POST() {
   }
 
   try {
-    await connectDB();
-
     const existingAdmin = await User.findOne({ email: adminEmail });
 
     if (existingAdmin) {

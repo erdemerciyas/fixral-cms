@@ -4,13 +4,16 @@ import { useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination } from 'swiper/modules';
 import { Model3D } from '@/types/portfolio';
-import ModelViewer from './3DModelViewer';
-import { 
-  CubeIcon, 
-  ArrowDownTrayIcon,
-  EyeIcon,
-  XMarkIcon 
-} from '@heroicons/react/24/outline';
+import dynamic from 'next/dynamic';
+import { Box as CubeIcon, Download as ArrowDownTrayIcon, Eye as EyeIcon, X as XMarkIcon } from 'lucide-react';
+
+// three/fiber/drei senkron bundle'a girmesin diye 3D görüntüleyici lazy yüklenir
+const ModelViewer = dynamic(() => import('./3DModelViewer'), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-96 bg-gray-100 rounded-lg animate-pulse" aria-label="3D model yükleniyor" />
+  ),
+});
 
 // Swiper CSS
 import 'swiper/css';

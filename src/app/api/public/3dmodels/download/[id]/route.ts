@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import connectDB from '@/lib/mongoose';
 import Portfolio from '@/models/Portfolio';
 
 export async function GET(
@@ -7,8 +6,6 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    await connectDB();
-
     // Model'i portfolio içinde bul
     const portfolio = await Portfolio.findOne({ 'models3D._id': params.id });
     if (!portfolio) {

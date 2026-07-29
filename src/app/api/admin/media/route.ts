@@ -8,9 +8,12 @@ interface CloudinaryResource {
   display_name?: string;
   secure_url: string;
   bytes: number;
-  format: string;
+  format?: string;
   resource_type: string;
   created_at: string;
+  width?: number;
+  height?: number;
+  asset_folder?: string;
 }
 
 interface MediaItem {
@@ -24,6 +27,11 @@ interface MediaItem {
   uploader?: string;
   source?: 'cloudinary' | 'local';
   publicId?: string;
+  folder: string;
+  resourceType: string;
+  width?: number;
+  height?: number;
+  format?: string;
 }
 
 // Cloudinary config
@@ -33,111 +41,115 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// GET - List all media files from both Cloudinary and local storage
+// Raw dosyalar için uzantıya göre mime tipi tahmini
+const RAW_MIME_MAP: Record<string, string> = {
+  pdf: 'application/pdf',
+  doc: 'application/msword',
+  docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  xls: 'application/vnd.ms-excel',
+  xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  zip: 'application/zip',
+  stl: 'model/stl',
+  obj: 'model/obj',
+  glb: 'model/gltf-binary',
+  gltf: 'model/gltf+json',
+  json: 'application/json',
+  txt: 'text/plain',
+};
+
+function resolveMimeType(resource: CloudinaryResource): string {
+  const format = (resource.format || resource.public_id.split('.').pop() || '').toLowerCase();
+  if (resource.resource_type === 'image') return `image/${format || 'jpeg'}`;
+  if (resource.resource_type === 'video') return `video/${format || 'mp4'}`;
+  return RAW_MIME_MAP[format] || 'application/octet-stream';
+}
+
+function resolveFolder(publicId: string): string {
+  const idx = publicId.lastIndexOf('/');
+  return idx === -1 ? '' : publicId.substring(0, idx);
+}
+
+// Belirtilen resource_type için TÜM kayıtları next_cursor ile sayfalayarak çeker
+async function fetchAllResources(resourceType: 'image' | 'video' | 'raw'): Promise<CloudinaryResource[]> {
+  const all: CloudinaryResource[] = [];
+  let nextCursor: string | undefined;
+  let page = 0;
+  const MAX_PAGES = 20; // güvenlik sınırı: 20 x 500 = 10.000 kayıt / tip
+
+  do {
+    const result = await cloudinary.api.resources({
+      resource_type: resourceType,
+      type: 'upload',
+      max_results: 500,
+      next_cursor: nextCursor,
+    });
+
+    if (Array.isArray(result.resources)) {
+      all.push(...result.resources);
+    }
+    nextCursor = result.next_cursor;
+    page += 1;
+  } while (nextCursor && page < MAX_PAGES);
+
+  return all;
+}
+
+// GET - List ALL media files from Cloudinary (image + video + raw, full pagination)
 export const GET = withSecurity(SecurityConfigs.admin)(async (request: NextRequest) => {
   try {
-    // Get pageContext filter from query params
-    // Supported values:
-    // - 'site' (default): show only non-product site media
-    // - 'products': show only product media
-    // - specific contexts (e.g., 'portfolio', 'services'): show only that folder
     const { searchParams } = new URL(request.url);
-    const pageContextFilter = (searchParams.get('pageContext') || 'site').toLowerCase();
+    // Opsiyonel klasör kapsaması: ?folder=fixral/portfolio
+    const folderFilter = (searchParams.get('folder') || '').replace(/\/+$/, '');
+
+    const resourceTypes: Array<'image' | 'video' | 'raw'> = ['image', 'video', 'raw'];
+    const settled = await Promise.allSettled(resourceTypes.map(fetchAllResources));
+
+    const resources: CloudinaryResource[] = [];
+    settled.forEach((result, index) => {
+      if (result.status === 'fulfilled') {
+        resources.push(...result.value);
+      } else {
+        console.error(`[Media] Cloudinary ${resourceTypes[index]} listing failed:`, result.reason);
+      }
+    });
 
     const mediaItems: MediaItem[] = [];
 
-    // 1. Cloudinary'den dosyaları çek
-    try {
-      let cloudinaryResult = { total_count: 0, resources: [] };
-      const cloudinaryFolder = process.env.CLOUDINARY_FOLDER || 'personal-blog';
+    for (const resource of resources) {
+      const folder = resolveFolder(resource.public_id);
 
-      try {
-        // Admin API ile görselleri çek
-        const resourceOptions: { resource_type: string; max_results: number; type: string; prefix?: string } = {
-          resource_type: 'image',
-          max_results: 100,
-          type: 'upload'
-        };
-
-        // Site-level contexts that should browse all site media (not a subfolder)
-        const siteContexts = ['site', 'site-logo', 'favicon', 'general', 'logo', 'hero', 'banner', 'og-image'];
-
-        if (pageContextFilter === 'all') {
-          resourceOptions.prefix = `${cloudinaryFolder}/`;
-        } else if (siteContexts.includes(pageContextFilter)) {
-          resourceOptions.prefix = `${cloudinaryFolder}/`;
-        } else {
-          resourceOptions.prefix = `${cloudinaryFolder}/${pageContextFilter}/`;
-        }
-
-        let adminResult = await cloudinary.api.resources(resourceOptions);
-
-        if (
-          (!adminResult.resources || adminResult.resources.length === 0) &&
-          resourceOptions.prefix !== `${cloudinaryFolder}/` &&
-          resourceOptions.prefix !== `${cloudinaryFolder}/products/`
-        ) {
-          console.log(`📋 No files in ${resourceOptions.prefix}, falling back to ${cloudinaryFolder}/`);
-          adminResult = await cloudinary.api.resources({
-            ...resourceOptions,
-            prefix: `${cloudinaryFolder}/`
-          });
-        }
-
-        if (adminResult.resources && adminResult.resources.length > 0) {
-          cloudinaryResult = {
-            total_count: adminResult.resources.length,
-            resources: adminResult.resources.map((resource: CloudinaryResource) => ({
-              ...resource,
-              created_at: resource.created_at,
-              secure_url: resource.secure_url,
-              public_id: resource.public_id,
-              bytes: resource.bytes,
-              format: resource.format,
-              resource_type: resource.resource_type
-            }))
-          };
-
-        } else {
-          console.log('[Media] No files found in Cloudinary');
-        }
-      } catch (adminError) {
-        console.error('[Media] Cloudinary Admin API error:', adminError);
-        cloudinaryResult = { total_count: 0, resources: [] };
+      if (folderFilter && folder !== folderFilter && !folder.startsWith(`${folderFilter}/`)) {
+        continue;
       }
 
-      if (cloudinaryResult.resources) {
-        // Ürün medyasını sadece 'site' kapsamındayken hariç tut
-        const shouldExcludeProducts = pageContextFilter === 'site';
-        for (const resource of cloudinaryResult.resources as CloudinaryResource[]) {
-          const isProduct = resource.public_id?.startsWith(`${cloudinaryFolder}/products/`);
-          if (shouldExcludeProducts && isProduct) {
-            continue;
-          }
-          const fileName = resource.display_name || resource.public_id.split('/').pop() || resource.public_id;
+      const fileName = resource.display_name || resource.public_id.split('/').pop() || resource.public_id;
 
-          mediaItems.push({
-            _id: resource.public_id,
-            filename: fileName,
-            originalName: fileName,
-            url: resource.secure_url,
-            size: resource.bytes || 0,
-            mimeType: resource.resource_type === 'image' ? `image/${resource.format}` : 'application/octet-stream',
-            uploadedAt: new Date(resource.created_at),
-            uploader: 'cloudinary',
-            source: 'cloudinary',
-            publicId: resource.public_id
-          });
-        }
-      }
-    } catch (cloudinaryError) {
-      console.error('❌ Cloudinary fetch error:', cloudinaryError);
-      // Cloudinary hatası olsa bile devam et
+      mediaItems.push({
+        _id: resource.public_id,
+        filename: fileName,
+        originalName: fileName,
+        url: resource.secure_url,
+        size: resource.bytes || 0,
+        mimeType: resolveMimeType(resource),
+        uploadedAt: new Date(resource.created_at),
+        uploader: 'cloudinary',
+        source: 'cloudinary',
+        publicId: resource.public_id,
+        folder,
+        resourceType: resource.resource_type,
+        width: resource.width,
+        height: resource.height,
+        format: resource.format,
+      });
     }
 
     mediaItems.sort((a, b) => new Date(b.uploadedAt).getTime() - new Date(a.uploadedAt).getTime());
 
-    return NextResponse.json(mediaItems);
+    return NextResponse.json({
+      items: mediaItems,
+      totalCount: mediaItems.length,
+      baseFolder: process.env.CLOUDINARY_FOLDER || 'personal-blog',
+    });
   } catch (error) {
     console.error('❌ Media listing error:', error);
     return NextResponse.json({ error: 'Failed to list media files' }, { status: 500 });

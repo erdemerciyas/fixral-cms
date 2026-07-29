@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import connectDB from '../../../../lib/mongoose';
+import { revalidateTag } from 'next/cache';
 import SiteSettings from '../../../../models/SiteSettings';
 import { withSecurity, SecurityConfigs } from '../../../../lib/security-middleware';
 
@@ -10,8 +10,6 @@ export const runtime = 'nodejs';
 // GET: Site ayarlarını getir
 export const GET = withSecurity(SecurityConfigs.admin)(async () => {
   try {
-    await connectDB();
-
     const settings = await SiteSettings.getSiteSettings();
 
     return NextResponse.json(settings, { status: 200 });
@@ -27,8 +25,6 @@ export const GET = withSecurity(SecurityConfigs.admin)(async () => {
 // PUT: Site ayarlarını güncelle
 export const PUT = withSecurity(SecurityConfigs.admin)(async (request: NextRequest) => {
   try {
-    await connectDB();
-
     const updateData = await request.json();
 
     // Güvenlik kontrolü - sadece belirlenen alanları güncelle
@@ -51,7 +47,6 @@ export const PUT = withSecurity(SecurityConfigs.admin)(async (request: NextReque
       'enableComments',
       'analytics',
       'system',
-      'themeConfig',
       'seoConfig',
       'analyticsConfig',
       'socialMediaConfig'
@@ -71,6 +66,9 @@ export const PUT = withSecurity(SecurityConfigs.admin)(async (request: NextReque
     });
 
     const settings = await SiteSettings.updateSiteSettings(filteredData);
+
+    // Root layout'un 60 sn'lik site-settings önbelleğini anında tazele
+    revalidateTag('site-settings');
 
     return NextResponse.json(
       {
@@ -99,8 +97,6 @@ interface SiteSettingsRequest {
 
 export const POST = withSecurity(SecurityConfigs.admin)(async (request: NextRequest) => {
   try {
-    await connectDB();
-
     const body: SiteSettingsRequest = await request.json();
 
     let settings = await SiteSettings.findOne();

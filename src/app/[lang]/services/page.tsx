@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import connectDB from '@/lib/mongoose';
 import Service from '@/models/Service';
 import PageSetting from '@/models/PageSetting';
 import ServicesClient from './ServicesClient';
@@ -11,8 +10,6 @@ import ServicesListJsonLd from '@/components/seo/ServicesListJsonLd';
 export const revalidate = 3600; // 1 saatte bir yenile
 
 async function getData() {
-  await connectDB();
-
   const [services, pageSettings] = await Promise.all([
     Service.find({}).sort({ createdAt: -1 }).lean(),
     PageSetting.findOne({ pageId: 'services' }).lean() as unknown as { title?: string; description?: string }

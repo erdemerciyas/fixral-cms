@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Phone, EnvelopeSimple } from '@phosphor-icons/react';
+import { Phone, Mail as EnvelopeSimple } from 'lucide-react';
 import LanguageSwitch from '../ui/LanguageSwitch';
 import { useAppTranslations } from '@/hooks/useAppTranslations';
 
@@ -40,7 +40,7 @@ export default function TopBar({ currentLang, isTransparentPage, visible }: TopB
                                 className="flex items-center gap-1.5 text-[11px] text-white/40 hover:text-white/70"
                                 style={{ transition: 'color 300ms cubic-bezier(0.32, 0.72, 0, 1)' }}
                             >
-                                <Phone size={12} weight="light" />
+                                <Phone size={12} />
                                 <span>{t('contact')}</span>
                             </Link>
                             <div className="w-px h-3 bg-white/10" />
@@ -49,7 +49,7 @@ export default function TopBar({ currentLang, isTransparentPage, visible }: TopB
                                 className="flex items-center gap-1.5 text-[11px] text-white/40 hover:text-white/70"
                                 style={{ transition: 'color 300ms cubic-bezier(0.32, 0.72, 0, 1)' }}
                             >
-                                <EnvelopeSimple size={12} weight="light" />
+                                <EnvelopeSimple size={12} />
                                 <span>info@fixral.com</span>
                             </a>
                         </div>

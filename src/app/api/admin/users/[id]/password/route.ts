@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../../../../../../lib/auth';
-import connectDB from '../../../../../../lib/mongoose';
 import User from '../../../../../../models/User';
 import bcrypt from 'bcryptjs';
 
@@ -32,8 +31,6 @@ export async function PUT(
         { status: 400 }
       );
     }
-
-    await connectDB();
 
     // Hash the new password
     const hashedPassword = await bcrypt.hash(newPassword, 12);

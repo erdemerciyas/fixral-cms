@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import connectDB from '@/lib/mongoose';
 import News from '@/models/News';
 import Language from '@/models/Language';
 import User from '@/models/User';
@@ -46,8 +45,6 @@ import { validateNewsInput } from '@/lib/validation';
  */
 export async function GET(request: NextRequest) {
   try {
-    await connectDB();
-
     const searchParams = request.nextUrl.searchParams;
     const page = Math.max(1, parseInt(searchParams.get('page') || '1'));
     const limit = Math.min(100, parseInt(searchParams.get('limit') || '10'));
@@ -157,8 +154,6 @@ export async function POST(request: NextRequest) {
         { status: 401 }
       );
     }
-
-    await connectDB();
 
     const body = await request.json();
 

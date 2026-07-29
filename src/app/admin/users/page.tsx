@@ -314,7 +314,7 @@ export default function AdminUsersPage() {
             setFormData({ name: '', email: '', role: 'user', status: 'active', password: '' });
             setIsAddUserOpen(true);
           }}
-          className="flex items-center justify-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+          className="flex items-center justify-center space-x-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
         >
           <Plus className="w-5 h-5" />
           <span>New User</span>
@@ -331,14 +331,14 @@ export default function AdminUsersPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search users..."
-              className="w-full pl-12 pr-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+              className="w-full pl-12 pr-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
             />
           </div>
           <div className="flex space-x-2 bg-muted p-1 rounded-xl">
             <button
               onClick={() => setRoleFilter('all')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${roleFilter === 'all'
-                ? 'bg-card text-indigo-600 shadow-sm'
+                ? 'bg-card text-primary shadow-sm'
                 : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
@@ -347,7 +347,7 @@ export default function AdminUsersPage() {
             <button
               onClick={() => setRoleFilter('admin')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${roleFilter === 'admin'
-                ? 'bg-card text-indigo-600 shadow-sm'
+                ? 'bg-card text-primary shadow-sm'
                 : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
@@ -356,7 +356,7 @@ export default function AdminUsersPage() {
             <button
               onClick={() => setRoleFilter('editor')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${roleFilter === 'editor'
-                ? 'bg-card text-indigo-600 shadow-sm'
+                ? 'bg-card text-primary shadow-sm'
                 : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
@@ -365,7 +365,7 @@ export default function AdminUsersPage() {
             <button
               onClick={() => setRoleFilter('user')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${roleFilter === 'user'
-                ? 'bg-card text-indigo-600 shadow-sm'
+                ? 'bg-card text-primary shadow-sm'
                 : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
@@ -385,11 +385,11 @@ export default function AdminUsersPage() {
                 className="flex items-center justify-between px-6 py-4 hover:bg-muted/50 transition-colors group"
               >
                 <div className="flex items-center space-x-4 flex-1 min-w-0">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center flex-shrink-0 text-white font-semibold text-lg">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary/80 to-primary flex items-center justify-center flex-shrink-0 text-primary-foreground font-semibold text-lg">
                     {user.name.charAt(0).toUpperCase()}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-sm font-semibold text-foreground group-hover:text-indigo-600 transition-colors truncate">
+                    <h3 className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors truncate">
                       {user.name}
                     </h3>
                     <div className="flex items-center space-x-2 mt-1 text-xs text-muted-foreground">
@@ -401,16 +401,16 @@ export default function AdminUsersPage() {
                 <div className="flex items-center space-x-4">
                   <div className="flex items-center space-x-2">
                     <span className={`px-2 py-1 text-xs font-medium rounded-full ${user.role === 'admin'
-                      ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300'
+                      ? 'bg-primary/10 text-primary'
                       : user.role === 'editor'
-                        ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300'
+                        ? 'bg-success/15 text-success'
                         : 'bg-muted text-foreground'
                       }`}>
                       {user.role}
                     </span>
                     <span className={`px-2 py-1 text-xs font-medium rounded-full ${user.status === 'active'
-                      ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300'
-                      : 'bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300'
+                      ? 'bg-success/15 text-success'
+                      : 'bg-destructive/10 text-destructive'
                       }`}>
                       {user.status}
                     </span>
@@ -419,7 +419,7 @@ export default function AdminUsersPage() {
                     <Button
                       type="button"
                       onClick={() => handleEdit(user)}
-                      className="p-2 hover:bg-indigo-100 rounded-lg transition-colors"
+                      className="p-2 hover:bg-primary/15 rounded-lg transition-colors"
                     >
                       <Pencil className="w-4 h-4 text-muted-foreground" />
                     </Button>
@@ -427,7 +427,7 @@ export default function AdminUsersPage() {
                       <Button
                         type="button"
                         onClick={() => handleDelete(user._id)}
-                        className="p-2 hover:bg-red-100 rounded-lg transition-colors"
+                        className="p-2 hover:bg-destructive/20 rounded-lg transition-colors"
                       >
                         <Trash2 className="w-4 h-4 text-muted-foreground" />
                       </Button>
@@ -470,7 +470,7 @@ export default function AdminUsersPage() {
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
                   required
                 />
               </div>
@@ -480,7 +480,7 @@ export default function AdminUsersPage() {
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
                   required
                 />
               </div>
@@ -512,7 +512,7 @@ export default function AdminUsersPage() {
               {editingUser.addresses && editingUser.addresses.length > 0 && (
                 <div className="pt-4 border-t border-border">
                   <h4 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-indigo-500" />
+                    <MapPin className="w-4 h-4 text-primary" />
                     Saved Addresses ({editingUser.addresses.length})
                   </h4>
                   <div className="space-y-3 max-h-48 overflow-y-auto pr-1">
@@ -521,7 +521,7 @@ export default function AdminUsersPage() {
                         <div className="flex items-center justify-between mb-1">
                           <span className="font-semibold text-foreground">{addr.title}</span>
                           {addr.isPrimary && (
-                            <span className="px-1.5 py-0.5 bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300 text-[10px] rounded-md font-medium">Primary</span>
+                            <span className="px-1.5 py-0.5 bg-primary/10 text-primary text-[10px] rounded-md font-medium">Primary</span>
                           )}
                         </div>
                         <div className="text-muted-foreground text-xs space-y-0.5">
@@ -544,7 +544,7 @@ export default function AdminUsersPage() {
                 </Button>
                 <Button
                   type="submit"
-                  className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors"
+                  className="px-4 py-2 text-sm font-medium text-primary-foreground bg-primary hover:bg-primary/90 rounded-lg transition-colors"
                 >
                   Save Changes
                 </Button>
@@ -572,7 +572,7 @@ export default function AdminUsersPage() {
                 type="text"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
                 required
               />
             </div>
@@ -582,7 +582,7 @@ export default function AdminUsersPage() {
                 type="email"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
                 required
               />
             </div>
@@ -592,7 +592,7 @@ export default function AdminUsersPage() {
                 type="password"
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
                 required
                 minLength={6}
               />
@@ -619,7 +619,7 @@ export default function AdminUsersPage() {
               </Button>
               <Button
                 type="submit"
-                className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors"
+                className="px-4 py-2 text-sm font-medium text-primary-foreground bg-primary hover:bg-primary/90 rounded-lg transition-colors"
               >
                 Create User
               </Button>
@@ -644,14 +644,14 @@ export default function AdminUsersPage() {
               <p className="text-sm text-muted-foreground mb-4">
                 Changing password for <span className="font-medium text-foreground">{passwordModalUser.name}</span>
               </p>
-              <div className="mb-4 bg-blue-50 dark:bg-blue-950/50 p-3 rounded-lg border border-blue-100 dark:border-blue-900">
-                <p className="text-sm text-blue-700 dark:text-blue-300 mb-2">
+              <div className="mb-4 bg-info/10 p-3 rounded-lg border border-info/30">
+                <p className="text-sm text-info mb-2">
                   This process requires email verification.
                 </p>
                 <Button
                   type="button"
                   onClick={handleSendVerificationCode}
-                  className="h-auto p-0 text-sm font-medium text-blue-600 hover:text-blue-800 underline"
+                  className="h-auto p-0 text-sm font-medium text-info hover:text-info underline"
                 >
                   Send Verification Code to {passwordModalUser.email}
                 </Button>
@@ -664,7 +664,7 @@ export default function AdminUsersPage() {
                     type="text"
                     value={passwordData.verificationCode}
                     onChange={(e) => setPasswordData({ ...passwordData, verificationCode: e.target.value })}
-                    className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
                     placeholder="Enter 6-digit code"
                     required
                   />
@@ -675,7 +675,7 @@ export default function AdminUsersPage() {
                     type="password"
                     value={passwordData.newPassword}
                     onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
-                    className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
                     required
                     minLength={6}
                   />
@@ -686,7 +686,7 @@ export default function AdminUsersPage() {
                     type="password"
                     value={passwordData.confirmPassword}
                     onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
-                    className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
                     required
                     minLength={6}
                   />
@@ -701,7 +701,7 @@ export default function AdminUsersPage() {
                   </Button>
                   <Button
                     type="submit"
-                    className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors"
+                    className="px-4 py-2 text-sm font-medium text-primary-foreground bg-primary hover:bg-primary/90 rounded-lg transition-colors"
                   >
                     Update Password
                   </Button>

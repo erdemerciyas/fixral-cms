@@ -3,12 +3,7 @@
 import React, { useState } from 'react';
 import ModernEditor from '../admin/ModernEditor';
 import SafeHtmlRenderer from '../common/SafeHtmlRenderer';
-import {
-  EyeIcon,
-  PencilIcon,
-  DocumentDuplicateIcon,
-  CheckIcon
-} from '@heroicons/react/24/outline';
+import { Eye as EyeIcon, Pencil as PencilIcon, Copy as DocumentDuplicateIcon, Check as CheckIcon } from 'lucide-react';
 
 interface UniversalEditorProps {
   value: string;

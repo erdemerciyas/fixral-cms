@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import Category from '@/models/Category';
 import { authOptions } from '@/lib/auth';
-import connectDB from '@/lib/mongoose';
 import slugify from 'slugify';
 
 /**
@@ -18,8 +17,6 @@ export async function GET(_req: NextRequest) {
         { status: 401 }
       );
     }
-
-    await connectDB();
 
     const categories = await Category.find().sort({ name: 1 });
 
@@ -46,8 +43,6 @@ export async function POST(req: NextRequest) {
         { status: 401 }
       );
     }
-
-    await connectDB();
 
     const body = await req.json();
 

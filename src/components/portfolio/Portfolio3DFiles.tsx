@@ -1,7 +1,7 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import { CubeIcon } from '@heroicons/react/24/outline';
+import { m } from 'framer-motion';
+import { Box as CubeIcon } from 'lucide-react';
 
 interface Model3D {
   _id: string;
@@ -39,7 +39,7 @@ export default function Portfolio3DFiles({ models3D }: Portfolio3DFilesProps) {
   }
 
   return (
-    <motion.div
+    <m.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
@@ -54,7 +54,7 @@ export default function Portfolio3DFiles({ models3D }: Portfolio3DFilesProps) {
 
       <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
         {models3D.map((model, index) => (
-          <motion.div
+          <m.div
             key={`model-${model._id || index}`}
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -74,9 +74,9 @@ export default function Portfolio3DFiles({ models3D }: Portfolio3DFilesProps) {
                 </h4>
               </div>
             </div>
-          </motion.div>
+          </m.div>
         ))}
       </div>
-    </motion.div>
+    </m.div>
   );
 }

@@ -1,5 +1,4 @@
 import { Metadata } from 'next';
-import connectDB from '@/lib/mongoose';
 import News from '@/models/News';
 import { NewsItem } from '@/types/news';
 import { logger } from '@/core/lib/logger';
@@ -39,8 +38,6 @@ export default async function NewsListPage({ params: paramsPromise, searchParams
     const { lang } = await paramsPromise;
     const searchParams = await searchParamsPromise;
     try {
-        await connectDB();
-
         const page = Math.max(1, parseInt(searchParams.page || '1'));
         const search = searchParams.search || '';
         const tag = searchParams.tag || '';

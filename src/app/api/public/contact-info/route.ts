@@ -1,15 +1,12 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import connectDB from '@/lib/mongoose';
 import Contact from '@/models/Contact';
 import SiteSettings from '@/models/SiteSettings';
 
 // GET /api/contact-info - İletişim bilgilerini getir
 export async function GET() {
   try {
-    await connectDB();
-
     const siteSettings = await SiteSettings.getSiteSettings();
     const socialMediaConfig = siteSettings.socialMediaConfig || {};
 
@@ -72,14 +69,6 @@ export async function PUT(request: Request) {
         { status: 400 }
       );
     }
-
-    // Database connection with timeout
-    await Promise.race([
-      connectDB(),
-      new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('Database connection timeout')), 10000)
-      )
-    ]);
 
     // Prepare update data
     const updateData = {

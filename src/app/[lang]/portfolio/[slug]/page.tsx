@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import connectDB from '@/lib/mongoose';
 import Portfolio from '@/models/Portfolio';
 import '@/models/Category';
 import { PortfolioItem } from '@/types/portfolio';
@@ -16,7 +15,6 @@ interface PageProps {
 }
 
 async function getPortfolioItem(slug: string): Promise<PortfolioItem | null> {
-  await connectDB();
   const item = await Portfolio.findOne({ slug, isActive: true })
     .populate('categoryIds', 'name slug')
     .lean();
@@ -25,7 +23,6 @@ async function getPortfolioItem(slug: string): Promise<PortfolioItem | null> {
 }
 
 async function getRelatedProjects(currentSlug: string): Promise<PortfolioItem[]> {
-  await connectDB();
   const items = await Portfolio.find({ slug: { $ne: currentSlug }, isActive: true })
     .limit(3)
     .lean();
@@ -34,7 +31,6 @@ async function getRelatedProjects(currentSlug: string): Promise<PortfolioItem[]>
 
 export async function generateStaticParams() {
   try {
-    await connectDB();
     const items = await Portfolio.find({ isActive: true }).select('slug').lean();
     const langs = ['tr', 'es'];
     return items.flatMap(item => langs.map(lang => ({ lang, slug: (item as { slug: string }).slug })));

@@ -2,12 +2,7 @@
 
 import { useEffect } from 'react';
 import Link from 'next/link';
-import { 
-  ExclamationTriangleIcon, 
-  ArrowPathIcon, 
-  HomeIcon,
-  SparklesIcon 
-} from '@heroicons/react/24/outline';
+import { AlertTriangle as ExclamationTriangleIcon, RefreshCw as ArrowPathIcon, Home as HomeIcon, Sparkles as SparklesIcon } from 'lucide-react';
 import { useLocale } from '@/hooks/useLocale';
 
 export default function Error({

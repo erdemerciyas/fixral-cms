@@ -1,11 +1,7 @@
 import { NextResponse } from "next/server";
 import Video from "@/models/Video";
-import connectDB from "@/lib/mongoose";
-
 export async function GET() {
   try {
-    await connectDB();
-
     // Get all videos with valid channelId
     const videos = await Video.find({
       channelId: { $ne: "" },

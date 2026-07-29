@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import Portfolio from '@/models/Portfolio';
-import connectDB from '@/lib/mongoose';
-
 export async function DELETE(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -14,7 +12,6 @@ export async function DELETE(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    await connectDB();
     const { id } = await params;
 
     const result = await Portfolio.findOneAndUpdate(

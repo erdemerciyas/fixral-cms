@@ -1,9 +1,9 @@
 'use client';
 
-import { Fragment, useState, useRef } from 'react';
-import { Dialog, Transition } from '@headlessui/react';
-import { motion } from 'framer-motion';
-import { X, PaperPlaneTilt, User, MagnifyingGlass } from '@phosphor-icons/react';
+import { useState, useRef } from 'react';
+import * as DialogPrimitive from '@radix-ui/react-dialog';
+import { m } from 'framer-motion';
+import { X, Send as PaperPlaneTilt, User, Search as MagnifyingGlass } from 'lucide-react';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import MobileNavLink from './MobileNavLink';
@@ -84,50 +84,33 @@ export default function MobileNav({
     };
 
     return (
-        <Transition show={isOpen} as={Fragment}>
-            <Dialog onClose={onClose} className="relative z-50 lg:hidden">
-                <Transition.Child
-                    as={Fragment}
-                    enter="duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]"
-                    enterFrom="opacity-0"
-                    enterTo="opacity-100"
-                    leave="duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]"
-                    leaveFrom="opacity-100"
-                    leaveTo="opacity-0"
-                >
-                    <div
-                        className="fixed inset-0"
-                        aria-hidden="true"
-                        style={{
-                            background: 'rgba(9, 20, 29, 0.92)',
-                            backdropFilter: 'blur(32px)',
-                            WebkitBackdropFilter: 'blur(32px)',
-                        }}
-                    />
-                </Transition.Child>
+        <DialogPrimitive.Root open={isOpen} onOpenChange={(open) => { if (!open) onClose(); }}>
+            <DialogPrimitive.Portal>
+                <DialogPrimitive.Overlay
+                    className="fixed inset-0 z-50 lg:hidden duration-500 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=closed]:animate-out data-[state=closed]:fade-out-0"
+                    style={{
+                        background: 'rgba(9, 20, 29, 0.92)',
+                        backdropFilter: 'blur(32px)',
+                        WebkitBackdropFilter: 'blur(32px)',
+                    }}
+                />
 
-                <Transition.Child
-                    as={Fragment}
-                    enter="duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]"
-                    enterFrom="opacity-0"
-                    enterTo="opacity-100"
-                    leave="duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]"
-                    leaveFrom="opacity-100"
-                    leaveTo="opacity-0"
+                <DialogPrimitive.Content
+                    aria-describedby={undefined}
+                    className="fixed inset-0 z-50 flex flex-col h-[100dvh] lg:hidden focus:outline-none duration-500 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=closed]:animate-out data-[state=closed]:fade-out-0"
                 >
-                    <Dialog.Panel className="fixed inset-0 flex flex-col h-[100dvh]">
                         {/* Header */}
                         <div className="flex items-center justify-between px-6 pt-6 pb-4 flex-shrink-0">
-                            <Dialog.Title className="text-lg font-semibold text-white/90 tracking-tight">
+                            <DialogPrimitive.Title className="text-lg font-semibold text-white/90 tracking-tight">
                                 {logoText || 'Menü'}
-                            </Dialog.Title>
+                            </DialogPrimitive.Title>
                             <button
                                 onClick={onClose}
                                 className="p-2.5 rounded-xl text-white/40 hover:text-white hover:bg-white/5"
                                 style={{ transition: 'all 300ms cubic-bezier(0.32, 0.72, 0, 1)' }}
                                 aria-label="Menüyü kapat"
                             >
-                                <X size={22} weight="light" />
+                                <X size={22} />
                             </button>
                         </div>
 
@@ -138,7 +121,6 @@ export default function MobileNav({
                             <form onSubmit={handleSearchSubmit} className="relative">
                                 <MagnifyingGlass
                                     size={16}
-                                    weight="light"
                                     className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30"
                                 />
                                 <input
@@ -162,14 +144,14 @@ export default function MobileNav({
                             aria-label="Mobil navigasyon"
                             className="flex-1 overflow-y-auto px-4 py-6 min-h-0"
                         >
-                            <motion.div
+                            <m.div
                                 variants={containerVariants}
                                 initial="hidden"
                                 animate={isOpen ? 'visible' : 'exit'}
                                 className="space-y-1"
                             >
                                 {navLinks.map((link, index) => (
-                                    <motion.div key={index} variants={itemVariants}>
+                                    <m.div key={index} variants={itemVariants}>
                                         <MobileNavLink
                                             href={link.href}
                                             label={link.label}
@@ -179,14 +161,14 @@ export default function MobileNav({
                                             index={index}
                                             onClick={onClose}
                                         />
-                                    </motion.div>
+                                    </m.div>
                                 ))}
-                            </motion.div>
+                            </m.div>
                         </nav>
 
                         {/* Bottom Actions */}
                         {navLoaded && (
-                            <motion.div
+                            <m.div
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.3, duration: 0.5, ease: [0.32, 0.72, 0, 1] }}
@@ -221,7 +203,7 @@ export default function MobileNav({
                                             }}
                                             aria-label="Hesabım"
                                         >
-                                            <User size={18} weight="light" />
+                                            <User size={18} />
                                             <span>Hesabım</span>
                                         </Link>
                                     ) : (
@@ -235,7 +217,7 @@ export default function MobileNav({
                                                 transition: 'all 300ms cubic-bezier(0.32, 0.72, 0, 1)',
                                             }}
                                         >
-                                            <User size={18} weight="light" />
+                                            <User size={18} />
                                             <span>Giriş Yap</span>
                                         </Link>
                                     )}
@@ -254,17 +236,15 @@ export default function MobileNav({
                                 >
                                     <PaperPlaneTilt
                                         size={16}
-                                        weight="light"
                                         className="relative z-10 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
                                         aria-hidden="true"
                                     />
                                     <span className="relative z-10">Proje Başvurusu</span>
                                 </button>
-                            </motion.div>
+                            </m.div>
                         )}
-                    </Dialog.Panel>
-                </Transition.Child>
-            </Dialog>
-        </Transition>
+                </DialogPrimitive.Content>
+            </DialogPrimitive.Portal>
+        </DialogPrimitive.Root>
     );
 }

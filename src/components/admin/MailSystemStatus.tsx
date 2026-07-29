@@ -48,12 +48,12 @@ export default function MailSystemStatus() {
 
   const getStatusIcon = () => {
     if (!status?.configured) {
-      return <XCircleIcon className="w-6 h-6 text-red-500" />;
+      return <XCircleIcon className="w-6 h-6 text-destructive" />;
     }
     if (status.smtpTest) {
-      return <CheckCircleIcon className="w-6 h-6 text-green-500" />;
+      return <CheckCircleIcon className="w-6 h-6 text-success" />;
     }
-    return <ExclamationTriangleIcon className="w-6 h-6 text-yellow-500" />;
+    return <ExclamationTriangleIcon className="w-6 h-6 text-warning" />;
   };
 
   const getStatusMessage = () => {
@@ -70,22 +70,22 @@ export default function MailSystemStatus() {
   };
 
   const getStatusColor = () => {
-    if (!status?.configured) return 'text-red-600';
-    if (status.smtpTest) return 'text-green-600';
-    return 'text-yellow-600';
+    if (!status?.configured) return 'text-destructive';
+    if (status.smtpTest) return 'text-success';
+    return 'text-warning';
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+    <div className="bg-card rounded-lg shadow-sm border border-border p-6">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center space-x-3">
-          <EnvelopeIcon className="w-8 h-8 text-blue-600" />
-          <h3 className="text-lg font-semibold text-gray-900">Mail Sistem Durumu</h3>
+          <EnvelopeIcon className="w-8 h-8 text-info" />
+          <h3 className="text-lg font-semibold text-foreground">Mail Sistem Durumu</h3>
         </div>
         <button
           onClick={checkMailStatus}
           disabled={loading}
-          className="p-2 text-gray-400 hover:text-gray-600 transition-colors disabled:opacity-50"
+          className="p-2 text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50"
           title="Durumu yenile"
         >
           <ArrowPathIcon className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
@@ -94,8 +94,8 @@ export default function MailSystemStatus() {
 
       {loading && !status ? (
         <div className="flex items-center space-x-3">
-          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
-          <span className="text-gray-600">Durum kontrol ediliyor...</span>
+          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-info"></div>
+          <span className="text-muted-foreground">Durum kontrol ediliyor...</span>
         </div>
       ) : (
         <div className="space-y-4">
@@ -109,32 +109,32 @@ export default function MailSystemStatus() {
 
           {/* Detaylar */}
           {status && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-gray-100">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-border">
               <div className="flex items-center space-x-2">
-                <span className="text-sm text-gray-500">Gmail Hesabı:</span>
+                <span className="text-sm text-muted-foreground">Gmail Hesabı:</span>
                 <span className="text-sm font-mono">
                   {status.gmailUser || 'Tanımlı değil'}
                 </span>
               </div>
               
               <div className="flex items-center space-x-2">
-                <span className="text-sm text-gray-500">App Password:</span>
-                <span className={`text-sm ${status.hasAppPassword ? 'text-green-600' : 'text-red-600'}`}>
+                <span className="text-sm text-muted-foreground">App Password:</span>
+                <span className={`text-sm ${status.hasAppPassword ? 'text-success' : 'text-destructive'}`}>
                   {status.hasAppPassword ? '✓ Tanımlı' : '✗ Eksik'}
                 </span>
               </div>
               
               <div className="flex items-center space-x-2">
-                <span className="text-sm text-gray-500">SMTP Test:</span>
-                <span className={`text-sm ${status.smtpTest ? 'text-green-600' : 'text-red-600'}`}>
+                <span className="text-sm text-muted-foreground">SMTP Test:</span>
+                <span className={`text-sm ${status.smtpTest ? 'text-success' : 'text-destructive'}`}>
                   {status.smtpTest ? '✓ Başarılı' : '✗ Başarısız'}
                 </span>
               </div>
               
               {lastCheck && (
                 <div className="flex items-center space-x-2">
-                  <span className="text-sm text-gray-500">Son Kontrol:</span>
-                  <span className="text-sm text-gray-600">
+                  <span className="text-sm text-muted-foreground">Son Kontrol:</span>
+                  <span className="text-sm text-muted-foreground">
                     {lastCheck.toLocaleTimeString('tr-TR')}
                   </span>
                 </div>
@@ -144,8 +144,8 @@ export default function MailSystemStatus() {
 
           {/* Hata Detayı */}
           {status?.error && (
-            <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-md">
-              <p className="text-sm text-red-700">
+            <div className="mt-4 p-3 bg-destructive/10 border border-destructive/30 rounded-md">
+              <p className="text-sm text-destructive">
                 <strong>Hata Detayı:</strong> {status.error}
               </p>
             </div>
@@ -153,11 +153,11 @@ export default function MailSystemStatus() {
 
           {/* Konfigürasyon Önerileri */}
           {!status?.configured && (
-            <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-md">
-              <h4 className="text-sm font-medium text-blue-900 mb-2">
+            <div className="mt-4 p-4 bg-info/10 border border-info/30 rounded-md">
+              <h4 className="text-sm font-medium text-info mb-2">
                 Mail Sistemini Aktif Etmek İçin:
               </h4>
-              <ol className="text-sm text-blue-800 space-y-1 list-decimal list-inside">
+              <ol className="text-sm text-info space-y-1 list-decimal list-inside">
                 <li>Gmail hesabınızda 2-Factor Authentication&apos;ı aktif edin</li>
                 <li>Gmail App Password oluşturun</li>
                 <li>Environment variables&apos;lara GMAIL_USER ve GMAIL_APP_PASSWORD ekleyin</li>
@@ -168,7 +168,7 @@ export default function MailSystemStatus() {
                   href="https://support.google.com/accounts/answer/185833" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="text-sm text-blue-600 hover:text-blue-800 underline"
+                  className="text-sm text-info hover:text-info underline"
                 >
                   📚 Gmail App Password Rehberi
                 </a>

@@ -95,7 +95,59 @@
     "title": "Hizmetler",
     "pageTitle": "Sunduğumuz Hizmetler",
     "pageDescription": "Modern teknoloji çözümleri ve profesyonel hizmetlerimizi keşfedin",
-    "explore": "Hizmetleri İncele"
+    "explore": "Hizmetleri İncele",
+    "3d-tarama": {
+      "title": "3D Tarama",
+      "shortDescription": "Endüstriyel 3D tarama teknolojileri ile hassas dijital ikizler oluşturun"
+    },
+    "tersine-muhendislik": {
+      "title": "Tersine Mühendislik",
+      "shortDescription": "Mevcut parçalardan orijinal CAD modellerini yeniden oluşturun"
+    },
+    "3d-baski-hizmetleri": {
+      "title": "3D Baskı Hizmetleri",
+      "shortDescription": "FDM, SLA ve SLS teknolojileri ile prototipten üretime 3D baskı"
+    },
+    "prototipleme-hizmetleri": {
+      "title": "Prototipleme Hizmetleri",
+      "shortDescription": "Fikirden fonksiyonel prototipe her aşamada profesyonel destek"
+    },
+    "plastik-restorasyon": {
+      "title": "Plastik Restorasyon",
+      "shortDescription": "Hasarlı plastik parçaların profesyonel restorasyonu ve yüzey yenileme"
+    },
+    "3d-modelleme-hizmetleri": {
+      "title": "3D Modelleme Hizmetleri",
+      "shortDescription": "Profesyonel CAD modelleme ile üretim-ready dijital tasarımlar"
+    },
+    "arac-restorasyon": {
+      "title": "Araç Restorasyon",
+      "shortDescription": "Klasik ve vintage araçların kapsamlı restorasyonu"
+    },
+    "restorasyon-danismanlik": {
+      "title": "Restorasyon Danışmanlık",
+      "shortDescription": "Restorasyon projeleriniz için uzman danışmanlık ve teknik rehberlik"
+    },
+    "dijital-yapay-zeka-cozumleri": {
+      "title": "Dijital Yapay Zeka Çözümleri",
+      "shortDescription": "İşletmenize özel yapay zeka ve otomasyon çözümleri"
+    },
+    "web-interaktif-cozumler": {
+      "title": "Web ve İnteraktif Çözümler",
+      "shortDescription": "Modern web teknolojileri ile etkileyici dijital deneyimler"
+    },
+    "extreme-ecu-cozumleri": {
+      "title": "Extreme ECU Çözümleri",
+      "shortDescription": "Araç ECU yazılım ve donanım optimizasyon çözümleri"
+    },
+    "kurumsal-bireysel-yazilim": {
+      "title": "Kurumsal & Bireysel Yazılım Çözümleri",
+      "shortDescription": "İhtiyacınıza özel web, mobil ve masaüstü yazılım çözümleri"
+    },
+    "markalama-danismanligi": {
+      "title": "Markalaşma Danışmanlığı",
+      "shortDescription": "Markanızın dijital ve fiziksel dünyada güçlü iz bırakması"
+    }
   },
   "contact": {
     "title": "İletişim",
