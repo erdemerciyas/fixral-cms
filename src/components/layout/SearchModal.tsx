@@ -26,9 +26,9 @@ const CATEGORY_ICONS: Record<string, React.ElementType> = {
 };
 
 const CATEGORY_COLORS: Record<string, string> = {
-    'Haberler': 'bg-blue-50 text-blue-600',
-    'Portföy': 'bg-purple-50 text-purple-600',
-    'Hizmetler': 'bg-emerald-50 text-emerald-600',
+    'Haberler': 'bg-primary/10 text-primary',
+    'Portföy': 'bg-accent text-accent-foreground',
+    'Hizmetler': 'bg-muted text-muted-foreground',
 };
 
 export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
@@ -140,7 +140,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                     onClick={onClose}
                 >
                     {/* Backdrop */}
-                    <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" />
+                    <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
 
                     {/* Modal */}
                     <m.div
@@ -151,27 +151,27 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                         className="relative w-full max-w-2xl mx-4"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        <div className="bg-white rounded-2xl shadow-2xl border border-slate-200/50 overflow-hidden">
+                        <div className="bg-card rounded-2xl shadow-2xl border border-border overflow-hidden">
                             {/* Search Input */}
                             <form onSubmit={handleSubmit} className="relative">
-                                <MagnifyingGlassIcon className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" />
+                                <MagnifyingGlassIcon className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none" />
                                 <input
                                     ref={inputRef}
                                     type="text"
                                     value={query}
                                     onChange={handleInputChange}
                                     placeholder="Site genelinde ara..."
-                                    className="w-full pl-14 pr-20 py-5 text-lg text-slate-900 placeholder:text-slate-400 focus:outline-none bg-transparent"
+                                    className="w-full pl-14 pr-20 py-5 text-lg text-foreground placeholder:text-muted-foreground focus:outline-none bg-transparent"
                                     autoComplete="off"
                                 />
                                 <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
-                                    <kbd className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 text-[11px] font-medium text-slate-400 bg-slate-100 rounded border border-slate-200">
+                                    <kbd className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 text-[11px] font-medium text-muted-foreground bg-muted rounded border border-border">
                                         ESC
                                     </kbd>
                                     <button
                                         type="button"
                                         onClick={onClose}
-                                        className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
+                                        className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
                                         aria-label="Aramayı kapat"
                                     >
                                         <XMarkIcon className="w-5 h-5" />
@@ -181,16 +181,16 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
 
                             {/* Results */}
                             {(hasSearched || query.length > 0) && (
-                                <div className="border-t border-slate-100">
+                                <div className="border-t border-border">
                                     {isLoading ? (
                                         <div className="flex items-center justify-center py-12">
-                                            <div className="w-6 h-6 border-2 border-brand-primary-200 border-t-brand-primary-600 rounded-full animate-spin" />
+                                            <div className="w-6 h-6 border-2 border-primary/20 border-t-primary rounded-full animate-spin" />
                                         </div>
                                     ) : results.length > 0 ? (
                                         <div className="max-h-[50vh] overflow-y-auto py-2">
                                             {Object.entries(groupedResults).map(([category, items]) => {
                                                 const Icon = CATEGORY_ICONS[category] || FolderOpenIcon;
-                                                const colorClass = CATEGORY_COLORS[category] || 'bg-slate-50 text-slate-600';
+                                                const colorClass = CATEGORY_COLORS[category] || 'bg-muted text-muted-foreground';
                                                 return (
                                                     <div key={category} className="px-2 mb-1 last:mb-0">
                                                         <div className="flex items-center gap-2 px-3 py-2">
@@ -198,26 +198,26 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                                                                 <Icon className="w-3 h-3" />
                                                                 {category}
                                                             </span>
-                                                            <div className="flex-1 h-px bg-slate-100" />
+                                                            <div className="flex-1 h-px bg-border" />
                                                         </div>
                                                         {items.map((item, i) => (
                                                             <Link
                                                                 key={i}
                                                                 href={item.href}
                                                                 onClick={onClose}
-                                                                className="flex items-center gap-3 px-3 py-2.5 mx-1 rounded-xl hover:bg-slate-50 transition-colors group"
+                                                                className="flex items-center gap-3 px-3 py-2.5 mx-1 rounded-xl hover:bg-accent transition-colors group"
                                                             >
                                                                 <div className="flex-1 min-w-0">
-                                                                    <p className="text-sm font-medium text-slate-900 truncate group-hover:text-brand-primary-700 transition-colors">
+                                                                    <p className="text-sm font-medium text-foreground truncate group-hover:text-primary transition-colors">
                                                                         {item.title}
                                                                     </p>
                                                                     {item.description && (
-                                                                        <p className="text-xs text-slate-500 truncate mt-0.5">
+                                                                        <p className="text-xs text-muted-foreground truncate mt-0.5">
                                                                             {item.description}
                                                                         </p>
                                                                     )}
                                                                 </div>
-                                                                <ArrowRightIcon className="w-4 h-4 text-slate-300 group-hover:text-brand-primary-500 transition-colors flex-shrink-0" />
+                                                                <ArrowRightIcon className="w-4 h-4 text-muted-foreground/60 group-hover:text-primary transition-colors flex-shrink-0" />
                                                             </Link>
                                                         ))}
                                                     </div>
@@ -226,11 +226,11 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                                         </div>
                                     ) : hasSearched && query.trim() ? (
                                         <div className="py-12 text-center">
-                                            <MagnifyingGlassIcon className="w-10 h-10 text-slate-200 mx-auto mb-3" />
-                                            <p className="text-sm text-slate-500">
-                                                &quot;<span className="font-medium text-slate-700">{query}</span>&quot; ile ilgili sonuç bulunamadı.
+                                            <MagnifyingGlassIcon className="w-10 h-10 text-muted-foreground/40 mx-auto mb-3" />
+                                            <p className="text-sm text-muted-foreground">
+                                                &quot;<span className="font-medium text-foreground">{query}</span>&quot; ile ilgili sonuç bulunamadı.
                                             </p>
-                                            <p className="text-xs text-slate-400 mt-1">
+                                            <p className="text-xs text-muted-foreground/70 mt-1">
                                                 Farklı anahtar kelimeler deneyin
                                             </p>
                                         </div>
@@ -238,11 +238,11 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
 
                                     {/* Footer hint */}
                                     {results.length > 0 && (
-                                        <div className="px-5 py-3 border-t border-slate-100 bg-slate-50/50">
+                                        <div className="px-5 py-3 border-t border-border bg-muted/50">
                                             <button
                                                 type="button"
                                                 onClick={handleSubmit as any}
-                                                className="flex items-center gap-2 text-xs text-slate-500 hover:text-brand-primary-600 transition-colors"
+                                                className="flex items-center gap-2 text-xs text-muted-foreground hover:text-primary transition-colors"
                                             >
                                                 <MagnifyingGlassIcon className="w-3.5 h-3.5" />
                                                 <span>Tüm sonuçları gör: &quot;{query}&quot;</span>
@@ -255,8 +255,8 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
 
                             {/* Quick links when empty */}
                             {!query && (
-                                <div className="border-t border-slate-100 px-5 py-4">
-                                    <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wider mb-2.5">Hızlı Erişim</p>
+                                <div className="border-t border-border px-5 py-4">
+                                    <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider mb-2.5">Hızlı Erişim</p>
                                     <div className="flex flex-wrap gap-2">
                                         {[
                                             { label: 'Haberler', href: `/${currentLang}/${currentLang === 'es' ? 'noticias' : 'haberler'}` },
@@ -267,7 +267,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                                                 key={link.label}
                                                 href={link.href}
                                                 onClick={onClose}
-                                                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-600 bg-slate-100 rounded-full hover:bg-slate-200 hover:text-slate-800 transition-colors"
+                                                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-muted-foreground bg-muted rounded-full hover:bg-accent hover:text-foreground transition-colors"
                                             >
                                                 {link.label}
                                                 <ArrowRightIcon className="w-3 h-3" />

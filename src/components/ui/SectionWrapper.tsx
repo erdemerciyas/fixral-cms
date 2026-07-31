@@ -21,7 +21,7 @@ export default function SectionWrapper({
   ariaLabel,
 }: SectionWrapperProps) {
   const maxWidthClass = {
-    default: 'max-w-[1400px]',
+    default: 'max-w-7xl',
     narrow: 'max-w-4xl',
     wide: 'max-w-7xl',
     full: 'max-w-none',
@@ -39,7 +39,7 @@ export default function SectionWrapper({
       aria-label={ariaLabel}
       className={cn(paddingClass, className)}
     >
-      <div className={cn(maxWidthClass, 'mx-auto px-6 sm:px-8 lg:px-12')}>
+      <div className={cn(maxWidthClass, 'mx-auto px-4 sm:px-6 lg:px-8')}>
         {children}
       </div>
     </Component>

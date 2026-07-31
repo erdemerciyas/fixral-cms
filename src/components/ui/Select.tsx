@@ -36,14 +36,15 @@ const Select: React.FC<SelectProps> = ({
   };
 
   const variantClasses = {
-    default: 'bg-background border-input text-foreground focus:border-ring focus:ring-ring/25',
-    dark: 'bg-slate-800 border-slate-600 text-white focus:border-ring focus:ring-ring/25'
+    default: 'bg-background border-input text-foreground focus:border-primary focus:ring-ring/20',
+    dark: 'bg-popover border-border text-popover-foreground focus:border-primary focus:ring-ring/20'
   };
 
+  /* Printables input dili: 4px radius, 1px hairline border, dinlenimde gölge yok. */
   const baseClasses = `
-    relative w-full rounded-xl border appearance-none cursor-pointer
+    relative w-full rounded-sm border appearance-none cursor-pointer
     focus:outline-none focus:ring-2
-    transition-all duration-200
+    transition-[color,background-color,border-color,box-shadow] duration-200 ease-out
     disabled:cursor-not-allowed disabled:opacity-50
     pr-10
   `;
@@ -78,11 +79,7 @@ const Select: React.FC<SelectProps> = ({
       
       {/* Custom arrow */}
       <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-        <ChevronDownIcon 
-          className={`w-4 h-4 ${
-            variant === 'dark' ? 'text-slate-400' : 'text-muted-foreground'
-          }`} 
-        />
+        <ChevronDownIcon className="w-4 h-4 text-muted-foreground" />
       </div>
     </div>
   );

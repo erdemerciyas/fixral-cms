@@ -23,9 +23,9 @@ const Version: React.FC<VersionProps> = ({
   };
 
   const variantClasses = {
-    badge: 'bg-slate-700 text-slate-300 rounded-full font-mono',
-    text: 'text-slate-400 font-mono',
-    pill: 'bg-brand-primary-700 text-white rounded-full font-semibold'
+    badge: 'bg-muted text-muted-foreground rounded-full font-mono',
+    text: 'text-muted-foreground font-mono',
+    pill: 'bg-primary text-primary-foreground rounded-full font-semibold'
   };
 
   const content = showLabel ? `Version ${packageJson.version}` : `v${packageJson.version}`;

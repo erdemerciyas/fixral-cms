@@ -245,7 +245,7 @@ export default async function NewsDetailPage({ params: paramsPromise }: PageProp
         };
 
         return (
-            <div className="min-h-screen">
+            <div className="min-h-[100dvh] bg-background">
                 <script
                     type="application/ld+json"
                     dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

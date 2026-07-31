@@ -23,9 +23,12 @@ export default function HTMLContent({
 
   return (
     <div className={`html-content ${className}`}>
+      {/* prose'un sabit gri renkleri tema token'larıyla ezilir:
+          gövde rengi sarmalayıcıdan miras alınır (text-muted-foreground vb.),
+          başlık/bold/link prose CSS değişkenleri üzerinden token'a bağlanır */}
       <SafeHtmlRenderer 
         html={content}
-        className="prose prose-sm max-w-none"
+        className="prose prose-sm max-w-none text-inherit [--tw-prose-body:currentColor] [--tw-prose-headings:hsl(var(--foreground))] [--tw-prose-bold:currentColor] [--tw-prose-links:hsl(var(--primary))]"
         maxLength={truncate}
         showReadMore={showMore}
       />
@@ -34,7 +37,7 @@ export default function HTMLContent({
       {truncate && onToggle && (
         <button
           onClick={onToggle}
-          className="text-brand-primary-700 hover:text-brand-primary-800 font-medium text-sm mt-2 inline-flex items-center transition-colors"
+          className="text-primary hover:text-primary/80 font-medium text-sm mt-2 inline-flex items-center transition-colors"
         >
           {showMore ? 'Daha Az' : 'Daha Fazla'}
           <svg 

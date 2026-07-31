@@ -101,45 +101,45 @@ E-posta: ${projectForm.email}
 
     return createPortal(
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9999] flex items-center justify-center p-4">
-            <div className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-                <div className="p-6 border-b border-gray-200 flex items-center justify-between">
-                    <h2 className="text-2xl font-bold text-gray-900 flex items-center space-x-2">
-                        <PaperAirplaneIcon className="w-6 h-6 text-brand-primary-700" />
+            <div className="bg-card border border-border rounded-sm shadow-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+                <div className="p-6 border-b border-border flex items-center justify-between">
+                    <h2 className="text-xl font-semibold text-foreground flex items-center space-x-2">
+                        <PaperAirplaneIcon className="w-6 h-6 text-accent-foreground" />
                         <span>Proje Başvurusu</span>
                     </h2>
                     <button
                         onClick={onClose}
                         aria-label="Diyaloğu kapat"
-                        className="p-2 rounded-full hover:bg-gray-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary-600"
+                        className="p-2 rounded-full hover:bg-accent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     >
-                        <XMarkIcon className="w-6 h-6 text-gray-500" />
+                        <XMarkIcon className="w-6 h-6 text-muted-foreground" />
                     </button>
                 </div>
 
                 <form onSubmit={handleProjectFormSubmit} className="p-6 space-y-6" aria-labelledby="project-modal-title">
                     <h2 id="project-modal-title" className="sr-only">Proje Başvurusu Formu</h2>
                     {submitStatus === 'success' && (
-                        <div className="bg-brand-primary-50 border border-brand-primary-200 rounded-xl p-4">
+                        <div className="bg-accent border border-border rounded-sm p-4">
                             <div className="flex items-center space-x-2">
-                                <div className="w-5 h-5 bg-brand-primary-600 rounded-full flex items-center justify-center">
-                                    <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <div className="w-5 h-5 bg-primary rounded-full flex items-center justify-center">
+                                    <svg className="w-3 h-3 text-primary-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                                     </svg>
                                 </div>
-                                <p className="text-brand-primary-800 font-medium">Proje başvurunuz başarıyla gönderildi!</p>
+                                <p className="text-accent-foreground font-medium">Proje başvurunuz başarıyla gönderildi!</p>
                             </div>
                         </div>
                     )}
 
                     {submitStatus === 'error' && (
-                        <div className="bg-red-50 border border-red-200 rounded-xl p-4">
-                            <p className="text-red-800">Bir hata oluştu. Lütfen tekrar deneyin.</p>
+                        <div className="bg-destructive/10 border border-destructive/30 rounded-sm p-4">
+                            <p className="text-destructive">Bir hata oluştu. Lütfen tekrar deneyin.</p>
                         </div>
                     )}
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                            <label htmlFor="name" className="block text-sm font-medium text-foreground mb-2">
                                 Ad Soyad *
                             </label>
                             <input
@@ -150,13 +150,13 @@ E-posta: ${projectForm.email}
                                 onChange={handleProjectFormChange}
                                 required
                                 aria-required="true"
-                                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary-600 focus-visible:ring-offset-2 transition-all"
+                                className="w-full px-4 py-3 border border-border bg-background text-foreground rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 transition-all"
                                 placeholder="Adınız ve soyadınız"
                             />
                         </div>
 
                         <div>
-                            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                            <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">
                                 E-posta *
                             </label>
                             <input
@@ -167,13 +167,13 @@ E-posta: ${projectForm.email}
                                 onChange={handleProjectFormChange}
                                 required
                                 aria-required="true"
-                                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary-600 focus-visible:ring-offset-2 transition-all"
+                                className="w-full px-4 py-3 border border-border bg-background text-foreground rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 transition-all"
                                 placeholder="ornek@email.com"
                             />
                         </div>
 
                         <div>
-                            <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+                            <label htmlFor="phone" className="block text-sm font-medium text-foreground mb-2">
                                 Telefon
                             </label>
                             <input
@@ -182,13 +182,13 @@ E-posta: ${projectForm.email}
                                 name="phone"
                                 value={projectForm.phone}
                                 onChange={handleProjectFormChange}
-                                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary-600 focus-visible:ring-offset-2 transition-all"
+                                className="w-full px-4 py-3 border border-border bg-background text-foreground rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 transition-all"
                                 placeholder="05XX XXX XX XX"
                             />
                         </div>
 
                         <div>
-                            <label htmlFor="projectType" className="block text-sm font-medium text-gray-700 mb-2">
+                            <label htmlFor="projectType" className="block text-sm font-medium text-foreground mb-2">
                                 Proje Türü *
                             </label>
                             <select
@@ -198,7 +198,7 @@ E-posta: ${projectForm.email}
                                 onChange={handleProjectFormChange}
                                 required
                                 aria-required="true"
-                                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary-600 focus-visible:ring-offset-2 transition-all"
+                                className="w-full px-4 py-3 border border-border bg-background text-foreground rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 transition-all"
                             >
                                 <option value="">Seçiniz</option>
                                 <option value="3d-scanning">3D Tarama</option>
@@ -212,7 +212,7 @@ E-posta: ${projectForm.email}
                         </div>
 
                         <div>
-                            <label htmlFor="budget" className="block text-sm font-medium text-gray-700 mb-2">
+                            <label htmlFor="budget" className="block text-sm font-medium text-foreground mb-2">
                                 Bütçe Aralığı
                             </label>
                             <select
@@ -220,7 +220,7 @@ E-posta: ${projectForm.email}
                                 name="budget"
                                 value={projectForm.budget}
                                 onChange={handleProjectFormChange}
-                                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary-600 focus-visible:ring-offset-2 transition-all"
+                                className="w-full px-4 py-3 border border-border bg-background text-foreground rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 transition-all"
                             >
                                 <option value="">Seçiniz</option>
                                 <option value="under-5k">5.000 TL altı</option>
@@ -232,7 +232,7 @@ E-posta: ${projectForm.email}
                         </div>
 
                         <div>
-                            <label htmlFor="timeline" className="block text-sm font-medium text-gray-700 mb-2">
+                            <label htmlFor="timeline" className="block text-sm font-medium text-foreground mb-2">
                                 Zaman Planı
                             </label>
                             <select
@@ -240,7 +240,7 @@ E-posta: ${projectForm.email}
                                 name="timeline"
                                 value={projectForm.timeline}
                                 onChange={handleProjectFormChange}
-                                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary-600 focus-visible:ring-offset-2 transition-all"
+                                className="w-full px-4 py-3 border border-border bg-background text-foreground rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 transition-all"
                             >
                                 <option value="">Seçiniz</option>
                                 <option value="asap">Mümkün olan en kısa sürede</option>
@@ -253,7 +253,7 @@ E-posta: ${projectForm.email}
                     </div>
 
                     <div>
-                        <label htmlFor="description" className="block text sm font-medium text-gray-700 mb-2">
+                        <label htmlFor="description" className="block text sm font-medium text-foreground mb-2">
                             Proje Detayları *
                         </label>
                         <textarea
@@ -264,7 +264,7 @@ E-posta: ${projectForm.email}
                             required
                             aria-required="true"
                             rows={4}
-                            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary-600 focus-visible:ring-offset-2 transition-all resize-none"
+                            className="w-full px-4 py-3 border border-border bg-background text-foreground rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 transition-all resize-none"
                             placeholder="Projenizin detaylarını, hedeflerinizi ve özel gereksinimlerinizi açıklayın..."
                         />
                     </div>
@@ -273,14 +273,14 @@ E-posta: ${projectForm.email}
                         <button
                             type="button"
                             onClick={onClose}
-                            className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-xl font-semibold hover:bg-gray-50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400"
+                            className="flex-1 px-6 py-3 border border-border bg-card text-foreground rounded-lg font-semibold hover:bg-accent hover:text-accent-foreground transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                         >
                             İptal
                         </button>
                         <button
                             type="submit"
                             disabled={isSubmitting}
-                            className="flex-1 px-6 py-3 bg-gradient-primary text-white rounded-xl font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center justify-center space-x-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary-600 focus-visible:ring-offset-2"
+                            className="flex-1 px-6 py-3 bg-primary text-primary-foreground rounded-lg font-semibold hover:bg-primary/90 transition-colors duration-200 disabled:opacity-50 flex items-center justify-center space-x-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                         >
                             {isSubmitting ? (
                                 <span>Gönderiliyor...</span>

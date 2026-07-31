@@ -26,36 +26,36 @@ export default function Error({
         <div className="card-modern max-w-2xl mx-auto p-12">
           {/* Error Icon */}
           <div className="mb-8">
-            <div className="w-24 h-24 mx-auto bg-gradient-to-br from-red-500 to-pink-500 rounded-3xl flex items-center justify-center shadow-2xl">
-              <ExclamationTriangleIcon className="w-12 h-12 text-white" />
+            <div className="w-24 h-24 mx-auto bg-accent border border-primary/30 rounded-3xl flex items-center justify-center">
+              <ExclamationTriangleIcon className="w-12 h-12 text-primary" />
             </div>
           </div>
 
           {/* Error Title */}
-          <h1 className="text-4xl sm:text-5xl font-bold text-slate-800 mb-6">
+          <h1 className="text-4xl sm:text-5xl font-bold text-foreground mb-6">
             Oops! Bir Hata Oluştu
           </h1>
 
           {/* Error Message */}
-          <p className="text-xl text-slate-600 mb-8 leading-relaxed">
+          <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
             Beklenmeyen bir hata meydana geldi. Lütfen sayfayı yeniden yüklemeyi deneyin 
             veya ana sayfaya geri dönün.
           </p>
 
           {/* Error Details */}
-          <div className="bg-slate-50 rounded-2xl p-6 mb-8 text-left">
-            <h3 className="text-sm font-semibold text-slate-700 mb-2">Hata Detayları:</h3>
+          <div className="bg-surface-secondary rounded-2xl p-6 mb-8 text-left">
+            <h3 className="text-sm font-semibold text-foreground mb-2">Hata Detayları:</h3>
             {process.env.NODE_ENV === 'development' ? (
-              <p className="text-sm text-slate-600 font-mono break-all">
+              <p className="text-sm text-muted-foreground font-mono break-all">
                 {error.message}
               </p>
             ) : (
-              <p className="text-sm text-slate-600">
+              <p className="text-sm text-muted-foreground">
                 Hata ayrıntıları yalnızca geliştirme ortamında gösterilir
               </p>
             )}
             {error.digest && (
-              <p className="text-xs text-slate-500 mt-2">
+              <p className="text-xs text-muted-foreground mt-2">
                 Hata Kodu: {error.digest}
               </p>
             )}
@@ -78,20 +78,20 @@ export default function Error({
           </div>
 
           {/* Additional Help */}
-          <div className="mt-12 p-6 bg-blue-50 rounded-2xl border border-blue-200">
+          <div className="mt-12 p-6 bg-accent rounded-2xl border border-border">
             <div className="flex items-center space-x-3 mb-4">
-              <SparklesIcon className="w-6 h-6 text-blue-600" />
-              <h3 className="text-lg font-semibold text-blue-800">
+              <SparklesIcon className="w-6 h-6 text-accent-foreground" />
+              <h3 className="text-lg font-semibold text-accent-foreground">
                 Yardıma mı İhtiyacınız Var?
               </h3>
             </div>
-            <p className="text-blue-700 mb-4">
+            <p className="text-accent-foreground mb-4">
               Sorun devam ederse, lütfen bizimle iletişime geçin. Size yardımcı olmaktan 
               memnuniyet duyarız.
             </p>
             <Link 
               href={`/${lang}/contact`} 
-              className="inline-flex items-center text-blue-600 hover:text-blue-700 font-semibold"
+              className="inline-flex items-center text-accent-foreground hover:text-accent-foreground font-semibold"
             >
               İletişime Geç
               <ArrowPathIcon className="w-4 h-4 ml-2" />

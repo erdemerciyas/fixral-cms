@@ -3,7 +3,6 @@ import News from '@/models/News';
 import { NewsItem } from '@/types/news';
 import { logger } from '@/core/lib/logger';
 import PageHero from '@/components/common/PageHero';
-import Breadcrumbs from '@/components/Breadcrumbs';
 import { SITE_URL, generateAlternates, generateOgImages } from '@/lib/seo-utils';
 import { getMessages } from '@/i18n';
 import NewsListClient from '@/components/news/NewsListClient';
@@ -85,15 +84,13 @@ export default async function NewsListPage({ params: paramsPromise, searchParams
         }));
 
         return (
-            <div className="min-h-screen bg-zinc-50">
+            <div className="min-h-[100dvh] bg-background">
                 <PageHero
                     title={newsT.pageTitle || 'Haberler & Duyurular'}
                     description={newsT.pageDescription || ''}
                     showButton={false}
+                    showBreadcrumbs={true}
                 />
-                <section className="container-content py-4">
-                    <Breadcrumbs />
-                </section>
 
                 <div className="container-content py-8">
                     <NewsListClient

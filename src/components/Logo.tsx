@@ -11,7 +11,7 @@ interface LogoProps {
 
 const Logo: React.FC<LogoProps> = ({ className = '', width = 40, height = 40, isDark = false, name, subtitle }) => {
   const textColor = isDark ? 'text-primary' : 'text-white';
-  const iconColor = isDark ? '#003450' : '#38bdf8';
+  const iconColor = isDark ? 'var(--theme-primary)' : '#38bdf8';
   const accentColor = isDark ? '#0369a1' : '#7dd3fc';
 
   return (
@@ -61,7 +61,7 @@ const Logo: React.FC<LogoProps> = ({ className = '', width = 40, height = 40, is
             </span>
           )}
           {subtitle && (
-            <span className={`text-sm font-medium transition-colors duration-300 ${isDark ? 'text-muted-foreground' : 'text-brand-primary-300'}`}>
+            <span className={`text-sm font-medium transition-colors duration-300 ${isDark ? 'text-muted-foreground' : 'text-primary/60'}`}>
               {subtitle}
             </span>
           )}

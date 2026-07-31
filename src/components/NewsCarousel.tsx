@@ -34,6 +34,17 @@ export default function NewsCarousel({
   const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [reducedMotion, setReducedMotion] = useState(false);
+
+  // prefers-reduced-motion: autoplay ve geçiş animasyonları devre dışı
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.matchMedia) return;
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const sync = () => setReducedMotion(mq.matches);
+    sync();
+    mq.addEventListener('change', sync);
+    return () => mq.removeEventListener('change', sync);
+  }, []);
 
   useEffect(() => {
     fetchNews();
@@ -71,7 +82,7 @@ export default function NewsCarousel({
 
   if (loading) {
     return (
-      <div className={`w-full bg-gray-100 rounded-lg ${className}`}>
+      <div className={`w-full bg-muted rounded-sm ${className}`}>
         <div className="h-96 flex items-center justify-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
         </div>
@@ -81,9 +92,9 @@ export default function NewsCarousel({
 
   if (error || news.length === 0) {
     return (
-      <div className={`w-full bg-gray-100 rounded-lg ${className}`}>
+      <div className={`w-full bg-muted rounded-sm ${className}`}>
         <div className="h-96 flex items-center justify-center">
-          <p className="text-gray-600">
+          <p className="text-muted-foreground">
             {error ? `Error: ${error}` : 'No news articles available'}
           </p>
         </div>
@@ -107,7 +118,14 @@ export default function NewsCarousel({
         slidesPerView={1}
         navigation
         pagination={{ clickable: true }}
-        autoplay={autoplay ? { delay: 5000, disableOnInteraction: false } : false}
+        speed={reducedMotion ? 0 : 500}
+        /* Lazy: next/image loading="lazy" + komşu slide'ların önceden yüklenmesi */
+        lazyPreloadPrevNext={1}
+        autoplay={
+          autoplay && !reducedMotion
+            ? { delay: 5000, disableOnInteraction: false, pauseOnMouseEnter: true }
+            : false
+        }
         a11y={{
           enabled: true,
           prevSlideMessage: language === 'tr' ? 'Önceki haber' : 'Noticia anterior',
@@ -139,14 +157,15 @@ export default function NewsCarousel({
           return (
             <SwiperSlide key={item._id}>
               <Link href={newsUrl} className="block h-full">
-                <article className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 h-full flex flex-col">
-                  {/* Image Container */}
-                  <div className="relative w-full h-48 overflow-hidden bg-gray-200">
+                {/* Printables model-kart deseni: flat kart + hover lift */}
+                <article className="group bg-card border border-border rounded-sm overflow-hidden h-full flex flex-col transition-[transform,box-shadow,border-color] duration-200 ease-out hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-lg motion-reduce:transition-none motion-reduce:hover:translate-y-0">
+                  {/* Image Container — 16/9 */}
+                  <div className="relative w-full aspect-[16/9] overflow-hidden bg-muted">
                     <Image
                       src={item.featuredImage?.url || '/images/placeholder.jpg'}
                       alt={item.featuredImage?.altText || translation.title || ''}
                       fill
-                      className="object-cover hover:scale-105 transition-transform duration-300"
+                      className="object-cover"
                       sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
                       priority={false}
                       loading="lazy"
@@ -156,17 +175,17 @@ export default function NewsCarousel({
                   {/* Content Container */}
                   <div className="p-4 flex flex-col flex-grow">
                     {/* Title */}
-                    <h3 className="text-lg font-semibold text-gray-900 line-clamp-2 mb-2 hover:text-primary transition-colors">
+                    <h3 className="text-base font-medium leading-snug text-foreground line-clamp-2 mb-2">
                       {translation.title}
                     </h3>
 
                     {/* Excerpt */}
-                    <p className="text-sm text-gray-600 line-clamp-2 mb-4 flex-grow">
+                    <p className="text-sm text-muted-foreground line-clamp-2 mb-4 flex-grow">
                       {translation.excerpt}
                     </p>
 
                     {/* Meta Information */}
-                    <div className="flex items-center justify-between text-xs text-gray-500 pt-4 border-t border-gray-200">
+                    <div className="flex items-center justify-between text-xs text-muted-foreground pt-3 border-t border-border">
                       <time dateTime={new Date(item.publishedAt || item.createdAt).toISOString()}>
                         {new Date(item.publishedAt || item.createdAt).toLocaleDateString(
                           language === 'tr' ? 'tr-TR' : 'es-ES',
@@ -180,7 +199,7 @@ export default function NewsCarousel({
 
                       {/* Tags */}
                       {item.tags && item.tags.length > 0 && (
-                        <span className="text-primary font-medium">
+                        <span className="truncate rounded-sm bg-secondary px-2 py-0.5 text-[11px] font-medium text-muted-foreground">
                           {item.tags[0]}
                         </span>
                       )}
@@ -193,40 +212,103 @@ export default function NewsCarousel({
         })}
       </Swiper>
 
-      {/* Custom Styles */}
+      {/* Custom Styles — token tabanlı ok butonları + dot dili (Printables) */}
       <style jsx>{`
+        :global(.news-carousel) {
+          padding-bottom: 2.75rem;
+          /* Swiper CSS değişkenleri — dikey hizalama ve dot metriği */
+          --swiper-navigation-size: 42px;
+          --swiper-pagination-bottom: 0px;
+          --swiper-pagination-bullet-width: 8px;
+          --swiper-pagination-bullet-height: 6px;
+          --swiper-pagination-bullet-horizontal-gap: 0px;
+          --swiper-pagination-bullet-inactive-opacity: 1;
+        }
+
+        /* ── Ok butonları: token chip, hover'da turuncu dolgu ── */
         :global(.news-carousel .swiper-button-next),
         :global(.news-carousel .swiper-button-prev) {
-          color: #003450;
-          background-color: rgba(255, 255, 255, 0.9);
-          width: 40px;
-          height: 40px;
-          border-radius: 50%;
+          width: 42px;
+          height: 42px;
+          border-radius: 9999px;
           display: flex;
           align-items: center;
           justify-content: center;
-          transition: all 0.3s ease;
+          color: hsl(var(--foreground));
+          background-color: hsl(var(--card));
+          border: 1px solid hsl(var(--border));
+          box-shadow: none;
+          transition:
+            background-color 200ms ease,
+            color 200ms ease,
+            border-color 200ms ease;
         }
 
         :global(.news-carousel .swiper-button-next:hover),
         :global(.news-carousel .swiper-button-prev:hover) {
-          background-color: #003450;
-          color: white;
+          background-color: hsl(var(--primary));
+          border-color: hsl(var(--primary));
+          color: hsl(var(--primary-foreground));
+        }
+
+        :global(.news-carousel .swiper-button-next:focus-visible),
+        :global(.news-carousel .swiper-button-prev:focus-visible) {
+          outline: 2px solid hsl(var(--ring));
+          outline-offset: 2px;
+        }
+
+        :global(.news-carousel .swiper-button-disabled) {
+          opacity: 0.4;
         }
 
         :global(.news-carousel .swiper-button-next::after),
         :global(.news-carousel .swiper-button-prev::after) {
-          font-size: 20px;
+          font-size: 15px;
+          font-weight: 700;
+        }
+
+        /* ── Pagination: NewHero dot dili (8px pasif / 32px aktif pill) ── */
+        :global(.news-carousel .swiper-pagination) {
+          bottom: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          line-height: 1;
         }
 
         :global(.news-carousel .swiper-pagination-bullet) {
-          background-color: #003450;
-          opacity: 0.5;
+          width: 8px;
+          height: 6px;
+          margin: 0;
+          border-radius: 9999px;
+          background-color: hsl(var(--muted-foreground) / 0.45);
+          opacity: 1;
+          transition:
+            background-color 200ms ease,
+            width 300ms ease;
+        }
+
+        :global(.news-carousel .swiper-pagination-bullet:hover) {
+          background-color: hsl(var(--muted-foreground));
+        }
+
+        :global(.news-carousel .swiper-pagination-bullet:focus-visible) {
+          outline: 2px solid hsl(var(--ring));
+          outline-offset: 2px;
         }
 
         :global(.news-carousel .swiper-pagination-bullet-active) {
-          background-color: #003450;
-          opacity: 1;
+          width: 32px;
+          background-color: hsl(var(--primary));
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          :global(.news-carousel .swiper-button-next),
+          :global(.news-carousel .swiper-button-prev),
+          :global(.news-carousel .swiper-pagination-bullet) {
+            transition: none;
+          }
         }
       `}</style>
     </div>

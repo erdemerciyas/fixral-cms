@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { GeistSans } from 'geist/font/sans'
 import { GeistMono } from 'geist/font/mono'
+import { Barlow } from 'next/font/google'
 import './globals.css'
 import { config } from '../core/lib/config'
 import Header from '../components/Header'
@@ -21,6 +22,19 @@ const ENV_GTM_ID = process.env.NEXT_PUBLIC_GTM_ID
 
 const geistSans = GeistSans
 const geistMono = GeistMono
+
+/* Public tema (light/dark) blocking init — ThemeScope hydrate olmadan önce
+ * <html>'e `public-theme` (+ dark ise `public-dark`) yazar. Admin route'ları
+ * next-themes'e bırakılır. Anahtar: localStorage['fixral-public-theme'] */
+const PUBLIC_THEME_INIT_SCRIPT = `try{if(!location.pathname.startsWith('/admin')){var t=localStorage.getItem('fixral-public-theme');var d=document.documentElement;d.classList.add('public-theme');if(t==='dark'){d.classList.add('public-dark');d.style.colorScheme='dark'}else{d.classList.remove('public-dark');d.style.colorScheme='light'}}}catch(e){}`
+
+/* Kurumsal ana yazı tipi — Thingiverse mantığı: tek sans (Barlow) her yerde */
+const barlow = Barlow({
+  subsets: ['latin', 'latin-ext'],
+  weight: ['300', '400', '500', '600', '700'],
+  variable: '--font-barlow',
+  display: 'swap',
+})
 
 export async function generateMetadata(): Promise<Metadata> {
   try {
@@ -159,8 +173,10 @@ export default async function RootLayout({
   return (
     <html lang={locale} className="scroll-smooth" suppressHydrationWarning>
       <head>
+        {/* FOUC önleme: public tema sınıfları CSS'ten önce, senkron yazılır */}
+        <script dangerouslySetInnerHTML={{ __html: PUBLIC_THEME_INIT_SCRIPT }} />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta name="theme-color" content="#0f172a" />
+        <meta name="theme-color" content="#FA6831" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -243,7 +259,7 @@ export default async function RootLayout({
           </>
         )}
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} font-sans min-h-screen bg-page-bg flex flex-col text-foreground antialiased`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} ${barlow.variable} font-sans min-h-screen bg-page-bg flex flex-col text-foreground antialiased`}>
         {gtmId && (
           <noscript>
             <iframe
@@ -255,7 +271,7 @@ export default async function RootLayout({
             />
           </noscript>
         )}
-        <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[10000] focus:bg-white focus:text-slate-900 focus:px-4 focus:py-2 focus:rounded-lg focus:shadow" aria-label="Skip to main content">
+        <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[10000] focus:bg-background focus:text-foreground focus:px-4 focus:py-2 focus:rounded-lg focus:shadow focus:border focus:border-border" aria-label="Skip to main content">
           Skip to content
         </a>
         <ThemeScope />

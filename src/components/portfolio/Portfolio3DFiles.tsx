@@ -23,14 +23,14 @@ export default function Portfolio3DFiles({ models3D }: Portfolio3DFilesProps) {
   const getFileTypeColor = (format: string) => {
     switch (format.toLowerCase()) {
       case 'stl':
-        return 'bg-purple-100 text-purple-700';
+        return 'bg-purple-500/10 text-purple-700 border border-purple-500/25';
       case 'obj':
-        return 'bg-green-100 text-green-700';
+        return 'bg-emerald-500/10 text-emerald-700 border border-emerald-500/25';
       case 'gltf':
       case 'glb':
-        return 'bg-blue-100 text-blue-700';
+        return 'bg-accent text-accent-foreground border border-border';
       default:
-        return 'bg-gray-100 text-gray-700';
+        return 'bg-muted text-muted-foreground border border-border';
     }
   };
 
@@ -46,20 +46,20 @@ export default function Portfolio3DFiles({ models3D }: Portfolio3DFilesProps) {
       className="mb-4"
     >
       <div className="flex items-center mb-3">
-        <CubeIcon className="w-4 h-4 text-brand-primary-600 mr-2" />
-        <h3 className="text-sm font-semibold text-slate-700 uppercase tracking-wide">
+        <CubeIcon className="w-4 h-4 text-accent-foreground mr-2" />
+        <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
           3D Model Dosyaları ({models3D.length})
         </h3>
       </div>
 
-      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+      <div className="bg-surface-secondary rounded-lg border border-border overflow-hidden">
         {models3D.map((model, index) => (
           <m.div
             key={`model-${model._id || index}`}
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.3, delay: index * 0.1 }}
-            className="flex items-center py-2 px-3 hover:bg-slate-50 transition-colors duration-200 border-b border-slate-100 last:border-b-0"
+            className="flex items-center py-2.5 px-3 hover:bg-accent transition-colors duration-200 border-b border-border last:border-b-0"
           >
             <div className="flex items-center space-x-3 flex-1 min-w-0">
               {/* Format badge */}
@@ -69,7 +69,7 @@ export default function Portfolio3DFiles({ models3D }: Portfolio3DFilesProps) {
 
               {/* Dosya adı */}
               <div className="flex-1 min-w-0">
-                <h4 className="text-sm font-medium text-slate-900 truncate">
+                <h4 className="text-sm font-medium text-foreground truncate">
                   {model.name}
                 </h4>
               </div>

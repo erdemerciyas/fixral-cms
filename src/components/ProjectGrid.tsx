@@ -11,7 +11,7 @@ const ProjectGrid: React.FC<ProjectGridProps> = ({ projects, limit }) => {
   const displayedProjects = limit ? projects.slice(0, limit) : projects;
 
   if (!displayedProjects || displayedProjects.length === 0) {
-    return <p className="text-center text-slate-500 py-10">Henüz proje bulunmuyor.</p>;
+    return <p className="text-center text-muted-foreground py-10">Henüz proje bulunmuyor.</p>;
   }
 
   return (

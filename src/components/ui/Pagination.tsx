@@ -47,13 +47,13 @@ export default function Pagination({ currentPage, totalPages, createPageUrl }: P
             {currentPage > 1 ? (
                 <Link
                     href={createPageUrl(currentPage - 1)}
-                    className="p-2 rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:text-emerald-600 transition-colors"
+                    className="p-2 rounded-lg border border-border bg-transparent text-muted-foreground transition-colors duration-200 ease-out hover:bg-accent hover:text-accent-foreground"
                     aria-label="Önceki Sayfa"
                 >
                     <ChevronLeftIcon className="w-5 h-5" />
                 </Link>
             ) : (
-                <span className="p-2 rounded-lg border border-slate-100 bg-slate-50 text-slate-300 cursor-not-allowed">
+                <span className="p-2 rounded-lg border border-border bg-muted text-muted-foreground/50 cursor-not-allowed">
                     <ChevronLeftIcon className="w-5 h-5" />
                 </span>
             )}
@@ -63,7 +63,7 @@ export default function Pagination({ currentPage, totalPages, createPageUrl }: P
                 {pages.map((p, index) => {
                     if (p === '...') {
                         return (
-                            <span key={`dots-${index}`} className="px-2 text-slate-400">
+                            <span key={`dots-${index}`} className="px-2 text-muted-foreground">
                                 ...
                             </span>
                         );
@@ -76,10 +76,10 @@ export default function Pagination({ currentPage, totalPages, createPageUrl }: P
                         <Link
                             key={pageNum}
                             href={createPageUrl(pageNum)}
-                            className={`min-w-[40px] h-10 flex items-center justify-center rounded-lg border text-sm font-medium transition-colors
+                            className={`min-w-[40px] h-10 flex items-center justify-center rounded-lg border text-sm font-medium transition-colors duration-200 ease-out
                 ${isActive
-                                    ? 'bg-emerald-600 text-white border-emerald-600 shadow-sm'
-                                    : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50 hover:border-emerald-200 hover:text-emerald-700'
+                                    ? 'bg-secondary text-foreground border-border'
+                                    : 'bg-transparent text-muted-foreground border-transparent hover:bg-accent hover:text-accent-foreground'
                                 }`}
                         >
                             {pageNum}
@@ -92,13 +92,13 @@ export default function Pagination({ currentPage, totalPages, createPageUrl }: P
             {currentPage < totalPages ? (
                 <Link
                     href={createPageUrl(currentPage + 1)}
-                    className="p-2 rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:text-emerald-600 transition-colors"
+                    className="p-2 rounded-lg border border-border bg-transparent text-muted-foreground transition-colors duration-200 ease-out hover:bg-accent hover:text-accent-foreground"
                     aria-label="Sonraki Sayfa"
                 >
                     <ChevronRightIcon className="w-5 h-5" />
                 </Link>
             ) : (
-                <span className="p-2 rounded-lg border border-slate-100 bg-slate-50 text-slate-300 cursor-not-allowed">
+                <span className="p-2 rounded-lg border border-border bg-muted text-muted-foreground/50 cursor-not-allowed">
                     <ChevronRightIcon className="w-5 h-5" />
                 </span>
             )}

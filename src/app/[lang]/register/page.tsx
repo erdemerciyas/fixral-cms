@@ -65,45 +65,45 @@ export default function RegisterPage() {
     };
 
     return (
-        <div className="min-h-screen pt-32 pb-20 bg-slate-50 flex items-center justify-center">
+        <div className="min-h-[100dvh] pt-32 pb-20 bg-background flex items-center justify-center">
             <div className="container-main max-w-md w-full">
-                <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
-                    <h1 className="text-2xl font-bold text-slate-900 mb-2 text-center">Kayıt Ol</h1>
-                    <p className="text-slate-500 mb-8 text-center">
+                <div className="bg-card p-8 rounded-2xl shadow-sm border border-border">
+                    <h1 className="text-2xl font-bold text-foreground mb-2 text-center">Kayıt Ol</h1>
+                    <p className="text-muted-foreground mb-8 text-center">
                         Yeni bir hesap oluşturun ve alışverişe başlayın.
                     </p>
 
                     {error && (
-                        <div className="mb-6 p-4 bg-red-50 text-red-600 text-sm rounded-lg border border-red-100 font-medium">
+                        <div className="mb-6 p-4 bg-destructive/10 text-destructive text-sm rounded-lg border border-destructive/20 font-medium">
                             {error}
                         </div>
                     )}
 
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-1">Ad Soyad</label>
+                            <label className="block text-sm font-medium text-foreground mb-1">Ad Soyad</label>
                             <input
                                 name="name"
                                 type="text"
                                 required
                                 value={formData.name}
                                 onChange={handleChange}
-                                className="w-full px-4 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-primary-900 outline-none transition-all"
+                                className="w-full px-4 py-2 rounded-lg border border-input bg-background text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary outline-none transition-all"
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-1">E-posta</label>
+                            <label className="block text-sm font-medium text-foreground mb-1">E-posta</label>
                             <input
                                 name="email"
                                 type="email"
                                 required
                                 value={formData.email}
                                 onChange={handleChange}
-                                className="w-full px-4 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-primary-900 outline-none transition-all"
+                                className="w-full px-4 py-2 rounded-lg border border-input bg-background text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary outline-none transition-all"
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-1">Şifre</label>
+                            <label className="block text-sm font-medium text-foreground mb-1">Şifre</label>
                             <input
                                 name="password"
                                 type="password"
@@ -111,11 +111,11 @@ export default function RegisterPage() {
                                 minLength={6}
                                 value={formData.password}
                                 onChange={handleChange}
-                                className="w-full px-4 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-primary-900 outline-none transition-all"
+                                className="w-full px-4 py-2 rounded-lg border border-input bg-background text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary outline-none transition-all"
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-1">Şifre Tekrar</label>
+                            <label className="block text-sm font-medium text-foreground mb-1">Şifre Tekrar</label>
                             <input
                                 name="confirmPassword"
                                 type="password"
@@ -123,21 +123,21 @@ export default function RegisterPage() {
                                 minLength={6}
                                 value={formData.confirmPassword}
                                 onChange={handleChange}
-                                className="w-full px-4 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-primary-900 outline-none transition-all"
+                                className="w-full px-4 py-2 rounded-lg border border-input bg-background text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary outline-none transition-all"
                             />
                         </div>
 
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full py-3 bg-brand-primary-900 text-white font-bold rounded-xl hover:bg-brand-primary-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-4"
+                            className="w-full py-3 bg-primary text-primary-foreground font-bold rounded-xl hover:bg-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-4"
                         >
                             {loading ? 'Kayıt Yapılıyor...' : 'Kayıt Ol'}
                         </button>
                     </form>
 
-                    <div className="mt-6 pt-6 border-t border-slate-100 text-center text-sm text-slate-500">
-                        Zaten hesabınız var mı? <Link href="/api/auth/signin" className="text-brand-primary-900 font-bold hover:underline">Giriş Yap</Link>
+                    <div className="mt-6 pt-6 border-t border-border text-center text-sm text-muted-foreground">
+                        Zaten hesabınız var mı? <Link href="/api/auth/signin" className="text-accent-foreground font-bold hover:underline">Giriş Yap</Link>
                     </div>
                 </div>
             </div>

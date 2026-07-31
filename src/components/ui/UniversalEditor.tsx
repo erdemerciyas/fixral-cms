@@ -76,7 +76,7 @@ const UniversalEditor: React.FC<UniversalEditorProps> = ({
             <button
               type="button"
               onClick={() => setIsPreview(false)}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors bg-brand-primary-100 text-brand-primary-800 border border-brand-primary-200"
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors bg-primary/10 text-primary border border-primary/20"
             >
               <PencilIcon className="w-4 h-4" />
               Düzenle

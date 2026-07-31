@@ -100,11 +100,11 @@ export default function PortfolioImageGallery({
 
   if (!allImages.length) {
     return (
-      <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl border border-white/20 p-8">
-        <div className="aspect-[16/10] bg-gradient-to-br from-slate-100 to-slate-200 rounded-2xl flex items-center justify-center">
+      <div className="bg-card/80 backdrop-blur-xl rounded-3xl shadow-xl border border-border p-8">
+        <div className="aspect-[16/10] bg-gradient-to-br from-muted to-surface-secondary rounded-2xl flex items-center justify-center">
           <div className="text-center">
-            <PhotoIcon className="w-16 h-16 text-slate-400 mx-auto mb-4" />
-            <p className="text-slate-500 text-lg">Görsel bulunamadı</p>
+            <PhotoIcon className="w-16 h-16 text-muted-foreground/50 mx-auto mb-4" />
+            <p className="text-muted-foreground text-lg">Görsel bulunamadı</p>
           </div>
         </div>
       </div>
@@ -120,7 +120,7 @@ export default function PortfolioImageGallery({
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6 }}
-          className="relative aspect-[16/10] rounded-3xl overflow-hidden shadow-2xl border border-slate-200 bg-white group cursor-pointer"
+          className="relative aspect-[16/10] rounded-3xl overflow-hidden shadow-2xl border border-border bg-card group cursor-pointer"
           onClick={(e) => {
             e.preventDefault();
             if (selectedImage) {
@@ -148,16 +148,16 @@ export default function PortfolioImageGallery({
                   className="opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                 >
                   <div className="bg-white/90 backdrop-blur-sm rounded-full p-4 shadow-xl">
-                    <MagnifyingGlassIcon className="w-8 h-8 text-slate-700" />
+                    <MagnifyingGlassIcon className="w-8 h-8 text-foreground" />
                   </div>
                 </m.div>
               </div>
             </>
           ) : (
-            <div className="bg-slate-100 flex items-center justify-center h-full">
+            <div className="bg-muted flex items-center justify-center h-full">
               <div className="text-center">
-                <PhotoIcon className="h-16 w-16 text-slate-400 mx-auto mb-2" />
-                <p className="text-slate-500 text-sm">Görsel yükleniyor...</p>
+                <PhotoIcon className="h-16 w-16 text-muted-foreground/50 mx-auto mb-2" />
+                <p className="text-muted-foreground text-sm">Görsel yükleniyor...</p>
               </div>
             </div>
           )}
@@ -169,10 +169,10 @@ export default function PortfolioImageGallery({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="bg-white/80 backdrop-blur-xl rounded-3xl p-6 shadow-xl border border-white/20"
+            className="bg-card/80 backdrop-blur-xl rounded-3xl p-6 shadow-xl border border-border"
           >
-            <h3 className="text-xl font-bold text-slate-800 mb-6 flex items-center">
-              <PhotoIcon className="w-6 h-6 mr-3 text-brand-primary-700" />
+            <h3 className="text-xl font-bold text-foreground mb-6 flex items-center">
+              <PhotoIcon className="w-6 h-6 mr-3 text-accent-foreground" />
               Proje Görselleri ({allImages.length})
             </h3>
 
@@ -187,9 +187,9 @@ export default function PortfolioImageGallery({
                     e.stopPropagation();
                     setSelectedImage(image);
                   }}
-                  className={`relative aspect-square w-full h-20 sm:h-24 md:h-28 lg:h-32 xl:h-36 rounded-xl overflow-hidden border-2 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-brand-primary-600 focus:ring-offset-2 ${selectedImage === image
-                    ? 'border-brand-primary-600 shadow-lg ring-4 ring-brand-primary-200 scale-105'
-                    : 'border-slate-200 hover:border-brand-primary-300 hover:shadow-md'
+                  className={`relative aspect-square w-full h-20 sm:h-24 md:h-28 lg:h-32 xl:h-36 rounded-xl overflow-hidden border-2 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 ${selectedImage === image
+                    ? 'border-primary shadow-lg ring-2 ring-ring scale-105'
+                    : 'border-border hover:border-border hover:shadow-md'
                     }`}
                   type="button"
                 >
@@ -201,7 +201,7 @@ export default function PortfolioImageGallery({
                     sizes="(max-width: 640px) 25vw, (max-width: 768px) 16vw, (max-width: 1024px) 12vw, 10vw"
                   />
                   {selectedImage === image && (
-                    <div className="absolute inset-0 bg-brand-primary-600/20 flex items-center justify-center pointer-events-none">
+                    <div className="absolute inset-0 bg-accent flex items-center justify-center pointer-events-none">
                       <div className="w-4 h-4 bg-white rounded-full shadow-lg"></div>
                     </div>
                   )}
@@ -313,7 +313,7 @@ export default function PortfolioImageGallery({
               className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-10 bg-black/50 text-white px-8 py-4 rounded-2xl text-center max-w-2xl"
             >
               <h3 className="font-bold text-xl mb-2 text-white">{title}</h3>
-              <p className="text-sm text-gray-300">Görsel {lightboxImageIndex + 1} / {allImages.length}</p>
+              <p className="text-sm text-zinc-300">Görsel {lightboxImageIndex + 1} / {allImages.length}</p>
             </m.div>
 
             {/* Thumbnail Strip */}
@@ -330,7 +330,7 @@ export default function PortfolioImageGallery({
                       key={index}
                       onClick={() => setLightboxImageIndex(index)}
                       className={`relative flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden border-3 transition-all duration-200 hover:scale-105 ${lightboxImageIndex === index
-                        ? 'border-brand-primary-500 shadow-lg shadow-brand-primary-500/50'
+                        ? 'border-primary shadow-lg'
                         : 'border-white/30 hover:border-white/60'
                         }`}
                     >
@@ -342,7 +342,7 @@ export default function PortfolioImageGallery({
                         sizes="80px"
                       />
                       {lightboxImageIndex === index && (
-                        <div className="absolute inset-0 bg-brand-primary-500/20 flex items-center justify-center">
+                        <div className="absolute inset-0 bg-accent flex items-center justify-center">
                           <div className="w-3 h-3 bg-white rounded-full"></div>
                         </div>
                       )}

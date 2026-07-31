@@ -11,10 +11,10 @@ function Modal({ isOpen, onClose, title, children }: { isOpen: boolean; onClose:
     if (!isOpen) return null;
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-            <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
-                <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center">
-                    <h3 className="font-bold text-lg text-slate-900">{title}</h3>
-                    <button onClick={onClose} className="text-slate-400 hover:text-slate-600 transition-colors">
+            <div className="bg-card rounded-2xl shadow-xl w-full max-w-md overflow-hidden border border-border">
+                <div className="px-6 py-4 border-b border-border flex justify-between items-center">
+                    <h3 className="font-bold text-lg text-foreground">{title}</h3>
+                    <button onClick={onClose} className="text-muted-foreground hover:text-foreground transition-colors">
                         <XCircleIcon className="w-6 h-6" />
                     </button>
                 </div>
@@ -226,8 +226,8 @@ export default function AccountPage() {
 
     if (status === 'loading') {
         return (
-            <div className="min-h-screen pt-32 pb-20 flex justify-center items-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-primary-900"></div>
+            <div className="min-h-[100dvh] pt-32 pb-20 flex justify-center items-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
             </div>
         );
     }
@@ -243,10 +243,10 @@ export default function AccountPage() {
                 return (
                     <div>
                         <div className="flex justify-between items-center mb-6">
-                            <h2 className="text-2xl font-bold text-slate-900">Adreslerim</h2>
+                            <h2 className="text-2xl font-bold text-foreground">Adreslerim</h2>
                             <button
                                 onClick={() => openAddressModal()}
-                                className="px-4 py-2 bg-slate-900 text-white rounded-lg font-medium text-sm hover:bg-slate-800 transition-colors"
+                                className="px-4 py-2 bg-primary text-primary-foreground rounded-lg font-medium text-sm hover:bg-primary transition-colors"
                             >
                                 + Yeni Adres Ekle
                             </button>
@@ -254,45 +254,45 @@ export default function AccountPage() {
 
                         {addresses.length === 0 ? (
                             <div className="grid md:grid-cols-2 gap-6">
-                                <div className="md:col-span-2 text-center py-12 bg-slate-50 rounded-xl border border-dashed border-slate-200">
-                                    <div className="mx-auto w-16 h-16 bg-white rounded-full flex items-center justify-center mb-4 shadow-sm text-slate-400">
+                                <div className="md:col-span-2 text-center py-12 bg-surface-secondary rounded-xl border border-dashed border-border">
+                                    <div className="mx-auto w-16 h-16 bg-card rounded-full flex items-center justify-center mb-4 shadow-sm text-muted-foreground">
                                         <MapPinIcon className="w-8 h-8" />
                                     </div>
-                                    <h3 className="text-lg font-bold text-slate-900 mb-2">Kayıtlı adresiniz yok</h3>
-                                    <p className="text-slate-500">Yeni bir adres ekleyin.</p>
+                                    <h3 className="text-lg font-bold text-foreground mb-2">Kayıtlı adresiniz yok</h3>
+                                    <p className="text-muted-foreground">Yeni bir adres ekleyin.</p>
                                 </div>
                             </div>
                         ) : (
                             <div className="grid md:grid-cols-2 gap-6">
                                 {addresses.map((addr) => (
-                                    <div key={addr._id} className={`bg-white p-6 rounded-xl border ${addr.isPrimary ? 'border-brand-primary-900 ring-1 ring-brand-primary-900' : 'border-slate-200'} shadow-sm relative group`}>
+                                    <div key={addr._id} className={`bg-card p-6 rounded-xl border ${addr.isPrimary ? 'border-primary ring-1 ring-ring' : 'border-border'} shadow-sm relative group`}>
                                         {addr.isPrimary && (
-                                            <span className="absolute top-4 right-4 bg-brand-primary-100 text-brand-primary-900 text-xs font-bold px-2 py-1 rounded">Varsayılan</span>
+                                            <span className="absolute top-4 right-4 bg-accent text-accent-foreground text-xs font-bold px-2 py-1 rounded">Varsayılan</span>
                                         )}
                                         <div className="flex items-start gap-3 mb-4">
-                                            <div className="p-2 bg-slate-50 rounded-lg text-slate-500">
+                                            <div className="p-2 bg-muted rounded-lg text-muted-foreground">
                                                 <MapPinIcon className="w-6 h-6" />
                                             </div>
                                             <div>
-                                                <h3 className="font-bold text-slate-900">{addr.title}</h3>
-                                                <p className="text-sm text-slate-500">{addr.fullName}</p>
+                                                <h3 className="font-bold text-foreground">{addr.title}</h3>
+                                                <p className="text-sm text-muted-foreground">{addr.fullName}</p>
                                             </div>
                                         </div>
-                                        <div className="space-y-1 text-sm text-slate-600 mb-6">
+                                        <div className="space-y-1 text-sm text-muted-foreground mb-6">
                                             <p>{addr.address}</p>
                                             <p>{addr.district} / {addr.city}</p>
                                             <p>{addr.country}</p>
                                             <p>{addr.phone}</p>
                                         </div>
-                                        <div className="pt-4 border-t border-slate-100 flex justify-between items-center">
+                                        <div className="pt-4 border-t border-border flex justify-between items-center">
                                             {!addr.isPrimary && (
-                                                <button onClick={() => handleSetPrimaryAddress(addr._id)} className="text-sm text-slate-500 hover:text-brand-primary-900 font-medium transition-colors">
+                                                <button onClick={() => handleSetPrimaryAddress(addr._id)} className="text-sm text-muted-foreground hover:text-accent-foreground font-medium transition-colors">
                                                     Varsayılan Yap
                                                 </button>
                                             )}
                                             <div className="flex gap-3 ml-auto">
-                                                <button onClick={() => openAddressModal(addr)} className="text-sm text-brand-primary-900 font-bold hover:underline">Düzenle</button>
-                                                <button onClick={() => handleDeleteAddress(addr._id)} className="text-sm text-red-600 font-bold hover:underline">Sil</button>
+                                                <button onClick={() => openAddressModal(addr)} className="text-sm text-accent-foreground font-bold hover:underline">Düzenle</button>
+                                                <button onClick={() => handleDeleteAddress(addr._id)} className="text-sm text-destructive font-bold hover:underline">Sil</button>
                                             </div>
                                         </div>
                                     </div>
@@ -305,62 +305,62 @@ export default function AccountPage() {
             case 'messages':
                 return (
                     <div>
-                        <h2 className="text-2xl font-bold text-slate-900 mb-6">Mesajlarım</h2>
+                        <h2 className="text-2xl font-bold text-foreground mb-6">Mesajlarım</h2>
                         {loadingMessages ? (
                             <div className="flex justify-center py-12">
-                                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-primary-900"></div>
+                                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
                             </div>
                         ) : messages.length === 0 ? (
-                            <div className="text-center py-12 bg-slate-50 rounded-xl border border-dashed border-slate-200">
-                                <div className="mx-auto w-16 h-16 bg-white rounded-full flex items-center justify-center mb-4 shadow-sm text-slate-400">
+                            <div className="text-center py-12 bg-surface-secondary rounded-xl border border-dashed border-border">
+                                <div className="mx-auto w-16 h-16 bg-card rounded-full flex items-center justify-center mb-4 shadow-sm text-muted-foreground">
                                     <EnvelopeIcon className="w-8 h-8" />
                                 </div>
-                                <h3 className="text-lg font-bold text-slate-900 mb-2">Henüz mesajınız yok</h3>
-                                <p className="text-slate-500 mb-6 max-w-sm mx-auto">Size özel duyurular ve sorularınızın cevapları burada listelenir.</p>
+                                <h3 className="text-lg font-bold text-foreground mb-2">Henüz mesajınız yok</h3>
+                                <p className="text-muted-foreground mb-6 max-w-sm mx-auto">Size özel duyurular ve sorularınızın cevapları burada listelenir.</p>
                             </div>
                         ) : (
                             <div className="space-y-4">
                                 {selectedMessages.size > 0 && (
-                                    <div className="flex items-center justify-between p-3 bg-red-50 border border-red-100 rounded-xl mb-4 animate-in fade-in slide-in-from-top-2">
-                                        <span className="text-red-700 font-medium px-2">{selectedMessages.size} mesaj seçildi</span>
-                                        <button onClick={handleBulkDeleteMessages} disabled={actionLoading} className="px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-bold hover:bg-red-700 transition w-auto">
+                                    <div className="flex items-center justify-between p-3 bg-destructive/10 border border-destructive/20 rounded-xl mb-4 animate-in fade-in slide-in-from-top-2">
+                                        <span className="text-destructive font-medium px-2">{selectedMessages.size} mesaj seçildi</span>
+                                        <button onClick={handleBulkDeleteMessages} disabled={actionLoading} className="px-4 py-2 bg-destructive text-white rounded-lg text-sm font-bold hover:bg-destructive/90 transition w-auto">
                                             {actionLoading ? 'Siliniyor...' : 'Seçilenleri Sil'}
                                         </button>
                                     </div>
                                 )}
                                 {messages.map((msg) => (
-                                    <div key={msg._id} className={`p-6 rounded-xl border relative group transition-all ${selectedMessages.has(msg._id) ? 'bg-indigo-50 border-indigo-200 shadow-sm' : msg.isGlobal || msg.type === 'announcement' ? 'bg-brand-primary-50 border-brand-primary-100' : 'bg-white border-slate-200'}`}>
+                                    <div key={msg._id} className={`p-6 rounded-xl border relative group transition-all ${selectedMessages.has(msg._id) ? 'bg-accent border-border shadow-sm' : msg.isGlobal || msg.type === 'announcement' ? 'bg-accent border-border' : 'bg-card border-border'}`}>
                                         <div className="absolute top-6 left-4 z-10">
                                             <input
                                                 type="checkbox"
-                                                className="w-5 h-5 rounded border-slate-300 text-brand-primary-900 focus:ring-brand-primary-900 cursor-pointer"
+                                                className="w-5 h-5 rounded border-input text-accent-foreground focus:ring-ring cursor-pointer"
                                                 checked={selectedMessages.has(msg._id)}
                                                 onChange={() => handleMessageSelect(msg._id)}
                                             />
                                         </div>
                                         <div className="flex items-start gap-4 pl-8">
-                                            <div className={`p-3 rounded-lg flex-shrink-0 ${msg.isGlobal || msg.type === 'announcement' ? 'bg-brand-primary-100 text-brand-primary-900' : 'bg-slate-100 text-slate-500'}`}>
+                                            <div className={`p-3 rounded-lg flex-shrink-0 ${msg.isGlobal || msg.type === 'announcement' ? 'bg-accent text-accent-foreground' : 'bg-muted text-muted-foreground'}`}>
                                                 {msg.isGlobal || msg.type === 'announcement' ? <MegaphoneIcon className="w-6 h-6" /> : <ChatBubbleLeftIcon className="w-6 h-6" />}
                                             </div>
                                             <div className="flex-1">
                                                 <div className="flex justify-between items-start mb-2">
                                                     <div>
-                                                        <h3 className={`font-bold ${msg.isGlobal || msg.type === 'announcement' ? 'text-brand-primary-900' : 'text-slate-900'}`}>
+                                                        <h3 className={`font-bold ${msg.isGlobal || msg.type === 'announcement' ? 'text-accent-foreground' : 'text-foreground'}`}>
                                                             {msg.subject || (msg.isGlobal ? 'Genel Duyuru' : 'Sorunuz')}
                                                         </h3>
-                                                        <span className="text-xs text-slate-500">
+                                                        <span className="text-xs text-muted-foreground">
                                                             {new Date(msg.createdAt).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
                                                         </span>
                                                     </div>
                                                     {(msg.type === 'announcement' || msg.isGlobal) && (
-                                                        <span className="px-2 py-1 bg-brand-primary-100 text-brand-primary-800 text-xs font-bold rounded">Duyuru</span>
+                                                        <span className="px-2 py-1 bg-accent text-accent-foreground text-xs font-bold rounded">Duyuru</span>
                                                     )}
                                                 </div>
                                                 {msg.conversation && msg.conversation.length > 0 ? (
                                                     <div className="space-y-4 mt-4">
                                                         {msg.conversation.map((chat: any, idx: number) => (
                                                             <div key={idx} className={`flex flex-col ${chat.sender === 'admin' ? 'items-start' : 'items-end'}`}>
-                                                                <div className={`max-w-[85%] rounded-2xl p-4 ${chat.sender === 'admin' ? 'bg-slate-100 text-slate-700 rounded-tl-none' : 'bg-brand-primary-900 text-white rounded-tr-none'}`}>
+                                                                <div className={`max-w-[85%] rounded-2xl p-4 ${chat.sender === 'admin' ? 'bg-muted text-foreground rounded-tl-none' : 'bg-primary text-primary-foreground rounded-tr-none'}`}>
                                                                     <div className="flex items-center gap-2 mb-1">
                                                                         <span className="text-xs font-bold opacity-80">{chat.sender === 'admin' ? 'Yönetici' : 'Siz'}</span>
                                                                         <span className="text-[10px] opacity-60">{new Date(chat.createdAt).toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</span>
@@ -372,14 +372,14 @@ export default function AccountPage() {
                                                     </div>
                                                 ) : (
                                                     <>
-                                                        <div className="text-slate-700 leading-relaxed mb-4">{msg.message}</div>
+                                                        <div className="text-foreground leading-relaxed mb-4">{msg.message}</div>
                                                         {(msg.adminReply || msg.answer) && (
-                                                            <div className="bg-slate-50 border border-slate-200 rounded-lg p-4 mt-4">
+                                                            <div className="bg-surface-secondary border border-border rounded-lg p-4 mt-4">
                                                                 <div className="flex items-center gap-2 mb-2">
-                                                                    <div className="w-6 h-6 bg-slate-900 text-white rounded-full flex items-center justify-center text-xs font-bold">Y</div>
-                                                                    <span className="font-bold text-slate-900 text-sm">Yönetici Cevabı</span>
+                                                                    <div className="w-6 h-6 bg-foreground text-background rounded-full flex items-center justify-center text-xs font-bold">Y</div>
+                                                                    <span className="font-bold text-foreground text-sm">Yönetici Cevabı</span>
                                                                 </div>
-                                                                <p className="text-slate-600 text-sm">{msg.adminReply || msg.answer}</p>
+                                                                <p className="text-muted-foreground text-sm">{msg.adminReply || msg.answer}</p>
                                                             </div>
                                                         )}
                                                     </>
@@ -391,10 +391,10 @@ export default function AccountPage() {
                             </div>
                         )}
                         {messages.length > 0 && pagination.totalPages > 1 && (
-                            <div className="flex justify-center items-center gap-4 mt-8 pt-6 border-t border-slate-100">
-                                <button onClick={() => fetchMessages(currentPage - 1)} disabled={currentPage === 1} className="px-4 py-2 border border-slate-200 rounded-lg text-sm font-medium hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">Önceki</button>
-                                <span className="text-sm font-medium text-slate-600">Sayfa {currentPage} / {pagination.totalPages}</span>
-                                <button onClick={() => fetchMessages(currentPage + 1)} disabled={currentPage === pagination.totalPages} className="px-4 py-2 border border-slate-200 rounded-lg text-sm font-medium hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">Sonraki</button>
+                            <div className="flex justify-center items-center gap-4 mt-8 pt-6 border-t border-border">
+                                <button onClick={() => fetchMessages(currentPage - 1)} disabled={currentPage === 1} className="px-4 py-2 border border-border rounded-lg text-sm font-medium hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed transition-colors">Önceki</button>
+                                <span className="text-sm font-medium text-muted-foreground">Sayfa {currentPage} / {pagination.totalPages}</span>
+                                <button onClick={() => fetchMessages(currentPage + 1)} disabled={currentPage === pagination.totalPages} className="px-4 py-2 border border-border rounded-lg text-sm font-medium hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed transition-colors">Sonraki</button>
                             </div>
                         )}
                     </div>
@@ -403,29 +403,29 @@ export default function AccountPage() {
             case 'profile':
                 return (
                     <div className="max-w-xl">
-                        <h2 className="text-2xl font-bold text-slate-900 mb-6">Hesap Bilgilerim</h2>
+                        <h2 className="text-2xl font-bold text-foreground mb-6">Hesap Bilgilerim</h2>
                         <form className="space-y-4">
                             <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-1">Ad Soyad</label>
-                                <input type="text" defaultValue={session?.user?.name || ''} className="w-full px-4 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-primary-900 text-slate-600 bg-slate-50" readOnly />
-                                <span className="text-xs text-slate-400 mt-1 block">Değişiklik yapmak için müşteri hizmetleri ile iletişime geçiniz.</span>
+                                <label className="block text-sm font-medium text-foreground mb-1">Ad Soyad</label>
+                                <input type="text" defaultValue={session?.user?.name || ''} className="w-full px-4 py-2 rounded-lg border border-input focus-visible:ring-2 focus-visible:ring-ring text-muted-foreground bg-muted" readOnly />
+                                <span className="text-xs text-muted-foreground mt-1 block">Değişiklik yapmak için müşteri hizmetleri ile iletişime geçiniz.</span>
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-1">E-posta</label>
-                                <input type="email" defaultValue={session?.user?.email || ''} className="w-full px-4 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-primary-900 text-slate-600 bg-slate-50" readOnly />
+                                <label className="block text-sm font-medium text-foreground mb-1">E-posta</label>
+                                <input type="email" defaultValue={session?.user?.email || ''} className="w-full px-4 py-2 rounded-lg border border-input focus-visible:ring-2 focus-visible:ring-ring text-muted-foreground bg-muted" readOnly />
                             </div>
-                            <div className="pt-4 border-t border-slate-100 mt-6">
-                                <h3 className="font-bold text-slate-900 mb-4">Şifre Değiştir</h3>
+                            <div className="pt-4 border-t border-border mt-6">
+                                <h3 className="font-bold text-foreground mb-4">Şifre Değiştir</h3>
                                 <div className="space-y-4">
                                     <div>
-                                        <label className="block text-sm font-medium text-slate-700 mb-1">Mevcut Şifre</label>
-                                        <input type="password" className="w-full px-4 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-primary-900" />
+                                        <label className="block text-sm font-medium text-foreground mb-1">Mevcut Şifre</label>
+                                        <input type="password" className="w-full px-4 py-2 rounded-lg border border-input bg-background text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary outline-none" />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium text-slate-700 mb-1">Yeni Şifre</label>
-                                        <input type="password" className="w-full px-4 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-primary-900" />
+                                        <label className="block text-sm font-medium text-foreground mb-1">Yeni Şifre</label>
+                                        <input type="password" className="w-full px-4 py-2 rounded-lg border border-input bg-background text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary outline-none" />
                                     </div>
-                                    <button className="px-6 py-2 bg-slate-900 text-white rounded-lg font-bold hover:bg-slate-800 transition-colors">Şifreyi Güncelle</button>
+                                    <button className="px-6 py-2 bg-primary text-primary-foreground rounded-lg font-bold hover:bg-primary transition-colors">Şifreyi Güncelle</button>
                                 </div>
                             </div>
                         </form>
@@ -438,8 +438,8 @@ export default function AccountPage() {
     };
 
     return (
-        <main className="min-h-screen pt-28 pb-20 bg-slate-50">
-            <div className="bg-slate-900 pb-20 pt-10">
+        <main className="min-h-[100dvh] pt-28 pb-20 bg-background">
+            <div className="bg-foreground pb-20 pt-10">
                 <div className="container-main">
                     <div className="flex flex-col md:flex-row items-center gap-6">
                         <div className="w-20 h-20 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-sm border border-white/20 text-white font-bold text-3xl shadow-xl">
@@ -447,12 +447,12 @@ export default function AccountPage() {
                         </div>
                         <div className="text-center md:text-left">
                             <h1 className="text-3xl font-bold text-white mb-2">Merhaba, {session?.user?.name}</h1>
-                            <p className="text-slate-400">Hesap durumunuzu yönetin.</p>
+                            <p className="text-white/60">Hesap durumunuzu yönetin.</p>
                         </div>
                         <div className="md:ml-auto flex gap-6 text-center">
                             <div className="bg-white/5 rounded-xl p-4 px-6 border border-white/10 backdrop-blur-sm">
                                 <div className="text-2xl font-bold text-white mb-1">{unreadCount}</div>
-                                <div className="text-xs text-slate-400 font-medium uppercase tracking-wider">Mesaj</div>
+                                <div className="text-xs text-white/60 font-medium uppercase tracking-wider">Mesaj</div>
                             </div>
                         </div>
                     </div>
@@ -462,40 +462,40 @@ export default function AccountPage() {
             <div className="container-main -mt-10">
                 <div className="grid lg:grid-cols-12 gap-8 items-start">
                     <div className="lg:col-span-3">
-                        <div className="bg-white rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100 sticky top-24 overflow-hidden">
+                        <div className="bg-card rounded-2xl shadow-sm border border-border sticky top-24 overflow-hidden">
                             <nav className="p-2 space-y-1">
                                 <button
                                     onClick={() => setActiveTab('messages')}
-                                    className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 text-left font-medium ${activeTab === 'messages' ? 'bg-brand-primary-900 text-white shadow-lg shadow-brand-primary-900/30' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}`}
+                                    className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 text-left font-medium ${activeTab === 'messages' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:bg-accent hover:text-foreground'}`}
                                 >
                                     <div className="flex-1 flex items-center gap-3">
-                                        <EnvelopeIcon className={`w-5 h-5 ${activeTab === 'messages' ? 'text-white' : 'text-slate-400'}`} />
+                                        <EnvelopeIcon className={`w-5 h-5 ${activeTab === 'messages' ? 'text-primary-foreground' : 'text-muted-foreground'}`} />
                                         Mesajlarım
                                     </div>
                                     {unreadCount > 0 && (
-                                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${activeTab === 'messages' ? 'bg-white text-brand-primary-900' : 'bg-red-500 text-white'}`}>
+                                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${activeTab === 'messages' ? 'bg-primary-foreground text-primary' : 'bg-destructive text-destructive-foreground'}`}>
                                             {unreadCount}
                                         </span>
                                     )}
                                 </button>
                                 <button
                                     onClick={() => setActiveTab('addresses')}
-                                    className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 text-left font-medium ${activeTab === 'addresses' ? 'bg-brand-primary-900 text-white shadow-lg shadow-brand-primary-900/30' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}`}
+                                    className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 text-left font-medium ${activeTab === 'addresses' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:bg-accent hover:text-foreground'}`}
                                 >
-                                    <MapPinIcon className={`w-5 h-5 ${activeTab === 'addresses' ? 'text-white' : 'text-slate-400'}`} />
+                                    <MapPinIcon className={`w-5 h-5 ${activeTab === 'addresses' ? 'text-primary-foreground' : 'text-muted-foreground'}`} />
                                     Adreslerim
                                 </button>
                                 <button
                                     onClick={() => setActiveTab('profile')}
-                                    className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 text-left font-medium ${activeTab === 'profile' ? 'bg-brand-primary-900 text-white shadow-lg shadow-brand-primary-900/30' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}`}
+                                    className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200 text-left font-medium ${activeTab === 'profile' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:bg-accent hover:text-foreground'}`}
                                 >
-                                    <UserIcon className={`w-5 h-5 ${activeTab === 'profile' ? 'text-white' : 'text-slate-400'}`} />
+                                    <UserIcon className={`w-5 h-5 ${activeTab === 'profile' ? 'text-primary-foreground' : 'text-muted-foreground'}`} />
                                     Hesap Bilgilerim
                                 </button>
-                                <div className="my-2 border-t border-slate-100"></div>
+                                <div className="my-2 border-t border-border"></div>
                                 <button
                                     onClick={() => signOut({ callbackUrl: '/' })}
-                                    className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-colors text-left text-red-600 hover:bg-red-50 font-medium group"
+                                    className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-colors text-left text-destructive hover:bg-destructive/10 font-medium group"
                                 >
                                     <ArrowRightOnRectangleIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                                     Çıkış Yap
@@ -505,7 +505,7 @@ export default function AccountPage() {
                     </div>
 
                     <div className="lg:col-span-9">
-                        <div className="bg-white p-8 rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100 min-h-[500px]">
+                        <div className="bg-card p-8 rounded-2xl shadow-sm border border-border min-h-[500px]">
                             {renderContent()}
                         </div>
                     </div>
@@ -515,52 +515,52 @@ export default function AccountPage() {
             <Modal isOpen={addressModalOpen} onClose={() => setAddressModalOpen(false)} title={editingAddress ? 'Adresi Düzenle' : 'Yeni Adres Ekle'}>
                 <form onSubmit={handleSaveAddress} className="space-y-4">
                     <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-1">Adres Başlığı (Ev, İş vb.)</label>
-                        <input type="text" required className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-primary-900" value={addressForm.title} onChange={e => setAddressForm({ ...addressForm, title: e.target.value })} />
+                        <label className="block text-sm font-medium text-foreground mb-1">Adres Başlığı (Ev, İş vb.)</label>
+                        <input type="text" required className="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary outline-none" value={addressForm.title} onChange={e => setAddressForm({ ...addressForm, title: e.target.value })} />
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-1">Ad Soyad</label>
-                            <input type="text" required className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-primary-900" value={addressForm.fullName} onChange={e => setAddressForm({ ...addressForm, fullName: e.target.value })} />
+                            <label className="block text-sm font-medium text-foreground mb-1">Ad Soyad</label>
+                            <input type="text" required className="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary outline-none" value={addressForm.fullName} onChange={e => setAddressForm({ ...addressForm, fullName: e.target.value })} />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-1">Telefon</label>
-                            <input type="text" required className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-primary-900" value={addressForm.phone} onChange={e => setAddressForm({ ...addressForm, phone: e.target.value })} />
+                            <label className="block text-sm font-medium text-foreground mb-1">Telefon</label>
+                            <input type="text" required className="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary outline-none" value={addressForm.phone} onChange={e => setAddressForm({ ...addressForm, phone: e.target.value })} />
                         </div>
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-1">Ülke</label>
-                        <input type="text" className="w-full px-3 py-2 border border-slate-300 rounded-lg bg-slate-50 text-slate-500" value="Türkiye" readOnly />
+                        <label className="block text-sm font-medium text-foreground mb-1">Ülke</label>
+                        <input type="text" className="w-full px-3 py-2 border border-input rounded-lg bg-muted text-muted-foreground" value="Türkiye" readOnly />
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-1">Şehir (İl)</label>
-                            <input type="text" required className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-primary-900" value={addressForm.city} onChange={e => setAddressForm({ ...addressForm, city: e.target.value })} />
+                            <label className="block text-sm font-medium text-foreground mb-1">Şehir (İl)</label>
+                            <input type="text" required className="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary outline-none" value={addressForm.city} onChange={e => setAddressForm({ ...addressForm, city: e.target.value })} />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-1">İlçe</label>
-                            <input type="text" required className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-primary-900" value={addressForm.district} onChange={e => setAddressForm({ ...addressForm, district: e.target.value })} />
+                            <label className="block text-sm font-medium text-foreground mb-1">İlçe</label>
+                            <input type="text" required className="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary outline-none" value={addressForm.district} onChange={e => setAddressForm({ ...addressForm, district: e.target.value })} />
                         </div>
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-1">Açık Adres</label>
-                        <textarea rows={3} required className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-primary-900 resize-none" value={addressForm.address} onChange={e => setAddressForm({ ...addressForm, address: e.target.value })} />
+                        <label className="block text-sm font-medium text-foreground mb-1">Açık Adres</label>
+                        <textarea rows={3} required className="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary outline-none resize-none" value={addressForm.address} onChange={e => setAddressForm({ ...addressForm, address: e.target.value })} />
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-1">Posta Kodu (Opsiyonel)</label>
-                            <input type="text" className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-primary-900" value={addressForm.zipCode} onChange={e => setAddressForm({ ...addressForm, zipCode: e.target.value })} />
+                            <label className="block text-sm font-medium text-foreground mb-1">Posta Kodu (Opsiyonel)</label>
+                            <input type="text" className="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary outline-none" value={addressForm.zipCode} onChange={e => setAddressForm({ ...addressForm, zipCode: e.target.value })} />
                         </div>
                         <div className="flex items-center pt-6">
-                            <label className="flex items-center gap-2 cursor-pointer text-sm text-slate-700 font-medium">
-                                <input type="checkbox" className="w-4 h-4 text-brand-primary-900 rounded focus:ring-brand-primary-900" checked={addressForm.isPrimary} onChange={e => setAddressForm({ ...addressForm, isPrimary: e.target.checked })} />
+                            <label className="flex items-center gap-2 cursor-pointer text-sm text-foreground font-medium">
+                                <input type="checkbox" className="w-4 h-4 text-accent-foreground rounded border-input focus:ring-ring" checked={addressForm.isPrimary} onChange={e => setAddressForm({ ...addressForm, isPrimary: e.target.checked })} />
                                 Varsayılan adres olarak ayarla
                             </label>
                         </div>
                     </div>
-                    <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
-                        <button type="button" onClick={() => setAddressModalOpen(false)} className="px-4 py-2 border border-slate-300 rounded-lg text-slate-600 hover:bg-slate-50 font-bold">Vazgeç</button>
-                        <button type="submit" disabled={actionLoading} className="px-4 py-2 bg-brand-primary-900 text-white rounded-lg hover:bg-brand-primary-800 font-bold disabled:opacity-50">
+                    <div className="flex justify-end gap-3 pt-4 border-t border-border">
+                        <button type="button" onClick={() => setAddressModalOpen(false)} className="px-4 py-2 border border-border rounded-lg text-muted-foreground hover:bg-accent font-bold">Vazgeç</button>
+                        <button type="submit" disabled={actionLoading} className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary font-bold disabled:opacity-50">
                             {actionLoading ? 'Kaydediliyor...' : 'Kaydet'}
                         </button>
                     </div>

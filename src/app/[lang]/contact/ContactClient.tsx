@@ -5,7 +5,6 @@ import { m } from 'framer-motion';
 import { MapPin, Mail as EnvelopeSimple, Phone, Clock, ArrowRight, CheckCircle, AlertCircle as WarningCircle } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import PageHero from '@/components/common/PageHero';
-import Breadcrumbs from '@/components/Breadcrumbs';
 import EyebrowTag from '@/components/ui/EyebrowTag';
 import { ScrollReveal, ScrollRevealItem } from '@/components/ui/ScrollReveal';
 
@@ -142,27 +141,24 @@ function ContactPageContent() {
   ];
 
   return (
-    <div className="min-h-screen" style={{ fontFamily: 'var(--font-geist-sans)' }}>
+    <div className="min-h-[100dvh] bg-background">
       <PageHero
         title={hero.title || 'İletişim'}
         description={hero.description || 'Bizimle iletişime geçin ve projelerinizi konuşalım'}
         buttonText="İletişim Formu"
         buttonLink="#contact-form"
         showButton={true}
+        showBreadcrumbs={true}
       />
-
-      <section className="container-content py-4">
-        <Breadcrumbs />
-      </section>
 
       <section id="contact-form" className="py-16 lg:py-24">
         <div className="container-content">
           <ScrollReveal className="mb-12 lg:mb-16">
             <EyebrowTag>İletişim</EyebrowTag>
-            <h2 className="mt-4 text-3xl lg:text-4xl font-semibold tracking-tight text-zinc-900">
+            <h2 className="mt-4 text-3xl lg:text-4xl font-semibold tracking-tight text-foreground">
               Size nasıl yardımcı olabiliriz?
             </h2>
-            <p className="mt-3 max-w-xl text-base text-zinc-500 leading-relaxed">
+            <p className="mt-3 max-w-xl text-base text-muted-foreground leading-relaxed">
               Proje teklifleriniz, sorularınız veya iş birliği önerileriniz için formu doldurun. En kısa sürede dönüş yapacağız.
             </p>
           </ScrollReveal>
@@ -170,11 +166,11 @@ function ContactPageContent() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
             {/* Form — left, 7 cols */}
             <ScrollReveal className="lg:col-span-7" delay={0.05}>
-              <div className="rounded-3xl bg-white/80 backdrop-blur-sm border border-zinc-100 p-8 lg:p-10 shadow-[0_1px_3px_rgba(0,0,0,0.04),0_8px_32px_rgba(0,0,0,0.06)]">
+              <div className="rounded-3xl bg-card border border-border p-8 lg:p-10 shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
                 <form onSubmit={handleSubmit} className="space-y-5">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div className="flex flex-col gap-2">
-                      <label htmlFor="name" className="text-sm font-medium text-zinc-700">
+                      <label htmlFor="name" className="text-sm font-medium text-foreground">
                         Adınız Soyadınız
                       </label>
                       <input
@@ -185,12 +181,12 @@ function ContactPageContent() {
                         onChange={handleInputChange}
                         placeholder="Örn: Ali Veli"
                         required
-                        className="h-12 rounded-xl border border-zinc-200 bg-zinc-50/60 px-4 text-sm text-zinc-900 placeholder:text-zinc-400 outline-none transition-all duration-700 focus:border-[#003450]/40 focus:ring-2 focus:ring-[#003450]/10 focus:bg-white"
+                        className="h-12 rounded-xl border border-input bg-background px-4 text-sm text-foreground placeholder:text-muted-foreground outline-none transition-all duration-150 focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring"
                         style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
                       />
                     </div>
                     <div className="flex flex-col gap-2">
-                      <label htmlFor="email" className="text-sm font-medium text-zinc-700">
+                      <label htmlFor="email" className="text-sm font-medium text-foreground">
                         E-posta Adresiniz
                       </label>
                       <input
@@ -201,14 +197,14 @@ function ContactPageContent() {
                         onChange={handleInputChange}
                         placeholder="iletisim@example.com"
                         required
-                        className="h-12 rounded-xl border border-zinc-200 bg-zinc-50/60 px-4 text-sm text-zinc-900 placeholder:text-zinc-400 outline-none transition-all duration-700 focus:border-[#003450]/40 focus:ring-2 focus:ring-[#003450]/10 focus:bg-white"
+                        className="h-12 rounded-xl border border-input bg-background px-4 text-sm text-foreground placeholder:text-muted-foreground outline-none transition-all duration-150 focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring"
                         style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
                       />
                     </div>
                   </div>
 
                   <div className="flex flex-col gap-2">
-                    <label htmlFor="subject" className="text-sm font-medium text-zinc-700">
+                    <label htmlFor="subject" className="text-sm font-medium text-foreground">
                       Konu
                     </label>
                     <input
@@ -219,13 +215,13 @@ function ContactPageContent() {
                       onChange={handleInputChange}
                       placeholder="Proje Teklifi"
                       required
-                      className="h-12 rounded-xl border border-zinc-200 bg-zinc-50/60 px-4 text-sm text-zinc-900 placeholder:text-zinc-400 outline-none transition-all duration-700 focus:border-[#003450]/40 focus:ring-2 focus:ring-[#003450]/10 focus:bg-white"
+                      className="h-12 rounded-xl border border-input bg-background px-4 text-sm text-foreground placeholder:text-muted-foreground outline-none transition-all duration-150 focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring"
                       style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
                     />
                   </div>
 
                   <div className="flex flex-col gap-2">
-                    <label htmlFor="message" className="text-sm font-medium text-zinc-700">
+                    <label htmlFor="message" className="text-sm font-medium text-foreground">
                       Mesajınız
                     </label>
                     <textarea
@@ -236,7 +232,7 @@ function ContactPageContent() {
                       rows={5}
                       placeholder="Merhaba, ..."
                       required
-                      className="rounded-xl border border-zinc-200 bg-zinc-50/60 px-4 py-3 text-sm text-zinc-900 placeholder:text-zinc-400 outline-none resize-none transition-all duration-700 focus:border-[#003450]/40 focus:ring-2 focus:ring-[#003450]/10 focus:bg-white"
+                      className="rounded-xl border border-input bg-background px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground outline-none resize-none transition-all duration-150 focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring"
                       style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
                     />
                   </div>
@@ -246,12 +242,12 @@ function ContactPageContent() {
                     disabled={isSubmitting}
                     whileTap={{ scale: 0.98 }}
                     transition={{ duration: 0.15, ease }}
-                    className="group relative mt-2 flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[#003450] text-sm font-medium text-white shadow-sm transition-all duration-700 hover:bg-[#00243a] disabled:opacity-60 disabled:cursor-not-allowed"
+                    className="group relative mt-2 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-primary text-sm font-medium text-primary-foreground shadow-tinted-md transition-all duration-150 hover:bg-primary disabled:opacity-60 disabled:cursor-not-allowed"
                     style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
                   >
                     {isSubmitting ? (
                       <span className="flex items-center gap-2">
-                        <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                        <span className="h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground/30 border-t-primary-foreground" />
                         Gönderiliyor...
                       </span>
                     ) : (
@@ -270,9 +266,9 @@ function ContactPageContent() {
                       initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.5, ease }}
-                      className="flex items-start gap-3 rounded-xl border border-emerald-200 bg-emerald-50/80 p-4 text-sm text-emerald-800"
+                      className="flex items-start gap-3 rounded-xl border border-success/30 bg-success/10 p-4 text-sm text-success"
                     >
-                      <CheckCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-emerald-600" />
+                      <CheckCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-success" />
                       <span>{submitMessage}</span>
                     </m.div>
                   )}
@@ -281,9 +277,9 @@ function ContactPageContent() {
                       initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.5, ease }}
-                      className="flex items-start gap-3 rounded-xl border border-red-200 bg-red-50/80 p-4 text-sm text-red-800"
+                      className="flex items-start gap-3 rounded-xl border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive"
                     >
-                      <WarningCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-red-600" />
+                      <WarningCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-destructive" />
                       <span>{submitMessage}</span>
                     </m.div>
                   )}
@@ -294,8 +290,8 @@ function ContactPageContent() {
             {/* Info — right, 5 cols */}
             <ScrollReveal className="lg:col-span-5" delay={0.15}>
               <div className="space-y-8">
-                <div className="rounded-3xl border border-zinc-100 bg-white/80 backdrop-blur-sm p-8 shadow-[0_1px_3px_rgba(0,0,0,0.04),0_8px_32px_rgba(0,0,0,0.06)]">
-                  <h3 className="text-lg font-semibold tracking-tight text-zinc-900 mb-6">
+                <div className="rounded-3xl border border-border bg-card p-8 shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
+                  <h3 className="text-lg font-semibold tracking-tight text-foreground mb-6">
                     İletişim Bilgilerimiz
                   </h3>
                   {contactLoading ? (
@@ -315,23 +311,23 @@ function ContactPageContent() {
                       {infoItems.map((item) => (
                         <ScrollRevealItem key={item.label}>
                           <div className="flex items-start gap-4">
-                            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#003450]/[0.06]">
-                              <item.icon className="h-5 w-5 text-[#003450]" />
+                            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent">
+                              <item.icon className="h-5 w-5 text-accent-foreground" />
                             </span>
                             <div className="min-w-0">
-                              <p className="text-xs font-medium uppercase tracking-wider text-zinc-400 mb-1">
+                              <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground mb-1">
                                 {item.label}
                               </p>
                               {item.href ? (
                                 <a
                                   href={item.href}
-                                  className="text-sm text-zinc-700 transition-colors duration-700 hover:text-[#003450]"
+                                  className="text-sm text-foreground transition-colors duration-150 hover:text-accent-foreground"
                                   style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
                                 >
                                   {item.value}
                                 </a>
                               ) : (
-                                <p className="text-sm text-zinc-700 leading-relaxed">{item.value}</p>
+                                <p className="text-sm text-foreground leading-relaxed">{item.value}</p>
                               )}
                             </div>
                           </div>
@@ -342,8 +338,8 @@ function ContactPageContent() {
                 </div>
 
                 {!contactLoading && (contactInfo.socialLinks.linkedin || contactInfo.socialLinks.twitter || contactInfo.socialLinks.instagram || contactInfo.socialLinks.facebook) && (
-                  <div className="rounded-3xl border border-zinc-100 bg-white/80 backdrop-blur-sm p-8 shadow-[0_1px_3px_rgba(0,0,0,0.04),0_8px_32px_rgba(0,0,0,0.06)]">
-                    <h3 className="text-lg font-semibold tracking-tight text-zinc-900 mb-5">
+                  <div className="rounded-3xl border border-border bg-card p-8 shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
+                    <h3 className="text-lg font-semibold tracking-tight text-foreground mb-5">
                       Sosyal Medya
                     </h3>
                     <div className="flex gap-3">
@@ -352,7 +348,7 @@ function ContactPageContent() {
                           href={contactInfo.socialLinks.linkedin}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex h-10 w-10 items-center justify-center rounded-xl border border-zinc-200 text-zinc-500 transition-all duration-700 hover:border-[#003450]/30 hover:text-[#003450] hover:bg-[#003450]/[0.04]"
+                          className="flex h-10 w-10 items-center justify-center rounded-xl border border-border text-muted-foreground transition-all duration-150 hover:border-primary hover:text-accent-foreground hover:bg-accent"
                           style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
                         >
                           <span className="sr-only">LinkedIn</span>
@@ -364,7 +360,7 @@ function ContactPageContent() {
                           href={contactInfo.socialLinks.twitter}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex h-10 w-10 items-center justify-center rounded-xl border border-zinc-200 text-zinc-500 transition-all duration-700 hover:border-[#003450]/30 hover:text-[#003450] hover:bg-[#003450]/[0.04]"
+                          className="flex h-10 w-10 items-center justify-center rounded-xl border border-border text-muted-foreground transition-all duration-150 hover:border-primary hover:text-accent-foreground hover:bg-accent"
                           style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
                         >
                           <span className="sr-only">Twitter</span>
@@ -376,7 +372,7 @@ function ContactPageContent() {
                           href={contactInfo.socialLinks.instagram}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex h-10 w-10 items-center justify-center rounded-xl border border-zinc-200 text-zinc-500 transition-all duration-700 hover:border-[#003450]/30 hover:text-[#003450] hover:bg-[#003450]/[0.04]"
+                          className="flex h-10 w-10 items-center justify-center rounded-xl border border-border text-muted-foreground transition-all duration-150 hover:border-primary hover:text-accent-foreground hover:bg-accent"
                           style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
                         >
                           <span className="sr-only">Instagram</span>
@@ -388,7 +384,7 @@ function ContactPageContent() {
                           href={contactInfo.socialLinks.facebook}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex h-10 w-10 items-center justify-center rounded-xl border border-zinc-200 text-zinc-500 transition-all duration-700 hover:border-[#003450]/30 hover:text-[#003450] hover:bg-[#003450]/[0.04]"
+                          className="flex h-10 w-10 items-center justify-center rounded-xl border border-border text-muted-foreground transition-all duration-150 hover:border-primary hover:text-accent-foreground hover:bg-accent"
                           style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
                         >
                           <span className="sr-only">Facebook</span>
@@ -404,31 +400,31 @@ function ContactPageContent() {
 
           {/* Map section */}
           <ScrollReveal className="mt-16 lg:mt-24" delay={0.1}>
-            <div className="rounded-3xl border border-zinc-100 bg-white/80 backdrop-blur-sm p-8 shadow-[0_1px_3px_rgba(0,0,0,0.04),0_8px_32px_rgba(0,0,0,0.06)]">
+            <div className="rounded-3xl border border-border bg-card p-8 shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-semibold tracking-tight text-zinc-900">Konumumuz</h3>
-                <div className="flex items-center gap-1.5 text-xs text-zinc-400">
+                <h3 className="text-lg font-semibold tracking-tight text-foreground">Konumumuz</h3>
+                <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                   <MapPin className="h-3.5 w-3.5" />
                   <span>Haritada göster</span>
                 </div>
               </div>
 
               {contactLoading ? (
-                <div className="rounded-2xl bg-zinc-50/80 p-4 space-y-3">
+                <div className="rounded-2xl bg-muted p-4 space-y-3">
                   <Skeleton className="h-10 w-10 rounded-xl" />
                   <Skeleton className="h-4 w-1/2" />
                   <Skeleton className="h-4 w-3/4" />
                 </div>
               ) : (
                 <div className="space-y-4">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-2xl bg-zinc-50/80 p-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-2xl bg-surface-secondary p-4">
                     <div className="flex items-center gap-3">
-                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#003450]/[0.06]">
-                        <MapPin className="h-5 w-5 text-[#003450]" />
+                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent">
+                        <MapPin className="h-5 w-5 text-accent-foreground" />
                       </span>
                       <div>
-                        <p className="text-sm font-medium text-zinc-800">İletişim Bilgileri</p>
-                        <p className="text-xs text-zinc-500">{contactInfo.address}</p>
+                        <p className="text-sm font-medium text-foreground">İletişim Bilgileri</p>
+                        <p className="text-xs text-muted-foreground">{contactInfo.address}</p>
                       </div>
                     </div>
                     <div className="flex gap-2">
@@ -436,7 +432,7 @@ function ContactPageContent() {
                         href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(contactInfo.address)}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center rounded-full border border-zinc-200 px-4 py-2 text-xs font-medium text-zinc-600 transition-all duration-700 hover:border-[#003450]/30 hover:text-[#003450]"
+                        className="inline-flex items-center rounded-lg border border-border px-4 py-2 text-xs font-medium text-foreground transition-all duration-150 hover:border-primary hover:text-accent-foreground"
                         style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
                       >
                         Büyük Harita
@@ -445,7 +441,7 @@ function ContactPageContent() {
                         href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(contactInfo.address)}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center rounded-full bg-[#003450] px-4 py-2 text-xs font-medium text-white transition-all duration-700 hover:bg-[#00243a]"
+                        className="inline-flex items-center rounded-lg bg-primary px-4 py-2 text-xs font-medium text-primary-foreground transition-colors duration-200 hover:bg-[hsl(var(--primary)/0.85)] active:scale-[0.98]"
                         style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
                       >
                         Yol Tarifi
@@ -453,7 +449,7 @@ function ContactPageContent() {
                     </div>
                   </div>
 
-                  <div className="relative h-96 overflow-hidden rounded-2xl bg-zinc-100">
+                  <div className="relative h-96 overflow-hidden rounded-2xl bg-muted">
                     <iframe
                       src={`https://maps.google.com/maps?width=100%25&height=400&hl=tr&q=${encodeURIComponent(contactInfo.address)}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
                       className="w-full h-full border-0"
@@ -463,13 +459,13 @@ function ContactPageContent() {
                       title="İletişim Konumu"
                     />
                     <div
-                      className="absolute inset-0 flex items-center justify-center bg-zinc-100 pointer-events-none opacity-100 transition-opacity duration-700"
+                      className="absolute inset-0 flex items-center justify-center bg-muted pointer-events-none opacity-100 transition-opacity duration-700"
                       id="map-loading"
                       style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
                     >
                       <div className="text-center">
-                        <span className="mb-2 block h-8 w-8 mx-auto animate-spin rounded-full border-2 border-zinc-300 border-t-[#003450]" />
-                        <span className="text-sm text-zinc-500">Harita yükleniyor...</span>
+                        <span className="mb-2 block h-8 w-8 mx-auto animate-spin rounded-full border-2 border-border border-t-primary" />
+                        <span className="text-sm text-muted-foreground">Harita yükleniyor...</span>
                       </div>
                     </div>
                   </div>
@@ -486,11 +482,11 @@ function ContactPageContent() {
 export default function ContactClient() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-zinc-50">
-        <div className="bg-[#003450] pt-32 pb-20 md:pt-40 md:pb-28">
+      <div className="min-h-[100dvh] bg-background">
+        <div className="bg-primary pt-32 pb-20 md:pt-40 md:pb-28">
           <div className="container-content text-center">
-            <span className="mb-4 block h-16 w-16 mx-auto animate-spin rounded-full border-4 border-white/20 border-t-white" />
-            <p className="text-white/80 text-lg">İletişim sayfası yükleniyor...</p>
+            <span className="mb-4 block h-16 w-16 mx-auto animate-spin rounded-full border-4 border-primary-foreground/25 border-t-primary-foreground" />
+            <p className="text-primary-foreground/85 text-lg">İletişim sayfası yükleniyor...</p>
           </div>
         </div>
       </div>

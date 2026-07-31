@@ -4,13 +4,15 @@ import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { Menu as List, X, Search as MagnifyingGlass, Send as PaperPlaneTilt, User, LogOut as SignOut, Settings as GearSix } from 'lucide-react';
+import { Menu as List, X, Search as MagnifyingGlass, Send as PaperPlaneTilt } from 'lucide-react';
 import { resolveIcon, getIconForPage } from '../lib/icons';
 import DesktopNav from './layout/DesktopNav';
-import TopBar from './layout/TopBar';
 import MobileNav from './layout/MobileNav';
 import SearchModal from './layout/SearchModal';
+import LanguageSwitch from './ui/LanguageSwitch';
 import ProjectModal from './features/ProjectModal';
+import { MagneticButton } from './ui/MagneticButton';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { locales } from '@/i18n';
 import { useAppTranslations } from '@/hooks/useAppTranslations';
 import { m, AnimatePresence } from 'framer-motion';
@@ -51,7 +53,6 @@ function getDefaultNavLinks() {
 
 const Header: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
   const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [navLinks, setNavLinks] = useState<Array<{ href: string; label: string; icon: any; isExternal?: boolean }>>([]);
@@ -60,25 +61,6 @@ const Header: React.FC = () => {
   const { t: tHeader } = useAppTranslations('header');
 
   const pathname = usePathname() || '';
-
-  const isHomePage = pathname === '/' ||
-    /^\/[a-z]{2}\/?$/.test(pathname);
-
-  const isTransparentPage = isHomePage ||
-    pathname.includes('/haberler') ||
-    pathname.includes('/noticias') ||
-    pathname.includes('/portfolio') ||
-    pathname.includes('/services') ||
-    pathname.includes('/contact') ||
-    pathname.includes('/videos');
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 40);
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -89,10 +71,13 @@ const Header: React.FC = () => {
       if (e.key === 'Escape' && isSearchOpen) {
         setIsSearchOpen(false);
       }
+      if (e.key === 'Escape' && isMobileMenuOpen) {
+        setIsMobileMenuOpen(false);
+      }
     };
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isSearchOpen]);
+  }, [isSearchOpen, isMobileMenuOpen]);
 
   type GtagFn = (command: 'event', eventName: string, params?: Record<string, unknown>) => void;
   const getGtag = useCallback((): GtagFn | undefined => {
@@ -215,94 +200,94 @@ const Header: React.FC = () => {
     return { ...link, href: newHref };
   });
 
-  const showFloatingPill = isScrolled || !isTransparentPage;
-
   return (
     <>
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-0 focus:left-0 focus:z-[9999] focus:bg-brand-primary-600 focus:text-white focus:px-4 focus:py-2 focus:rounded-br-lg"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[9999] focus:bg-background focus:text-primary focus:px-4 focus:py-2 focus:rounded-xl focus:shadow-lg focus:border focus:border-border"
       >
         {tHeader('skipToContent')}
       </a>
 
-      <header className="fixed top-0 left-0 right-0 z-50" role="banner">
-        <TopBar
-          currentLang={currentLang}
-          isTransparentPage={isTransparentPage}
-          visible={!isScrolled}
-        />
-
-        <m.div
-          animate={{
-            backgroundColor: showFloatingPill ? 'rgba(255, 255, 255, 0.85)' : 'rgba(255, 255, 255, 0)',
-            backdropFilter: showFloatingPill ? 'blur(20px)' : 'blur(0px)',
-          }}
-          transition={{ duration: 0.5, ease: [0.32, 0.72, 0, 1] }}
-          className="relative"
-          style={{
-            borderBottom: showFloatingPill ? '1px solid rgba(0, 52, 80, 0.06)' : '1px solid transparent',
-          }}
-        >
-          <div className="max-w-[1400px] mx-auto px-6">
-            <div
-              className="flex items-center"
-              style={{
-                height: isScrolled ? '56px' : '64px',
-                transition: 'height 500ms cubic-bezier(0.32, 0.72, 0, 1)',
-              }}
+      {/* Printables mantığı: token tabanlı zemin — light'ta beyaz + alt border, dark'ta koyu */}
+      <header
+        className="fixed top-0 left-0 right-0 z-50 bg-background border-b border-border"
+        role="banner"
+      >
+        <div className="container-boxed">
+          <div className="flex items-center gap-3 h-14">
+            {/* Logo — sol blok: token tabanlı kutu + foreground metin */}
+            <Link
+              href={`/${currentLang}`}
+              className="flex items-center gap-2.5 group shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 rounded-xl"
+              aria-label={tHeader('goToHome')}
             >
-              {/* Logo */}
-              <Link
-                href={`/${currentLang}`}
-                className="flex items-center gap-2.5 group shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary-600 focus-visible:ring-offset-2 rounded-lg"
-                aria-label={tHeader('goToHome')}
-              >
-                {siteSettings?.logo?.url && (
-                  <div
-                    className="relative rounded-xl overflow-hidden"
-                    style={{
-                      width: isScrolled ? '32px' : '38px',
-                      height: isScrolled ? '32px' : '38px',
-                      transition: 'all 500ms cubic-bezier(0.32, 0.72, 0, 1)',
-                    }}
-                  >
-                    <Image
-                      src={siteSettings.logo.url}
-                      alt={siteSettings.logo.alt}
-                      fill
-                      className="object-contain"
-                      sizes="44px"
-                      priority
-                    />
-                  </div>
-                )}
-                {siteSettings?.logoText && (
-                  <span
-                    className="font-semibold tracking-tight"
-                    style={{
-                      fontSize: isScrolled ? '14px' : '16px',
-                      color: !showFloatingPill ? '#ffffff' : '#18181b',
-                      textShadow: !showFloatingPill ? '0 1px 3px rgba(0,0,0,0.3)' : 'none',
-                      transition: 'all 500ms cubic-bezier(0.32, 0.72, 0, 1)',
-                    }}
-                  >
-                    {siteSettings.logoText}
-                  </span>
-                )}
-              </Link>
+              {siteSettings?.logo?.url && (
+                <div className="relative w-9 h-9 rounded-xl overflow-hidden bg-card border border-border shadow-sm transition-transform duration-150 group-hover:scale-[1.03]">
+                  <Image
+                    src={siteSettings.logo.url}
+                    alt={siteSettings.logo.alt}
+                    fill
+                    className="object-contain p-1"
+                    sizes="36px"
+                    priority
+                  />
+                </div>
+              )}
+              {siteSettings?.logoText && (
+                <span className="font-semibold tracking-tight text-base text-foreground">
+                  {siteSettings.logoText}
+                </span>
+              )}
+            </Link>
 
-              {/* Desktop Nav */}
-              <div className="hidden lg:flex flex-1 items-center justify-center ml-8">
-                <DesktopNav
-                  navLinks={localizedNavLinks}
-                  pathname={pathname || ''}
-                  isScrolled={isScrolled}
-                  isTransparentPage={isTransparentPage}
-                  onOpenProjectModal={openProjectModal}
-                  onOpenSearch={() => setIsSearchOpen(true)}
-                  compact={isScrolled}
-                />
+            {/* Arama hapı — Printables paradigması: turuncu dolgulu, tam yuvarlak pill, hover/focus'ta genişler */}
+            <button
+              onClick={() => setIsSearchOpen(true)}
+              className="hidden lg:flex items-center gap-2 h-9 w-48 hover:w-64 focus-visible:w-64 px-4 rounded-full bg-primary text-sm text-white hover:bg-primary/90 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              aria-label={`${tHeader('search')} (Ctrl+K)`}
+            >
+              <MagnifyingGlass size={15} className="shrink-0 text-white" aria-hidden="true" />
+              <span className="flex-1 text-left truncate text-white/90">{tHeader('searchPlaceholder')}</span>
+              <kbd className="hidden xl:inline-flex items-center px-1.5 py-0.5 rounded-md bg-white/15 text-[10px] font-medium text-white/85">
+                Ctrl K
+              </kbd>
+            </button>
+
+            {/* Desktop Nav — sade metin linkleri (orta blok) */}
+            <div className="hidden lg:flex flex-1 items-center ml-3">
+              <DesktopNav
+                navLinks={localizedNavLinks}
+                pathname={pathname || ''}
+              />
+            </div>
+
+            {/* Sağ blok: dil + tema + arama (mobil) + CTA + hamburger */}
+            <div className="flex items-center gap-1.5 ml-auto lg:ml-0">
+              <div className="hidden lg:block">
+                <LanguageSwitch currentLang={currentLang} variant="compact" />
+              </div>
+
+              <ThemeToggle />
+
+              {/* Mobile search trigger */}
+              <button
+                onClick={() => setIsSearchOpen(true)}
+                className="lg:hidden p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-accent transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0"
+                aria-label={tHeader('search')}
+              >
+                <MagnifyingGlass size={18} />
+              </button>
+
+              {/* CTA — primary buton (Printables sağ blok) */}
+              <div className="hidden lg:block">
+                <MagneticButton
+                  onClick={openProjectModal}
+                  className="rounded-lg bg-primary text-primary-foreground text-sm px-4 py-2 font-semibold hover:bg-[hsl(var(--primary)/0.85)] transition-colors duration-200 shadow-sm active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                >
+                  <PaperPlaneTilt size={14} className="mr-1.5 inline-block" aria-hidden="true" />
+                  Teklif Al
+                </MagneticButton>
               </div>
 
               {/* Mobile Hamburger */}
@@ -310,11 +295,7 @@ const Header: React.FC = () => {
                 onClick={toggleMobileMenu}
                 aria-label={tHeader('openMenu')}
                 aria-expanded={isMobileMenuOpen}
-                className="lg:hidden ml-auto p-2 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary-600"
-                style={{
-                  color: !showFloatingPill ? '#ffffff' : '#3f3f46',
-                  transition: 'color 500ms cubic-bezier(0.32, 0.72, 0, 1)',
-                }}
+                className="lg:hidden p-2 rounded-xl text-foreground hover:bg-accent transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0"
               >
                 <AnimatePresence mode="wait">
                   {isMobileMenuOpen ? (
@@ -342,7 +323,7 @@ const Header: React.FC = () => {
               </button>
             </div>
           </div>
-        </m.div>
+        </div>
       </header>
 
       <MobileNav

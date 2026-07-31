@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { m, AnimatePresence } from 'framer-motion';
 import PrefetchLink from '../PrefetchLink';
 import Link from 'next/link';
-import { Search as MagnifyingGlass, User, Send as PaperPlaneTilt, LogOut as SignOut, Settings as GearSix } from 'lucide-react';
+import { User, LogOut as SignOut, Settings as GearSix } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 
 interface NavLink {
@@ -17,24 +17,15 @@ interface NavLink {
 interface DesktopNavProps {
     navLinks: NavLink[];
     pathname: string;
-    isScrolled: boolean;
-    isTransparentPage: boolean;
-    onOpenProjectModal?: () => void;
-    onOpenSearch?: () => void;
-    compact?: boolean;
 }
 
-export default function DesktopNav({
-    navLinks,
-    pathname,
-    isScrolled,
-    isTransparentPage,
-    onOpenProjectModal,
-    onOpenSearch,
-    compact = false,
-}: DesktopNavProps) {
+/**
+ * DesktopNav — Printables mantığı: token tabanlı zemin üzerinde sade metin linkler.
+ * Metin rengi text-foreground, hover'da turuncu (hover:text-primary),
+ * aktif linkte turuncu bottom-border + font-semibold.
+ */
+export default function DesktopNav({ navLinks, pathname }: DesktopNavProps) {
     const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-    const isTransparent = !isScrolled && isTransparentPage;
 
     const { data: session } = useSession();
     const [isAccountOpen, setIsAccountOpen] = useState(false);
@@ -56,9 +47,9 @@ export default function DesktopNav({
     const handleAccountLeave = () => { accountTimeoutRef.current = setTimeout(() => setIsAccountOpen(false), 200); };
 
     return (
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
             <nav role="navigation" aria-label="Ana navigasyon">
-                <div className={`flex items-center ${compact ? 'gap-0' : 'gap-0.5'} relative`}>
+                <div className="flex items-center gap-0.5 relative">
                     {navLinks.map((link, index) => {
                         const isActive = pathname === link.href;
 
@@ -67,10 +58,7 @@ export default function DesktopNav({
                                 {hoveredIndex === index && !isActive && (
                                     <m.span
                                         layoutId="desktop-nav-hover"
-                                        className="absolute inset-0 rounded-full"
-                                        style={{
-                                            background: isTransparent ? 'rgba(255,255,255,0.08)' : 'rgba(0,52,80,0.04)',
-                                        }}
+                                        className="absolute inset-0 rounded-xl bg-accent"
                                         transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                                     />
                                 )}
@@ -78,12 +66,7 @@ export default function DesktopNav({
                                 {isActive && (
                                     <m.span
                                         layoutId="desktop-nav-active"
-                                        className="absolute bottom-0 left-4 right-4 h-[1.5px] rounded-full"
-                                        style={{
-                                            background: isTransparent
-                                                ? 'rgba(255,255,255,0.8)'
-                                                : '#003450',
-                                        }}
+                                        className="absolute bottom-0 left-3.5 right-3.5 h-[2px] rounded-full bg-primary"
                                         transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                                         aria-hidden="true"
                                     />
@@ -92,18 +75,16 @@ export default function DesktopNav({
                         );
 
                         const linkClasses = `
-                            relative ${compact ? 'px-3 py-1.5 text-[13px]' : 'px-4 py-2 text-sm'}
-                            font-medium whitespace-nowrap
+                            relative px-3.5 py-1.5 text-sm
+                            tracking-wide whitespace-nowrap
                             focus-visible:outline-none focus-visible:ring-2
-                            focus-visible:ring-brand-primary-500 focus-visible:ring-offset-2
-                            rounded-full
+                            focus-visible:ring-ring focus-visible:ring-offset-0
+                            rounded-xl transition-colors duration-150
                             ${isActive
-                                ? isTransparent ? 'text-white' : 'text-zinc-900'
-                                : isTransparent ? 'text-white/70 hover:text-white' : 'text-zinc-500 hover:text-zinc-900'
+                                ? 'text-primary font-semibold'
+                                : 'text-muted-foreground font-medium hover:text-primary'
                             }
                         `;
-
-                        const transitionStyle = { transition: 'color 300ms cubic-bezier(0.32, 0.72, 0, 1)' };
 
                         if (link.isExternal) {
                             return (
@@ -113,7 +94,6 @@ export default function DesktopNav({
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className={linkClasses}
-                                    style={transitionStyle}
                                     aria-current={isActive ? 'page' : undefined}
                                     onMouseEnter={() => setHoveredIndex(index)}
                                     onMouseLeave={() => setHoveredIndex(null)}
@@ -128,7 +108,6 @@ export default function DesktopNav({
                                 key={index}
                                 href={link.href}
                                 className={linkClasses}
-                                style={transitionStyle}
                                 aria-current={isActive ? 'page' : undefined}
                                 onMouseEnter={() => setHoveredIndex(index)}
                                 onMouseLeave={() => setHoveredIndex(null)}
@@ -140,36 +119,19 @@ export default function DesktopNav({
                 </div>
             </nav>
 
-            <div className={`h-4 w-px mx-1 ${isTransparent ? 'bg-white/10' : 'bg-zinc-200'}`} />
+            <div className="h-4 w-px mx-1 bg-border" aria-hidden="true" />
 
+            {/* Account dropdown */}
             <div className="flex items-center gap-1">
-                <button
-                    onClick={onOpenSearch}
-                    className="p-2 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary-500"
-                    style={{
-                        color: isTransparent ? 'rgba(255,255,255,0.6)' : '#71717a',
-                        transition: 'all 300ms cubic-bezier(0.32, 0.72, 0, 1)',
-                    }}
-                    onMouseEnter={(e) => e.currentTarget.style.color = isTransparent ? '#fff' : '#18181b'}
-                    onMouseLeave={(e) => e.currentTarget.style.color = isTransparent ? 'rgba(255,255,255,0.6)' : '#71717a'}
-                    aria-label="Ara (Ctrl+K)"
-                >
-                    <MagnifyingGlass size={18} />
-                </button>
-
                 <div ref={accountRef} className="relative" onMouseEnter={handleAccountEnter} onMouseLeave={handleAccountLeave}>
                     <button
                         onClick={() => setIsAccountOpen(!isAccountOpen)}
-                        className="p-2 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary-500"
-                        style={{
-                            color: isTransparent ? 'rgba(255,255,255,0.6)' : '#71717a',
-                            transition: 'all 300ms cubic-bezier(0.32, 0.72, 0, 1)',
-                        }}
+                        className="p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-accent transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0"
                         aria-label="Hesabım"
                         aria-expanded={isAccountOpen}
                     >
                         {session?.user ? (
-                            <div className="w-5 h-5 rounded-full bg-gradient-to-br from-brand-primary-400 to-brand-primary-700 flex items-center justify-center text-white text-[10px] font-bold ring-1 ring-white/20">
+                            <div className="w-5 h-5 rounded-full bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center text-primary-foreground text-[10px] font-bold ring-1 ring-border">
                                 {(session.user.name?.[0] || session.user.email?.[0] || 'U').toUpperCase()}
                             </div>
                         ) : (
@@ -182,33 +144,31 @@ export default function DesktopNav({
                                 initial={{ opacity: 0, y: 8, scale: 0.96 }}
                                 animate={{ opacity: 1, y: 0, scale: 1 }}
                                 exit={{ opacity: 0, y: 8, scale: 0.96 }}
-                                transition={{ duration: 0.2, ease: [0.32, 0.72, 0, 1] }}
-                                className="absolute right-0 top-full mt-2 w-56 bg-white/90 backdrop-blur-2xl rounded-2xl overflow-hidden z-[60]"
+                                transition={{ duration: 0.15, ease: [0.4, 0, 0.2, 1] }}
+                                className="absolute right-0 top-full mt-2 w-56 bg-popover rounded-xl overflow-hidden z-[60] border border-border"
                                 style={{
-                                    border: '1px solid rgba(0, 52, 80, 0.06)',
-                                    boxShadow: '0 20px 40px -15px rgba(0, 52, 80, 0.12)',
+                                    boxShadow: '0 2px 20px rgba(0,0,0,0.15)',
                                 }}
                             >
                                 {session?.user ? (
                                     <>
-                                        <div className="px-4 py-3 border-b border-zinc-100">
+                                        <div className="px-4 py-3 border-b border-border">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-brand-primary-400 to-brand-primary-700 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
+                                                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center text-primary-foreground text-sm font-bold flex-shrink-0">
                                                     {(session.user.name?.[0] || session.user.email?.[0] || 'U').toUpperCase()}
                                                 </div>
                                                 <div className="min-w-0">
-                                                    <p className="text-sm font-semibold text-zinc-900 truncate">{session.user.name || 'Kullanıcı'}</p>
-                                                    <p className="text-[11px] text-zinc-400 truncate">{session.user.email}</p>
+                                                    <p className="text-sm font-semibold text-popover-foreground truncate">{session.user.name || 'Kullanıcı'}</p>
+                                                    <p className="text-[11px] text-muted-foreground truncate">{session.user.email}</p>
                                                 </div>
                                             </div>
                                         </div>
 
                                         {isAdmin && (
-                                            <div className="py-1 border-b border-zinc-100">
+                                            <div className="py-1 border-b border-border">
                                                 <Link
                                                     href="/admin/dashboard"
-                                                    className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-zinc-700 hover:bg-zinc-50"
-                                                    style={{ transition: 'background 200ms cubic-bezier(0.32, 0.72, 0, 1)' }}
+                                                    className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-popover-foreground/80 hover:bg-accent hover:text-accent-foreground transition-colors duration-150"
                                                     onClick={() => setIsAccountOpen(false)}
                                                 >
                                                     <GearSix size={16} />
@@ -220,8 +180,7 @@ export default function DesktopNav({
                                         <div className="py-1">
                                             <Link
                                                 href={`/${currentLang}/account`}
-                                                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-zinc-600 hover:bg-zinc-50"
-                                                style={{ transition: 'background 200ms cubic-bezier(0.32, 0.72, 0, 1)' }}
+                                                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-popover-foreground/70 hover:bg-accent hover:text-accent-foreground transition-colors duration-150"
                                                 onClick={() => setIsAccountOpen(false)}
                                             >
                                                 <User size={16} />
@@ -229,11 +188,10 @@ export default function DesktopNav({
                                             </Link>
                                         </div>
 
-                                        <div className="border-t border-zinc-100 py-1">
+                                        <div className="border-t border-border py-1">
                                             <Link
                                                 href="/api/auth/signout"
-                                                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50"
-                                                style={{ transition: 'background 200ms cubic-bezier(0.32, 0.72, 0, 1)' }}
+                                                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-destructive hover:bg-destructive/10 transition-colors duration-150"
                                                 onClick={() => setIsAccountOpen(false)}
                                             >
                                                 <SignOut size={16} />
@@ -245,22 +203,14 @@ export default function DesktopNav({
                                     <div className="p-3 space-y-2">
                                         <Link
                                             href={`/${currentLang}/login`}
-                                            className="flex items-center justify-center w-full px-3 py-2.5 rounded-xl text-sm font-medium text-white"
-                                            style={{
-                                                background: '#003450',
-                                                transition: 'all 300ms cubic-bezier(0.32, 0.72, 0, 1)',
-                                            }}
+                                            className="flex items-center justify-center w-full px-3 py-2.5 rounded-lg text-sm font-medium bg-primary text-primary-foreground hover:bg-[hsl(var(--primary)/0.85)] transition-colors duration-200 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                                             onClick={() => setIsAccountOpen(false)}
                                         >
                                             Giriş Yap
                                         </Link>
                                         <Link
                                             href={`/${currentLang}/register`}
-                                            className="flex items-center justify-center w-full px-3 py-2.5 rounded-xl text-sm font-medium text-zinc-600 hover:bg-zinc-50"
-                                            style={{
-                                                border: '1px solid rgba(0,52,80,0.1)',
-                                                transition: 'all 300ms cubic-bezier(0.32, 0.72, 0, 1)',
-                                            }}
+                                            className="flex items-center justify-center w-full px-3 py-2.5 rounded-lg text-sm font-medium text-primary border border-primary hover:bg-primary/10 transition-colors duration-200 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                                             onClick={() => setIsAccountOpen(false)}
                                         >
                                             Kayıt Ol
@@ -272,32 +222,6 @@ export default function DesktopNav({
                     </AnimatePresence>
                 </div>
             </div>
-
-            {onOpenProjectModal && (
-                <button
-                    onClick={onOpenProjectModal}
-                    className="group relative flex items-center gap-2 rounded-full font-medium whitespace-nowrap flex-shrink-0 ml-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary-600 active:scale-[0.97]"
-                    style={{
-                        height: compact ? '32px' : '36px',
-                        padding: compact ? '0 14px' : '0 20px',
-                        fontSize: compact ? '12px' : '13px',
-                        background: isTransparent ? 'rgba(255,255,255,0.12)' : '#003450',
-                        color: isTransparent ? '#ffffff' : '#ffffff',
-                        backdropFilter: isTransparent ? 'blur(10px)' : 'none',
-                        border: isTransparent ? '1px solid rgba(255,255,255,0.15)' : '1px solid transparent',
-                        transition: 'all 500ms cubic-bezier(0.32, 0.72, 0, 1)',
-                        boxShadow: isTransparent ? 'none' : '0 4px 12px rgba(0, 52, 80, 0.15)',
-                    }}
-                    aria-label="Proje başvurusu formunu aç"
-                >
-                    <PaperPlaneTilt
-                        size={14}
-                        className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-                        aria-hidden="true"
-                    />
-                    <span>Proje Başvurusu</span>
-                </button>
-            )}
         </div>
     );
 }

@@ -73,23 +73,10 @@ module.exports = {
           600: 'var(--brand-primary-600)',
           700: 'var(--brand-primary-700)',
           800: 'var(--brand-primary-800)',
-          900: 'var(--theme-primary)',
-          DEFAULT: 'var(--theme-primary)',
+          900: 'var(--brand-primary-900)',
+          DEFAULT: 'var(--brand-primary-500)',
         },
 
-        // ── Design System: Semantic Colors (CSS variable based) ──
-        brand: {
-          50:  'var(--color-brand-50)',
-          100: 'var(--color-brand-100)',
-          200: 'var(--color-brand-200)',
-          300: 'var(--color-brand-300)',
-          400: 'var(--color-brand-400)',
-          500: 'var(--color-brand-500)',
-          600: 'var(--color-brand-600)',
-          700: 'var(--color-brand-700)',
-          800: 'var(--color-brand-800)',
-          900: 'var(--color-brand-900)',
-        },
         success: {
           light:   'var(--color-success-light)',
           DEFAULT: 'hsl(var(--success) / <alpha-value>)',
@@ -130,12 +117,12 @@ module.exports = {
           linkedin: '#0077b5',
         },
         page: {
-          bg: '#f6f7f9',
+          bg: 'var(--color-page-bg, #3f3f46)',
         },
       },
       fontFamily: {
-        sans: ['var(--font-geist-sans)', 'system-ui', 'sans-serif'],
-        display: ['var(--font-geist-sans)', 'system-ui', 'sans-serif'],
+        sans: ['var(--font-barlow)', 'var(--font-geist-sans)', 'system-ui', 'sans-serif'],
+        display: ['var(--font-barlow)', 'var(--font-geist-sans)', 'system-ui', 'sans-serif'],
         mono: ['var(--font-geist-mono)', 'ui-monospace', 'SFMono-Regular', 'monospace'],
       },
       fontSize: {
@@ -153,14 +140,18 @@ module.exports = {
         '4xl': '2rem',
       },
       boxShadow: {
-        'glass': '0 8px 32px rgba(0, 52, 80, 0.08)',
+        'glass': 'var(--shadow-glass)',
         'glass-lg': '0 20px 40px -15px rgba(0, 52, 80, 0.05)',
         'glass-inner': 'inset 0 1px 1px rgba(255, 255, 255, 0.15)',
         'glass-border': 'inset 0 1px 0 rgba(255, 255, 255, 0.1)',
-        'premium': '0 1px 2px rgba(0, 52, 80, 0.04), 0 4px 12px rgba(0, 52, 80, 0.06)',
+        'premium': 'var(--shadow-premium)',
         'premium-lg': '0 4px 6px rgba(0, 52, 80, 0.04), 0 12px 32px rgba(0, 52, 80, 0.08)',
         'premium-xl': '0 20px 40px -15px rgba(0, 52, 80, 0.12)',
         'spotlight': '0 0 0 1px rgba(0, 52, 80, 0.05), 0 20px 40px -15px rgba(0, 52, 80, 0.1)',
+        'tinted-sm': 'var(--shadow-tinted-sm)',
+        'tinted-md': 'var(--shadow-tinted-md)',
+        'tinted-lg': 'var(--shadow-tinted-lg)',
+        'tinted-xl': 'var(--shadow-xl)',
       },
       spacing: {},
       animation: {
@@ -172,7 +163,11 @@ module.exports = {
         'shimmer': 'shimmer 2.5s cubic-bezier(0.32, 0.72, 0, 1) infinite',
         'gradient-x': 'gradientX 3s ease infinite',
         'marquee': 'marquee 30s linear infinite',
+        'marquee-continuous': 'marquee-continuous 25s linear infinite',
         'float': 'float 6s cubic-bezier(0.32, 0.72, 0, 1) infinite',
+        'float-gentle': 'float-gentle 6s ease-in-out infinite',
+        'gradient-shift': 'gradient-shift 8s ease infinite',
+        'count-up': 'count-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
         'mesh-rotate': 'meshRotate 20s linear infinite',
       },
       transitionProperty: {
@@ -217,9 +212,26 @@ module.exports = {
           '0%': { transform: 'rotate(0deg)' },
           '100%': { transform: 'rotate(360deg)' },
         },
+        floatGentle: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-10px)' },
+        },
+        gradientShift: {
+          '0%': { backgroundPosition: '0% 50%' },
+          '50%': { backgroundPosition: '100% 50%' },
+          '100%': { backgroundPosition: '0% 50%' },
+        },
+        countUp: {
+          '0%': { opacity: '0', transform: 'translateY(20px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        marqueeContinuous: {
+          '0%': { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(-50%)' },
+        },
       },
       borderColor: {
-        DEFAULT: 'hsl(var(--border))',
+        DEFAULT: 'var(--color-border)',
       },
       // ── Design System: Transition Durations ──
       transitionDuration: {
@@ -247,6 +259,8 @@ module.exports = {
     require('tailwindcss-animate'),
     require('@tailwindcss/typography'),
     require('@tailwindcss/forms'),
-    require('@tailwindcss/aspect-ratio'),
+    // NOT: '@tailwindcss/aspect-ratio' kaldırıldı — eklentinin theme.aspectRatio
+    // override'ı çekirdek aspect-square/aspect-video utility'lerini siliyordu
+    // (fill görsellerde "height value of 0" uyarısının kök nedeni).
   ],
 } 

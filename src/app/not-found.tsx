@@ -26,47 +26,47 @@ export default function NotFound() {
               </div>
               
               {/* Floating icons */}
-              <div className="absolute top-0 left-1/4 w-12 h-12 bg-gradient-to-br from-brand-primary-600 to-blue-500 rounded-2xl flex items-center justify-center animate-bounce">
+              <div className="absolute top-0 left-1/4 w-12 h-12 bg-gradient-to-br from-primary to-primary rounded-2xl flex items-center justify-center animate-bounce">
                 <ExclamationCircleIcon className="w-6 h-6 text-white" />
               </div>
               
-              <div className="absolute top-8 right-1/4 w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center animate-pulse">
+              <div className="absolute top-8 right-1/4 w-10 h-10 bg-gradient-to-br from-primary to-primary rounded-xl flex items-center justify-center animate-pulse">
                 <MagnifyingGlassIcon className="w-5 h-5 text-white" />
               </div>
             </div>
           </div>
 
           {/* Error Title */}
-          <h1 className="text-4xl sm:text-5xl font-bold text-slate-800 mb-6">
+          <h1 className="text-4xl sm:text-5xl font-bold text-foreground mb-6">
             Sayfa Bulunamadı
           </h1>
 
           {/* Error Message */}
-          <p className="text-xl text-slate-600 mb-8 leading-relaxed">
+          <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
             Aradığınız sayfa mevcut değil veya taşınmış olabilir. 
             Ana sayfaya dönerek gezinmeye devam edebilirsiniz.
           </p>
 
           {/* Search Suggestions */}
-          <div className="bg-slate-50 rounded-2xl p-6 mb-8">
-            <h3 className="text-lg font-semibold text-slate-800 mb-4">
+          <div className="bg-surface-secondary rounded-2xl p-6 mb-8">
+            <h3 className="text-lg font-semibold text-foreground mb-4">
               Bunları Deneyebilirsiniz:
             </h3>
-            <ul className="text-slate-600 space-y-2 text-left">
+            <ul className="text-muted-foreground space-y-2 text-left">
               <li className="flex items-center space-x-2">
-                <span className="w-2 h-2 bg-brand-primary-600 rounded-full"></span>
+                <span className="w-2 h-2 bg-primary rounded-full"></span>
                 <span>URL&apos;yi kontrol edin</span>
               </li>
               <li className="flex items-center space-x-2">
-                <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                <span className="w-2 h-2 bg-primary rounded-full"></span>
                 <span>Ana sayfaya geri dönün</span>
               </li>
               <li className="flex items-center space-x-2">
-                <span className="w-2 h-2 bg-purple-500 rounded-full"></span>
+                <span className="w-2 h-2 bg-primary rounded-full"></span>
                 <span>Navigasyon menüsünü kullanın</span>
               </li>
               <li className="flex items-center space-x-2">
-                <span className="w-2 h-2 bg-pink-500 rounded-full"></span>
+                <span className="w-2 h-2 bg-primary rounded-full"></span>
                 <span>Arama yapın</span>
               </li>
             </ul>
@@ -89,35 +89,35 @@ export default function NotFound() {
           </div>
 
           {/* Popular Pages */}
-          <div className="mt-12 p-6 bg-gradient-to-br from-brand-primary-50 to-blue-50 rounded-2xl border border-brand-primary-200">
+          <div className="mt-12 p-6 bg-gradient-to-br from-accent to-accent rounded-2xl border border-border">
             <div className="flex items-center space-x-3 mb-4">
-              <SparklesIcon className="w-6 h-6 text-brand-primary-700" />
-              <h3 className="text-lg font-semibold text-brand-primary-800">
+              <SparklesIcon className="w-6 h-6 text-accent-foreground" />
+              <h3 className="text-lg font-semibold text-accent-foreground">
                 Popüler Sayfalar
               </h3>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <Link 
                 href={`/${lang}/services`} 
-                className="text-brand-primary-800 hover:text-brand-primary-900 font-medium p-2 rounded-lg hover:bg-brand-primary-100 transition-colors"
+                className="text-accent-foreground hover:text-accent-foreground font-medium p-2 rounded-lg hover:bg-accent transition-colors"
               >
                 Hizmetlerimiz
               </Link>
               <Link 
                 href={`/${lang}/portfolio`} 
-                className="text-brand-primary-800 hover:text-brand-primary-900 font-medium p-2 rounded-lg hover:bg-brand-primary-100 transition-colors"
+                className="text-accent-foreground hover:text-accent-foreground font-medium p-2 rounded-lg hover:bg-accent transition-colors"
               >
                 Portfolyo
               </Link>
               <Link 
                 href={`/${lang}/about`} 
-                className="text-brand-primary-800 hover:text-brand-primary-900 font-medium p-2 rounded-lg hover:bg-brand-primary-100 transition-colors"
+                className="text-accent-foreground hover:text-accent-foreground font-medium p-2 rounded-lg hover:bg-accent transition-colors"
               >
                 Hakkımızda
               </Link>
               <Link 
                 href={`/${lang}/contact`} 
-                className="text-brand-primary-800 hover:text-brand-primary-900 font-medium p-2 rounded-lg hover:bg-brand-primary-100 transition-colors"
+                className="text-accent-foreground hover:text-accent-foreground font-medium p-2 rounded-lg hover:bg-accent transition-colors"
               >
                 İletişim
               </Link>

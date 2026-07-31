@@ -49,42 +49,42 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="min-h-screen pt-32 pb-20 bg-slate-50 flex items-center justify-center">
+        <div className="min-h-[100dvh] pt-32 pb-20 bg-background flex items-center justify-center">
             <div className="container-main max-w-md w-full">
-                <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
-                    <h1 className="text-2xl font-bold text-slate-900 mb-2 text-center">Giriş Yap</h1>
-                    <p className="text-slate-500 mb-8 text-center">
+                <div className="bg-card p-8 rounded-2xl shadow-sm border border-border">
+                    <h1 className="text-2xl font-bold text-foreground mb-2 text-center">Giriş Yap</h1>
+                    <p className="text-muted-foreground mb-8 text-center">
                         Hesabınıza giriş yapın.
                     </p>
 
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-1">E-posta</label>
+                            <label className="block text-sm font-medium text-foreground mb-1">E-posta</label>
                             <input
                                 name="email"
                                 type="email"
                                 required
                                 value={formData.email}
                                 onChange={handleChange}
-                                className="w-full px-4 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-primary-900 outline-none transition-all"
+                                className="w-full px-4 py-2 rounded-lg border border-input bg-background text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary outline-none transition-all"
                                 placeholder="ornek@email.com"
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-1">Şifre</label>
+                            <label className="block text-sm font-medium text-foreground mb-1">Şifre</label>
                             <input
                                 name="password"
                                 type="password"
                                 required
                                 value={formData.password}
                                 onChange={handleChange}
-                                className="w-full px-4 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-primary-900 outline-none transition-all"
+                                className="w-full px-4 py-2 rounded-lg border border-input bg-background text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary outline-none transition-all"
                                 placeholder="••••••••"
                             />
                         </div>
 
                         <div className="flex items-center justify-end">
-                            <Link href={`/${lang}/forgot-password`} className="text-sm text-brand-primary-900 hover:underline">
+                            <Link href={`/${lang}/forgot-password`} className="text-sm text-accent-foreground hover:underline">
                                 Şifremi Unuttum
                             </Link>
                         </div>
@@ -92,14 +92,14 @@ export default function LoginPage() {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full py-3 bg-brand-primary-900 text-white font-bold rounded-xl hover:bg-brand-primary-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="w-full py-3 bg-primary text-primary-foreground font-bold rounded-xl hover:bg-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {loading ? 'Giriş Yapılıyor...' : 'Giriş Yap'}
                         </button>
                     </form>
 
-                    <div className="mt-6 pt-6 border-t border-slate-100 text-center text-sm text-slate-500">
-                        Hesabınız yok mu? <Link href={`/${lang}/register`} className="text-brand-primary-900 font-bold hover:underline">Kayıt Ol</Link>
+                    <div className="mt-6 pt-6 border-t border-border text-center text-sm text-muted-foreground">
+                        Hesabınız yok mu? <Link href={`/${lang}/register`} className="text-accent-foreground font-bold hover:underline">Kayıt Ol</Link>
                     </div>
                 </div>
             </div>

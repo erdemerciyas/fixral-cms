@@ -86,11 +86,10 @@ export default function MobileNav({
     return (
         <DialogPrimitive.Root open={isOpen} onOpenChange={(open) => { if (!open) onClose(); }}>
             <DialogPrimitive.Portal>
+                {/* Printables mobil paradigma: token tabanlı zemin + foreground metin */}
                 <DialogPrimitive.Overlay
-                    className="fixed inset-0 z-50 lg:hidden duration-500 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=closed]:animate-out data-[state=closed]:fade-out-0"
+                    className="fixed inset-0 z-50 lg:hidden bg-background/95 backdrop-blur-[32px] duration-500 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=closed]:animate-out data-[state=closed]:fade-out-0"
                     style={{
-                        background: 'rgba(9, 20, 29, 0.92)',
-                        backdropFilter: 'blur(32px)',
                         WebkitBackdropFilter: 'blur(32px)',
                     }}
                 />
@@ -101,12 +100,12 @@ export default function MobileNav({
                 >
                         {/* Header */}
                         <div className="flex items-center justify-between px-6 pt-6 pb-4 flex-shrink-0">
-                            <DialogPrimitive.Title className="text-lg font-semibold text-white/90 tracking-tight">
+                            <DialogPrimitive.Title className="text-lg font-semibold text-foreground tracking-tight">
                                 {logoText || 'Menü'}
                             </DialogPrimitive.Title>
                             <button
                                 onClick={onClose}
-                                className="p-2.5 rounded-xl text-white/40 hover:text-white hover:bg-white/5"
+                                className="p-2.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0"
                                 style={{ transition: 'all 300ms cubic-bezier(0.32, 0.72, 0, 1)' }}
                                 aria-label="Menüyü kapat"
                             >
@@ -114,14 +113,14 @@ export default function MobileNav({
                             </button>
                         </div>
 
-                        <div className="mx-6 h-px bg-white/[0.06] flex-shrink-0" />
+                        <div className="mx-6 h-px bg-border flex-shrink-0" />
 
-                        {/* Search */}
+                        {/* Search — Printables stili: turuncu dolgulu, tam yuvarlak, beyaz metin/ikon */}
                         <div className="px-6 pt-5 pb-2 flex-shrink-0">
                             <form onSubmit={handleSearchSubmit} className="relative">
                                 <MagnifyingGlass
                                     size={16}
-                                    className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30"
+                                    className="absolute left-4 top-1/2 -translate-y-1/2 text-white"
                                 />
                                 <input
                                     ref={searchInputRef}
@@ -129,10 +128,8 @@ export default function MobileNav({
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                     placeholder="Ara..."
-                                    className="w-full pl-10 pr-4 py-3 rounded-xl text-sm text-white placeholder:text-white/30 focus:outline-none focus:ring-1 focus:ring-white/20"
+                                    className="w-full pl-11 pr-4 py-3 rounded-full text-sm bg-primary text-white placeholder:text-white/80 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background border border-transparent"
                                     style={{
-                                        background: 'rgba(255, 255, 255, 0.04)',
-                                        border: '1px solid rgba(255, 255, 255, 0.06)',
                                         transition: 'all 300ms cubic-bezier(0.32, 0.72, 0, 1)',
                                     }}
                                 />
@@ -174,18 +171,16 @@ export default function MobileNav({
                                 transition={{ delay: 0.3, duration: 0.5, ease: [0.32, 0.72, 0, 1] }}
                                 className="flex-shrink-0 px-6 pb-[calc(env(safe-area-inset-bottom,0px)+1.5rem)] pt-2 space-y-3"
                             >
-                                <div className="h-px bg-white/[0.06] mb-4" />
+                                <div className="h-px bg-border mb-4" />
 
                                 {session?.user && (
-                                    <div className="flex items-center gap-3 px-4 py-3 rounded-xl mb-2"
-                                        style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.04)' }}
-                                    >
-                                        <div className="w-9 h-9 rounded-full bg-gradient-to-br from-brand-primary-300 to-brand-primary-600 flex items-center justify-center text-white text-sm font-bold ring-1 ring-white/10">
+                                    <div className="flex items-center gap-3 px-4 py-3 rounded-xl mb-2 bg-muted border border-border">
+                                        <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center text-primary-foreground text-sm font-bold ring-1 ring-border">
                                             {(session.user.name?.[0] || session.user.email?.[0] || 'U').toUpperCase()}
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                            <p className="text-sm font-medium text-white truncate">{session.user.name || 'Kullanıcı'}</p>
-                                            <p className="text-xs text-white/30 truncate">{session.user.email}</p>
+                                            <p className="text-sm font-medium text-foreground truncate">{session.user.name || 'Kullanıcı'}</p>
+                                            <p className="text-xs text-muted-foreground truncate">{session.user.email}</p>
                                         </div>
                                     </div>
                                 )}
@@ -195,10 +190,8 @@ export default function MobileNav({
                                         <Link
                                             href={`/${currentLang}/account`}
                                             onClick={onClose}
-                                            className="flex-1 flex items-center justify-center gap-2.5 px-4 py-3 rounded-xl text-sm font-medium text-white/60 hover:text-white"
+                                            className="flex-1 flex items-center justify-center gap-2.5 px-4 py-3 rounded-xl text-sm font-medium text-muted-foreground hover:text-foreground bg-secondary border border-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0"
                                             style={{
-                                                background: 'rgba(255,255,255,0.04)',
-                                                border: '1px solid rgba(255,255,255,0.06)',
                                                 transition: 'all 300ms cubic-bezier(0.32, 0.72, 0, 1)',
                                             }}
                                             aria-label="Hesabım"
@@ -210,10 +203,8 @@ export default function MobileNav({
                                         <Link
                                             href={`/${currentLang}/login`}
                                             onClick={onClose}
-                                            className="flex-1 flex items-center justify-center gap-2.5 px-4 py-3 rounded-xl text-sm font-medium text-white/70 hover:text-white"
+                                            className="flex-1 flex items-center justify-center gap-2.5 px-4 py-3 rounded-xl text-sm font-medium text-muted-foreground hover:text-foreground bg-secondary border border-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0"
                                             style={{
-                                                background: 'rgba(255,255,255,0.04)',
-                                                border: '1px solid rgba(255,255,255,0.06)',
                                                 transition: 'all 300ms cubic-bezier(0.32, 0.72, 0, 1)',
                                             }}
                                         >
@@ -225,12 +216,9 @@ export default function MobileNav({
 
                                 <button
                                     onClick={handleProjectModalClick}
-                                    className="group relative w-full flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl font-medium text-sm active:scale-[0.98] overflow-hidden"
+                                    className="group relative w-full flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-lg font-semibold text-sm active:scale-[0.98] overflow-hidden bg-primary text-primary-foreground hover:bg-[hsl(var(--primary)/0.85)] shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                                     style={{
-                                        background: 'rgba(255, 255, 255, 0.95)',
-                                        color: '#003450',
                                         transition: 'all 300ms cubic-bezier(0.32, 0.72, 0, 1)',
-                                        boxShadow: '0 8px 24px rgba(0,0,0,0.2)',
                                     }}
                                     aria-label="Proje başvurusu formunu aç"
                                 >

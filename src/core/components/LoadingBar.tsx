@@ -43,7 +43,7 @@ export default function LoadingBar() {
     return (
         <div className="fixed top-0 left-0 right-0 z-[9999] pointer-events-none">
             <div
-                className="h-1.5 bg-gradient-to-r from-brand-primary-600 via-brand-primary-500 to-blue-500 shadow-lg transition-all duration-500 ease-out"
+                className="h-1.5 bg-gradient-to-r from-primary via-primary/80 to-blue-500 shadow-lg transition-all duration-500 ease-out"
                 style={{
                     width: `${progress}%`,
                     boxShadow: progress > 0 ? '0 0 20px rgba(6, 132, 199, 0.6)' : 'none'

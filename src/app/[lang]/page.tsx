@@ -1,4 +1,3 @@
-import { getSliderItems, getPortfolioItems, getServices } from '@/lib/data';
 import HomeTemplate from '@/templates/HomeTemplate';
 import SiteSettings from '@/models/SiteSettings';
 import type { Metadata } from 'next';
@@ -44,18 +43,8 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
 
 export default async function HomePage({ params }: { params: Promise<{ lang: string }> }) {
   const { lang } = await params;
-  const [sliderItems, portfolioItems, services] = await Promise.all([
-    getSliderItems(),
-    getPortfolioItems(6),
-    getServices(6)
-  ]);
 
   return (
-    <HomeTemplate
-      sliderItems={sliderItems}
-      portfolioItems={portfolioItems}
-      services={services}
-      lang={lang}
-    />
+    <HomeTemplate lang={lang} />
   );
 }

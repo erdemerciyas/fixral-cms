@@ -1,8 +1,14 @@
 'use client';
 
+/**
+ * ModernProjectCard — Printables model-kart deseni.
+ * Görsel (object-cover) + hover'da koyu scrim üzerinde metadata → başlık → meta satırı.
+ * Flat kart: rounded-sm, hairline border, dinlenimde gölgesiz;
+ * hover'da -translate-y-0.5 + shadow-lg (200ms).
+ */
 import React, { useState, useRef } from 'react';
 import Image from 'next/image';
-import { m, useInView } from 'framer-motion';
+import { m, useInView, useReducedMotion } from 'framer-motion';
 import { usePathname } from 'next/navigation';
 import { Box as Cube, ImageOff as ImageBroken } from 'lucide-react';
 import { ProjectSummary } from '@/types/portfolio';
@@ -10,6 +16,9 @@ import HTMLContent from '../HTMLContent';
 
 const EASING = [0.32, 0.72, 0, 1] as const;
 const DURATION = 0.7;
+
+/* Görsel üzeri metadata scrim'i — koyu karartma (Printables banner dili) */
+const OVERLAY_SCRIM = 'linear-gradient(0deg, rgba(0,0,0,0.74) 0%, rgba(0,0,0,0.35) 55%, rgba(0,0,0,0) 100%)';
 
 interface ModernProjectCardProps {
   project: ProjectSummary & {
@@ -43,77 +52,71 @@ export default function ModernProjectCard({
   const [imageError, setImageError] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: '-60px' });
+  const prefersReduced = useReducedMotion();
   const pathname = usePathname() || '';
   const currentLang = ['tr', 'es'].includes(pathname.split('/')[1]) ? pathname.split('/')[1] : 'tr';
 
-  const aspectClass = span === 'lg' ? 'aspect-[16/9]' : span === 'sm' ? 'aspect-[4/5]' : 'aspect-[3/2]';
+  const aspectClass = span === 'lg' ? 'aspect-[16/9]' : span === 'sm' ? 'aspect-[4/5]' : 'aspect-[4/3]';
 
   return (
     <m.div
       ref={ref}
-      initial={{ opacity: 0, y: 40 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
-      transition={{ duration: DURATION, delay: index * 0.08, ease: EASING }}
+      initial={prefersReduced ? { opacity: 1 } : { opacity: 0, y: 24 }}
+      animate={isInView ? { opacity: 1, y: 0 } : (prefersReduced ? { opacity: 1 } : { opacity: 0, y: 24 })}
+      transition={{ duration: prefersReduced ? 0.01 : DURATION, delay: prefersReduced ? 0 : index * 0.06, ease: EASING }}
       className="group relative cursor-pointer"
       onClick={() => {
         window.location.href = `/${currentLang}/portfolio/${project.slug}`;
       }}
     >
-      {/* Double-Bezel outer shell */}
-      <div className="rounded-3xl border border-zinc-200/60 bg-zinc-100/40 p-1.5">
-        {/* Inner card */}
-        <div className="relative rounded-[20px] overflow-hidden bg-white border border-zinc-100 transition-shadow group-hover:shadow-[0_20px_60px_-12px_rgba(0,52,80,0.15)]"
-          style={{ transitionDuration: '700ms', transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
-        >
+      {/* Flat Printables kartı */}
+      <div className="relative flex h-full flex-col overflow-hidden rounded-sm border border-border bg-card transition-[transform,box-shadow,border-color] duration-200 ease-out hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-lg motion-reduce:transition-none motion-reduce:hover:translate-y-0">
           {/* Image container */}
-          <div className={`relative ${aspectClass} overflow-hidden`}>
+          <div className={`relative ${aspectClass} overflow-hidden bg-muted`}>
             {!imageError ? (
               <>
                 <Image
                   src={project.coverImage || (process.env.NEXT_PUBLIC_DEFAULT_PROJECT_IMAGE_URL || 'https://res.cloudinary.com/demo/image/upload/c_fill,w_1200,h_800,q_auto,f_auto/sample.jpg')}
                   alt={project.title}
                   fill
-                  className="object-cover transition-transform group-hover:scale-[1.04]"
-                  style={{ transitionDuration: '700ms', transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
+                  className="object-cover"
                   onLoad={() => setImageLoaded(true)}
                   onError={() => setImageError(true)}
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
                 />
                 {!imageLoaded && (
-                  <div className="absolute inset-0 bg-zinc-100 animate-pulse" />
+                  <div className="absolute inset-0 bg-secondary animate-pulse" />
                 )}
               </>
             ) : (
-              <div className="absolute inset-0 bg-gradient-to-br from-zinc-100 to-zinc-200 flex items-center justify-center">
-                <ImageBroken className="w-10 h-10 text-zinc-400" />
+              <div className="absolute inset-0 flex items-center justify-center bg-secondary">
+                <ImageBroken className="w-10 h-10 text-muted-foreground" />
               </div>
             )}
 
-            {/* Glassmorphism hover overlay */}
+            {/* Hover'da görünen metadata overlay — koyu scrim üzerinde beyaz metin */}
             <div
-              className="absolute inset-0 flex flex-col justify-end p-5 md:p-6 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0"
-              style={{ transitionDuration: '700ms', transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)', transitionProperty: 'opacity, transform' }}
+              className="absolute inset-0 flex flex-col justify-end p-4 opacity-0 transition-opacity duration-200 ease-out group-hover:opacity-100 motion-reduce:transition-none"
+              style={{ background: OVERLAY_SCRIM }}
             >
-              <div className="absolute inset-0 bg-gradient-to-t from-[#003450]/90 via-[#003450]/50 to-transparent backdrop-blur-sm" />
-
               <div className="relative z-10">
-                <h3 className="font-[family-name:var(--font-geist-sans)] text-lg md:text-xl font-semibold text-white mb-3 line-clamp-2 tracking-tight">
+                <h3 className="mb-2 line-clamp-2 text-sm font-medium leading-snug text-white md:text-base">
                   {project.title}
                 </h3>
 
                 {project.technologies && project.technologies.length > 0 && (
                   <div className="flex flex-wrap gap-1.5">
-                    {project.technologies.slice(0, 4).map((tech) => (
+                    {project.technologies.slice(0, 3).map((tech) => (
                       <span
                         key={tech}
-                        className="font-[family-name:var(--font-geist-mono)] text-[10px] md:text-[11px] tracking-wide text-white/90 bg-white/15 backdrop-blur-sm border border-white/10 rounded-lg px-2 py-0.5"
+                        className="rounded-sm border border-white/20 bg-white/10 px-2 py-0.5 text-[10px] tracking-wide text-white/90 md:text-[11px]"
                       >
                         {tech}
                       </span>
                     ))}
-                    {project.technologies.length > 4 && (
-                      <span className="font-[family-name:var(--font-geist-mono)] text-[10px] md:text-[11px] text-white/60 self-center">
-                        +{project.technologies.length - 4}
+                    {project.technologies.length > 3 && (
+                      <span className="self-center text-[10px] text-white/70 md:text-[11px]">
+                        +{project.technologies.length - 3}
                       </span>
                     )}
                   </div>
@@ -122,15 +125,15 @@ export default function ModernProjectCard({
             </div>
 
             {/* Badges */}
-            <div className="absolute top-3 left-3 flex flex-col gap-2 z-10">
+            <div className="absolute top-2 left-2 z-10 flex flex-col gap-1.5">
               {project.featured && (
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#003450] text-white text-[10px] font-medium tracking-wide uppercase rounded-lg border border-white/10 backdrop-blur-sm">
-                  One Cikan
+                <span className="inline-flex items-center gap-1.5 rounded-sm bg-primary px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-primary-foreground">
+                  Öne Çıkan
                 </span>
               )}
               {project.models3D && project.models3D.length > 0 && (
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-white/90 backdrop-blur-sm text-zinc-700 text-[10px] font-medium tracking-wide uppercase rounded-lg border border-zinc-200/50">
-                  <Cube className="w-3 h-3" />
+                <span className="inline-flex items-center gap-1 rounded-sm border border-border bg-card px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-foreground">
+                  <Cube className="w-3 h-3" aria-hidden="true" />
                   3D
                 </span>
               )}
@@ -138,15 +141,13 @@ export default function ModernProjectCard({
           </div>
 
           {/* Content area */}
-          <div className="p-4 md:p-5">
-            <h3 className="font-[family-name:var(--font-geist-sans)] text-base md:text-lg font-semibold text-zinc-800 mb-1.5 line-clamp-1 tracking-tight group-hover:text-[#003450] transition-colors"
-              style={{ transitionDuration: '700ms', transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
-            >
+          <div className="flex flex-1 flex-col gap-1.5 p-4">
+            <h3 className="line-clamp-2 text-sm font-medium leading-snug text-foreground md:text-base">
               {project.title}
             </h3>
 
             {project.description && (
-              <div className="text-zinc-500 mb-3 line-clamp-2">
+              <div className="line-clamp-2 flex-1 text-muted-foreground">
                 <HTMLContent
                   content={project.description}
                   className="text-sm leading-relaxed"
@@ -156,22 +157,19 @@ export default function ModernProjectCard({
             )}
 
             {/* Meta row */}
-            <div className="flex items-center justify-between text-xs text-zinc-400 font-[family-name:var(--font-geist-mono)]">
-              {project.client && (
-                <span className="truncate max-w-[50%]">{project.client}</span>
+            <div className="mt-auto flex items-center justify-between gap-2 pt-2 text-xs text-muted-foreground">
+              {project.client ? (
+                <span className="truncate max-w-[55%]">{project.client}</span>
+              ) : (
+                <span aria-hidden="true" />
               )}
               {project.completionDate && (
-                <span>{new Date(project.completionDate).toLocaleDateString('tr-TR', { year: 'numeric', month: 'short' })}</span>
+                <span className="shrink-0 tabular-nums">
+                  {new Date(project.completionDate).toLocaleDateString('tr-TR', { year: 'numeric', month: 'short' })}
+                </span>
               )}
             </div>
           </div>
-
-          {/* Hover translate effect */}
-          <div
-            className="absolute inset-0 rounded-[20px] pointer-events-none translate-y-0 group-hover:-translate-y-0.5"
-            style={{ transitionDuration: '700ms', transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
-          />
-        </div>
       </div>
     </m.div>
   );

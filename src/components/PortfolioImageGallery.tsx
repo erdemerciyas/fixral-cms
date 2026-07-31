@@ -235,10 +235,10 @@ const PortfolioImageGallery: React.FC<PortfolioImageGalleryProps> = ({
       )}
 
       {success && (
-        <div className="p-3 bg-brand-primary-50 border border-brand-primary-200 rounded-lg">
+        <div className="p-3 bg-accent border border-border rounded-lg">
           <div className="flex items-center space-x-2">
-            <CheckIcon className="w-4 h-4 text-brand-primary-600 flex-shrink-0" />
-            <span className="text-sm text-brand-primary-800">{success}</span>
+            <CheckIcon className="w-4 h-4 text-accent-foreground flex-shrink-0" />
+            <span className="text-sm text-accent-foreground">{success}</span>
           </div>
         </div>
       )}
@@ -281,7 +281,7 @@ const PortfolioImageGallery: React.FC<PortfolioImageGalleryProps> = ({
           </button>
           <button
             type="button"
-            className="flex items-center gap-2 px-4 py-2 rounded-lg border border-brand-primary-600 bg-brand-primary-50 hover:bg-brand-primary-100 text-brand-primary-800 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 rounded-lg border border-primary bg-accent hover:bg-accent text-accent-foreground transition-colors"
             onClick={() => setMediaModalOpen(true)}
             disabled={disabled || uploading}
           >
@@ -322,7 +322,7 @@ const PortfolioImageGallery: React.FC<PortfolioImageGalleryProps> = ({
                 onDragEnd={handleImageDragEnd}
                 className={`relative group rounded-xl overflow-hidden border-2 transition-all h-32 ${
                   imageUrl === coverImage 
-                    ? 'border-brand-primary-600 shadow-lg' 
+                    ? 'border-primary shadow-lg' 
                     : 'border-slate-200 hover:border-slate-300'
                 } ${draggedIndex === index ? 'opacity-50 scale-95' : ''} ${
                   !disabled ? 'cursor-move' : ''
@@ -340,7 +340,7 @@ const PortfolioImageGallery: React.FC<PortfolioImageGalleryProps> = ({
                 {/* Cover Image Badge */}
                 {imageUrl === coverImage && (
                   <div className="absolute top-2 right-2 z-10">
-                    <div className="bg-brand-primary-600 text-white px-2 py-1 rounded-full text-xs font-medium flex items-center space-x-1">
+                    <div className="bg-primary text-white px-2 py-1 rounded-full text-xs font-medium flex items-center space-x-1">
                       <StarIconSolid className="w-3 h-3" />
                       <span>Kapak</span>
                     </div>
@@ -348,7 +348,7 @@ const PortfolioImageGallery: React.FC<PortfolioImageGalleryProps> = ({
                 )}
 
                 {/* Image */}
-                <div className="aspect-square bg-slate-100 h-32 w-32">
+                <div className="relative aspect-square bg-muted h-32 w-32">
                   <Image
                     src={imageUrl}
                     alt={`Proje görseli ${index + 1}`}
@@ -368,7 +368,7 @@ const PortfolioImageGallery: React.FC<PortfolioImageGalleryProps> = ({
                       <button
                         type="button"
                         onClick={() => setCoverImage(imageUrl)}
-                        className="bg-brand-primary-700 hover:bg-brand-primary-800 text-white p-2 rounded-lg transition-colors"
+                        className="bg-primary hover:bg-[hsl(var(--primary)/0.85)] text-primary-foreground p-2 rounded-lg transition-colors duration-200"
                         title="Kapak görseli yap"
                       >
                         <StarIcon className="w-4 h-4" />

@@ -18,10 +18,10 @@ export default function PortfolioDetailHero({ project }: PortfolioDetailHeroProp
 
   if (!mounted) {
     return (
-      <section className="relative overflow-hidden bg-gradient-primary text-white">
+      <section className="relative overflow-hidden border-b border-border bg-secondary">
         <div className="relative z-10 pt-20 pb-12 md:pt-24 md:pb-16 lg:pt-28 lg:pb-20 flex items-center justify-center min-h-[200px]">
           <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 w-full text-center">
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-white leading-tight">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-foreground leading-tight">
               {project.title}
             </h1>
           </div>
@@ -31,7 +31,7 @@ export default function PortfolioDetailHero({ project }: PortfolioDetailHeroProp
   }
 
   return (
-    <section className="relative overflow-hidden text-white bg-gradient-primary">
+    <section className="relative overflow-hidden border-b border-border bg-secondary text-foreground">
       <div className="relative z-10 pt-20 pb-12 md:pt-24 md:pb-16 lg:pt-28 lg:pb-20 flex items-center min-h-[200px]">
         <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 w-full text-center">
 
@@ -54,9 +54,9 @@ export default function PortfolioDetailHero({ project }: PortfolioDetailHeroProp
               transition={{ duration: 0.8, delay: 0.2 }}
               className="flex items-center mt-4 justify-center"
             >
-              <div className="flex items-center px-4 py-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full">
-                <StarIconSolid className="w-5 h-5 text-yellow-400 mr-2" />
-                <span className="text-white/90 font-semibold text-sm">Öne Çıkan Proje</span>
+              <div className="flex items-center px-3 py-1.5 bg-accent border border-border rounded-sm">
+                <StarIconSolid className="w-4 h-4 text-primary mr-2" />
+                <span className="text-accent-foreground font-semibold text-sm">Öne Çıkan Proje</span>
               </div>
             </m.div>
           )}

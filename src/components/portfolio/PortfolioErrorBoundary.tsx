@@ -51,17 +51,17 @@ class PortfolioErrorBoundary extends React.Component<
       }
 
       return (
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+        <div className="min-h-screen bg-background flex items-center justify-center p-4">
           <div className="text-center max-w-md mx-auto">
             <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <ExclamationTriangleIcon className="w-10 h-10 text-red-500" />
+              <ExclamationTriangleIcon className="w-10 h-10 text-red-600" />
             </div>
             
-            <h2 className="text-2xl font-bold text-slate-800 mb-4">
+            <h2 className="text-2xl font-bold text-foreground mb-4">
               Proje Yüklenemedi
             </h2>
             
-            <p className="text-slate-600 mb-6">
+            <p className="text-muted-foreground mb-6">
               Proje detayları yüklenirken bir hata oluştu. Bu geçici bir sorun olabilir.
             </p>
             
@@ -81,7 +81,7 @@ class PortfolioErrorBoundary extends React.Component<
             
             {process.env.NODE_ENV === 'development' && this.state.error && (
               <details className="mt-6 text-left">
-                <summary className="cursor-pointer text-sm text-slate-500 hover:text-slate-700">
+                <summary className="cursor-pointer text-sm text-muted-foreground hover:text-foreground">
                   Hata Detayları (Geliştirici)
                 </summary>
                 <pre className="mt-2 p-4 bg-red-50 border border-red-200 rounded-lg text-xs text-red-800 overflow-auto">

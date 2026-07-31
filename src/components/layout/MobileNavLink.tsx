@@ -30,23 +30,23 @@ export default function MobileNavLink({
         transition-all duration-200
         focus-visible:outline-none
         focus-visible:ring-2
-        focus-visible:ring-white/40
+        focus-visible:ring-ring
         focus-visible:ring-offset-2
-        focus-visible:ring-offset-transparent
+        focus-visible:ring-offset-background
         ${isActive
-            ? 'bg-white/15 text-white'
-            : 'text-white/60 hover:text-white hover:bg-white/5'
+            ? 'bg-primary/10 text-primary'
+            : 'text-muted-foreground hover:text-primary hover:bg-accent'
         }
     `;
 
     const content = (
         <>
-            <span className={`flex items-center justify-center w-9 h-9 rounded-lg ${isActive ? 'bg-white/10' : 'bg-white/5'} transition-colors duration-200`}>
-                <Icon className={`w-5 h-5 flex-shrink-0 ${isActive ? 'text-white' : 'text-white/50'}`} aria-hidden="true" />
+            <span className={`flex items-center justify-center w-9 h-9 rounded-lg ${isActive ? 'bg-primary/15' : 'bg-muted'} transition-colors duration-200`}>
+                <Icon className={`w-5 h-5 flex-shrink-0 ${isActive ? 'text-primary' : 'text-muted-foreground'}`} aria-hidden="true" />
             </span>
             <span className="flex-1">{label}</span>
             {isActive && (
-                <span className="w-1.5 h-1.5 rounded-full bg-white" />
+                <span className="w-1.5 h-1.5 rounded-full bg-primary" />
             )}
         </>
     );

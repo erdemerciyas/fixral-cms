@@ -62,7 +62,7 @@ function ServiceSection({ service, index }: { service: Service; index: number })
     <section
       id={anchor}
       className={`relative py-20 md:py-28 ${
-        index % 2 === 0 ? 'bg-white' : 'bg-zinc-50/60'
+        index % 2 === 0 ? 'bg-surface-primary' : 'bg-surface-secondary'
       }`}
     >
       <div className="container-content">
@@ -75,7 +75,7 @@ function ServiceSection({ service, index }: { service: Service; index: number })
           <ScrollReveal
             className={isReversed ? 'lg:order-2' : ''}
           >
-            <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-zinc-100">
+            <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-muted">
               {service.image ? (
                 <Image
                   src={service.image}
@@ -86,17 +86,17 @@ function ServiceSection({ service, index }: { service: Service; index: number })
                   sizes="(max-width: 1024px) 100vw, 50vw"
                 />
               ) : (
-                <div className="absolute inset-0 bg-gradient-to-br from-[#003450] to-[#00567a] flex items-center justify-center">
+                <div className="absolute inset-0 bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center">
                   <span
                     className="text-white/10 font-bold select-none"
-                    style={{ fontFamily: 'var(--font-geist-sans)', fontSize: 'clamp(6rem, 12vw, 10rem)' }}
+                    style={{ fontSize: 'clamp(6rem, 12vw, 10rem)' }}
                   >
                     {service.title.charAt(0)}
                   </span>
                 </div>
               )}
               {/* Subtle overlay gradient */}
-              <div className="absolute inset-0 bg-gradient-to-t from-zinc-900/10 to-transparent pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent pointer-events-none" />
             </div>
           </ScrollReveal>
 
@@ -110,15 +110,14 @@ function ServiceSection({ service, index }: { service: Service; index: number })
 
             <ScrollReveal delay={0.1}>
               <h2
-                className="text-3xl md:text-4xl lg:text-[2.75rem] font-semibold text-zinc-900 tracking-tight leading-[1.15] mb-6"
-                style={{ fontFamily: 'var(--font-geist-sans)' }}
+                className="text-3xl md:text-4xl lg:text-[2.75rem] font-semibold text-foreground tracking-tight leading-[1.15] mb-6"
               >
                 {service.title}
               </h2>
             </ScrollReveal>
 
             <ScrollReveal delay={0.15}>
-              <div className="text-zinc-500 leading-relaxed text-base md:text-[17px] mb-8">
+              <div className="text-muted-foreground leading-relaxed text-base md:text-[17px] mb-8">
                 <HTMLContent
                   content={service.description}
                   truncate={expanded ? undefined : 200}
@@ -141,10 +140,10 @@ function ServiceSection({ service, index }: { service: Service; index: number })
                   <m.li
                     key={idx}
                     variants={featureItemVariants}
-                    className="flex items-start gap-3 text-zinc-600 text-[15px]"
+                    className="flex items-start gap-3 text-muted-foreground text-[15px]"
                   >
                     <CheckCircle
-                      className="w-5 h-5 text-[#003450] mt-0.5 flex-shrink-0"
+                      className="w-5 h-5 text-primary mt-0.5 flex-shrink-0"
                     />
                     <span>{feature}</span>
                   </m.li>
@@ -156,23 +155,23 @@ function ServiceSection({ service, index }: { service: Service; index: number })
             {(service.duration || service.rating || service.price) && (
               <ScrollReveal delay={0.25}>
                 <div
-                  className="flex flex-wrap items-center gap-5 mb-8 py-4 border-y border-zinc-100"
+                  className="flex flex-wrap items-center gap-5 mb-8 py-4 border-y border-border"
                   style={{ fontFamily: 'var(--font-geist-mono, monospace)' }}
                 >
                   {service.duration && (
-                    <div className="flex items-center gap-2 text-zinc-500 text-sm">
+                    <div className="flex items-center gap-2 text-muted-foreground text-sm">
                       <Clock className="w-4 h-4" />
                       <span>{service.duration}</span>
                     </div>
                   )}
                   {service.rating && (
-                    <div className="flex items-center gap-2 text-zinc-500 text-sm">
+                    <div className="flex items-center gap-2 text-muted-foreground text-sm">
                       <Star className="w-4 h-4 text-amber-500" />
                       <span>{service.rating}/5</span>
                     </div>
                   )}
                   {service.price && (
-                    <span className="text-[#003450] font-medium text-sm">
+                    <span className="text-accent-foreground font-medium text-sm">
                       {service.price}
                     </span>
                   )}
@@ -184,10 +183,9 @@ function ServiceSection({ service, index }: { service: Service; index: number })
             <ScrollReveal delay={0.3}>
               <Link
                 href={`/${lang}/contact?service=${encodeURIComponent(service.title)}`}
-                className="group inline-flex items-center gap-2.5 bg-[#003450] text-white px-6 py-3 rounded-lg text-sm font-medium
-                  transition-all duration-700 hover:bg-[#004a6e] active:scale-[0.98]"
+                className="group inline-flex items-center gap-2.5 bg-primary text-primary-foreground px-6 py-3 rounded-xl text-sm font-medium
+                  transition-all duration-150 hover:bg-primary active:scale-[0.98] shadow-tinted-sm"
                 style={{
-                  fontFamily: 'var(--font-geist-sans)',
                   transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)',
                 }}
               >
@@ -211,17 +209,16 @@ export default function ServicesClient({ services, hero }: ServicesClientProps) 
   return (
     <>
       {/* Section Intro */}
-      <section id="services" className="pt-16 pb-8 bg-white">
+      <section id="services" className="pt-16 pb-8 bg-surface-primary">
         <div className="container-content">
           <ScrollReveal className="max-w-2xl">
             <EyebrowTag className="mb-5">Hizmetler</EyebrowTag>
             <h2
-              className="text-2xl md:text-3xl font-semibold text-zinc-900 tracking-tight leading-snug mb-3"
-              style={{ fontFamily: 'var(--font-geist-sans)' }}
+              className="text-2xl md:text-3xl font-semibold text-foreground tracking-tight leading-snug mb-3"
             >
               Detaylı Hizmet Açıklamaları
             </h2>
-            <p className="text-zinc-500 text-base md:text-[17px] leading-relaxed">
+            <p className="text-muted-foreground text-base md:text-[17px] leading-relaxed">
               Her bir hizmetimizin detaylarını inceleyin ve ihtiyaçlarınıza en uygun çözümü keşfedin.
             </p>
           </ScrollReveal>
@@ -230,19 +227,18 @@ export default function ServicesClient({ services, hero }: ServicesClientProps) 
 
       {/* Service Sections */}
       {services.length === 0 ? (
-        <section className="py-24 bg-white">
+        <section className="py-24 bg-surface-primary">
           <div className="container-content text-center">
             <ScrollReveal>
-              <div className="w-20 h-20 rounded-2xl bg-zinc-100 flex items-center justify-center mx-auto mb-6">
-                <Sparkle className="w-8 h-8 text-zinc-400" />
+              <div className="w-20 h-20 rounded-2xl bg-muted flex items-center justify-center mx-auto mb-6">
+                <Sparkle className="w-8 h-8 text-primary" />
               </div>
               <h2
-                className="text-2xl font-semibold text-zinc-800 mb-3"
-                style={{ fontFamily: 'var(--font-geist-sans)' }}
+                className="text-2xl font-semibold text-foreground mb-3"
               >
                 Henüz hizmet bulunmuyor
               </h2>
-              <p className="text-zinc-500 text-base">
+              <p className="text-muted-foreground text-base">
                 Yakında sizlere hizmet sunmaya başlayacağız.
               </p>
             </ScrollReveal>
@@ -255,13 +251,13 @@ export default function ServicesClient({ services, hero }: ServicesClientProps) 
       )}
 
       {/* CTA Section */}
-      <section className="relative py-24 md:py-32 bg-[#003450] overflow-hidden">
+      <section className="relative py-24 md:py-32 bg-primary overflow-hidden">
         {/* Geometric accents */}
         <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-          <div className="absolute top-12 left-12 w-24 h-24 rounded-full border border-white/[0.06]" />
-          <div className="absolute top-40 right-16 w-16 h-16 border border-white/[0.06] rotate-45" />
-          <div className="absolute bottom-16 left-1/4 w-32 h-32 rounded-full border border-white/[0.04]" />
-          <div className="absolute bottom-12 right-12 w-14 h-14 border border-white/[0.06] rotate-12" />
+          <div className="absolute top-12 left-12 w-24 h-24 rounded-full border border-black/[0.08]" />
+          <div className="absolute top-40 right-16 w-16 h-16 border border-black/[0.08] rotate-45" />
+          <div className="absolute bottom-16 left-1/4 w-32 h-32 rounded-full border border-black/[0.06]" />
+          <div className="absolute bottom-12 right-12 w-14 h-14 border border-black/[0.08] rotate-12" />
         </div>
 
         <div className="container-content relative z-10 text-center">
@@ -273,15 +269,14 @@ export default function ServicesClient({ services, hero }: ServicesClientProps) 
 
           <ScrollReveal delay={0.1}>
             <h2
-              className="text-3xl md:text-4xl lg:text-5xl font-semibold text-white tracking-tight leading-tight mb-5"
-              style={{ fontFamily: 'var(--font-geist-sans)' }}
+              className="text-3xl md:text-4xl lg:text-5xl font-semibold text-primary-foreground tracking-tight leading-tight mb-5"
             >
               Özel Bir Projeniz mi Var?
             </h2>
           </ScrollReveal>
 
           <ScrollReveal delay={0.15}>
-            <p className="text-white/60 text-base md:text-lg leading-relaxed max-w-xl mx-auto mb-10">
+            <p className="text-primary-foreground/75 text-base md:text-lg leading-relaxed max-w-xl mx-auto mb-10">
               Size özel çözümler geliştirmek için buradayız. Projenizi birlikte değerlendirelim.
             </p>
           </ScrollReveal>
@@ -289,10 +284,9 @@ export default function ServicesClient({ services, hero }: ServicesClientProps) 
           <ScrollReveal delay={0.2} className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href={`/${lang}/contact`}
-              className="group inline-flex items-center justify-center gap-2.5 bg-white text-[#003450] px-7 py-3.5 rounded-lg text-sm font-medium
-                transition-all duration-700 hover:bg-zinc-100 active:scale-[0.98]"
+              className="group inline-flex items-center justify-center gap-2.5 bg-primary-foreground text-primary px-7 py-3.5 rounded-lg text-sm font-medium
+                transition-all duration-200 hover:bg-primary-foreground/90 active:scale-[0.98] motion-reduce:transition-none"
               style={{
-                fontFamily: 'var(--font-geist-sans)',
                 transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)',
               }}
             >
@@ -302,10 +296,9 @@ export default function ServicesClient({ services, hero }: ServicesClientProps) 
 
             <Link
               href={`/${lang}/portfolio`}
-              className="group inline-flex items-center justify-center gap-2.5 border border-white/20 text-white px-7 py-3.5 rounded-lg text-sm font-medium
-                transition-all duration-700 hover:bg-white/[0.06] active:scale-[0.98]"
+              className="group inline-flex items-center justify-center gap-2.5 border border-primary-foreground/30 text-primary-foreground px-7 py-3.5 rounded-lg text-sm font-medium
+                transition-all duration-200 hover:bg-black/10 active:scale-[0.98] motion-reduce:transition-none"
               style={{
-                fontFamily: 'var(--font-geist-sans)',
                 transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)',
               }}
             >

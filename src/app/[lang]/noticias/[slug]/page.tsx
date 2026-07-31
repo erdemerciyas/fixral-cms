@@ -1,16 +1,11 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import Image from 'next/image';
-import Link from 'next/link';
 import News from '@/models/News';
 import { ensureModels } from '@/lib/ensure-models';
-import { NewsItem } from '@/types/news';
 import { logger } from '@/core/lib/logger';
-import PageHero from '@/components/common/PageHero';
-import Breadcrumbs from '@/components/Breadcrumbs';
+
 import { SITE_URL, getBlogAlternates, generateOgImages } from '@/lib/seo-utils';
-import { Badge, buttonVariants } from '@/components/ui';
-import { cn } from '@/lib/utils';
+import NewsDetailClient from '@/components/news/NewsDetailClient';
 
 interface PageProps {
   params: Promise<{
@@ -19,27 +14,31 @@ interface PageProps {
   }>;
 }
 
-/**
- * Generate metadata for news article detail page (Spanish)
- */
 // Helper: safely convert Mongoose Map to plain object for translations
 function normalizeTranslations(translations: any): Record<string, any> {
-    if (!translations) return {};
-    if (translations instanceof Map) {
-        const obj: Record<string, any> = {};
-        translations.forEach((value: any, key: string) => { obj[key] = value; });
-        return obj;
-    }
-    if (typeof translations === 'object' && !Array.isArray(translations)) {
-        return translations;
-    }
-    return {};
+  if (!translations) return {};
+  if (translations instanceof Map) {
+    const obj: Record<string, any> = {};
+    translations.forEach((value: any, key: string) => { obj[key] = value; });
+    return obj;
+  }
+  if (typeof translations === 'object' && !Array.isArray(translations)) {
+    return translations;
+  }
+  return {};
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug, lang } = await params;
   try {
-    const newsDoc = await News.findOne({ slug }).lean();
+    let newsDoc = await News.findOne({ slug }).lean();
+
+    if (!newsDoc) {
+      const decodedSlug = decodeURIComponent(slug);
+      if (decodedSlug !== slug) {
+        newsDoc = await News.findOne({ slug: decodedSlug }).lean();
+      }
+    }
 
     if (!newsDoc) {
       return {
@@ -73,7 +72,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         type: 'article',
         url: `${SITE_URL}/${lang}/noticias/${news.slug}`,
         images: ogImages,
-        publishedTime: news.publishedAt?.toISOString(),
+        publishedTime: news.publishedAt ? new Date(news.publishedAt).toISOString() : undefined,
         authors: [news.author?.name || 'Fixral'],
       },
       twitter: {
@@ -92,13 +91,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 }
 
-/**
- * Generate static params for news articles (Spanish)
- */
 export async function generateStaticParams() {
   try {
-    // Fetch all published news articles without limit
-    // This ensures all articles get static paths generated
     const news = await News.find({ status: 'published' })
       .select('slug')
       .lean();
@@ -121,31 +115,70 @@ export async function generateStaticParams() {
  */
 export const dynamic = 'force-dynamic';
 
-/**
- * News Detail Page Component (Spanish)
- */
-export default async function NewsDetailPage({ params: paramsPromise }: PageProps) {
-  const { slug, lang } = await paramsPromise;
-  try {
-    await ensureModels('Portfolio', 'News');
+async function findNewsWithRetry(slug: string): Promise<any | null> {
+  await ensureModels('Portfolio', 'News');
 
-    let news: any = null;
+  const slugsToTry = [slug];
+  const decodedSlug = decodeURIComponent(slug);
+  if (decodedSlug !== slug) {
+    slugsToTry.push(decodedSlug);
+  }
+
+  for (const trySlug of slugsToTry) {
     try {
-      news = await News.findOne({ slug })
+      const news = await News.findOne({ slug: trySlug })
         .populate('relatedPortfolioIds', 'title slug coverImage')
         .populate('relatedNewsIds', 'slug translations featuredImage')
         .lean();
-    } catch (populateError) {
-      logger.warn('News populate failed (ES), trying without', 'NEWS_DETAIL', { slug, error: (populateError as Error).message });
-      news = await News.findOne({ slug }).lean();
+
       if (news) {
-        news.relatedPortfolioIds = [];
-        news.relatedNewsIds = [];
+        const normalized = news as any;
+        normalized.translations = normalizeTranslations(normalized.translations);
+        if (normalized.relatedNewsIds && Array.isArray(normalized.relatedNewsIds)) {
+          normalized.relatedNewsIds = normalized.relatedNewsIds.map((rn: any) => {
+            if (rn && rn.translations) {
+              rn.translations = normalizeTranslations(rn.translations);
+            }
+            return rn;
+          });
+        }
+        return normalized;
+      }
+    } catch (populateError) {
+      logger.warn('News populate failed (ES), trying without populate', 'NEWS_DETAIL', {
+        slug: trySlug,
+        error: (populateError as Error).message
+      });
+      try {
+        const news = await News.findOne({ slug: trySlug }).lean();
+        if (news) {
+          const normalized = news as any;
+          normalized.translations = normalizeTranslations(normalized.translations);
+          normalized.relatedPortfolioIds = [];
+          normalized.relatedNewsIds = [];
+          return normalized;
+        }
+      } catch (fallbackError) {
+        logger.error('News fallback query also failed (ES)', 'NEWS_DETAIL', {
+          slug: trySlug,
+          error: (fallbackError as Error).message
+        });
       }
     }
+  }
+  return null;
+}
+
+export default async function NewsDetailPage({ params: paramsPromise }: PageProps) {
+  const { lang, slug } = await paramsPromise;
+  try {
+    const news = await findNewsWithRetry(slug);
 
     if (!news) {
-      logger.warn('News article not found (ES)', 'NEWS_DETAIL', { slug });
+      logger.warn('News article not found after retries (ES)', 'NEWS_DETAIL', {
+        slug,
+        decodedSlug: decodeURIComponent(slug)
+      });
       notFound();
     }
 
@@ -154,26 +187,16 @@ export default async function NewsDetailPage({ params: paramsPromise }: PageProp
       notFound();
     }
 
-    // Normalize translations from Mongoose Map to plain object
-    news.translations = normalizeTranslations(news.translations);
-    if (news.relatedNewsIds && Array.isArray(news.relatedNewsIds)) {
-      news.relatedNewsIds = news.relatedNewsIds.map((rn: any) => {
-        if (rn && rn.translations) { rn.translations = normalizeTranslations(rn.translations); }
-        return rn;
-      });
-    }
-
     const translation = news.translations?.es || { title: '', metaDescription: '', content: '', excerpt: '', keywords: [] };
 
-    // Generate JSON-LD schema
     const jsonLd = {
       '@context': 'https://schema.org',
       '@type': 'NewsArticle',
       headline: translation.title || news.slug,
       description: translation.metaDescription || '',
       image: news.featuredImage?.url || '',
-      datePublished: news.publishedAt?.toISOString() || news.createdAt?.toISOString(),
-      dateModified: news.updatedAt?.toISOString(),
+      datePublished: news.publishedAt ? new Date(news.publishedAt).toISOString() : new Date(news.createdAt).toISOString(),
+      dateModified: new Date(news.updatedAt).toISOString(),
       author: {
         '@type': 'Person',
         name: news.author?.name || 'Fixral',
@@ -192,221 +215,59 @@ export default async function NewsDetailPage({ params: paramsPromise }: PageProp
       },
     };
 
-    return (
-      <div className="min-h-screen bg-slate-50">
-        <PageHero
-          title={translation.title}
-          showButton={false}
-          variant="compact"
-        />
+    const serializedNews = {
+      slug: news.slug,
+      status: news.status,
+      tags: news.tags || [],
+      publishedAt: news.publishedAt ? new Date(news.publishedAt).toISOString() : undefined,
+      createdAt: new Date(news.createdAt).toISOString(),
+      updatedAt: new Date(news.updatedAt).toISOString(),
+      featuredImage: news.featuredImage ? { url: news.featuredImage.url, altText: news.featuredImage.altText } : undefined,
+      author: news.author ? { name: news.author.name, email: news.author.email } : undefined,
+      relatedPortfolioIds: (news.relatedPortfolioIds || []).filter(Boolean).map((p: any) => ({
+        _id: String(p._id),
+        title: p.title,
+        slug: p.slug,
+        coverImage: p.coverImage,
+      })),
+      relatedNewsIds: (news.relatedNewsIds || []).filter(Boolean).map((rn: any) => ({
+        _id: String(rn._id),
+        slug: rn.slug,
+        featuredImage: rn.featuredImage ? { url: rn.featuredImage.url, altText: rn.featuredImage.altText } : undefined,
+        translations: {
+          tr: { title: rn.translations?.tr?.title || '' },
+          es: { title: rn.translations?.es?.title || '' },
+        },
+      })),
+    };
 
-        {/* JSON-LD Schema */}
+    const serializedTranslation = {
+      title: translation.title || '',
+      excerpt: translation.excerpt || '',
+      content: typeof translation.content === 'string' ? translation.content : (translation.content ? JSON.stringify(translation.content) : ''),
+      metaDescription: translation.metaDescription || '',
+      keywords: translation.keywords || [],
+    };
+
+    return (
+      <div className="min-h-[100dvh] bg-background">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
 
-        <section className="container-content py-4">
-          <Breadcrumbs />
-        </section>
-
-        <div className="container-content py-8">
-
-          {/* Feature Image - Moved Outside */}
-          {/* Feature Image - Moved Outside (Render only if exists) */}
-          {news.featuredImage?.url && (
-            <div className="relative w-full aspect-video mb-8 rounded-2xl overflow-hidden shadow-sm border border-gray-100">
-              <Image
-                src={news.featuredImage.url}
-                alt={news.featuredImage.altText || translation.title}
-                fill
-                className="object-cover"
-                priority
-              />
-            </div>
-          )}
-
-          <div className="grid grid-cols-1 lg:grid-cols-10 gap-6">
-
-            {/* Main Content - Left Column */}
-            <main className="lg:col-span-7 space-y-6">
-
-              {/* Article Card */}
-              <article className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-
-
-
-                <div className="p-6 md:p-8">
-                  {/* Meta Header */}
-                  <div className="flex flex-wrap items-center gap-3 text-sm text-slate-500 mb-4">
-                    {news.tags && news.tags.length > 0 && (
-                      <Badge variant="primary" className="uppercase tracking-wider">
-                        {news.tags[0]}
-                      </Badge>
-                    )}
-
-                    <div className="flex items-center gap-1">
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
-                        <path fillRule="evenodd" d="M5.75 2a.75.75 0 01.75.75V4h7V2.75a.75.75 0 011.5 0V4h.25A2.75 2.75 0 0118 6.75v8.5A2.75 2.75 0 0115.25 18H4.75A2.75 2.75 0 012 15.25v-8.5A2.75 2.75 0 014.75 4H5V2.75A.75.75 0 015.75 2zm-1 5.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h10.5c.69 0 1.25-.56 1.25-1.25v-6.5c0-.69-.56-1.25-1.25-1.25H4.75z" clipRule="evenodd" />
-                      </svg>
-                      <time dateTime={new Date(news.publishedAt || news.createdAt).toISOString()}>
-                        {new Date(news.publishedAt || news.createdAt).toLocaleDateString('es-ES', {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric',
-                        })}
-                      </time>
-                    </div>
-                  </div>
-
-
-
-                  {/* Excerpt */}
-                  {translation.excerpt && (
-                    <div className="text-lg md:text-xl text-slate-600 italic border-l-4 border-primary pl-4 mb-8">
-                      {translation.excerpt}
-                    </div>
-                  )}
-
-                  {/* HTML Content */}
-                  <div className="prose prose-lg prose-slate max-w-none">
-                    <div dangerouslySetInnerHTML={{ __html: typeof translation.content === 'string' ? translation.content : (translation.content ? JSON.stringify(translation.content) : '') }} />
-                  </div>
-                </div>
-              </article>
-
-              {/* Related Portfolio (if any) */}
-              {news.relatedPortfolioIds && news.relatedPortfolioIds.length > 0 && (
-                <section>
-                  <div className="flex items-center gap-2 mb-4">
-                    <h2 className="text-2xl font-bold text-slate-800">Proyectos Relacionados</h2>
-                    <div className="h-px bg-slate-200 flex-grow"></div>
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {(news.relatedPortfolioIds as any[]).map((portfolio) => (
-                      <Link
-                        key={portfolio._id}
-                        href={`/${lang}/portfolio/${portfolio.slug}`}
-                        className="group relative h-48 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all"
-                      >
-                        <Image
-                          src={portfolio.coverImage}
-                          alt={portfolio.title}
-                          fill
-                          className="object-cover group-hover:scale-105 transition-transform duration-500"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-                        <div className="absolute bottom-0 left-0 p-4 w-full">
-                          <h3 className="text-white font-semibold text-lg line-clamp-1 group-hover:text-primary transition-colors">
-                            {portfolio.title}
-                          </h3>
-                        </div>
-                      </Link>
-                    ))}
-                  </div>
-                </section>
-              )}
-
-            </main>
-
-            {/* Sidebar - Right Column */}
-            <aside className="lg:col-span-3 space-y-6">
-
-              {/* Author Card */}
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Autor</h3>
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold text-xl">
-                    {news.author?.name?.charAt(0) || 'F'}
-                  </div>
-                  <div>
-                    <div className="font-bold text-slate-900">{news.author?.name || 'Fixral'}</div>
-                    <div className="text-xs text-slate-500">Editor de Contenido</div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Tags Cloud */}
-              {news.tags && news.tags.length > 0 && (
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                  <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Temas</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {news.tags.map((tag: string) => (
-                      <span key={tag} className="px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg text-sm transition-colors cursor-default">
-                        #{tag}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Share */}
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 text-center">
-                <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Compartir</h3>
-                <div className="flex justify-center gap-4">
-                  <a
-                    href={`https://twitter.com/intent/tweet?url=${SITE_URL}/${lang}/noticias/${news.slug}&text=${encodeURIComponent(translation.title)}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-10 h-10 bg-social-twitter text-white rounded-full flex items-center justify-center hover:opacity-90 transition-opacity"
-                  >
-                    <svg fill="currentColor" viewBox="0 0 24 24" className="w-5 h-5"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.84 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z" /></svg>
-                  </a>
-                  <a
-                    href={`https://www.facebook.com/sharer/sharer.php?u=${SITE_URL}/${lang}/noticias/${news.slug}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-10 h-10 bg-social-facebook text-white rounded-full flex items-center justify-center hover:opacity-90 transition-opacity"
-                  >
-                    <svg fill="currentColor" viewBox="0 0 24 24" className="w-5 h-5"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" /></svg>
-                  </a>
-                  <a
-                    href={`https://www.linkedin.com/sharing/share-offsite/?url=${SITE_URL}/${lang}/noticias/${news.slug}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-10 h-10 bg-social-linkedin text-white rounded-full flex items-center justify-center hover:opacity-90 transition-opacity"
-                  >
-                    <svg fill="currentColor" viewBox="0 0 24 24" className="w-5 h-5"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" /></svg>
-                  </a>
-                </div>
-              </div>
-
-              {/* Related News Sticky */}
-              {news.relatedNewsIds && news.relatedNewsIds.length > 0 && (
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 sticky top-24">
-                  <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Te puede interesar</h3>
-                  <div className="space-y-4">
-                    {(news.relatedNewsIds as any[]).map((relatedNews) => (
-                      <Link key={relatedNews._id} href={`/${lang}/noticias/${relatedNews.slug}`} className="flex gap-3 group">
-                        <div className="relative w-20 h-16 flex-shrink-0 rounded-lg overflow-hidden">
-                          <Image
-                            src={relatedNews.featuredImage?.url || '/og-image.jpg'}
-                            alt={relatedNews.featuredImage?.altText || ''}
-                            fill
-                            className="object-cover group-hover:scale-110 transition-transform"
-                          />
-                        </div>
-                        <div>
-                          <h4 className="text-sm font-medium text-slate-900 group-hover:text-primary line-clamp-2 leading-snug">
-                            {relatedNews.translations?.es?.title || ''}
-                          </h4>
-                          <div className="text-xs text-slate-500 mt-1">Leer más →</div>
-                        </div>
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-            </aside>
-          </div>
-        </div>
+        <NewsDetailClient
+          lang={lang}
+          locale="es"
+          news={serializedNews}
+          translation={serializedTranslation}
+        />
       </div>
     );
   } catch (error) {
-    logger.error('Error rendering news detail page (ES)', 'NEWS_DETAIL', { error });
-    // Do not show 404 for runtime/DB errors, let Next.js error boundary handle it (500)
-    throw error;
+    const errMsg = error instanceof Error ? error.message : String(error);
+    const errStack = error instanceof Error ? error.stack : undefined;
+    logger.error('Error rendering news detail page (ES)', 'NEWS_DETAIL', { error: errMsg, stack: errStack });
+    notFound();
   }
 }
-

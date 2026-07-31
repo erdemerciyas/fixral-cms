@@ -5,13 +5,13 @@ import React from 'react';
 
 export default function OfflinePage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-4">
-      <div className="max-w-md w-full bg-white/10 backdrop-blur-lg rounded-2xl p-8 text-center border border-white/20">
+    <div className="min-h-[100dvh] bg-background flex items-center justify-center p-4">
+      <div className="max-w-md w-full bg-card rounded-2xl p-8 text-center border border-border">
         {/* Offline Icon */}
         <div className="mb-6">
-          <div className="w-20 h-20 mx-auto bg-red-500/20 rounded-full flex items-center justify-center">
+          <div className="w-20 h-20 mx-auto bg-destructive/10 rounded-full flex items-center justify-center">
             <svg
-              className="w-10 h-10 text-red-400"
+              className="w-10 h-10 text-destructive"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -27,20 +27,20 @@ export default function OfflinePage() {
         </div>
 
         {/* Title */}
-        <h1 className="text-2xl font-bold text-white mb-4">
+        <h1 className="text-2xl font-bold text-foreground mb-4">
           You Are Offline
         </h1>
 
         {/* Description */}
-        <p className="text-gray-300 mb-6 leading-relaxed">
+        <p className="text-muted-foreground mb-6 leading-relaxed">
           It looks like you are not connected to the internet. Some features may not be available until you reconnect.
         </p>
 
         {/* Status Indicator */}
         <div className="mb-6">
           <div className="flex items-center justify-center space-x-2">
-            <div className="w-3 h-3 bg-red-400 rounded-full animate-pulse"></div>
-            <span className="text-sm text-gray-400">No internet connection</span>
+            <div className="w-3 h-3 bg-destructive rounded-full animate-pulse"></div>
+            <span className="text-sm text-muted-foreground">No internet connection</span>
           </div>
         </div>
 
@@ -48,24 +48,24 @@ export default function OfflinePage() {
         <div className="space-y-3">
           <button
             onClick={() => window.location.reload()}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-900"
+            className="w-full bg-primary hover:bg-[hsl(var(--primary)/0.85)] text-primary-foreground font-semibold py-3 px-6 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background"
           >
             Try Again
           </button>
 
           <button
             onClick={() => window.history.back()}
-            className="w-full bg-gray-600 hover:bg-gray-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-slate-900"
+            className="w-full bg-secondary hover:bg-accent text-secondary-foreground hover:text-accent-foreground font-semibold py-3 px-6 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background"
           >
             Go Back
           </button>
         </div>
 
         {/* Cached Content Info */}
-        <div className="mt-8 p-4 bg-blue-500/10 rounded-lg border border-blue-500/20">
+        <div className="mt-8 p-4 bg-accent rounded-lg border border-primary/30">
           <div className="flex items-start space-x-3">
             <svg
-              className="w-5 h-5 text-blue-400 mt-0.5 flex-shrink-0"
+              className="w-5 h-5 text-primary mt-0.5 flex-shrink-0"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -78,10 +78,10 @@ export default function OfflinePage() {
               />
             </svg>
             <div className="text-left">
-              <p className="text-sm font-medium text-blue-400 mb-1">
+              <p className="text-sm font-medium text-accent-foreground mb-1">
                 Cached Content Available
               </p>
-              <p className="text-xs text-gray-400">
+              <p className="text-xs text-muted-foreground">
                 Some pages you've visited recently may still be accessible.
               </p>
             </div>
@@ -90,10 +90,10 @@ export default function OfflinePage() {
 
         {/* Connection Tips */}
         <div className="mt-6 text-left">
-          <h3 className="text-sm font-semibold text-gray-300 mb-2">
+          <h3 className="text-sm font-semibold text-foreground mb-2">
             Connection Tips:
           </h3>
-          <ul className="text-xs text-gray-400 space-y-1">
+          <ul className="text-xs text-muted-foreground space-y-1">
             <li>• Check your Wi-Fi or mobile data connection</li>
             <li>• Try moving to a different location</li>
             <li>• Restart your network connection</li>
@@ -104,8 +104,8 @@ export default function OfflinePage() {
 
       {/* Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl"></div>
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-accent rounded-full blur-3xl"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-primary/10 rounded-full blur-3xl"></div>
       </div>
     </div>
   );

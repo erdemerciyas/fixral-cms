@@ -7,6 +7,7 @@ import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { useAppTranslations } from '@/hooks/useAppTranslations';
 import { Mail as Envelope, Phone, MapPin, ArrowUp } from 'lucide-react';
+import { m, AnimatePresence, useReducedMotion } from 'framer-motion';
 import {
   LinkedinLogo,
   TwitterLogo,
@@ -69,9 +70,6 @@ interface SiteSettingsMinimal {
   };
 }
 
-const TRANSITION = 'cubic-bezier(0.32, 0.72, 0, 1)';
-const DURATION = '700ms';
-
 const socialIconMap: Record<string, React.ElementType> = {
   linkedin: LinkedinLogo,
   twitter: TwitterLogo,
@@ -86,9 +84,19 @@ const ConditionalFooter: React.FC = () => {
   const [settings, setSettings] = useState<FooterSettings | null>(null);
   const [loading, setLoading] = useState(true);
   const [site, setSite] = useState<SiteSettingsMinimal | null>(null);
+  const [showBackToTop, setShowBackToTop] = useState(false);
   const { t, locale } = useAppTranslations('footer');
+  const prefersReducedMotion = useReducedMotion();
 
   const isAdminPage = pathname?.startsWith('/admin');
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowBackToTop(window.scrollY > 300);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   useEffect(() => {
     const fetchFooterSettings = async () => {
@@ -214,6 +222,15 @@ const ConditionalFooter: React.FC = () => {
     { key: 'youtube', label: 'YouTube', url: settings.socialLinks.youtube },
   ].filter((item) => item.url && item.url.trim().length > 0);
 
+  // Split quick links into two columns
+  const quickLinksHalf = settings.quickLinks.slice(
+    0,
+    Math.ceil(settings.quickLinks.length / 2)
+  );
+  const quickLinksSecondHalf = settings.quickLinks.slice(
+    Math.ceil(settings.quickLinks.length / 2)
+  );
+
   const scrollToTop = () => {
     const prefersReduced = window.matchMedia(
       '(prefers-reduced-motion: reduce)'
@@ -224,286 +241,82 @@ const ConditionalFooter: React.FC = () => {
     });
   };
 
-  const bgColor = '#09141d';
-  const textColor = 'rgba(255,255,255,0.4)';
-  const headingColor = 'rgba(255,255,255,0.9)';
-  const linkColor = 'rgba(255,255,255,0.6)';
-  const accentColor = '#003450';
-  const borderColor = 'rgba(255,255,255,0.06)';
-  const bottomTextColor = 'rgba(255,255,255,0.4)';
+  const renderLink = (link: { title: string; url: string; isExternal: boolean }, index: number) => {
+    const linkUrl =
+      link.isExternal || link.url.startsWith('http')
+        ? link.url
+        : link.url.startsWith(`/${locale}`)
+          ? link.url
+          : `/${locale}${link.url.startsWith('/') ? link.url : `/${link.url}`}`;
+
+    const sharedClasses =
+      'text-sm text-zinc-300 hover:text-primary transition-colors duration-200 inline-block py-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded';
+
+    return (
+      <li key={index}>
+        {link.isExternal ? (
+          <a
+            href={linkUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={sharedClasses}
+          >
+            {link.title}
+          </a>
+        ) : (
+          <Link href={linkUrl} className={sharedClasses}>
+            {link.title}
+          </Link>
+        )}
+      </li>
+    );
+  };
 
   return (
-    <footer
-      style={{
-        backgroundColor: bgColor,
-        fontFamily: 'var(--font-geist-sans)',
-        transition: `background-color ${DURATION} ${TRANSITION}`,
-      }}
-      className="relative overflow-hidden"
-      role="contentinfo"
-    >
-      {/* ── Top section: brand + quick links ── */}
-      <div className="mx-auto max-w-[1400px] px-6 pt-16 pb-10 sm:px-10 lg:px-16">
-        <div className="grid grid-cols-1 gap-12 md:grid-cols-2 md:gap-16">
-          {/* Left column: brand + description + contact */}
-          <section aria-labelledby="footer-about">
-            <h2 id="footer-about" className="sr-only">
-              {t('aboutTitle')}
-            </h2>
+    <>
+      {/* Printables paradigması: footer her iki temada da koyu zemin */}
+      <footer
+        className="relative overflow-hidden bg-zinc-950 border-t border-zinc-800"
+        role="contentinfo"
+      >
+        {/* ── Main grid: 4 columns ── */}
+        <div className="container-boxed pt-16 pb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {/* Column 1: Logo + Description + Social */}
+            <section aria-labelledby="footer-about" className="lg:col-span-1">
+              <h2 id="footer-about" className="sr-only">
+                {t('aboutTitle')}
+              </h2>
 
-            {/* Logo & site name */}
-            <div className="mb-6 flex items-center gap-3">
-              {site?.logo?.url && (
-                <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-lg bg-white/[0.06]">
-                  <Image
-                    src={site.logo.url}
-                    alt={site.logo.alt}
-                    fill
-                    className="object-contain p-1"
-                    sizes="40px"
-                    priority={false}
-                  />
-                </div>
-              )}
-              {site?.siteName && (
-                <span
-                  style={{
-                    color: headingColor,
-                    transition: `color ${DURATION} ${TRANSITION}`,
-                  }}
-                  className="text-lg font-semibold tracking-tight"
-                >
-                  {site.siteName}
-                </span>
-              )}
-            </div>
-
-            {/* Description */}
-            <p
-              style={{
-                color: linkColor,
-                transition: `color ${DURATION} ${TRANSITION}`,
-              }}
-              className="max-w-md text-[15px] leading-relaxed"
-            >
-              {settings.mainDescription}
-            </p>
-
-            {/* Contact info */}
-            {settings.visibility.showContactInfo && (
-              <div className="mt-8 flex flex-col gap-3">
-                {settings.contactInfo.email && (
-                  <a
-                    href={`mailto:${settings.contactInfo.email}`}
-                    className="group inline-flex items-center gap-2.5"
-                    style={{
-                      color: textColor,
-                      transition: `color ${DURATION} ${TRANSITION}`,
-                    }}
-                  >
-                    <Envelope
-                      className="h-4 w-4 shrink-0"
-                      style={{ color: accentColor }}
+              {/* Logo & site name */}
+              <div className="mb-4 flex items-center gap-3">
+                {site?.logo?.url && (
+                  <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-lg bg-white/[0.06]">
+                    <Image
+                      src={site.logo.url}
+                      alt={site.logo.alt}
+                      fill
+                      className="object-contain p-1"
+                      sizes="40px"
+                      priority={false}
                     />
-                    <span
-                      className="text-sm"
-                      style={{
-                        transition: `color ${DURATION} ${TRANSITION}`,
-                      }}
-                      onMouseEnter={(e) =>
-                        (e.currentTarget.style.color = 'rgba(255,255,255,0.9)')
-                      }
-                      onMouseLeave={(e) =>
-                        (e.currentTarget.style.color = textColor)
-                      }
-                    >
-                      {settings.contactInfo.email}
-                    </span>
-                  </a>
-                )}
-                {settings.contactInfo.phone && (
-                  <a
-                    href={`tel:${settings.contactInfo.phone.replace(/\s/g, '')}`}
-                    className="group inline-flex items-center gap-2.5"
-                    style={{
-                      color: textColor,
-                      transition: `color ${DURATION} ${TRANSITION}`,
-                    }}
-                  >
-                    <Phone
-                      className="h-4 w-4 shrink-0"
-                      style={{ color: accentColor }}
-                    />
-                    <span
-                      className="text-sm"
-                      style={{
-                        transition: `color ${DURATION} ${TRANSITION}`,
-                      }}
-                      onMouseEnter={(e) =>
-                        (e.currentTarget.style.color = 'rgba(255,255,255,0.9)')
-                      }
-                      onMouseLeave={(e) =>
-                        (e.currentTarget.style.color = textColor)
-                      }
-                    >
-                      {settings.contactInfo.phone}
-                    </span>
-                  </a>
-                )}
-                {settings.contactInfo.address && (
-                  <div
-                    className="inline-flex items-start gap-2.5"
-                    style={{ color: textColor }}
-                  >
-                    <MapPin
-                      className="mt-0.5 h-4 w-4 shrink-0"
-                      style={{ color: accentColor }}
-                    />
-                    <span className="text-sm">
-                      {settings.contactInfo.address}
-                    </span>
                   </div>
                 )}
+                {site?.siteName && (
+                  <span className="text-lg font-semibold tracking-tight text-zinc-100">
+                    {site.siteName}
+                  </span>
+                )}
               </div>
-            )}
-          </section>
 
-          {/* Right column: quick links */}
-          {settings.visibility.showQuickLinks &&
-            settings.quickLinks.length > 0 && (
-              <nav aria-label="Footer navigation" role="navigation">
-                <h3
-                  style={{
-                    color: headingColor,
-                    transition: `color ${DURATION} ${TRANSITION}`,
-                  }}
-                  className="mb-6 text-xs font-medium uppercase tracking-[0.15em]"
-                >
-                  {t('quickLinks')}
-                </h3>
-                <ul className="flex flex-col gap-3">
-                  {settings.quickLinks.map((link, index) => {
-                    const linkUrl =
-                      link.isExternal || link.url.startsWith('http')
-                        ? link.url
-                        : link.url.startsWith(`/${locale}`)
-                          ? link.url
-                          : `/${locale}${link.url.startsWith('/') ? link.url : `/${link.url}`}`;
+              {/* Description */}
+              <p className="max-w-xs text-sm leading-relaxed text-zinc-300">
+                {settings.mainDescription}
+              </p>
 
-                    const sharedClasses =
-                      'text-[15px] inline-block rounded-md px-0 py-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#003450]/50';
-
-                    return (
-                      <li key={index}>
-                        {link.isExternal ? (
-                          <a
-                            href={linkUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className={sharedClasses}
-                            style={{
-                              color: linkColor,
-                              transition: `color ${DURATION} ${TRANSITION}`,
-                            }}
-                            onMouseEnter={(e) =>
-                              (e.currentTarget.style.color =
-                                'rgba(255,255,255,0.9)')
-                            }
-                            onMouseLeave={(e) =>
-                              (e.currentTarget.style.color = linkColor)
-                            }
-                          >
-                            {link.title}
-                          </a>
-                        ) : (
-                          <Link
-                            href={linkUrl}
-                            className={sharedClasses}
-                            style={{
-                              color: linkColor,
-                              transition: `color ${DURATION} ${TRANSITION}`,
-                            }}
-                            onMouseEnter={(e) =>
-                              (e.currentTarget.style.color =
-                                'rgba(255,255,255,0.9)')
-                            }
-                            onMouseLeave={(e) =>
-                              (e.currentTarget.style.color = linkColor)
-                            }
-                          >
-                            {link.title}
-                          </Link>
-                        )}
-                      </li>
-                    );
-                  })}
-                </ul>
-              </nav>
-            )}
-        </div>
-      </div>
-
-      {/* ── Separator ── */}
-      <div className="mx-auto max-w-[1400px] px-6 sm:px-10 lg:px-16">
-        <div
-          className="h-px w-full"
-          style={{ backgroundColor: borderColor }}
-        />
-      </div>
-
-      {/* ── Bottom section: copyright + social + back-to-top ── */}
-      <div className="mx-auto max-w-[1400px] px-6 py-6 sm:px-10 lg:px-16">
-        <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
-          {/* Copyright & meta */}
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-            <p
-              className="font-mono text-[12px]"
-              style={{
-                color: bottomTextColor,
-                transition: `color ${DURATION} ${TRANSITION}`,
-              }}
-            >
-              &copy; {settings.copyrightInfo.year}{' '}
-              {settings.copyrightInfo.companyName}.{' '}
-              {settings.copyrightInfo.additionalText}
-            </p>
-            <Version variant="badge" />
-            {settings.visibility.showDeveloperInfo && (
-              <span
-                className="font-mono text-[12px]"
-                style={{
-                  color: bottomTextColor,
-                  transition: `color ${DURATION} ${TRANSITION}`,
-                }}
-              >
-                {t('developer')}{' '}
-                <a
-                  href={settings.developerInfo.website}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline decoration-white/10 underline-offset-2"
-                  style={{
-                    color: linkColor,
-                    transition: `color ${DURATION} ${TRANSITION}`,
-                  }}
-                  onMouseEnter={(e) =>
-                    (e.currentTarget.style.color = 'rgba(255,255,255,0.9)')
-                  }
-                  onMouseLeave={(e) =>
-                    (e.currentTarget.style.color = linkColor)
-                  }
-                >
-                  {settings.developerInfo.name}
-                </a>
-              </span>
-            )}
-          </div>
-
-          {/* Social links + back-to-top */}
-          <div className="flex items-center gap-2">
-            {settings.visibility.showSocialLinks &&
-              socialEntries.length > 0 && (
-                <nav aria-label="Social media" className="flex items-center gap-2">
+              {/* Social icons — düz ikon satırı, kart arkaplanı yok */}
+              {settings.visibility.showSocialLinks && socialEntries.length > 0 && (
+                <nav aria-label="Social media" className="mt-6 flex items-center gap-4">
                   {socialEntries.map((item) => {
                     const IconComp = socialIconMap[item.key];
                     return (
@@ -513,59 +326,132 @@ const ConditionalFooter: React.FC = () => {
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label={item.label}
-                        className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/[0.06] bg-white/[0.05] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#003450]/50"
-                        style={{
-                          color: linkColor,
-                          transition: `all ${DURATION} ${TRANSITION}`,
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.backgroundColor =
-                            'rgba(255,255,255,0.1)';
-                          e.currentTarget.style.color =
-                            'rgba(255,255,255,0.9)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.backgroundColor =
-                            'rgba(255,255,255,0.05)';
-                          e.currentTarget.style.color = linkColor;
-                        }}
+                        className="text-zinc-300 hover:text-primary transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded"
                       >
-                        {IconComp && (
-                          <IconComp className="h-[18px] w-[18px]" />
-                        )}
+                        {IconComp && <IconComp className="h-5 w-5" />}
                       </a>
                     );
                   })}
                 </nav>
               )}
+            </section>
 
-            {/* Back to top */}
-            <button
-              type="button"
-              onClick={scrollToTop}
-              aria-label={t('backToTop')}
-              className="ml-1 inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/[0.06] bg-white/[0.05] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#003450]/50"
-              style={{
-                color: linkColor,
-                transition: `all ${DURATION} ${TRANSITION}`,
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor =
-                  'rgba(255,255,255,0.1)';
-                e.currentTarget.style.color = 'rgba(255,255,255,0.9)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor =
-                  'rgba(255,255,255,0.05)';
-                e.currentTarget.style.color = linkColor;
-              }}
-            >
-              <ArrowUp className="h-[18px] w-[18px]" />
-            </button>
+            {/* Column 2: Quick Links (first half) */}
+            {settings.visibility.showQuickLinks && quickLinksHalf.length > 0 && (
+              <nav aria-label="Footer navigation">
+                <h3 className="mb-5 text-sm font-semibold text-zinc-100">
+                  {t('quickLinks')}
+                </h3>
+                <ul className="flex flex-col gap-2.5">
+                  {quickLinksHalf.map(renderLink)}
+                </ul>
+              </nav>
+            )}
+
+            {/* Column 3: Quick Links (second half) or Services */}
+            {settings.visibility.showQuickLinks && quickLinksSecondHalf.length > 0 && (
+              <nav aria-label="Footer services">
+                <h3 className="mb-5 text-sm font-semibold text-zinc-100">
+                  {t('services', { defaultValue: 'Hizmetler' })}
+                </h3>
+                <ul className="flex flex-col gap-2.5">
+                  {quickLinksSecondHalf.map(renderLink)}
+                </ul>
+              </nav>
+            )}
+
+            {/* Column 4: Contact Info */}
+            {settings.visibility.showContactInfo && (
+              <section aria-labelledby="footer-contact">
+                <h3
+                  id="footer-contact"
+                  className="mb-5 text-sm font-semibold text-zinc-100"
+                >
+                  {t('contactTitle', { defaultValue: 'İletişim' })}
+                </h3>
+                <div className="flex flex-col gap-3">
+                  {settings.contactInfo.email && (
+                    <a
+                      href={`mailto:${settings.contactInfo.email}`}
+                      className="group inline-flex items-start gap-2.5 text-sm text-zinc-300 hover:text-primary transition-colors duration-200"
+                    >
+                      <Envelope className="mt-0.5 h-4 w-4 shrink-0 text-zinc-400" />
+                      <span>{settings.contactInfo.email}</span>
+                    </a>
+                  )}
+                  {settings.contactInfo.phone && (
+                    <a
+                      href={`tel:${settings.contactInfo.phone.replace(/\s/g, '')}`}
+                      className="group inline-flex items-start gap-2.5 text-sm text-zinc-300 hover:text-primary transition-colors duration-200"
+                    >
+                      <Phone className="mt-0.5 h-4 w-4 shrink-0 text-zinc-400" />
+                      <span>{settings.contactInfo.phone}</span>
+                    </a>
+                  )}
+                  {settings.contactInfo.address && (
+                    <div className="inline-flex items-start gap-2.5 text-sm text-zinc-300">
+                      <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-zinc-400" />
+                      <span>{settings.contactInfo.address}</span>
+                    </div>
+                  )}
+                </div>
+              </section>
+            )}
           </div>
         </div>
-      </div>
-    </footer>
+
+        {/* ── Bottom section ── */}
+        <div className="container-boxed">
+          <div className="border-t border-zinc-800 mt-8 pt-8 pb-8">
+            <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+              {/* Left: Copyright + Version */}
+              <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
+                <p className="font-mono text-xs text-zinc-400">
+                  &copy; {settings.copyrightInfo.year}{' '}
+                  {settings.copyrightInfo.companyName}.{' '}
+                  {settings.copyrightInfo.additionalText}
+                </p>
+                <Version variant="badge" />
+                {settings.visibility.showDeveloperInfo && (
+                  <span className="font-mono text-xs text-zinc-400">
+                    {t('developer')}{' '}
+                    <a
+                      href={settings.developerInfo.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-zinc-300 hover:text-primary underline decoration-zinc-700 underline-offset-2 transition-colors duration-200"
+                    >
+                      {settings.developerInfo.name}
+                    </a>
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+
+      {/* ── Fixed Back to Top button ── */}
+      <AnimatePresence>
+        {showBackToTop && (
+          <m.button
+            type="button"
+            onClick={scrollToTop}
+            aria-label={t('backToTop')}
+            initial={{ opacity: 0, scale: 0.8, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.8, y: 20 }}
+            transition={{
+              duration: prefersReducedMotion ? 0 : 0.3,
+              ease: [0.32, 0.72, 0, 1],
+            }}
+            className="fixed bottom-6 right-6 z-40 inline-flex h-11 w-11 items-center justify-center rounded-full bg-primary text-white shadow-tinted-md hover:bg-primary/90 transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          >
+            <ArrowUp className="h-5 w-5" />
+          </m.button>
+        )}
+      </AnimatePresence>
+    </>
   );
 };
 

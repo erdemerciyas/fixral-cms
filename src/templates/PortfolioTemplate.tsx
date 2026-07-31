@@ -1,10 +1,9 @@
 'use client';
 
 import { useState, useMemo, useRef } from 'react';
-import { m, AnimatePresence, useInView } from 'framer-motion';
+import { m, AnimatePresence, useInView, useReducedMotion } from 'framer-motion';
 import Link from 'next/link';
-import { Search as MagnifyingGlass, X, Sparkles as Sparkle, ArrowRight, Filter as FunnelSimple, ArrowUpNarrowWide as SortAscending, ChevronDown as CaretDown, Box as Cube } from 'lucide-react';
-import Breadcrumbs from '@/components/Breadcrumbs';
+import { Search as MagnifyingGlass, X, Sparkles as Sparkle, ArrowRight, Filter as FunnelSimple, ArrowUpNarrowWide as SortAscending, ChevronDown as CaretDown } from 'lucide-react';
 import PageHero from '@/components/common/PageHero';
 import EyebrowTag from '@/components/ui/EyebrowTag';
 import ModernProjectCard from '@/components/portfolio/ModernProjectCard';
@@ -24,13 +23,14 @@ function ScrollReveal({ children, delay = 0, className = '' }: {
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: '-80px' });
+  const prefersReduced = useReducedMotion();
 
   return (
     <m.div
       ref={ref}
-      initial={{ opacity: 0, y: 32 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 32 }}
-      transition={{ duration: DURATION, delay, ease: EASING }}
+      initial={prefersReduced ? { opacity: 1 } : { opacity: 0, y: 32, filter: 'blur(4px)' }}
+      animate={isInView ? { opacity: 1, y: 0, filter: 'blur(0px)' } : (prefersReduced ? { opacity: 1 } : { opacity: 0, y: 32, filter: 'blur(4px)' })}
+      transition={{ duration: prefersReduced ? 0.01 : DURATION, delay: prefersReduced ? 0 : delay, ease: EASING }}
       className={className}
     >
       {children}
@@ -72,17 +72,17 @@ function CategoryFilterBar({ categories, activeCategories, onToggle }: {
         onClick={() => {
           if (!allActive) onToggle('__all__');
         }}
-        className="relative px-4 py-2 rounded-2xl text-sm font-medium transition-colors"
+        className="group relative px-4 py-1.5 rounded-full text-sm font-medium transition-colors bg-secondary hover:bg-accent"
         style={{ transitionDuration: '700ms', transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
       >
         {allActive && (
           <m.div
             layoutId="category-indicator"
-            className="absolute inset-0 rounded-2xl bg-[#003450]"
+            className="absolute inset-0 rounded-full bg-primary"
             transition={{ type: 'spring', stiffness: 380, damping: 30 }}
           />
         )}
-        <span className={`relative z-10 ${allActive ? 'text-white' : 'text-zinc-600 hover:text-zinc-800'}`}>
+        <span className={`relative z-10 ${allActive ? 'text-white' : 'text-secondary-foreground group-hover:text-accent-foreground'}`}>
           Tümünü Göster
         </span>
       </button>
@@ -93,17 +93,17 @@ function CategoryFilterBar({ categories, activeCategories, onToggle }: {
           <button
             key={cat._id}
             onClick={() => onToggle(cat.slug)}
-            className="relative px-4 py-2 rounded-2xl text-sm font-medium transition-colors"
+            className="group relative px-4 py-1.5 rounded-full text-sm font-medium transition-colors bg-secondary hover:bg-accent"
             style={{ transitionDuration: '700ms', transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
           >
             {isActive && (
               <m.div
                 layoutId="category-indicator"
-                className="absolute inset-0 rounded-2xl bg-[#003450]"
+                className="absolute inset-0 rounded-full bg-primary"
                 transition={{ type: 'spring', stiffness: 380, damping: 30 }}
               />
             )}
-            <span className={`relative z-10 ${isActive ? 'text-white' : 'text-zinc-600 hover:text-zinc-800'}`}>
+            <span className={`relative z-10 ${isActive ? 'text-white' : 'text-secondary-foreground group-hover:text-accent-foreground'}`}>
               {cat.name}
             </span>
           </button>
@@ -121,14 +121,12 @@ function MasonrySkeleton() {
     <div className="grid grid-cols-1 md:grid-cols-12 gap-5">
       {[8, 4, 4, 8, 6, 6].map((span, i) => (
         <div key={i} className={`md:col-span-${span} animate-pulse`}>
-          <div className="rounded-3xl border border-zinc-200/60 bg-zinc-100/40 p-1.5">
-            <div className="rounded-[20px] overflow-hidden bg-white border border-zinc-100">
-              <div className={`${i % 3 === 0 ? 'aspect-[16/9]' : 'aspect-[3/2]'} bg-zinc-100`} />
-              <div className="p-5 space-y-3">
-                <div className="h-5 bg-zinc-100 rounded-lg w-3/4" />
-                <div className="h-4 bg-zinc-100 rounded-lg w-full" />
-                <div className="h-3 bg-zinc-100 rounded-lg w-1/2" />
-              </div>
+          <div className="rounded-lg overflow-hidden bg-card border border-border">
+            <div className={`${i % 3 === 0 ? 'aspect-[16/9]' : 'aspect-[3/2]'} bg-surface-tertiary`} />
+            <div className="p-5 space-y-3">
+              <div className="h-5 bg-surface-tertiary rounded-lg w-3/4" />
+              <div className="h-4 bg-surface-tertiary rounded-lg w-full" />
+              <div className="h-3 bg-surface-tertiary rounded-lg w-1/2" />
             </div>
           </div>
         </div>
@@ -244,12 +242,12 @@ export default function PortfolioTemplate(props: any) {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-zinc-50 flex items-center justify-center">
+      <div className="min-h-[100dvh] bg-background flex items-center justify-center">
         <div className="text-center max-w-md mx-auto px-4">
-          <h3 className="font-[family-name:var(--font-geist-sans)] text-xl font-semibold text-zinc-800 mb-4">
+          <h3 className="text-xl font-semibold text-foreground mb-4">
             Bir Hata Oluştu
           </h3>
-          <p className="text-zinc-500 mb-6">{error}</p>
+          <p className="text-muted-foreground mb-6">{error}</p>
           <button onClick={() => window.location.reload()} className="btn-primary">
             Tekrar Dene
           </button>
@@ -259,7 +257,7 @@ export default function PortfolioTemplate(props: any) {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-50">
+    <div className="min-h-[100dvh] bg-background">
       {/* Hero */}
       <PageHero
         title={hero.title}
@@ -267,12 +265,8 @@ export default function PortfolioTemplate(props: any) {
         buttonText={hero.buttonText}
         buttonLink={hero.buttonLink}
         showButton={true}
+        showBreadcrumbs={true}
       />
-
-      {/* Breadcrumbs */}
-      <section className="container-content py-3">
-        <Breadcrumbs />
-      </section>
 
       {/* Projects section */}
       <section id="projects" className="py-8 md:py-12">
@@ -280,10 +274,10 @@ export default function PortfolioTemplate(props: any) {
           {/* Section header */}
           <ScrollReveal className="mb-8 md:mb-10">
             <EyebrowTag>Projeler</EyebrowTag>
-            <h2 className="font-[family-name:var(--font-geist-sans)] text-2xl md:text-3xl font-semibold text-zinc-800 mt-4 tracking-tight">
+            <h2 className="text-2xl md:text-3xl font-semibold text-foreground mt-4 tracking-tight">
               Çalışma Galerisi
             </h2>
-            <p className="text-zinc-500 mt-2 max-w-xl text-sm md:text-base leading-relaxed">
+            <p className="text-muted-foreground mt-2 max-w-xl text-sm md:text-base leading-relaxed">
               Farklı sektörlerden tamamladığımız projeler ve yaratıcı çözümler.
             </p>
           </ScrollReveal>
@@ -303,7 +297,7 @@ export default function PortfolioTemplate(props: any) {
             <div className="flex flex-col md:flex-row gap-3">
               {/* Search */}
               <div className="flex-1 relative">
-                <MagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400" />
+                <MagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                 <input
                   type="text"
                   placeholder="Proje ara..."
@@ -311,29 +305,29 @@ export default function PortfolioTemplate(props: any) {
                   onChange={(e) => setFilters({ ...filters, search: e.target.value })}
                   onFocus={() => setSearchFocused(true)}
                   onBlur={() => setSearchFocused(false)}
-                  className="w-full pl-12 pr-10 py-3 bg-white rounded-2xl border border-zinc-200 text-zinc-700 placeholder-zinc-400 outline-none transition-all font-[family-name:var(--font-geist-sans)] text-sm focus:border-[#003450]/40 focus:ring-2 focus:ring-[#003450]/10"
+                  className="w-full pl-12 pr-10 py-3 bg-background rounded-2xl border border-input text-foreground placeholder:text-muted-foreground outline-none transition-all text-sm focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring"
                   style={{ transitionDuration: '700ms', transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
                 />
                 {filters.search && (
                   <button
                     onClick={() => setFilters({ ...filters, search: '' })}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-zinc-100 transition-colors"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-accent transition-colors"
                   >
-                    <X className="w-4 h-4 text-zinc-400" />
+                    <X className="w-4 h-4 text-muted-foreground" />
                   </button>
                 )}
               </div>
 
               {/* Sort */}
               <div className="relative">
-                <SortAscending className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 pointer-events-none" />
+                <SortAscending className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
                 <select
                   value={`${filters.sortBy}-${filters.sortOrder}`}
                   onChange={(e) => {
                     const [sortBy, sortOrder] = e.target.value.split('-') as [typeof filters.sortBy, typeof filters.sortOrder];
                     setFilters({ ...filters, sortBy, sortOrder });
                   }}
-                  className="appearance-none pl-9 pr-9 py-3 bg-white rounded-2xl border border-zinc-200 text-zinc-700 text-sm font-[family-name:var(--font-geist-sans)] outline-none cursor-pointer transition-all focus:border-[#003450]/40 focus:ring-2 focus:ring-[#003450]/10"
+                  className="appearance-none pl-9 pr-9 py-3 bg-background rounded-2xl border border-input text-foreground text-sm outline-none cursor-pointer transition-all focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring"
                   style={{ transitionDuration: '700ms', transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
                   aria-label="Sırala"
                 >
@@ -343,7 +337,7 @@ export default function PortfolioTemplate(props: any) {
                   <option value="title-desc">Z-A</option>
                   <option value="category-asc">Kategoriye Göre</option>
                 </select>
-                <CaretDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 pointer-events-none" />
+                <CaretDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
               </div>
 
               {/* Advanced toggle */}
@@ -351,8 +345,8 @@ export default function PortfolioTemplate(props: any) {
                 onClick={() => setShowAdvanced(!showAdvanced)}
                 className={`flex items-center gap-2 px-5 py-3 rounded-2xl text-sm font-medium transition-all ${
                   showAdvanced || activeFiltersCount > 0
-                    ? 'bg-[#003450] text-white'
-                    : 'bg-white border border-zinc-200 text-zinc-600 hover:border-zinc-300'
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-card border border-border text-muted-foreground hover:border-primary/30 hover:text-foreground'
                 }`}
                 style={{ transitionDuration: '700ms', transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
                 aria-expanded={showAdvanced}
@@ -377,21 +371,21 @@ export default function PortfolioTemplate(props: any) {
                   transition={{ duration: 0.5, ease: EASING }}
                   className="overflow-hidden"
                 >
-                  <div className="pt-5 mt-5 border-t border-zinc-200/60">
+                  <div className="pt-5 mt-5 border-t border-border">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                       {/* Categories */}
                       <div>
-                        <h4 className="font-[family-name:var(--font-geist-sans)] text-sm font-semibold text-zinc-700 mb-3">Kategoriler</h4>
+                        <h4 className="text-sm font-semibold text-foreground mb-3">Kategoriler</h4>
                         <div className="space-y-1.5 max-h-48 overflow-y-auto">
                           {categories.map((cat: any) => (
-                            <label key={cat._id} className="flex items-center gap-2.5 p-2 rounded-xl hover:bg-zinc-50 cursor-pointer transition-colors">
+                            <label key={cat._id} className="flex items-center gap-2.5 p-2 rounded-xl hover:bg-accent cursor-pointer transition-colors">
                               <input
                                 type="checkbox"
                                 checked={filters.categories.includes(cat.slug)}
                                 onChange={() => handleCategoryMultiToggle(cat.slug)}
-                                className="w-4 h-4 rounded border-zinc-300 text-[#003450] focus:ring-[#003450]/30"
+                                className="w-4 h-4 rounded border-input text-accent-foreground focus:ring-ring"
                               />
-                              <span className="text-sm text-zinc-600">{cat.name}</span>
+                              <span className="text-sm text-foreground">{cat.name}</span>
                             </label>
                           ))}
                         </div>
@@ -399,17 +393,17 @@ export default function PortfolioTemplate(props: any) {
 
                       {/* Technologies */}
                       <div>
-                        <h4 className="font-[family-name:var(--font-geist-sans)] text-sm font-semibold text-zinc-700 mb-3">Teknolojiler</h4>
+                        <h4 className="text-sm font-semibold text-foreground mb-3">Teknolojiler</h4>
                         <div className="space-y-1.5 max-h-48 overflow-y-auto">
                           {availableTechnologies.map((tech) => (
-                            <label key={tech} className="flex items-center gap-2.5 p-2 rounded-xl hover:bg-zinc-50 cursor-pointer transition-colors">
+                            <label key={tech} className="flex items-center gap-2.5 p-2 rounded-xl hover:bg-accent cursor-pointer transition-colors">
                               <input
                                 type="checkbox"
                                 checked={filters.technologies.includes(tech)}
                                 onChange={() => handleTechToggle(tech)}
-                                className="w-4 h-4 rounded border-zinc-300 text-[#003450] focus:ring-[#003450]/30"
+                                className="w-4 h-4 rounded border-input text-accent-foreground focus:ring-ring"
                               />
-                              <span className="font-[family-name:var(--font-geist-mono)] text-sm text-zinc-600">{tech}</span>
+                              <span className="font-[family-name:var(--font-geist-mono)] text-sm text-foreground">{tech}</span>
                             </label>
                           ))}
                         </div>
@@ -417,24 +411,24 @@ export default function PortfolioTemplate(props: any) {
 
                       {/* Date range */}
                       <div>
-                        <h4 className="font-[family-name:var(--font-geist-sans)] text-sm font-semibold text-zinc-700 mb-3">Tarih Aralığı</h4>
+                        <h4 className="text-sm font-semibold text-foreground mb-3">Tarih Aralığı</h4>
                         <div className="space-y-3">
                           <div>
-                            <label className="block text-xs text-zinc-500 mb-1.5">Başlangıç</label>
+                            <label className="block text-xs text-muted-foreground mb-1.5">Başlangıç</label>
                             <input
                               type="date"
                               value={filters.dateRange.start}
                               onChange={(e) => setFilters({ ...filters, dateRange: { ...filters.dateRange, start: e.target.value } })}
-                              className="w-full px-3 py-2.5 bg-white border border-zinc-200 rounded-xl text-sm text-zinc-700 outline-none focus:border-[#003450]/40 focus:ring-2 focus:ring-[#003450]/10 transition-all"
+                              className="w-full px-3 py-2.5 bg-background border border-input rounded-xl text-sm text-foreground outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring transition-all"
                             />
                           </div>
                           <div>
-                            <label className="block text-xs text-zinc-500 mb-1.5">Bitiş</label>
+                            <label className="block text-xs text-muted-foreground mb-1.5">Bitiş</label>
                             <input
                               type="date"
                               value={filters.dateRange.end}
                               onChange={(e) => setFilters({ ...filters, dateRange: { ...filters.dateRange, end: e.target.value } })}
-                              className="w-full px-3 py-2.5 bg-white border border-zinc-200 rounded-xl text-sm text-zinc-700 outline-none focus:border-[#003450]/40 focus:ring-2 focus:ring-[#003450]/10 transition-all"
+                              className="w-full px-3 py-2.5 bg-background border border-input rounded-xl text-sm text-foreground outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring transition-all"
                             />
                           </div>
                         </div>
@@ -446,14 +440,14 @@ export default function PortfolioTemplate(props: any) {
             </AnimatePresence>
 
             {/* Results count + clear */}
-            <div className="flex items-center justify-between mt-4 pt-3 border-t border-zinc-200/40">
-              <span className="font-[family-name:var(--font-geist-mono)] text-xs text-zinc-400">
+            <div className="flex items-center justify-between mt-4 pt-3 border-t border-border">
+              <span className="font-[family-name:var(--font-geist-mono)] text-xs text-muted-foreground">
                 {totalResults} proje bulundu
               </span>
               {activeFiltersCount > 0 && (
                 <button
                   onClick={clearAll}
-                  className="text-xs text-[#003450] hover:text-[#003450]/80 font-medium transition-colors"
+                  className="text-xs text-accent-foreground hover:text-accent-foreground font-medium transition-colors"
                 >
                   Filtreleri Temizle
                 </button>
@@ -495,16 +489,16 @@ export default function PortfolioTemplate(props: any) {
                 transition={{ duration: DURATION, ease: EASING }}
                 className="text-center py-20"
               >
-                <div className="w-20 h-20 bg-zinc-100 rounded-full flex items-center justify-center mx-auto mb-5">
-                  <MagnifyingGlass className="w-8 h-8 text-zinc-400" />
+                <div className="w-20 h-20 bg-surface-secondary border border-border rounded-full flex items-center justify-center mx-auto mb-5">
+                  <MagnifyingGlass className="w-8 h-8 text-primary" />
                 </div>
-                <h3 className="font-[family-name:var(--font-geist-sans)] text-xl font-semibold text-zinc-800 mb-3">
+                <h3 className="text-xl font-semibold text-foreground mb-3">
                   Arama Sonucu Bulunamadı
                 </h3>
-                <p className="text-zinc-500 max-w-md mx-auto mb-5 text-sm">
+                <p className="text-muted-foreground max-w-md mx-auto mb-5 text-sm">
                   Arama kriterlerinize uygun proje bulunamadı. Filtreleri değiştirmeyi veya temizlemeyi deneyin.
                 </p>
-                <button onClick={clearAll} className="px-5 py-2.5 rounded-2xl border border-zinc-200 text-sm font-medium text-zinc-600 hover:border-zinc-300 hover:text-zinc-800 transition-colors">
+                <button onClick={clearAll} className="px-5 py-2.5 rounded-2xl border border-border bg-card text-sm font-medium text-muted-foreground hover:border-primary hover:text-accent-foreground transition-colors">
                   Filtreleri Temizle
                 </button>
               </m.div>
@@ -514,17 +508,17 @@ export default function PortfolioTemplate(props: any) {
       </section>
 
       {/* CTA section */}
-      <section className="py-16 md:py-24 bg-[#003450] relative overflow-hidden">
+      <section className="py-16 md:py-24 bg-primary relative overflow-hidden">
         {/* Ambient background */}
         <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: 'radial-gradient(circle at 20% 50%, white 0%, transparent 50%), radial-gradient(circle at 80% 50%, white 0%, transparent 50%)' }} />
 
         <div className="container-content text-center relative z-10">
           <ScrollReveal>
             <EyebrowTag variant="light">Birlikte Çalışalım</EyebrowTag>
-            <h2 className="font-[family-name:var(--font-geist-sans)] text-2xl md:text-4xl font-semibold text-white mt-5 mb-4 tracking-tight">
+            <h2 className="text-2xl md:text-4xl font-semibold text-primary-foreground mt-5 mb-4 tracking-tight">
               Projenizi Birlikte Gerçekleştirelim
             </h2>
-            <p className="text-white/60 max-w-lg mx-auto mb-8 text-sm md:text-base leading-relaxed">
+            <p className="text-primary-foreground/75 max-w-lg mx-auto mb-8 text-sm md:text-base leading-relaxed">
               Portfolyomuzdeki projeler gibi sizin de fikirlerinizi hayata geçirmeye hazırız.
             </p>
           </ScrollReveal>
@@ -533,16 +527,14 @@ export default function PortfolioTemplate(props: any) {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 href={`/${lang}/contact`}
-                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-white text-[#003450] rounded-2xl text-sm font-semibold hover:bg-zinc-100 transition-colors"
-                style={{ transitionDuration: '700ms', transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
+                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-primary-foreground text-primary rounded-lg text-sm font-semibold hover:bg-primary-foreground/90 transition-colors duration-200 motion-reduce:transition-none"
               >
                 <Sparkle className="w-4 h-4" />
                 Proje Başlatalım
               </Link>
               <Link
                 href={`/${lang}/services`}
-                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 border border-white/20 text-white rounded-2xl text-sm font-medium hover:bg-white/10 transition-colors"
-                style={{ transitionDuration: '700ms', transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
+                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 border border-primary-foreground/30 text-primary-foreground rounded-lg text-sm font-medium hover:bg-black/10 transition-colors duration-200 motion-reduce:transition-none"
               >
                 Hizmetlerimizi İnceleyin
                 <ArrowRight className="w-4 h-4" />

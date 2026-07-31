@@ -12,7 +12,7 @@ import { Model3D } from '../../types/portfolio';
 const ModelViewer = dynamic(() => import('../3DModelViewer'), {
   ssr: false,
   loading: () => (
-    <div className="w-full h-96 bg-gray-100 rounded-lg animate-pulse" aria-label="3D model yükleniyor" />
+    <div className="w-full h-96 bg-surface-tertiary rounded-lg animate-pulse" aria-label="3D model yükleniyor" />
   ),
 });
 
@@ -164,11 +164,11 @@ export default function PortfolioMediaGallery({
 
   if (!allMediaItems.length) {
     return (
-      <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl border border-white/20 p-8">
-        <div className="aspect-[16/10] bg-gradient-to-br from-slate-100 to-slate-200 rounded-2xl flex items-center justify-center">
+      <div className="bg-surface-primary rounded-3xl border border-border p-8">
+        <div className="aspect-[16/10] bg-gradient-to-br from-surface-secondary to-surface-tertiary rounded-2xl flex items-center justify-center">
           <div className="text-center">
-            <PhotoIcon className="w-16 h-16 text-slate-400 mx-auto mb-4" />
-            <p className="text-slate-500 text-lg">Medya bulunamadı</p>
+            <PhotoIcon className="w-16 h-16 text-primary/60 mx-auto mb-4" />
+            <p className="text-muted-foreground text-lg">Medya bulunamadı</p>
           </div>
         </div>
       </div>
@@ -184,7 +184,7 @@ export default function PortfolioMediaGallery({
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6 }}
-          className="relative aspect-[16/10] rounded-3xl overflow-hidden shadow-2xl border border-slate-200 bg-white group cursor-pointer"
+          className="relative aspect-[16/10] rounded-3xl overflow-hidden shadow-2xl border border-border bg-surface-tertiary group cursor-pointer"
           onClick={(e) => {
             e.preventDefault();
             if (selectedItem) {
@@ -213,8 +213,8 @@ export default function PortfolioMediaGallery({
                       whileHover={{ opacity: 1, scale: 1 }}
                       className="opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                     >
-                      <div className="bg-white/90 backdrop-blur-sm rounded-full p-4 shadow-xl">
-                        <MagnifyingGlassIcon className="w-8 h-8 text-slate-700" />
+                      <div className="bg-primary/90 backdrop-blur-sm rounded-full p-4 shadow-xl">
+                        <MagnifyingGlassIcon className="w-8 h-8 text-white" />
                       </div>
                     </m.div>
                   </div>
@@ -223,7 +223,7 @@ export default function PortfolioMediaGallery({
                 <>
                   {/* 3D Model Preview - Mini viewer */}
                   <div className="w-full h-full relative">
-                    <div className="w-full h-full bg-gradient-to-br from-slate-100 to-slate-200">
+                    <div className="w-full h-full bg-gradient-to-br from-surface-secondary to-surface-tertiary">
                       <ModelViewer
                         modelUrl={selectedItem.url}
                         format={selectedItem.format || 'gltf'}
@@ -249,8 +249,8 @@ export default function PortfolioMediaGallery({
                       whileHover={{ opacity: 1, scale: 1 }}
                       className="opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                     >
-                      <div className="bg-white/90 backdrop-blur-sm rounded-full p-4 shadow-xl">
-                        <CubeIcon className="w-8 h-8 text-blue-600" />
+                      <div className="bg-primary/90 backdrop-blur-sm rounded-full p-4 shadow-xl">
+                        <CubeIcon className="w-8 h-8 text-white" />
                       </div>
                     </m.div>
                   </div>
@@ -258,10 +258,10 @@ export default function PortfolioMediaGallery({
               )}
             </>
           ) : (
-            <div className="bg-slate-100 flex items-center justify-center h-full">
+            <div className="bg-surface-tertiary flex items-center justify-center h-full">
               <div className="text-center">
-                <PhotoIcon className="h-16 w-16 text-slate-400 mx-auto mb-2" />
-                <p className="text-slate-500 text-sm">Medya yükleniyor...</p>
+                <PhotoIcon className="h-16 w-16 text-primary/60 mx-auto mb-2" />
+                <p className="text-muted-foreground text-sm">Medya yükleniyor...</p>
               </div>
             </div>
           )}
@@ -273,13 +273,13 @@ export default function PortfolioMediaGallery({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="bg-white/80 backdrop-blur-xl rounded-3xl p-6 shadow-xl border border-white/20"
+            className="bg-surface-primary rounded-3xl p-6 border border-border"
           >
-            <h3 className="text-xl font-bold text-slate-800 mb-6 flex items-center">
-              <PhotoIcon className="w-6 h-6 mr-3 text-brand-primary-700" />
+            <h3 className="text-xl font-semibold text-foreground tracking-tight mb-6 flex items-center">
+              <PhotoIcon className="w-6 h-6 mr-3 text-primary" />
               Proje Medyaları ({allMediaItems.length})
               {models3D.length > 0 && (
-                <span className="ml-2 text-sm text-blue-600 bg-blue-100 px-2 py-1 rounded-full">
+                <span className="ml-2 text-sm text-primary bg-accent border border-border px-2 py-1 rounded-full">
                   {models3D.length} 3D Model
                 </span>
               )}
@@ -296,9 +296,9 @@ export default function PortfolioMediaGallery({
                     e.stopPropagation();
                     setSelectedItem(item);
                   }}
-                  className={`relative aspect-square w-full h-20 sm:h-24 md:h-28 lg:h-32 xl:h-36 rounded-xl overflow-hidden border-2 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-brand-primary-600 focus:ring-offset-2 ${selectedItem?.url === item.url
-                      ? 'border-brand-primary-600 shadow-lg ring-4 ring-brand-primary-200 scale-105'
-                      : 'border-slate-200 hover:border-brand-primary-300 hover:shadow-md'
+                  className={`relative aspect-square w-full h-20 sm:h-24 md:h-28 lg:h-32 xl:h-36 rounded-xl overflow-hidden border-2 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background ${selectedItem?.url === item.url
+                      ? 'border-primary shadow-lg ring-4 ring-ring/25 scale-105'
+                      : 'border-border hover:border-primary/40 hover:shadow-md'
                     }`}
                   type="button"
                 >
@@ -311,13 +311,13 @@ export default function PortfolioMediaGallery({
                       sizes="(max-width: 640px) 25vw, (max-width: 768px) 16vw, (max-width: 1024px) 12vw, 10vw"
                     />
                   ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-blue-100 to-indigo-200 flex items-center justify-center">
-                      <CubeIcon className="w-8 h-8 text-blue-600" />
+                    <div className="w-full h-full bg-gradient-to-br from-primary/15 to-primary/10 flex items-center justify-center">
+                      <CubeIcon className="w-8 h-8 text-primary" />
                     </div>
                   )}
 
                   {selectedItem?.url === item.url && (
-                    <div className="absolute inset-0 bg-brand-primary-600/20 flex items-center justify-center pointer-events-none">
+                    <div className="absolute inset-0 bg-accent flex items-center justify-center pointer-events-none">
                       <div className="w-4 h-4 bg-white rounded-full shadow-lg"></div>
                     </div>
                   )}
@@ -396,7 +396,7 @@ export default function PortfolioMediaGallery({
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
                 onClick={() => handleDownload(allMediaItems[lightboxItemIndex])}
-                className="absolute top-6 right-20 z-10 bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-full font-medium transition-all duration-200 hover:scale-105 flex items-center space-x-2"
+                className="absolute top-6 right-20 z-10 bg-primary hover:bg-[hsl(var(--primary)/0.85)] text-primary-foreground px-4 py-3 rounded-lg font-medium transition-colors duration-200 active:scale-[0.98] flex items-center space-x-2"
                 title="3D Modeli İndir"
               >
                 <ArrowDownTrayIcon className="w-5 h-5" />
@@ -437,7 +437,7 @@ export default function PortfolioMediaGallery({
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
-                  <div className="w-full max-w-4xl h-96 bg-white rounded-lg overflow-hidden">
+                  <div className="w-full max-w-4xl h-96 bg-surface-tertiary rounded-lg overflow-hidden">
                     <ModelViewer
                       modelUrl={allMediaItems[lightboxItemIndex].url}
                       format={allMediaItems[lightboxItemIndex].format || 'gltf'}
@@ -470,7 +470,7 @@ export default function PortfolioMediaGallery({
               className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-10 bg-black/50 text-white px-8 py-4 rounded-2xl text-center max-w-2xl"
             >
               <h3 className="font-bold text-xl mb-2 text-white">{title}</h3>
-              <div className="flex items-center justify-center space-x-4 text-sm text-gray-300">
+              <div className="flex items-center justify-center space-x-4 text-sm text-zinc-300">
                 <span>
                   {allMediaItems[lightboxItemIndex]?.type === '3d-model' ? '3D Model' : 'Görsel'} {lightboxItemIndex + 1} / {allMediaItems.length}
                 </span>

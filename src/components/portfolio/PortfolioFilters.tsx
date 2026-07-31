@@ -35,7 +35,6 @@ export default function PortfolioFilters({
   isLoading = false
 }: PortfolioFiltersProps) {
   const [showAdvanced, setShowAdvanced] = useState(false);
-  const [searchFocused, setSearchFocused] = useState(false);
 
   // Debounced search
   const [searchValue, setSearchValue] = useState(filters.search);
@@ -118,29 +117,27 @@ export default function PortfolioFilters({
   };
 
   return (
-    <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl border border-white/20 p-6 md:p-8 mb-8">
+    <div className="bg-card rounded-sm border border-border p-6 md:p-8 mb-8">
       {/* Search and Quick Actions */}
       <div className="flex flex-col lg:flex-row gap-4 mb-6">
         {/* Search Input */}
         <div className="flex-1 relative">
-          <div className={`relative transition-all duration-300 ${searchFocused ? 'transform scale-[1.02]' : ''
-            }`}>
-            <MagnifyingGlassIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
+          <div className="relative">
+            <MagnifyingGlassIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
             <input
               type="text"
               placeholder="Proje ara..."
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
-              onFocus={() => setSearchFocused(true)}
-              onBlur={() => setSearchFocused(false)}
-              className="w-full pl-12 pr-4 py-4 bg-white border-2 border-slate-200 rounded-2xl text-slate-700 placeholder-slate-400 focus:border-brand-primary-600 focus:ring-4 focus:ring-brand-primary-600/20 outline-none transition-all duration-300 shadow-sm focus:shadow-lg"
+              className="w-full pl-12 pr-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-ring outline-none transition-colors duration-200 motion-reduce:transition-none"
             />
             {searchValue && (
               <button
                 onClick={() => clearFilter('search')}
-                className="absolute right-4 top-1/2 transform -translate-y-1/2 p-1 hover:bg-slate-100 rounded-full transition-colors duration-200"
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 p-1 hover:bg-accent rounded-full transition-colors duration-200"
+                aria-label="Aramayı temizle"
               >
-                <XMarkIcon className="w-4 h-4 text-slate-400" />
+                <XMarkIcon className="w-4 h-4 text-muted-foreground" />
               </button>
             )}
           </div>
@@ -156,7 +153,7 @@ export default function PortfolioFilters({
                 const [sortBy, sortOrder] = e.target.value.split('-') as [FilterState['sortBy'], FilterState['sortOrder']];
                 onFiltersChange({ ...filters, sortBy, sortOrder });
               }}
-              className="appearance-none bg-white border-2 border-slate-200 rounded-2xl px-4 py-4 pr-10 text-slate-700 focus:border-brand-primary-600 focus:ring-4 focus:ring-brand-primary-600/20 outline-none transition-all duration-300 shadow-sm focus:shadow-lg cursor-pointer"
+              className="appearance-none bg-background border border-border rounded-lg px-4 py-3 pr-10 text-foreground focus:border-primary focus:ring-2 focus:ring-ring outline-none transition-colors duration-200 cursor-pointer motion-reduce:transition-none"
               aria-label="Sırala"
             >
               <option value="newest-desc">En Yeni</option>
@@ -165,15 +162,15 @@ export default function PortfolioFilters({
               <option value="title-desc">Z-A</option>
               <option value="category-asc">Kategoriye Göre</option>
             </select>
-            <ChevronDownIcon className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" />
+            <ChevronDownIcon className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none" />
           </div>
 
           {/* Advanced Filters Toggle */}
           <button
             onClick={() => setShowAdvanced(!showAdvanced)}
-            className={`flex items-center px-6 py-4 rounded-2xl font-semibold transition-all duration-300 shadow-sm hover:shadow-lg ${showAdvanced || activeFiltersCount > 0
-                ? 'bg-brand-primary-600 text-white'
-                : 'bg-white border-2 border-slate-200 text-slate-700 hover:border-brand-primary-300'
+            className={`flex items-center px-6 py-3 rounded-lg font-medium border transition-colors duration-200 motion-reduce:transition-none ${showAdvanced || activeFiltersCount > 0
+                ? 'bg-primary border-primary text-primary-foreground'
+                : 'bg-card border-border text-foreground hover:bg-accent hover:text-accent-foreground'
               }`}
             aria-expanded={showAdvanced}
             aria-controls="advanced-filters"
@@ -181,7 +178,7 @@ export default function PortfolioFilters({
             <AdjustmentsHorizontalIcon className="w-5 h-5 mr-2" />
             Filtreler
             {activeFiltersCount > 0 && (
-              <span className="ml-2 px-2 py-1 bg-white/20 rounded-full text-xs font-bold">
+              <span className="ml-2 px-2 py-0.5 bg-background/25 rounded-full text-xs font-semibold">
                 {activeFiltersCount}
               </span>
             )}
@@ -199,16 +196,17 @@ export default function PortfolioFilters({
             className="mb-6"
           >
             <div className="flex flex-wrap items-center gap-2 mb-4">
-              <span className="text-sm font-medium text-slate-600">Aktif Filtreler:</span>
+              <span className="text-sm font-medium text-muted-foreground">Aktif Filtreler:</span>
 
               {/* Search Filter */}
               {filters.search && (
-                <span className="inline-flex items-center px-3 py-1 bg-brand-primary-100 text-brand-primary-800 rounded-full text-sm font-medium">
+                <span className="inline-flex items-center px-3 py-1 bg-accent text-accent-foreground rounded-sm text-sm font-medium">
                   <MagnifyingGlassIcon className="w-4 h-4 mr-1" />
                   &quot;{filters.search}&quot;
                   <button
                     onClick={() => clearFilter('search')}
-                    className="ml-2 hover:text-brand-primary-700"
+                    className="ml-2 hover:text-primary"
+                    aria-label="Arama filtresini kaldır"
                   >
                     <XMarkIcon className="w-3 h-3" />
                   </button>
@@ -221,13 +219,14 @@ export default function PortfolioFilters({
                 return category ? (
                   <span
                     key={categorySlug}
-                    className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium"
+                    className="inline-flex items-center px-3 py-1 bg-secondary text-foreground border border-border rounded-sm text-sm font-medium"
                   >
-                    <TagIcon className="w-4 h-4 mr-1" />
+                    <TagIcon className="w-4 h-4 mr-1 text-muted-foreground" />
                     {category.name}
                     <button
                       onClick={() => clearFilter('category', categorySlug)}
-                      className="ml-2 hover:text-blue-600"
+                      className="ml-2 text-muted-foreground hover:text-foreground"
+                      aria-label={`${category.name} filtresini kaldır`}
                     >
                       <XMarkIcon className="w-3 h-3" />
                     </button>
@@ -239,13 +238,14 @@ export default function PortfolioFilters({
               {filters.technologies.map(tech => (
                 <span
                   key={tech}
-                  className="inline-flex items-center px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm font-medium"
+                  className="inline-flex items-center px-3 py-1 bg-secondary text-foreground border border-border rounded-sm text-sm font-medium"
                 >
-                  <CodeBracketIcon className="w-4 h-4 mr-1" />
+                  <CodeBracketIcon className="w-4 h-4 mr-1 text-muted-foreground" />
                   {tech}
                   <button
                     onClick={() => clearFilter('technology', tech)}
-                    className="ml-2 hover:text-purple-600"
+                    className="ml-2 text-muted-foreground hover:text-foreground"
+                    aria-label={`${tech} filtresini kaldır`}
                   >
                     <XMarkIcon className="w-3 h-3" />
                   </button>
@@ -254,8 +254,8 @@ export default function PortfolioFilters({
 
               {/* Date Range Filter */}
               {(filters.dateRange.start || filters.dateRange.end) && (
-                <span className="inline-flex items-center px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-sm font-medium">
-                  <CalendarIcon className="w-4 h-4 mr-1" />
+                <span className="inline-flex items-center px-3 py-1 bg-secondary text-foreground border border-border rounded-sm text-sm font-medium">
+                  <CalendarIcon className="w-4 h-4 mr-1 text-muted-foreground" />
                   {filters.dateRange.start && filters.dateRange.end
                     ? `${filters.dateRange.start} - ${filters.dateRange.end}`
                     : filters.dateRange.start
@@ -264,7 +264,8 @@ export default function PortfolioFilters({
                   }
                   <button
                     onClick={() => clearFilter('dateRange')}
-                    className="ml-2 hover:text-orange-600"
+                    className="ml-2 text-muted-foreground hover:text-foreground"
+                    aria-label="Tarih filtresini kaldır"
                   >
                     <XMarkIcon className="w-3 h-3" />
                   </button>
@@ -273,7 +274,7 @@ export default function PortfolioFilters({
 
               <button
                 onClick={clearAllFilters}
-                className="text-sm text-slate-500 hover:text-slate-700 underline ml-2"
+                className="text-sm text-muted-foreground hover:text-foreground underline ml-2"
               >
                 Tümünü Temizle
               </button>
@@ -289,29 +290,29 @@ export default function PortfolioFilters({
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="border-t border-slate-200 pt-6"
+            className="border-t border-border pt-6"
             id="advanced-filters"
           >
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Categories */}
               <div>
-                <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center">
-                  <TagIcon className="w-5 h-5 mr-2 text-brand-primary-700" />
+                <h3 className="text-base font-semibold text-foreground mb-4 flex items-center">
+                  <TagIcon className="w-5 h-5 mr-2 text-primary" />
                   Kategoriler
                 </h3>
-                <div className="space-y-2 max-h-48 overflow-y-auto scrollbar-thin">
+                <div className="space-y-1 max-h-48 overflow-y-auto scrollbar-thin">
                   {categories.map(category => (
                     <label
                       key={category._id}
-                      className="flex items-center p-3 rounded-xl hover:bg-slate-50 cursor-pointer transition-colors duration-200"
+                      className="flex items-center p-3 rounded-sm hover:bg-accent hover:text-accent-foreground cursor-pointer transition-colors duration-200"
                     >
                       <input
                         type="checkbox"
                         checked={filters.categories.includes(category.slug)}
                         onChange={() => handleCategoryToggle(category.slug)}
-                        className="w-4 h-4 text-brand-primary-700 border-slate-300 rounded focus:ring-brand-primary-600 focus:ring-2"
+                        className="w-4 h-4 accent-[hsl(var(--primary))] border-border rounded"
                       />
-                      <span className="ml-3 text-slate-700 font-medium">{category.name}</span>
+                      <span className="ml-3 text-sm font-medium">{category.name}</span>
                     </label>
                   ))}
                 </div>
@@ -319,23 +320,23 @@ export default function PortfolioFilters({
 
               {/* Technologies */}
               <div>
-                <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center">
-                  <CodeBracketIcon className="w-5 h-5 mr-2 text-purple-600" />
+                <h3 className="text-base font-semibold text-foreground mb-4 flex items-center">
+                  <CodeBracketIcon className="w-5 h-5 mr-2 text-primary" />
                   Teknolojiler
                 </h3>
-                <div className="space-y-2 max-h-48 overflow-y-auto scrollbar-thin">
+                <div className="space-y-1 max-h-48 overflow-y-auto scrollbar-thin">
                   {technologies.map(tech => (
                     <label
                       key={tech}
-                      className="flex items-center p-3 rounded-xl hover:bg-slate-50 cursor-pointer transition-colors duration-200"
+                      className="flex items-center p-3 rounded-sm hover:bg-accent hover:text-accent-foreground cursor-pointer transition-colors duration-200"
                     >
                       <input
                         type="checkbox"
                         checked={filters.technologies.includes(tech)}
                         onChange={() => handleTechnologyToggle(tech)}
-                        className="w-4 h-4 text-purple-600 border-slate-300 rounded focus:ring-purple-500 focus:ring-2"
+                        className="w-4 h-4 accent-[hsl(var(--primary))] border-border rounded"
                       />
-                      <span className="ml-3 text-slate-700 font-medium">{tech}</span>
+                      <span className="ml-3 text-sm font-medium">{tech}</span>
                     </label>
                   ))}
                 </div>
@@ -343,13 +344,13 @@ export default function PortfolioFilters({
 
               {/* Date Range */}
               <div>
-                <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center">
-                  <CalendarIcon className="w-5 h-5 mr-2 text-orange-600" />
+                <h3 className="text-base font-semibold text-foreground mb-4 flex items-center">
+                  <CalendarIcon className="w-5 h-5 mr-2 text-primary" />
                   Tarih Aralığı
                 </h3>
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-slate-600 mb-2">
+                    <label className="block text-sm font-medium text-muted-foreground mb-2">
                       Başlangıç Tarihi
                     </label>
                     <input
@@ -359,11 +360,11 @@ export default function PortfolioFilters({
                         ...filters,
                         dateRange: { ...filters.dateRange, start: e.target.value }
                       })}
-                      className="w-full px-4 py-3 bg-white border-2 border-slate-200 rounded-xl text-slate-700 focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 outline-none transition-all duration-300"
+                      className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground focus:border-primary focus:ring-2 focus:ring-ring outline-none transition-colors duration-200 motion-reduce:transition-none"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-600 mb-2">
+                    <label className="block text-sm font-medium text-muted-foreground mb-2">
                       Bitiş Tarihi
                     </label>
                     <input
@@ -373,7 +374,7 @@ export default function PortfolioFilters({
                         ...filters,
                         dateRange: { ...filters.dateRange, end: e.target.value }
                       })}
-                      className="w-full px-4 py-3 bg-white border-2 border-slate-200 rounded-xl text-slate-700 focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 outline-none transition-all duration-300"
+                      className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground focus:border-primary focus:ring-2 focus:ring-ring outline-none transition-colors duration-200 motion-reduce:transition-none"
                     />
                   </div>
                 </div>
@@ -384,13 +385,13 @@ export default function PortfolioFilters({
       </AnimatePresence>
 
       {/* Results Count */}
-      <div className="flex items-center justify-between pt-4 border-t border-slate-200">
-        <div className="flex items-center text-slate-600" role="status" aria-live="polite">
+      <div className="flex items-center justify-between pt-4 border-t border-border">
+        <div className="flex items-center text-muted-foreground" role="status" aria-live="polite">
           <Squares2X2Icon className="w-5 h-5 mr-2" />
-          <span className="font-medium">
+          <span className="font-medium text-sm">
             {isLoading ? (
               <span className="inline-flex items-center">
-                <div className="w-4 h-4 border-2 border-slate-300 border-t-slate-600 rounded-full animate-spin mr-2"></div>
+                <div className="w-4 h-4 border-2 border-border border-t-primary rounded-full animate-spin mr-2"></div>
                 Yükleniyor...
               </span>
             ) : (
@@ -402,7 +403,7 @@ export default function PortfolioFilters({
         {activeFiltersCount > 0 && (
           <button
             onClick={clearAllFilters}
-            className="text-sm text-brand-primary-700 hover:text-brand-primary-800 font-semibold transition-colors duration-200"
+            className="text-sm text-accent-foreground hover:text-primary font-semibold transition-colors duration-200"
           >
             Filtreleri Temizle
           </button>

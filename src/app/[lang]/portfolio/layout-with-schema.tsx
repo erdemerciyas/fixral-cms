@@ -45,7 +45,7 @@ export default function PortfolioLayout({
       />
 
       {/* Page Content */}
-      <div className="min-h-screen bg-white dark:bg-gray-900">
+      <div className="min-h-[100dvh] bg-background">
         {children}
       </div>
     </>

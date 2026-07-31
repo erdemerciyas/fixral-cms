@@ -11,7 +11,7 @@ import { Box as CubeIcon, Download as ArrowDownTrayIcon, Eye as EyeIcon, X as XM
 const ModelViewer = dynamic(() => import('./3DModelViewer'), {
   ssr: false,
   loading: () => (
-    <div className="w-full h-96 bg-gray-100 rounded-lg animate-pulse" aria-label="3D model yükleniyor" />
+    <div className="w-full h-96 bg-muted/60 rounded-lg animate-pulse" aria-label="3D model yükleniyor" />
   ),
 });
 
@@ -80,8 +80,8 @@ export default function ModelGallery({ models, className = '' }: ModelGalleryPro
       <div className={`space-y-4 ${className}`}>
         <div className="flex items-center space-x-2 mb-4">
           <CubeIcon className="w-6 h-6 text-blue-600" />
-          <h3 className="text-lg font-semibold text-gray-900">3D Modeller</h3>
-          <span className="text-sm text-gray-500">({models.length})</span>
+          <h3 className="text-lg font-semibold text-foreground">3D Modeller</h3>
+          <span className="text-sm text-muted-foreground">({models.length})</span>
         </div>
 
         <Swiper
@@ -105,7 +105,7 @@ export default function ModelGallery({ models, className = '' }: ModelGalleryPro
         >
           {models.map((model, index) => (
             <SwiperSlide key={index}>
-              <div className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden">
+              <div className="bg-muted/60 rounded-lg shadow-md border border-zinc-400/25 overflow-hidden">
                 {/* Model Önizleme Alanı */}
                 <div className="aspect-square bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center relative group">
                   <CubeIcon className="w-16 h-16 text-blue-400" />
@@ -114,7 +114,7 @@ export default function ModelGallery({ models, className = '' }: ModelGalleryPro
                   <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center space-x-2">
                     <button
                       onClick={() => handleModelClick(model)}
-                      className="bg-white text-gray-900 p-2 rounded-full hover:bg-gray-100 transition-colors"
+                      className="bg-muted/60 text-foreground p-2 rounded-full hover:bg-muted/80 transition-colors"
                       title="3D Önizleme"
                     >
                       <EyeIcon className="w-5 h-5" />
@@ -123,7 +123,7 @@ export default function ModelGallery({ models, className = '' }: ModelGalleryPro
                     {model.downloadable && (
                       <button
                         onClick={() => handleDownload(model)}
-                        className="bg-white text-gray-900 p-2 rounded-full hover:bg-gray-100 transition-colors"
+                        className="bg-muted/60 text-foreground p-2 rounded-full hover:bg-muted/80 transition-colors"
                         title="İndir"
                       >
                         <ArrowDownTrayIcon className="w-5 h-5" />
@@ -134,10 +134,10 @@ export default function ModelGallery({ models, className = '' }: ModelGalleryPro
 
                 {/* Model Bilgileri */}
                 <div className="p-4">
-                  <h4 className="font-medium text-gray-900 truncate" title={model.name}>
+                  <h4 className="font-medium text-foreground truncate" title={model.name}>
                     {model.name}
                   </h4>
-                  <div className="mt-2 space-y-1 text-sm text-gray-500">
+                  <div className="mt-2 space-y-1 text-sm text-muted-foreground">
                     <div className="flex justify-between">
                       <span>Format:</span>
                       <span className="uppercase font-medium">{model.format}</span>
@@ -163,12 +163,12 @@ export default function ModelGallery({ models, className = '' }: ModelGalleryPro
       {/* 3D Model Viewer Modal */}
       {isViewerOpen && selectedModel && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75">
-          <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-hidden">
+          <div className="bg-muted/60 rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-hidden">
             {/* Modal Header */}
-            <div className="flex items-center justify-between p-4 border-b border-gray-200">
+            <div className="flex items-center justify-between p-4 border-b border-zinc-400/25">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900">{selectedModel.name}</h3>
-                <p className="text-sm text-gray-500">
+                <h3 className="text-lg font-semibold text-foreground">{selectedModel.name}</h3>
+                <p className="text-sm text-muted-foreground">
                   {selectedModel.format.toUpperCase()} • {formatFileSize(selectedModel.size)}
                 </p>
               </div>
@@ -184,7 +184,7 @@ export default function ModelGallery({ models, className = '' }: ModelGalleryPro
                 )}
                 <button
                   onClick={() => setIsViewerOpen(false)}
-                  className="text-gray-400 hover:text-gray-600 p-2"
+                  className="text-muted-foreground hover:text-foreground p-2"
                 >
                   <XMarkIcon className="w-6 h-6" />
                 </button>
@@ -201,24 +201,24 @@ export default function ModelGallery({ models, className = '' }: ModelGalleryPro
             </div>
 
             {/* Model Bilgileri */}
-            <div className="p-4 border-t border-gray-200 bg-gray-50">
+            <div className="p-4 border-t border-border bg-secondary">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                 <div>
-                  <span className="text-gray-500">Format:</span>
+                  <span className="text-muted-foreground">Format:</span>
                   <p className="font-medium uppercase">{selectedModel.format}</p>
                 </div>
                 <div>
-                  <span className="text-gray-500">Boyut:</span>
+                  <span className="text-muted-foreground">Boyut:</span>
                   <p className="font-medium">{formatFileSize(selectedModel.size)}</p>
                 </div>
                 <div>
-                  <span className="text-gray-500">Yüklenme:</span>
+                  <span className="text-muted-foreground">Yüklenme:</span>
                   <p className="font-medium">
                     {new Date(selectedModel.uploadedAt).toLocaleDateString('tr-TR')}
                   </p>
                 </div>
                 <div>
-                  <span className="text-gray-500">İndirilebilir:</span>
+                  <span className="text-muted-foreground">İndirilebilir:</span>
                   <p className={`font-medium ${selectedModel.downloadable ? 'text-green-600' : 'text-red-600'}`}>
                     {selectedModel.downloadable ? 'Evet' : 'Hayır'}
                   </p>

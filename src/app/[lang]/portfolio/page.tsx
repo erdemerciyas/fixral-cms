@@ -46,12 +46,12 @@ export default async function PortfolioPage() {
   } catch (error) {
     console.error('Portfolio fetch error:', error);
     return (
-      <div className="min-h-screen bg-zinc-50 flex items-center justify-center">
+      <div className="min-h-[100dvh] bg-background flex items-center justify-center">
         <div className="text-center max-w-md mx-auto px-4 py-8">
-          <h3 className="text-xl font-semibold text-zinc-800 mb-4" style={{ fontFamily: 'var(--font-geist-sans)' }}>
+          <h3 className="text-xl font-semibold text-foreground mb-4" style={{ fontFamily: 'var(--font-geist-sans)' }}>
             Bir Hata Oluştu
           </h3>
-          <p className="text-zinc-500 mb-6 text-sm">
+          <p className="text-muted-foreground mb-6 text-sm">
             Portfolyo projeleri yüklenirken geçici bir sorun oluştu.
           </p>
         </div>

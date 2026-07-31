@@ -2,9 +2,9 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 export default function Loading() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50/30">
+    <div className="min-h-screen bg-gradient-to-br from-background to-accent/30">
       {/* Header Skeleton */}
-      <div className="bg-white shadow-sm">
+      <div className="bg-card border-b border-border">
         <div className="container-main py-4">
           <div className="flex items-center justify-between">
             <Skeleton className="h-10 w-10 rounded-full flex-shrink-0" />
@@ -33,7 +33,7 @@ export default function Loading() {
         {/* Cards Grid Skeleton */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="rounded-xl border border-slate-100 bg-white p-4 space-y-4">
+            <div key={i} className="rounded-xl border border-border bg-card p-4 space-y-4">
               <Skeleton className="h-40 w-full rounded-lg" />
               <Skeleton className="h-5 w-3/4" />
               <Skeleton className="h-4 w-full" />
@@ -45,8 +45,8 @@ export default function Loading() {
 
       {/* Loading Indicator */}
       <div className="fixed bottom-8 right-8 z-50">
-        <div className="bg-white rounded-full p-4 shadow-lg">
-          <div className="w-6 h-6 border-2 border-brand-primary-600 border-t-transparent rounded-full animate-spin"></div>
+        <div className="bg-card rounded-full p-4 shadow-lg">
+          <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
         </div>
       </div>
     </div>

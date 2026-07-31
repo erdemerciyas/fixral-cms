@@ -1,13 +1,12 @@
 import type { Metadata } from 'next';
 import Service from '@/models/Service';
 import PageSetting from '@/models/PageSetting';
-import ServicesClient from './ServicesClient';
+import ServicesPageClient from '@/components/services/ServicesPageClient';
 import PageHero from '@/components/common/PageHero';
-import Breadcrumbs from '@/components/Breadcrumbs';
 import BreadcrumbsJsonLd from '@/components/seo/BreadcrumbsJsonLd';
 import ServicesListJsonLd from '@/components/seo/ServicesListJsonLd';
 
-export const revalidate = 3600; // 1 saatte bir yenile
+export const revalidate = 3600;
 
 async function getData() {
   const [services, pageSettings] = await Promise.all([
@@ -54,18 +53,15 @@ export default async function ServicesPage() {
   const { services, hero } = await getData();
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-[100dvh] bg-background">
       <PageHero
         title={hero.title}
         description={hero.description}
         buttonText="Hizmetleri İncele"
         buttonLink="#services"
         showButton={true}
+        showBreadcrumbs={true}
       />
-
-      <section className="container-content py-4">
-        <Breadcrumbs />
-      </section>
 
       <BreadcrumbsJsonLd
         items={[
@@ -86,7 +82,7 @@ export default async function ServicesPage() {
         })}
       />
 
-      <ServicesClient services={services} hero={hero} />
+      <ServicesPageClient />
     </div>
   );
 }

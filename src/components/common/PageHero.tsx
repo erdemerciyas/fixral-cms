@@ -1,10 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { m } from 'framer-motion';
+import { m, useReducedMotion } from 'framer-motion';
 import Link from 'next/link';
 import { ArrowRight as ArrowRightIcon } from 'lucide-react';
 import { useAppTranslations } from '@/hooks/useAppTranslations';
+import { TextReveal } from '@/components/ui/TextReveal';
+import Breadcrumbs from '@/components/Breadcrumbs';
 
 interface PageHeroProps {
   title: string;
@@ -20,30 +21,10 @@ interface PageHeroProps {
   showButton?: boolean;
   showSecondaryButton?: boolean;
   variant?: 'default' | 'compact';
+  showBreadcrumbs?: boolean;
 }
 
-const containerVariants = {
-  hidden: { opacity: 1 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.2,
-      delayChildren: 0.1,
-    },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.8,
-      ease: 'easeOut',
-    },
-  },
-};
+const EASE = [0.22, 1, 0.36, 1] as const;
 
 export default function PageHero({
   title,
@@ -59,87 +40,82 @@ export default function PageHero({
   showButton = true,
   showSecondaryButton = false,
   variant = 'default',
+  showBreadcrumbs = false,
 }: PageHeroProps) {
-  const [mounted, setMounted] = useState(false);
   const { t } = useAppTranslations('common');
   const resolvedButtonText = buttonText || t('explore');
+  const reducedMotion = useReducedMotion();
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  // Background Logic — Priority: Prop > Default (token tabanlı düz yüzey)
+  const finalBg = backgroundGradient || 'bg-secondary';
+  const isCustomBg =
+    finalBg.startsWith('#') ||
+    finalBg.startsWith('linear-gradient') ||
+    finalBg.startsWith('url') ||
+    finalBg.includes('rgb');
 
-  // 1. Background Logic
-  // Priority: Prop > Default
-  const finalBg = backgroundGradient || 'bg-gradient-primary';
-  const isCustomBg = finalBg.startsWith('#') || finalBg.startsWith('linear-gradient') || finalBg.startsWith('url') || finalBg.includes('rgb');
+  const sizeClasses =
+    variant === 'compact'
+      ? 'min-h-[30dvh] flex flex-col justify-center pt-24 pb-12 md:pt-28 md:pb-14'
+      : 'min-h-[40dvh] flex flex-col justify-center pt-28 pb-16 md:pt-32 md:pb-20';
 
-  // 2. Alignment Logic
-  const textAlignClass = 'text-center';
-  const flexAlignClass = 'items-center';
-
-  const sizeClasses = variant === 'compact'
-    ? 'pt-28 pb-16 md:pt-32 md:pb-20'
-    : 'pt-32 pb-20 md:pt-40 md:pb-28 lg:pt-44 lg:pb-32';
-
-  const ssrSizeClasses = variant === 'compact'
-    ? 'py-16 md:py-20'
-    : 'py-24 md:py-32 lg:py-36';
-
-  if (!mounted) {
-    return (
-      <section
-        className={`text-white ${ssrSizeClasses} ${!isCustomBg ? finalBg : ''}`}
-        style={isCustomBg ? { background: finalBg } : {}}
-      >
-        <div className="container-content">
-          <div className="text-center">
-            {/* Minimal Loading State */}
-          </div>
-        </div>
-      </section>
-    );
-  }
+  const reveal = (delay: number) =>
+    reducedMotion
+      ? {}
+      : {
+          initial: { opacity: 0, y: 20 },
+          animate: { opacity: 1, y: 0 },
+          transition: { duration: 0.7, delay, ease: EASE },
+        };
 
   return (
     <section
-      className={`relative overflow-hidden text-white ${sizeClasses} ${!isCustomBg ? finalBg : ''}`}
+      className={`relative overflow-hidden border-b border-border ${sizeClasses} ${!isCustomBg ? finalBg : ''}`}
       style={isCustomBg ? { background: finalBg } : undefined}
-      role="banner"
       aria-label={title}
+      role="banner"
     >
-      <div className="container-content">
-        <m.div
-          className={`flex flex-col ${flexAlignClass} ${textAlignClass} w-full`}
-          variants={containerVariants}
-          initial="visible"
-          animate="visible"
-        >
+      {/* Static blueprint grid (decorative) */}
+      <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+        <div className="absolute inset-0 blueprint-grid opacity-40" />
+      </div>
+
+      <div className="container-content relative z-10 flex-grow flex flex-col justify-center">
+        <div className="flex flex-col items-start text-left w-full">
+          {/* Integrated breadcrumbs */}
+          {showBreadcrumbs && (
+            <m.div {...reveal(0)} className="mb-6 w-full">
+              <Breadcrumbs />
+            </m.div>
+          )}
+
           {/* Badge */}
           {badge && (
-            <m.div
-              variants={itemVariants}
-              className="mb-6 inline-block"
-            >
-              <span className="px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-sm font-medium text-white/90">
+            <m.div {...reveal(0.05)} className="mb-5 inline-block">
+              <span className="px-3 py-1.5 rounded-sm bg-accent border border-border text-[11px] font-medium uppercase tracking-[0.15em] text-accent-foreground">
                 {badge}
               </span>
             </m.div>
           )}
 
-          {/* Title */}
-          <m.h1
-            variants={itemVariants}
-            className={`${variant === 'compact' ? 'hero-title-compact' : 'hero-title'
-              } text-gradient-hero mb-6`}
-          >
-            {title}
-          </m.h1>
+          {/* Kinetic title */}
+          <m.div {...reveal(0.1)} className="mb-5">
+            <h1
+              className={`text-display tracking-tighter font-semibold text-foreground ${
+                variant === 'compact' ? 'text-3xl md:text-5xl' : 'text-4xl md:text-6xl'
+              }`}
+            >
+              <TextReveal mode="word" mask stagger={0.04} delay={0.1}>
+                {title}
+              </TextReveal>
+            </h1>
+          </m.div>
 
           {/* Subtitle */}
           {subtitle && (
             <m.p
-              variants={itemVariants}
-              className="text-xl sm:text-2xl font-semibold text-brand-primary-200 mb-8"
+              {...reveal(0.18)}
+              className="text-xl sm:text-2xl font-semibold text-accent-foreground mb-6"
             >
               {subtitle}
             </m.p>
@@ -148,8 +124,8 @@ export default function PageHero({
           {/* Description */}
           {description && (
             <m.p
-              variants={itemVariants}
-              className="text-lg sm:text-xl leading-relaxed text-slate-200/90 max-w-3xl mb-12 mx-auto"
+              {...reveal(0.22)}
+              className="text-lg sm:text-xl leading-relaxed text-muted-foreground max-w-3xl mb-10"
             >
               {description}
             </m.p>
@@ -157,12 +133,10 @@ export default function PageHero({
 
           {/* Featured Badge */}
           {featuredBadge && (
-            <m.div
-              variants={itemVariants}
-              className="flex items-center mb-8 justify-center"
-            >
-              <div className="flex items-center px-4 py-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full">
-                <span className="text-white/90 font-semibold text-sm">{featuredBadge}</span>
+            <m.div {...reveal(0.26)} className="flex items-center mb-8 justify-start">
+              <div className="flex items-center gap-2 px-3 py-1.5 bg-accent border border-border rounded-sm">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary" aria-hidden="true" />
+                <span className="text-accent-foreground font-semibold text-sm">{featuredBadge}</span>
               </div>
             </m.div>
           )}
@@ -170,13 +144,13 @@ export default function PageHero({
           {/* CTA Buttons */}
           {(showButton || showSecondaryButton) && (
             <m.div
-              variants={itemVariants}
-              className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center"
+              {...reveal(0.3)}
+              className="flex flex-col sm:flex-row gap-4 sm:gap-5 justify-start items-start"
             >
               {showButton && (
                 <Link
                   href={buttonLink}
-                  className="inline-flex items-center gap-2 px-8 py-4 bg-white text-brand-primary-900 font-semibold rounded-lg hover:bg-white/90 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand-primary-900 shadow-lg hover:shadow-xl"
+                  className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary/90 transition-colors duration-200 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 >
                   {resolvedButtonText}
                   <ArrowRightIcon className="w-5 h-5" aria-hidden="true" />
@@ -186,7 +160,7 @@ export default function PageHero({
               {showSecondaryButton && secondaryButtonLink && (
                 <Link
                   href={secondaryButtonLink}
-                  className="inline-flex items-center gap-2 px-8 py-4 bg-white/10 backdrop-blur-sm border-2 border-white text-white font-semibold rounded-lg hover:bg-white/20 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand-primary-900"
+                  className="inline-flex items-center gap-2 px-8 py-4 bg-card border border-border text-foreground font-semibold rounded-lg hover:bg-accent hover:text-accent-foreground transition-colors duration-200 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 >
                   {secondaryButtonText}
                   <ArrowRightIcon className="w-5 h-5" aria-hidden="true" />
@@ -194,11 +168,8 @@ export default function PageHero({
               )}
             </m.div>
           )}
-        </m.div>
+        </div>
       </div>
-
-      {/* Decorative gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/10 pointer-events-none" />
     </section>
   );
 }

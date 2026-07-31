@@ -218,7 +218,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
     <div className={`space-y-3 ${className}`}>
       {/* Label */}
       {label && (
-        <label className="block text-sm font-medium text-gray-700">
+        <label className="block text-sm font-medium text-foreground">
           {label}
         </label>
       )}
@@ -226,13 +226,13 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
       {/* Toast notifications are handled by sonner */}
 
       {/* Main Upload Area */}
-      <div className="border border-gray-200 rounded-lg overflow-hidden bg-white">
+      <div className="border border-zinc-400/25 rounded-lg overflow-hidden bg-white">
         
         {/* Current Image Display - Kompakt Görünüm */}
         {hasImage && !uploading && (
-          <div className="p-4 border-b border-gray-100">
+          <div className="p-4 border-b border-zinc-400/15">
             <div className="flex items-center space-x-4">
-              <div className="relative w-24 h-24 bg-gray-50 rounded-lg overflow-hidden flex-shrink-0">
+              <div className="relative w-24 h-24 bg-zinc-500/20 rounded-lg overflow-hidden flex-shrink-0">
                 <Image
                   src={currentImageString!}
                   alt="Uploaded image"
@@ -255,7 +255,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
 
         {/* Upload Progress */}
         {uploading && (
-          <div className="p-4 border-b border-gray-100">
+          <div className="p-4 border-b border-zinc-400/15">
             <div className="flex items-center space-x-3">
               <ArrowUpTrayIcon className="w-5 h-5 text-blue-500 animate-pulse flex-shrink-0" />
               <div className="flex-1">
@@ -293,7 +293,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
               type="button"
               onClick={() => fileInputRef.current?.click()}
               disabled={disabled || uploading}
-              className="flex items-center space-x-2 px-4 py-2 bg-brand-primary-50 text-brand-primary-700 rounded-lg hover:bg-brand-primary-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="flex items-center space-x-2 px-4 py-2 bg-primary/10 text-primary rounded-lg hover:bg-primary/15 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               <ArrowUpTrayIcon className="w-4 h-4" />
               <span>Yeni Yükle</span>
