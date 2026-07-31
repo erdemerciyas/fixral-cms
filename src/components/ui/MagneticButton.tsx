@@ -77,30 +77,39 @@ export const MagneticButton = forwardRef<HTMLButtonElement, MagneticButtonProps>
       y.set(0)
     }, [x, y])
 
-    const Component = asChild ? Slot : m.button
+    const sharedClassName = cn(
+      'inline-flex items-center justify-center cursor-pointer',
+      'active:scale-[0.98]',
+      'transition-[transform] duration-200',
+      className,
+    )
 
-    const motionProps = asChild
-      ? {}
-      : {
-          style: { x: springX, y: springY },
-        }
+    // Slot ve m.button prop tipleri uyuşmadığı için (MotionValue style) dallar ayrı render edilir
+    if (asChild) {
+      return (
+        <Slot
+          ref={ref}
+          onClick={onClick}
+          onMouseMove={handleMouseMove}
+          onMouseLeave={handleMouseLeave}
+          className={sharedClassName}
+        >
+          {children}
+        </Slot>
+      )
+    }
 
     return (
-      <Component
+      <m.button
         ref={ref}
+        style={{ x: springX, y: springY }}
         onClick={onClick}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
-        className={cn(
-          'inline-flex items-center justify-center cursor-pointer',
-          'active:scale-[0.98]',
-          'transition-[transform] duration-200',
-          className,
-        )}
-        {...motionProps}
+        className={sharedClassName}
       >
         {children}
-      </Component>
+      </m.button>
     )
   },
 )

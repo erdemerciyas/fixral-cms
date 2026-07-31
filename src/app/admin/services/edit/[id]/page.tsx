@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo, use } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
@@ -66,7 +66,8 @@ const emptyTranslation = (): TranslationFields => ({
   keywords: [],
 });
 
-export default function EditServicePage({ params }: { params: { id: string } }) {
+export default function EditServicePage(props: { params: Promise<{ id: string }> }) {
+  const params = use(props.params);
   const { data: session, status } = useSession();
   const router = useRouter();
   const [service, setService] = useState<Service | null>(null);

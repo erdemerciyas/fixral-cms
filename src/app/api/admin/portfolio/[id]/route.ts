@@ -6,10 +6,8 @@ import Portfolio from '@/models/Portfolio';
 /**
  * GET /api/admin/portfolio/[id] - Get single portfolio item
  */
-export async function GET(
-  _req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(_req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const session = await getServerSession(authOptions);
 
@@ -42,10 +40,8 @@ export async function GET(
 /**
  * PUT /api/admin/portfolio/[id] - Update portfolio item
  */
-export async function PUT(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const session = await getServerSession(authOptions);
 
@@ -83,10 +79,8 @@ export async function PUT(
 /**
  * DELETE /api/admin/portfolio/[id] - Delete portfolio item
  */
-export async function DELETE(
-  _req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(_req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const session = await getServerSession(authOptions);
 

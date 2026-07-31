@@ -70,7 +70,7 @@ interface SiteSettingsMinimal {
   };
 }
 
-const socialIconMap: Record<string, React.ElementType> = {
+const socialIconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   linkedin: LinkedinLogo,
   twitter: TwitterLogo,
   instagram: InstagramLogo,

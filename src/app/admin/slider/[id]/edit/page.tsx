@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import SliderForm from '../../SliderForm';
 import { FormPageSkeleton } from '@/components/admin/admin-skeletons';
 
-export default function EditSliderPage({ params }: { params: { id: string } }) {
+export default function EditSliderPage(props: { params: Promise<{ id: string }> }) {
+    const params = use(props.params);
     const router = useRouter();
     const [slider, setSlider] = useState(null);
     const [loading, setLoading] = useState(true);

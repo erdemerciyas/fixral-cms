@@ -6,10 +6,8 @@ import PageSetting from '@/models/PageSetting';
 /**
  * GET /api/admin/pages/[id] - Get single page setting
  */
-export async function GET(
-  _req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(_req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const session = await getServerSession(authOptions);
     
@@ -42,10 +40,8 @@ export async function GET(
 /**
  * PUT /api/admin/pages/[id] - Update page setting
  */
-export async function PUT(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const session = await getServerSession(authOptions);
     
@@ -83,10 +79,8 @@ export async function PUT(
 /**
  * DELETE /api/admin/pages/[id] - Delete page setting
  */
-export async function DELETE(
-  _req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(_req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const session = await getServerSession(authOptions);
     

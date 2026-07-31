@@ -148,7 +148,8 @@ export class CSRFProtection {
       return real;
     }
 
-    return request.ip || 'unknown';
+    // NextRequest.ip was removed in Next.js 16; headers are the only source
+    return 'unknown';
   }
 
   /**

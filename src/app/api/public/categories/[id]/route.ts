@@ -5,10 +5,8 @@ import Category from '@/models/Category';
 import Portfolio from '@/models/Portfolio';
 
 // GET - Tekil kategoriyi getir
-export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const category = await Category.findById(params.id);
 
@@ -30,10 +28,8 @@ export async function GET(
 }
 
 // PUT - Kategoriyi güncelle
-export async function PUT(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const session = await getServerSession(authOptions);
 
@@ -97,10 +93,8 @@ export async function PUT(
 }
 
 // DELETE - Kategoriyi sil
-export async function DELETE(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const session = await getServerSession(authOptions);
 

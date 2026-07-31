@@ -172,10 +172,10 @@ async function getHandler(
     }
 }
 
-export async function DELETE(request: NextRequest, context: { params: { id: string } }) {
-    return deleteHandler(request, context);
+export async function DELETE(request: NextRequest, context: { params: Promise<{ id: string }> }) {
+    return deleteHandler(request, { params: await context.params });
 }
 
-export async function GET(request: NextRequest, context: { params: { id: string } }) {
-    return getHandler(request, context);
+export async function GET(request: NextRequest, context: { params: Promise<{ id: string }> }) {
+    return getHandler(request, { params: await context.params });
 }

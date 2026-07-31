@@ -4,10 +4,8 @@ import { authOptions } from '@/lib/auth';
 import Message from '@/models/Message';
 
 // GET /api/messages/[id] - Tek mesaj getir
-export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user || session.user.role !== 'admin') {
@@ -52,10 +50,8 @@ interface MessageUpdateRequest {
 }
 
 // PUT /api/messages/[id] - Mesaj durumunu güncelle
-export async function PUT(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const session = await getServerSession(authOptions);
     
@@ -86,10 +82,8 @@ export async function PUT(
 }
 
 // PATCH /api/messages/[id] - Mesaj durumunu güncelle
-export async function PATCH(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function PATCH(request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user || session.user.role !== 'admin') {
@@ -135,10 +129,8 @@ export async function PATCH(
 }
 
 // DELETE /api/messages/[id] - Mesajı sil
-export async function DELETE(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user || session.user.role !== 'admin') {

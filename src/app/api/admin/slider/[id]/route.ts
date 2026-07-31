@@ -4,10 +4,8 @@ import { authOptions } from '../../../../../lib/auth';
 import Slider from '../../../../../models/Slider';
 
 // GET /api/admin/slider/[id] - Tek slider getir
-export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user || session.user.role !== 'admin') {
@@ -38,10 +36,8 @@ export async function GET(
 }
 
 // PUT /api/admin/slider/[id] - Slider güncelle
-export async function PUT(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user || session.user.role !== 'admin') {
@@ -115,10 +111,8 @@ export async function PUT(
 }
 
 // POST /api/admin/slider/[id] - Slider durumunu değiştir
-export async function POST(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function POST(request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user || session.user.role !== 'admin') {
@@ -154,10 +148,8 @@ export async function POST(
 }
 
 // DELETE /api/admin/slider/[id] - Slider sil
-export async function DELETE(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user || session.user.role !== 'admin') {

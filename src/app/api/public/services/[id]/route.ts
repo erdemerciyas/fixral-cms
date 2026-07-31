@@ -5,10 +5,8 @@ import Service from '@/models/Service';
 import slugify from 'slugify';
 
 // GET /api/services/[id] - Belirli bir servisi getir
-export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const service = await Service.findById(params.id);
 
@@ -30,10 +28,8 @@ export async function GET(
 }
 
 // PUT /api/services/[id] - Belirli bir servisi güncelle
-export async function PUT(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user) {
@@ -80,10 +76,8 @@ export async function PUT(
 }
 
 // DELETE /api/services/[id] - Belirli bir servisi sil
-export async function DELETE(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user) {

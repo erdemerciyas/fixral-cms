@@ -68,7 +68,7 @@ export const PUT = withSecurity(SecurityConfigs.admin)(async (request: NextReque
     const settings = await SiteSettings.updateSiteSettings(filteredData);
 
     // Root layout'un 60 sn'lik site-settings önbelleğini anında tazele
-    revalidateTag('site-settings');
+    revalidateTag('site-settings', 'max');
 
     return NextResponse.json(
       {

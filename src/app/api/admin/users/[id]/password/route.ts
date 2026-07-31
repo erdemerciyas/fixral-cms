@@ -4,10 +4,8 @@ import { authOptions } from '../../../../../../lib/auth';
 import User from '../../../../../../models/User';
 import bcrypt from 'bcryptjs';
 
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(request: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const session = await getServerSession(authOptions);
     

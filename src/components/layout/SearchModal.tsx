@@ -19,7 +19,7 @@ interface SearchModalProps {
     onClose: () => void;
 }
 
-const CATEGORY_ICONS: Record<string, React.ElementType> = {
+const CATEGORY_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
     'Haberler': NewspaperIcon,
     'Portföy': FolderOpenIcon,
     'Hizmetler': WrenchScrewdriverIcon,
@@ -37,7 +37,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
     const [isLoading, setIsLoading] = useState(false);
     const [hasSearched, setHasSearched] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
-    const debounceRef = useRef<ReturnType<typeof setTimeout>>();
+    const debounceRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
     const pathname = usePathname() ?? '/';
     const firstSegment = pathname.split('/')[1];

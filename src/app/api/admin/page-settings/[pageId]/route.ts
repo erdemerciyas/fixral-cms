@@ -4,10 +4,8 @@ import { authOptions } from '../../../../../lib/auth';
 import PageSetting from '../../../../../models/PageSetting';
 
 // GET - Belirli bir sayfanın ayarlarını getir
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { pageId: string } }
-) {
+export async function GET(request: NextRequest, props: { params: Promise<{ pageId: string }> }) {
+  const params = await props.params;
   try {
     const { pageId } = params;
     
@@ -38,10 +36,8 @@ export async function GET(
 }
 
 // PUT - Belirli bir sayfanın ayarlarını güncelle
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: { pageId: string } }
-) {
+export async function PUT(request: NextRequest, props: { params: Promise<{ pageId: string }> }) {
+  const params = await props.params;
   try {
     const session = await getServerSession(authOptions);
     

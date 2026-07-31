@@ -6,21 +6,15 @@ import { redirect, notFound } from 'next/navigation';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-import dynamicImport from 'next/dynamic';
 import News from '@/models/News';
 import { NewsItem } from '@/types/news';
 import { logger } from '@/core/lib/logger';
-import { FormPageSkeleton } from '@/components/admin/admin-skeletons';
-
-const NewsForm = dynamicImport(() => import('@/components/admin/NewsForm'), {
-  ssr: false,
-  loading: () => <FormPageSkeleton />
-});
+import NewsForm from '@/components/admin/NewsFormClient';
 
 interface PageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export const metadata: Metadata = {
@@ -28,7 +22,8 @@ export const metadata: Metadata = {
   description: 'Haber makalesi içeriğini ve meta verilerini güncelleyin',
 };
 
-export default async function EditNewsPage({ params }: PageProps) {
+export default async function EditNewsPage(props: PageProps) {
+  const params = await props.params;
   const session = await getServerSession(authOptions);
 
   if (!session || !session.user) {

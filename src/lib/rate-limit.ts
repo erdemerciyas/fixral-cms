@@ -203,8 +203,8 @@ export function getClientIP(request: NextRequest): string {
     }
   }
 
-  // Fallback to connection remote address
-  return request.ip || 'unknown';
+  // Fallback: NextRequest.ip was removed in Next.js 16; headers are the only source
+  return 'unknown';
 }
 
 function isValidIP(ip: string): boolean {

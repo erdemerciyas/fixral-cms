@@ -12,10 +12,8 @@ const DEFAULT_DETAIL_IMAGES = [
 ];
 
 // GET - Tekil portfolyo öğesini getir
-export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const portfolio = await Portfolio.findById(params.id);
 
@@ -44,10 +42,8 @@ export async function GET(
 }
 
 // PUT - Portfolyo öğesini güncelle
-export async function PUT(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const session = await getServerSession(authOptions);
 
@@ -146,10 +142,8 @@ export async function PUT(
 }
 
 // DELETE - Portfolyo öğesini sil
-export async function DELETE(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const session = await getServerSession(authOptions);
 

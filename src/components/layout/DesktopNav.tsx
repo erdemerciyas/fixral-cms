@@ -30,7 +30,7 @@ export default function DesktopNav({ navLinks, pathname }: DesktopNavProps) {
     const { data: session } = useSession();
     const [isAccountOpen, setIsAccountOpen] = useState(false);
     const accountRef = useRef<HTMLDivElement>(null);
-    const accountTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
+    const accountTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
     const currentLang = ['tr', 'es'].includes(pathname.split('/')[1]) ? pathname.split('/')[1] : 'tr';
     const isAdmin = session?.user && (session.user as any).role === 'admin';

@@ -3,12 +3,12 @@ import { withSecurity, SecurityConfigs } from '../../../../lib/security-middlewa
 
 export const POST = withSecurity(SecurityConfigs.admin)(async () => {
   try {
-    // Clear middleware cache by importing and calling the clear function
+    // Clear proxy cache by importing and calling the clear function
     try {
-      const { clearPageSettingsCache } = await import('@/middleware');
+      const { clearPageSettingsCache } = await import('@/proxy');
       clearPageSettingsCache();
     } catch (error) {
-      console.log('Middleware cache clear not available:', error);
+      console.log('Proxy cache clear not available:', error);
     }
     
     const response = NextResponse.json({ 

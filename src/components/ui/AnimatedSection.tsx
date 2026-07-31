@@ -38,7 +38,7 @@ function buildVariants(direction: Direction, reduced: boolean): Variants {
     }
   }
 
-  const initial: Record<string, unknown> = { opacity: 0, filter: 'blur(4px)' }
+  const initial: { opacity: number; filter: string; x?: number; y?: number; scale?: number } = { opacity: 0, filter: 'blur(4px)' }
 
   switch (direction) {
     case 'up':

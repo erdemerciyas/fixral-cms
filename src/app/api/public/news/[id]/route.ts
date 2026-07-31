@@ -27,10 +27,8 @@ import { validateNewsUpdateInput } from '@/lib/validation';
  *       500:
  *         description: Server error
  */
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const news = await News.findById(params.id);
 
@@ -107,10 +105,8 @@ export async function GET(
  *       500:
  *         description: Server error
  */
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(request: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     // Check authentication
     const session = await getServerSession(authOptions);
@@ -253,10 +249,8 @@ export async function PUT(
  *       500:
  *         description: Server error
  */
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(request: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     // Check authentication
     const session = await getServerSession(authOptions);

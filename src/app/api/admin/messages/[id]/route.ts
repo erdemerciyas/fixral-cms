@@ -4,10 +4,8 @@ import { getServerSession } from 'next-auth';
 import Message from '@/models/Message';
 import { authOptions } from '@/lib/auth'; // Ensure this path is correct, might be in a different place
 
-export async function DELETE(
-    request: NextRequest,
-    { params }: { params: { id: string } }
-) {
+export async function DELETE(request: NextRequest, props: { params: Promise<{ id: string }> }) {
+    const params = await props.params;
     try {
         const session = await getServerSession(authOptions);
 

@@ -28,13 +28,12 @@ try {
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  eslint: {
-    ignoreDuringBuilds: false,
-  },
   typescript: {
     ignoreBuildErrors: false,
   },
   // Vercel optimizations
+  // NOT: Turbopack ile uyumsuz özelleştirmeler (opsiyonel Sentry externals, glb/gltf file-loader)
+  // nedeniyle build/dev script'leri --webpack bayrağıyla çalışır (bkz. package.json).
   webpack: (config) => {
     // Path aliases için webpack alias ekleme
     config.resolve.alias = {
@@ -107,8 +106,6 @@ const nextConfig = {
   experimental: {
     // Keep minimal experiments to avoid chunking issues on Windows builds
     scrollRestoration: true,
-    // Enable instrumentation for Sentry
-    instrumentationHook: true,
     // Tree-shaking yardımı: barrel import'ları kullanılan modüllere indirger
     optimizePackageImports: [
       'lucide-react',
@@ -117,9 +114,7 @@ const nextConfig = {
   },
   // Performance: Enable compression
   compress: true,
-  // Performance: Optimize bundle
-  swcMinify: true,
-  // Security headers are applied via middleware for single-source of truth
+  // Security headers are applied via proxy for single-source of truth
   // Security: Disable powered by header
   poweredByHeader: false,
   // Security: Disable server-side includes

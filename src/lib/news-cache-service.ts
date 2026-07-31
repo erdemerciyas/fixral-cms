@@ -16,8 +16,8 @@ export async function revalidateNewsCarousel(): Promise<void> {
     revalidatePath('/tr', 'page');
     revalidatePath('/es', 'page');
 
-    revalidateTag('news-carousel');
-    revalidateTag('news-list');
+    revalidateTag('news-carousel', 'max');
+    revalidateTag('news-list', 'max');
 
     logger.info('News carousel revalidated', 'CACHE_SERVICE');
   } catch (error) {
@@ -33,7 +33,7 @@ export async function revalidateNewsDetail(slug: string): Promise<void> {
     revalidatePath(`/tr/haberler/${slug}`, 'page');
     revalidatePath(`/es/noticias/${slug}`, 'page');
 
-    revalidateTag(`news-${slug}`);
+    revalidateTag(`news-${slug}`, 'max');
 
     logger.info('News detail page revalidated', 'CACHE_SERVICE', { slug });
   } catch (error) {
@@ -49,7 +49,7 @@ export async function revalidateNewsListing(): Promise<void> {
     revalidatePath('/tr/haberler', 'page');
     revalidatePath('/es/noticias', 'page');
 
-    revalidateTag('news-list');
+    revalidateTag('news-list', 'max');
 
     logger.info('News listing pages revalidated', 'CACHE_SERVICE');
   } catch (error) {

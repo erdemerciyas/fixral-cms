@@ -1,13 +1,14 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, use } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import PortfolioForm, { PortfolioFormData } from '@/components/admin/PortfolioForm';
 import { FormPageSkeleton } from '@/components/admin/admin-skeletons';
 
-export default function EditPortfolioItem({ params }: { params: { id: string } }) {
+export default function EditPortfolioItem(props: { params: Promise<{ id: string }> }) {
+  const params = use(props.params);
   const { data: session, status } = useSession();
   const router = useRouter();
   const [loading, setLoading] = useState(true);

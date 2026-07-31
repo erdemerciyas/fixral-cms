@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Portfolio from '@/models/Portfolio';
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     // Model'i portfolio içinde bul
     const portfolio = await Portfolio.findOne({ 'models3D._id': params.id });
