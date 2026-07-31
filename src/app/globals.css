@@ -948,7 +948,8 @@ h6 {
 /* Add better focus states */
 @layer utilities {
   .focus-ring {
-    @apply focus:outline-none focus:ring-2 focus:ring-brand-primary-600 focus:ring-opacity-75;
+    /* ring-opacity-75 kaldırıldı (v4'te yok; v3'te de var() tabanlı renkte etkisizdi) */
+    @apply focus:outline-none focus:ring-2 focus:ring-brand-primary-600;
   }
 
   .transition-smooth {
