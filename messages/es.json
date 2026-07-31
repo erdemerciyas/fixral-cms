@@ -1,4 +1,100 @@
 {
+  "home": {
+    "hero": {
+      "defaultBadge": "Soluciones Industriales",
+      "defaultTitle": "Precisión sin Límites en Ingeniería",
+      "defaultDescription": "Aporte valor medible a sus proyectos con escaneo 3D, ingeniería inversa y prototipado.",
+      "defaultCta": "Ver Proyectos",
+      "secondaryCta": "Contáctenos",
+      "specTolerance": "TOLERANCIA ±0.05 MM",
+      "specScan": "ESCANEO 20 µM",
+      "specFormats": "STL / STEP / OBJ",
+      "carouselLabel": "Sección hero principal",
+      "prevSlide": "Diapositiva anterior",
+      "nextSlide": "Diapositiva siguiente",
+      "tablistLabel": "Selección de diapositiva",
+      "slideLabel": "Diapositiva {index}",
+      "modelLabel": "VISTA 3D EN VIVO",
+      "modelStatic": "VISTA ESTÁTICA",
+      "modelHint": "Arrastre para rotar"
+    },
+    "capabilities": {
+      "scan": "Escaneo 3D",
+      "reverse": "Ingeniería Inversa",
+      "fdm": "FDM",
+      "sla": "SLA",
+      "sls": "SLS",
+      "cmm": "CMM",
+      "cad": "Modelado CAD",
+      "prototype": "Prototipado",
+      "quality": "Control de Calidad"
+    },
+    "services": {
+      "eyebrow": "Servicios",
+      "title": "Soluciones que Ofrecemos",
+      "detail": "Detalle",
+      "loading": "Cargando servicios",
+      "empty": "Aún no hay servicios",
+      "emptyDescription": "Puede contactarnos para solicitar un proyecto.",
+      "emptyCta": "Solicitar un proyecto"
+    },
+    "process": {
+      "eyebrow": "Proceso",
+      "title": "Del Escaneo a la Producción",
+      "subtitle": "Cada proyecto avanza en cuatro pasos verificables.",
+      "steps": {
+        "scan": {
+          "title": "Escanear",
+          "description": "La geometría de la pieza se digitaliza con escaneo 3D de alta resolución."
+        },
+        "model": {
+          "title": "Modelar",
+          "description": "Los datos de escaneo se convierten en un modelo CAD paramétrico listo para producción."
+        },
+        "verify": {
+          "title": "Verificar",
+          "description": "El modelo se valida contra la pieza original con informes de medición."
+        },
+        "produce": {
+          "title": "Producir",
+          "description": "El modelo verificado pasa a producción con FDM, SLA o SLS."
+        }
+      }
+    },
+    "portfolio": {
+      "eyebrow": "Portafolio",
+      "title": "Proyectos Destacados",
+      "featured": "Destacado",
+      "method": "Método",
+      "client": "Cliente",
+      "year": "Año",
+      "viewAll": "Todos los Proyectos",
+      "loading": "Cargando proyectos",
+      "empty": "Aún no hay proyectos",
+      "emptyDescription": "Puede contactarnos para solicitar un proyecto.",
+      "emptyCta": "Solicitar un proyecto"
+    },
+    "stats": {
+      "label": "En Cifras",
+      "experience": "Años de Experiencia",
+      "projects": "Proyectos Completados",
+      "tolerance": "Tolerancia de Producción",
+      "resolution": "Resolución de Escaneo"
+    },
+    "news": {
+      "eyebrow": "Noticias",
+      "title": "Últimas Novedades",
+      "viewAll": "Todas las Noticias",
+      "loading": "Cargando noticias",
+      "empty": "Aún no hay noticias"
+    },
+    "cta": {
+      "eyebrow": "Solicitud de Proyecto",
+      "title": "Hagamos Realidad su Proyecto",
+      "subtitle": "Con nuestro equipo experto y tecnologías modernas, estamos listos para convertir sus ideas en realidad.",
+      "button": "Contáctenos"
+    }
+  },
   "common": {
     "loading": "Cargando...",
     "error": "Se produjo un error.",

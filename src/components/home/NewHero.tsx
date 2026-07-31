@@ -1,21 +1,23 @@
 'use client'
 
 /**
- * NewHero — Printables tarzı boxed banner carousel.
- * Kutulu görsel (rounded-md) + koyu scrim (rgba(0,0,0,0.74)) + büyük tipografi + CTA.
- * Kontroller: sol/sağ ok navigasyonu, altta dot indicator.
- *
- * Sadeleştirme (Faz 5): mouse-parallax, 3D sahne, drag spring geri bildirimi ve
- * grain overlay kaldırıldı. Yalnızca slide fade geçişi + içerik fade/slide kaldı.
- * Autoplay prefers-reduced-motion'a saygılı: reduced-motion'da hiç çalışmaz.
- * Slider verisi /api/public/slider'dan gelmeye devam eder.
+ * NewHero — full-bleed precision engineering hero (dark-first).
+ * Kutulu banner yerine tam genişlik grafit panel: `public-theme public-dark`
+ * scope'u hero'yu her iki temada da dark tutar (tüm renkler token'dan).
+ * BlueprintGrid zemin + sol metin/spec kolonu + sağda restrained 3D öğe
+ * (HeroModelViewer, lg+). Slider API verisi başlık/CTA içeriğini beslemeye
+ * devam eder; autoplay/ok/dot/swipe/klavye mantığı korunur ve
+ * prefers-reduced-motion'da autoplay hiç çalışmaz.
  * Named export: `export const NewHero`
  */
 import { useCallback, useEffect, useState, useRef } from 'react'
 import Image from 'next/image'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { useReducedMotion } from 'framer-motion'
 import HeroContent, { type HeroSlideData } from './HeroContent'
+import HeroModelViewer from './HeroModelViewer'
+import { BlueprintGrid } from '@/components/ui'
+import { useReducedMotionGuard } from '@/hooks/use-motion'
+import { useAppTranslations } from '@/hooks/useAppTranslations'
 import { cn } from '@/lib/utils'
 
 /* ─── Autoplay sabitleri ─── */
@@ -27,30 +29,17 @@ const SWIPE_COMMIT = 60 // px — slide değişimi için gereken mesafe
 
 /* ─── Görsel üzeri koyu scrim — metin okunabilirliği (--scrim token'ı) ─── */
 const SCRIM_GRADIENT =
-  'linear-gradient(90deg, hsl(var(--scrim) / 0.74) 0%, hsl(var(--scrim) / 0.62) 45%, hsl(var(--scrim) / 0.32) 100%)'
+  'linear-gradient(90deg, hsl(var(--scrim) / 0.86) 0%, hsl(var(--scrim) / 0.72) 45%, hsl(var(--scrim) / 0.4) 100%)'
 
-/* ─── Ok butonu: token tabanlı chip, hover'da turuncu dolgu ─── */
+/* ─── Ok butonu: hairline chip, hover'da turuncu dolgu (kontrol radius 2px) ─── */
 const ARROW_BUTTON = cn(
-  'inline-flex h-10 w-10 items-center justify-center rounded-full',
+  'inline-flex h-10 w-10 items-center justify-center rounded-xs',
   'border border-border bg-background/85 text-foreground backdrop-blur-xs',
   'hover:bg-primary hover:text-primary-foreground hover:border-primary',
   'transition-[background-color,color,border-color] duration-200 motion-reduce:transition-none',
   'focus:outline-hidden focus-visible:ring-2 focus-visible:ring-ring',
   'focus-visible:ring-offset-2 focus-visible:ring-offset-background',
 )
-
-/* ─── Default slide (API yokken) ─── */
-const DEFAULT_SLIDES: HeroSlideData[] = [
-  {
-    id: 'default-1',
-    title: 'Mühendislikte Sınırsız Hassasiyet',
-    subtitle: 'Endüstriyel Çözümler',
-    description:
-      '3D tarama, tersine mühendislik ve prototipleme ile projelerinize ölçülebilir değer katın.',
-    ctaText: 'Projeleri İncele',
-    ctaLink: '/portfolio',
-  },
-]
 
 /* ─── Slider API response shape ─── */
 interface SliderApiResponse {
@@ -66,14 +55,16 @@ interface SliderApiResponse {
   order?: number
 }
 
-function mapApiToSlide(item: SliderApiResponse): HeroSlideData & { image?: string; duration?: number } {
+type HeroSlide = HeroSlideData & { image?: string; duration?: number }
+
+function mapApiToSlide(item: SliderApiResponse): HeroSlide {
   return {
     id: item.id,
-    title: item.title || DEFAULT_SLIDES[0].title,
+    title: item.title,
     subtitle: item.subtitle,
     description: item.description,
-    ctaText: item.buttonText || 'Projeleri İncele',
-    ctaLink: item.buttonLink || '/portfolio',
+    ctaText: item.buttonText,
+    ctaLink: item.buttonLink,
     badge: item.badge,
     image: item.imageUrl,
     duration: item.duration,
@@ -81,12 +72,11 @@ function mapApiToSlide(item: SliderApiResponse): HeroSlideData & { image?: strin
 }
 
 export const NewHero = () => {
-  const reducedMotion = useReducedMotion() ?? false
+  const reducedMotion = useReducedMotionGuard()
+  const { t } = useAppTranslations('home')
 
-  /* ─── Slider state ─── */
-  const [slides, setSlides] = useState<(HeroSlideData & { image?: string; duration?: number })[]>(
-    DEFAULT_SLIDES,
-  )
+  /* ─── Slider state — API yokken HeroContent i18n default'ları devrede ─── */
+  const [slides, setSlides] = useState<HeroSlide[]>([{ id: 'default-1', title: '' }])
   const [currentSlide, setCurrentSlide] = useState(0)
   const [isHovered, setIsHovered] = useState(false)
   const [interactionPaused, setInteractionPaused] = useState(false)
@@ -96,7 +86,7 @@ export const NewHero = () => {
     setIsMounted(true)
   }, [])
 
-  /* Fetch slider data */
+  /* Fetch slider data — veri akışı korunur: /api/public/slider */
   useEffect(() => {
     async function fetchSlides() {
       try {
@@ -219,14 +209,15 @@ export const NewHero = () => {
   const showControls = hasMultiple && isMounted
 
   return (
+    /* public-theme + public-dark: hero her iki temada da grafit dark scope */
     <header
       className={cn(
-        'relative isolate overflow-hidden rounded-md border border-border',
-        'min-h-[440px] sm:min-h-[520px] lg:min-h-[600px]',
-        hasImage ? 'bg-muted' : 'bg-secondary',
+        'public-theme public-dark',
+        'relative isolate w-full overflow-hidden bg-background text-foreground',
+        'border-b border-border',
       )}
       role="banner"
-      aria-label="Ana hero bölümü"
+      aria-label={t('hero.carouselLabel')}
       aria-roledescription="carousel"
       onPointerEnter={handlePointerEnter}
       onPointerLeave={handlePointerLeave}
@@ -260,26 +251,44 @@ export const NewHero = () => {
 
       {/* ── Scrim: görsel üzerinde koyu karartma, metin kontrastı için ── */}
       {hasImage && (
-        <div
-          className="absolute inset-0"
-          style={{ background: SCRIM_GRADIENT }}
-          aria-hidden="true"
-        />
+        <div className="absolute inset-0" style={{ background: SCRIM_GRADIENT }} aria-hidden="true" />
       )}
 
-      {/* ── İçerik ── */}
-      <HeroContent slide={currentSlideData} slideIndex={currentSlide} onImage={hasImage} />
+      {/* ── Blueprint grid zemin — görselin/scrimin üstünde, içerik altında ── */}
+      <BlueprintGrid density="coarse" opacity={hasImage ? 'faint' : 'subtle'} />
+
+      {/* ── İçerik: sol metin + sağ 3D panel; pt-14 fixed header telafisi ── */}
+      <div className="relative z-10 mx-auto w-full max-w-7xl px-4 pt-14 sm:px-6 lg:px-8">
+        <div className="grid min-h-[560px] grid-cols-1 items-center gap-12 py-16 sm:py-20 lg:min-h-[640px] lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)] lg:gap-16 lg:py-24">
+          <HeroContent slide={currentSlideData} slideIndex={currentSlide} />
+
+          {/* Sağ panel: restrained 3D öğe — yalnızca lg+ */}
+          <div className="hidden lg:block">
+            <HeroModelViewer />
+          </div>
+        </div>
+      </div>
 
       {/* ── Ok navigasyonu ── */}
       {showControls && (
         <>
           <div className="absolute inset-y-0 left-0 z-20 flex items-center pl-3 sm:pl-5">
-            <button type="button" onClick={handlePrev} className={ARROW_BUTTON} aria-label="Önceki slayt">
+            <button
+              type="button"
+              onClick={handlePrev}
+              className={ARROW_BUTTON}
+              aria-label={t('hero.prevSlide')}
+            >
               <ChevronLeft size={18} aria-hidden="true" />
             </button>
           </div>
           <div className="absolute inset-y-0 right-0 z-20 flex items-center pr-3 sm:pr-5">
-            <button type="button" onClick={handleNext} className={ARROW_BUTTON} aria-label="Sonraki slayt">
+            <button
+              type="button"
+              onClick={handleNext}
+              className={ARROW_BUTTON}
+              aria-label={t('hero.nextSlide')}
+            >
               <ChevronRight size={18} aria-hidden="true" />
             </button>
           </div>
@@ -291,7 +300,7 @@ export const NewHero = () => {
         <div
           className="absolute bottom-5 left-0 right-0 z-20 flex items-center justify-center gap-2"
           role="tablist"
-          aria-label="Hero slide seçimi"
+          aria-label={t('hero.tablistLabel')}
         >
           {slides.map((slide, index) => {
             const isActive = index === currentSlide
@@ -303,17 +312,13 @@ export const NewHero = () => {
                 className={cn(
                   'h-1.5 rounded-full transition-[width,background-color] duration-300',
                   'motion-reduce:transition-none',
-                  isActive
-                    ? 'w-8 bg-primary'
-                    : hasImage
-                      ? 'w-2 bg-white/40 hover:bg-white/70'
-                      : 'w-2 bg-foreground/25 hover:bg-foreground/50',
+                  isActive ? 'w-8 bg-primary' : 'w-2 bg-foreground/25 hover:bg-foreground/50',
                   'focus:outline-hidden focus-visible:ring-2 focus-visible:ring-ring',
                   'focus-visible:ring-offset-2 focus-visible:ring-offset-background',
                 )}
                 role="tab"
                 aria-selected={isActive}
-                aria-label={`Slayt ${index + 1}`}
+                aria-label={t('hero.slideLabel', { index: index + 1 })}
               />
             )
           })}

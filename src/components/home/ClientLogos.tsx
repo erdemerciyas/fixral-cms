@@ -1,52 +1,41 @@
 'use client'
 
 /**
- * ClientLogos — Sonsuz kayan sektör bandı.
- * MarqueeStrip ile ikon destekli tam kelime etiketler.
- * Speed: 40s, gradient mask kenarlarda, aria-hidden dekoratif.
+ * ClientLogos — monospace yetkinlik ticker'ı (capabilities strip).
+ * Sektör ikon bandı yerine precision kit dilinde teknik yetkinlik listesi:
+ * 3D TARAMA / TERSİNE MÜHENDİSLİK / FDM / SLA / SLS / CMM…
+ * MarqueeStrip sonsuz kaydırır (reduced-motion'da durur); etiketler i18n'den,
+ * ayraç crosshair (+) turuncu tek aksan olarak kalır. Dekoratif: aria-hidden.
  */
-import {
-  Factory,
-  Building2,
-  Cog,
-  Cpu,
-  Wrench,
-  Puzzle,
-  Ruler,
-  Truck,
-  FlaskConical,
-  ShieldCheck,
-  type LucideIcon,
-} from 'lucide-react'
 import { MarqueeStrip } from '@/components/ui/MarqueeStrip'
+import { useAppTranslations } from '@/hooks/useAppTranslations'
 
-const SECTORS: { icon: LucideIcon; label: string }[] = [
-  { icon: Factory, label: 'Üretim' },
-  { icon: Building2, label: 'İnşaat' },
-  { icon: Cog, label: 'Mekanik' },
-  { icon: Cpu, label: 'Elektronik' },
-  { icon: Wrench, label: 'Bakım' },
-  { icon: Puzzle, label: 'Montaj' },
-  { icon: Ruler, label: 'Ölçüm' },
-  { icon: Truck, label: 'Lojistik' },
-  { icon: FlaskConical, label: 'Ar-Ge' },
-  { icon: ShieldCheck, label: 'Kalite' },
-]
+/* i18n anahtar sırası — home.capabilities.* */
+const CAPABILITY_KEYS = [
+  'scan',
+  'reverse',
+  'fdm',
+  'sla',
+  'sls',
+  'cmm',
+  'cad',
+  'prototype',
+  'quality',
+] as const
 
 export default function ClientLogos() {
+  const { t } = useAppTranslations('home')
+
   return (
-    <div className="py-8 md:py-10 border-y border-border" aria-hidden="true">
+    <div className="py-6 md:py-8" aria-hidden="true">
       <MarqueeStrip speed={40} pauseOnHover>
-        {SECTORS.map((sector, i) => (
-          <div
-            key={i}
-            className="flex items-center gap-3 px-6 py-3 shrink-0 select-none"
-          >
-            <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-primary/70">
-              <sector.icon className="h-4.5 w-4.5" aria-hidden="true" />
+        {CAPABILITY_KEYS.map((key) => (
+          <div key={key} className="flex shrink-0 select-none items-center gap-8">
+            <span className="whitespace-nowrap font-mono text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground">
+              {t(`capabilities.${key}`)}
             </span>
-            <span className="text-base font-semibold tracking-tight text-muted-foreground whitespace-nowrap">
-              {sector.label}
+            <span className="font-mono text-xs text-primary" aria-hidden="true">
+              +
             </span>
           </div>
         ))}

@@ -1,4 +1,100 @@
 {
+  "home": {
+    "hero": {
+      "defaultBadge": "Endüstriyel Çözümler",
+      "defaultTitle": "Mühendislikte Sınırsız Hassasiyet",
+      "defaultDescription": "3D tarama, tersine mühendislik ve prototipleme ile projelerinize ölçülebilir değer katın.",
+      "defaultCta": "Projeleri İncele",
+      "secondaryCta": "İletişime Geç",
+      "specTolerance": "TOLERANS ±0.05 MM",
+      "specScan": "TARAMA 20 µM",
+      "specFormats": "STL / STEP / OBJ",
+      "carouselLabel": "Ana hero bölümü",
+      "prevSlide": "Önceki slayt",
+      "nextSlide": "Sonraki slayt",
+      "tablistLabel": "Hero slayt seçimi",
+      "slideLabel": "Slayt {index}",
+      "modelLabel": "CANLI 3D ÖNİZLEME",
+      "modelStatic": "STATİK ÖNİZLEME",
+      "modelHint": "Döndürmek için sürükleyin"
+    },
+    "capabilities": {
+      "scan": "3D Tarama",
+      "reverse": "Tersine Mühendislik",
+      "fdm": "FDM",
+      "sla": "SLA",
+      "sls": "SLS",
+      "cmm": "CMM",
+      "cad": "CAD Modelleme",
+      "prototype": "Prototipleme",
+      "quality": "Kalite Kontrol"
+    },
+    "services": {
+      "eyebrow": "Hizmetler",
+      "title": "Sunduğumuz Çözümler",
+      "detail": "Detay",
+      "loading": "Hizmetler yükleniyor",
+      "empty": "Henüz hizmet bulunmuyor",
+      "emptyDescription": "Proje talebi için iletişime geçebilirsiniz.",
+      "emptyCta": "Proje talebi bırakın"
+    },
+    "process": {
+      "eyebrow": "Süreç",
+      "title": "Taramadan Üretime",
+      "subtitle": "Her proje dört doğrulanabilir adımda ilerler.",
+      "steps": {
+        "scan": {
+          "title": "Tara",
+          "description": "Parça geometrisi yüksek çözünürlüklü 3D tarama ile dijitalleştirilir."
+        },
+        "model": {
+          "title": "Modelle",
+          "description": "Tarama verisi üretime hazır parametrik CAD modele dönüştürülür."
+        },
+        "verify": {
+          "title": "Doğrula",
+          "description": "Model, ölçüm raporlarıyla orijinal parçaya karşı doğrulanır."
+        },
+        "produce": {
+          "title": "Üret",
+          "description": "Doğrulanan model FDM, SLA veya SLS ile üretime alınır."
+        }
+      }
+    },
+    "portfolio": {
+      "eyebrow": "Portfolyo",
+      "title": "Öne Çıkan Projeler",
+      "featured": "Öne Çıkan",
+      "method": "Yöntem",
+      "client": "Müşteri",
+      "year": "Yıl",
+      "viewAll": "Tüm Projeler",
+      "loading": "Projeler yükleniyor",
+      "empty": "Henüz proje bulunmuyor",
+      "emptyDescription": "Proje talebi için iletişime geçebilirsiniz.",
+      "emptyCta": "Proje talebi bırakın"
+    },
+    "stats": {
+      "label": "Rakamlarla",
+      "experience": "Yıl Deneyim",
+      "projects": "Tamamlanan Proje",
+      "tolerance": "Üretim Toleransı",
+      "resolution": "Tarama Çözünürlüğü"
+    },
+    "news": {
+      "eyebrow": "Haberler",
+      "title": "Son Gelişmeler",
+      "viewAll": "Tüm Haberler",
+      "loading": "Haberler yükleniyor",
+      "empty": "Henüz haber bulunmuyor"
+    },
+    "cta": {
+      "eyebrow": "Proje Talebi",
+      "title": "Projenizi Hayata Geçirelim",
+      "subtitle": "Uzman ekibimiz ve modern teknolojilerimizle fikirlerinizi gerçeğe dönüştürmeye hazırız.",
+      "button": "İletişime Geç"
+    }
+  },
   "common": {
     "loading": "Yükleniyor...",
     "error": "Bir hata oluştu.",

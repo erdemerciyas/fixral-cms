@@ -245,21 +245,28 @@ interface ModelViewerProps {
   modelUrl: string;
   format: string;
   className?: string;
+  /** Saydam arkaplan: hero gibi token tabanlı koyu zeminlerde kullanılır (varsayılan: false) */
+  transparent?: boolean;
 }
 
-export default function ModelViewer({ modelUrl, format, className = '' }: ModelViewerProps) {
+export default function ModelViewer({ modelUrl, format, className = '', transparent = false }: ModelViewerProps) {
   console.log('ModelViewer - Rendering:', { modelUrl, format, className });
   
   return (
     <>
       <div 
-        className={`w-full h-96 bg-gray-100 rounded-lg overflow-hidden ${className}`}
+        className={
+          transparent
+            ? `h-full w-full overflow-hidden ${className}`
+            : `w-full h-96 bg-gray-100 rounded-lg overflow-hidden ${className}`
+        }
         role="img"
         aria-label={`3D ${format.toUpperCase()} Model Görüntüleyici`}
       >
         <Canvas
         camera={{ position: [3, 3, 3], fov: 60 }}
-        style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}
+        gl={transparent ? { alpha: true } : undefined}
+        style={transparent ? { background: 'transparent' } : { background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}
         onCreated={(_state) => {
           // Kamerayı modele odakla
           _state.camera.lookAt(0, 0, 0);

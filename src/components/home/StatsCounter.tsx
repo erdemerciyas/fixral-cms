@@ -1,76 +1,41 @@
 'use client'
 
 /**
- * StatsCounter — Animasyonlu istatistik bandı.
- * 4 istatistik: Yıllık Deneyim, Tamamlanan Proje, Mutlu Müşteri, Uzman Ekip.
- * Count-up via Motion animate() on a MotionValue (no rAF loops touching React state).
- * useInViewOnce one-shot IntersectionObserver fires animation once.
- * font-mono tabular-nums per taste-skill §6.7.
+ * StatsCounter — DataStat bandı, gerçek mühendislik birimleriyle.
+ * 4 metrik: yıl deneyim (+), tamamlanan proje (+), üretim toleransı (±mm),
+ * tarama çözünürlüğü (µm). Count-up DataStat içinde (useInViewOnce + rAF,
+ * reduced-motion'da anında hedef değer). Etiketler i18n'den (home.stats.*).
  */
-import { useEffect } from 'react'
-import { m, animate, useMotionValue, useTransform, useReducedMotion } from 'framer-motion'
-import { useInViewOnce } from '@/hooks/use-motion'
-
-interface StatItem {
-  value: number
-  suffix: string
-  label: string
-}
-
-const STATS: StatItem[] = [
-  { value: new Date().getFullYear() - 2018, suffix: '+', label: 'Yıllık Deneyim' },
-  { value: 150, suffix: '+', label: 'Tamamlanan Proje' },
-  { value: 80, suffix: '+', label: 'Mutlu Müşteri' },
-  { value: 25, suffix: '+', label: 'Uzman Ekip' },
-]
-
-function CountUpNumber({ stat }: { stat: StatItem }) {
-  const reducedMotion = useReducedMotion()
-  const { ref, inView } = useInViewOnce<HTMLSpanElement>(0.3)
-  const mv = useMotionValue(reducedMotion ? stat.value : 0)
-  const rounded = useTransform(mv, (v) => Math.round(v))
-
-  useEffect(() => {
-    if (reducedMotion) {
-      mv.set(stat.value)
-      return
-    }
-    if (!inView) return
-    const controls = animate(mv, stat.value, {
-      duration: 1.8,
-      ease: [0.22, 1, 0.36, 1],
-    })
-    return () => controls.stop()
-  }, [inView, reducedMotion, stat.value, mv])
-
-  return (
-    <span ref={ref} className="tabular-nums font-mono">
-      {reducedMotion ? stat.value : <m.span>{rounded}</m.span>}
-      {stat.suffix}
-    </span>
-  )
-}
+import { DataStat, MeasureRule } from '@/components/ui'
+import { useAppTranslations } from '@/hooks/useAppTranslations'
 
 export default function StatsCounter() {
+  const { t } = useAppTranslations('home')
+
+  const stats = [
+    { value: new Date().getFullYear() - 2018, suffix: '+', label: t('stats.experience') },
+    { value: 150, suffix: '+', label: t('stats.projects') },
+    { value: 0.05, prefix: '±', suffix: ' mm', decimals: 2, label: t('stats.tolerance') },
+    { value: 20, suffix: ' µm', label: t('stats.resolution') },
+  ]
+
   return (
-    <section className="relative py-16 md:py-20" aria-label="İstatistikler">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="rounded-sm border border-border bg-card">
-          <div className="py-12 md:py-16">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
-              {STATS.map((stat) => (
-                <div key={stat.label} className="text-center">
-                  <div
-                    className="text-4xl md:text-5xl font-bold mb-2 text-accent-foreground"
-                    style={{ letterSpacing: '-0.03em' }}
-                  >
-                    <CountUpNumber stat={stat} />
-                  </div>
-                  <p className="text-sm text-muted-foreground">{stat.label}</p>
-                </div>
-              ))}
-            </div>
-          </div>
+    <section className="relative py-16 md:py-20" aria-label={t('stats.label')}>
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        {/* Üst ölçü çizgisi — monospace etiketli */}
+        <MeasureRule ticks="sparse" label={t('stats.label')} labelPosition="start" className="mb-10 md:mb-12" />
+
+        <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-4 md:gap-12">
+          {stats.map((stat) => (
+            <DataStat
+              key={stat.label}
+              value={stat.value}
+              prefix={stat.prefix}
+              suffix={stat.suffix}
+              decimals={stat.decimals}
+              label={stat.label}
+            />
+          ))}
         </div>
       </div>
     </section>

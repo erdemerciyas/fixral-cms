@@ -1355,6 +1355,30 @@ select::-webkit-scrollbar-thumb:hover {
   to { transform: translateX(-50%); }
 }
 
+/* Precision kit — scan-line: hero/kart üzerinde yukarıdan aşağı süzülen hairline.
+   Renk token'dan (--primary); prefers-reduced-motion global bloğu animasyonu söndürür. */
+@keyframes scan-line {
+  0% { top: 0%; opacity: 0; }
+  8% { opacity: 1; }
+  92% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+@utility scan-line {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    hsl(var(--primary) / 0.55) 50%,
+    transparent 100%
+  );
+  pointer-events: none;
+  animation: scan-line 2.4s linear infinite;
+}
+
 /* Print styles */
 @media print {
   .no-print {
@@ -1548,6 +1572,12 @@ select::-webkit-scrollbar-thumb:hover {
     animation: none !important;
     opacity: 1 !important;
     transform: none !important;
+  }
+
+  /* Scan-line dekoratiftir; reduced-motion'da tamamen gizlenir */
+  .scan-line {
+    animation: none !important;
+    display: none !important;
   }
 
   .skeleton-shimmer::after {

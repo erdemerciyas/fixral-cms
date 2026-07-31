@@ -1,17 +1,19 @@
 'use client'
 
 /**
- * HeroContent — Banner metin katmanı (Printables paradigması).
- * Sol hizalı büyük tipografi + CTA çifti. Görsel üzerindeyse metin beyaz,
- * görselsiz slide'da token tabanlı foreground renkleri kullanılır.
- *
- * Sadeleştirme (Faz 5): kinetic word-mask (TextReveal) ve MagneticButton
- * kaldırıldı; yalnızca slide değişiminde fade/slide animasyonu var.
+ * HeroContent — full-bleed precision hero'nun metin katmanı.
+ * TechLabel eyebrow + büyük Barlow başlık + açıklama + monospace spec satırı
+ * (tolerans / tarama / format) + CTA çifti. Hero her zaman dark scope'ta
+ * render edildiği için renkler doğrudan semantik token'lardan gelir.
+ * Slide değişim animasyonu motion preset sabitleri üzerinden yürür.
  */
-import { m, useReducedMotion, AnimatePresence } from 'framer-motion'
+import { m, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
+import { MOTION_DURATION, MOTION_EASE, TechLabel } from '@/components/ui'
+import { useReducedMotionGuard } from '@/hooks/use-motion'
 import { useLocale } from '@/hooks/useLocale'
+import { useAppTranslations } from '@/hooks/useAppTranslations'
 import { cn } from '@/lib/utils'
 
 export interface HeroSlideData {
@@ -27,115 +29,101 @@ export interface HeroSlideData {
 interface HeroContentProps {
   slide?: HeroSlideData
   slideIndex?: number
-  /** Slide görsel üzerinde mi? (koyu scrim → beyaz tipografi) */
-  onImage?: boolean
 }
 
-const PREMIUM_EASING = [0.32, 0.72, 0, 1] as const
-
-export default function HeroContent({ slide, slideIndex = 0, onImage = false }: HeroContentProps) {
+export default function HeroContent({ slide, slideIndex = 0 }: HeroContentProps) {
   const lang = useLocale()
-  const reducedMotion = useReducedMotion()
+  const reducedMotion = useReducedMotionGuard()
+  const { t } = useAppTranslations('home')
 
-  const title = slide?.title ?? 'Mühendislikte Sınırsız Hassasiyet'
-  const subtitle = slide?.subtitle ?? 'Endüstriyel Çözümler'
-  const description = slide?.description ??
-    '3D tarama, tersine mühendislik ve prototipleme ile projelerinize ölçülebilir değer katın.'
-  const ctaText = slide?.ctaText ?? 'Projeleri İncele'
-  const ctaLink = slide?.ctaLink ?? `/${lang}/portfolio`
+  const title = slide?.title || t('hero.defaultTitle')
+  const subtitle = slide?.subtitle || t('hero.defaultBadge')
+  const description = slide?.description || t('hero.defaultDescription')
+  const ctaText = slide?.ctaText || t('hero.defaultCta')
+  const ctaLink = slide?.ctaLink || `/${lang}/portfolio`
   const badge = slide?.badge
 
+  const specItems = [t('hero.specTolerance'), t('hero.specScan'), t('hero.specFormats')]
+
   return (
-    <div className="relative z-10 flex min-h-[440px] w-full items-center py-24 sm:min-h-[520px] lg:min-h-[600px]">
-      <div className="mx-auto w-full px-6 sm:px-10 lg:px-14">
-        {/* Sol hizalı içerik bloğu — sağ yarı görsele bırakılır */}
-        <div className="max-w-2xl">
-          <AnimatePresence mode="wait">
-            <m.div
-              key={slideIndex}
-              initial={reducedMotion ? false : { opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={reducedMotion ? undefined : { opacity: 0, y: -12 }}
-              transition={{ duration: reducedMotion ? 0 : 0.5, ease: PREMIUM_EASING }}
+    <div className="max-w-2xl">
+      <AnimatePresence mode="wait">
+        <m.div
+          key={slideIndex}
+          initial={reducedMotion ? false : { opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={reducedMotion ? undefined : { opacity: 0, y: -12 }}
+          transition={{
+            duration: reducedMotion ? 0 : MOTION_DURATION.fast,
+            ease: MOTION_EASE.precision,
+          }}
+        >
+          {/* Eyebrow — monospace teknik etiket */}
+          <TechLabel marker="crosshair" as="p" className="mb-6">
+            {badge ?? subtitle}
+          </TechLabel>
+
+          {/* Başlık — büyük Barlow display */}
+          <h1 className="mb-6 font-display text-4xl font-bold leading-[1.05] tracking-[-0.03em] text-foreground sm:text-5xl lg:text-6xl xl:text-[64px]">
+            {title}
+          </h1>
+
+          {/* Açıklama */}
+          <p className="mb-6 max-w-[58ch] text-base leading-relaxed text-muted-foreground md:text-lg">
+            {description}
+          </p>
+
+          {/* Monospace spec satırı — hairline ayraçlı tolerans/format bandı */}
+          <ul className="mb-10 flex flex-wrap items-center gap-x-4 gap-y-2 border-y border-border py-3">
+            {specItems.map((item, i) => (
+              <li
+                key={item}
+                className={cn(
+                  'flex items-center gap-4 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground',
+                )}
+              >
+                {i > 0 && <span aria-hidden="true" className="h-3 w-px bg-border-strong" />}
+                {item}
+              </li>
+            ))}
+          </ul>
+
+          {/* CTA çifti — kontrol radius'u 2px (rounded-xs) */}
+          <nav className="flex flex-col items-start gap-3 sm:flex-row sm:items-center">
+            {/* Primary CTA — tek turuncu dolgu */}
+            <Link
+              href={ctaLink}
+              className={cn(
+                'group inline-flex items-center gap-2 rounded-xs px-6 py-3',
+                'bg-primary text-sm font-medium text-primary-foreground',
+                'hover:bg-primary/90 active:scale-[0.98]',
+                'transition-[background-color,transform] duration-200 motion-reduce:transition-none',
+                'focus:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+              )}
             >
-              {/* Eyebrow tag */}
-              <span
-                className={cn(
-                  'mb-5 inline-flex items-center gap-2 rounded-sm px-2.5 py-1',
-                  'text-[11px] font-medium uppercase tracking-[0.16em]',
-                  onImage
-                    ? 'border border-white/25 bg-white/10 text-white'
-                    : 'border border-border bg-accent text-accent-foreground',
-                )}
-              >
-                <span className="h-1.5 w-1.5 rounded-full bg-primary" aria-hidden="true" />
-                {badge ?? subtitle}
-              </span>
+              <span>{ctaText}</span>
+              <ArrowRight
+                size={15}
+                className="transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none"
+                aria-hidden="true"
+              />
+            </Link>
 
-              {/* Başlık — 48-56px responsive */}
-              <h1
-                className={cn(
-                  'mb-5 text-3xl font-bold leading-[1.1] tracking-tight',
-                  'sm:text-4xl md:text-5xl lg:text-[56px]',
-                  onImage ? 'text-white' : 'text-foreground',
-                )}
-              >
-                {title}
-              </h1>
-
-              {/* Açıklama */}
-              <p
-                className={cn(
-                  'mb-8 max-w-[60ch] text-base leading-relaxed md:text-lg',
-                  onImage ? 'text-white/85' : 'text-muted-foreground',
-                )}
-              >
-                {description}
-              </p>
-
-              {/* CTA çifti */}
-              <nav
-                className="flex flex-col items-start gap-3 sm:flex-row sm:items-center"
-                aria-label="Hero eylem navigasyonu"
-              >
-                {/* Primary CTA — turuncu dolgu */}
-                <Link
-                  href={ctaLink}
-                  className={cn(
-                    'group inline-flex items-center gap-2 rounded-lg px-6 py-3',
-                    'bg-primary text-sm font-medium text-primary-foreground',
-                    'hover:bg-primary/90 active:scale-[0.98]',
-                    'transition-[background-color,transform] duration-200 motion-reduce:transition-none',
-                    'focus:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
-                  )}
-                >
-                  <span>{ctaText}</span>
-                  <ArrowRight
-                    size={15}
-                    className="transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none"
-                    aria-hidden="true"
-                  />
-                </Link>
-
-                {/* İkincil CTA — outline */}
-                <Link
-                  href={`/${lang}/contact`}
-                  className={cn(
-                    'inline-flex items-center gap-2 rounded-lg px-6 py-3 text-sm font-medium',
-                    onImage
-                      ? 'border border-white/40 text-white hover:bg-white/10'
-                      : 'border border-border bg-card text-foreground hover:bg-accent hover:text-accent-foreground',
-                    'active:scale-[0.98] transition-[background-color,color,border-color,transform] duration-200 motion-reduce:transition-none',
-                    'focus:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
-                  )}
-                >
-                  İletişime Geç
-                </Link>
-              </nav>
-            </m.div>
-          </AnimatePresence>
-        </div>
-      </div>
+            {/* İkincil CTA — hairline outline */}
+            <Link
+              href={`/${lang}/contact`}
+              className={cn(
+                'inline-flex items-center gap-2 rounded-xs px-6 py-3 text-sm font-medium',
+                'border border-border-strong text-foreground hover:border-primary/50 hover:text-primary',
+                'active:scale-[0.98] transition-[color,border-color,transform] duration-200 motion-reduce:transition-none',
+                'focus:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+              )}
+            >
+              {t('hero.secondaryCta')}
+            </Link>
+          </nav>
+        </m.div>
+      </AnimatePresence>
     </div>
   )
 }

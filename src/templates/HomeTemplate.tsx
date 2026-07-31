@@ -1,26 +1,25 @@
 'use client'
 
 /**
- * HomeTemplate — anasayfa bileşim şablonu.
- * 9 section; Printables tarzı düz kart grid'leri ve token tabanlı yüzey bandı.
+ * HomeTemplate — anasayfa bileşim şablonu (precision engineering anlatısı).
+ * 8 aktif bölüm; TechShowcase3D kaldırıldı (3D viewer hero'ya taşındı),
+ * SectionTransition yerine bölüm içi hairline'lar kullanılıyor.
  *
  * Akış sırası:
- * 1. NewHero                   — boxed banner carousel (Printables paradigması)
- * 2. SectionTransition         — hairline ayırıcı
- * 3. ClientLogos               — compact band (marquee layout)
- * 4. ServicesBentoGrid         — kart grid (2/3/4 kolon)
- * 5. PortfolioHorizontalShowcase — kart grid (2/3/4 kolon)
- * 6. TechShowcase3D            — split column
- * 7. NewsEditorialGrid         — kart grid (1/2/3 kolon)
- * 8. StatsCounter              — compact strip (counter layout)
- * 9. FullWidthCTA              — full width (CTA layout)
+ * 1. NewHero                     — full-bleed dark hero (BlueprintGrid + 3D öğe)
+ * 2. ClientLogos                 — monospace yetkinlik ticker'ı (capabilities strip)
+ * 3. ServicesBentoGrid           — numaralı teknik kart grid'i
+ * 4. ProcessFlow                 — Tara → Modelle → Doğrula → Üret (MeasureRule)
+ * 5. PortfolioHorizontalShowcase — scan-line hover + monospace metadata
+ * 6. StatsCounter                — DataStat bandı (µm / mm / + birimleri)
+ * 7. NewsEditorialGrid           — editorial haber grid'i
+ * 8. FullWidthCTA                — BlueprintGrid'li dark panel, tek turuncu CTA
  */
 import { NewHero } from '@/components/home/NewHero'
-import { SectionTransition } from '@/components/home/SectionTransition'
 import ClientLogos from '@/components/home/ClientLogos'
 import ServicesBentoGrid from '@/components/home/ServicesBentoGrid'
+import ProcessFlow from '@/components/home/ProcessFlow'
 import PortfolioHorizontalShowcase from '@/components/home/PortfolioHorizontalShowcase'
-import TechShowcase3D from '@/components/home/TechShowcase3D'
 import NewsEditorialGrid from '@/components/home/NewsEditorialGrid'
 import StatsCounter from '@/components/home/StatsCounter'
 import FullWidthCTA from '@/components/home/FullWidthCTA'
@@ -32,42 +31,33 @@ interface HomeTemplateProps {
 export default function HomeTemplate({ lang: _lang }: HomeTemplateProps) {
   return (
     <>
-      {/* 1. Hero — boxed banner carousel: fixed header (h-14) telafisi + 1280px kutu */}
-      <div className="bg-background pt-14">
-        <div className="container-boxed pt-4 sm:pt-6">
-          <NewHero />
-        </div>
-      </div>
-
-      {/* 2. Transition — hairline ayırıcı */}
-      <SectionTransition />
+      {/* 1. Hero — full-bleed dark panel; fixed header telafisi hero içinde (pt-14) */}
+      <NewHero />
 
       <main className="relative isolate">
-        {/* 3. Client logos — marquee band */}
-        <div className="relative bg-secondary border-b border-border">
+        {/* 2. Capabilities strip — monospace ticker */}
+        <div className="relative border-b border-border bg-secondary">
           <ClientLogos />
         </div>
 
-        {/* 4. Services — kart grid */}
+        {/* 3. Services — numaralı teknik kart grid'i */}
         <ServicesBentoGrid />
 
-        {/* 5. Portfolio — kart grid */}
+        {/* 4. Process — 4 adımlı süreç akışı */}
+        <ProcessFlow />
+
+        {/* 5. Portfolio — scan-line hover'lı showcase */}
         <PortfolioHorizontalShowcase />
 
-        {/* 6. Tech showcase — split column */}
-        <div className="relative bg-secondary border-b border-border">
-          <TechShowcase3D />
-        </div>
-
-        {/* 7. News — kart grid */}
-        <NewsEditorialGrid />
-
-        {/* 8. Stats — animated counter strip */}
-        <div className="relative bg-accent border-y border-border">
+        {/* 6. Stats — DataStat bandı */}
+        <div className="relative border-y border-border bg-secondary">
           <StatsCounter />
         </div>
 
-        {/* 9. CTA — full width */}
+        {/* 7. News — editorial grid */}
+        <NewsEditorialGrid />
+
+        {/* 8. CTA — full width dark panel */}
         <FullWidthCTA />
       </main>
     </>
