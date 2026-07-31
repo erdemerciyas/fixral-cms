@@ -94,6 +94,12 @@ export default function ModernProjectCard({
               </div>
             )}
 
+            {/* Scan-line overlay — yalnızca hover'da görünür, reduced-motion'da gizli */}
+            <span
+              className="scan-line opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+              aria-hidden="true"
+            />
+
             {/* Hover'da görünen metadata overlay — koyu scrim üzerinde beyaz metin */}
             <div
               className="absolute inset-0 flex flex-col justify-end p-4 opacity-0 transition-opacity duration-200 ease-out group-hover:opacity-100 motion-reduce:transition-none"
@@ -156,19 +162,23 @@ export default function ModernProjectCard({
               </div>
             )}
 
-            {/* Meta row */}
-            <div className="mt-auto flex items-center justify-between gap-2 pt-2 text-xs text-muted-foreground">
-              {project.client ? (
-                <span className="truncate max-w-[55%]">{project.client}</span>
-              ) : (
-                <span aria-hidden="true" />
+            {/* Monospace metadata — müşteri / tarih (ana sayfa showcase ile aynı dil) */}
+            <dl className="mt-auto flex flex-col gap-1 pt-2 font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+              {project.client && (
+                <div className="flex items-baseline justify-between gap-2">
+                  <dt className="shrink-0">Müşteri</dt>
+                  <dd className="truncate text-right">{project.client}</dd>
+                </div>
               )}
               {project.completionDate && (
-                <span className="shrink-0 tabular-nums">
-                  {new Date(project.completionDate).toLocaleDateString('tr-TR', { year: 'numeric', month: 'short' })}
-                </span>
+                <div className="flex items-baseline justify-between gap-2">
+                  <dt className="shrink-0">Tarih</dt>
+                  <dd className="tabular-nums">
+                    {new Date(project.completionDate).toLocaleDateString('tr-TR', { year: 'numeric', month: 'short' })}
+                  </dd>
+                </div>
               )}
-            </div>
+            </dl>
           </div>
       </div>
     </m.div>

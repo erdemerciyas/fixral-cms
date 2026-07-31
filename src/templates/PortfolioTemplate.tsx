@@ -5,7 +5,7 @@ import { m, AnimatePresence, useInView, useReducedMotion } from 'framer-motion';
 import Link from 'next/link';
 import { Search as MagnifyingGlass, X, Sparkles as Sparkle, ArrowRight, Filter as FunnelSimple, ArrowUpNarrowWide as SortAscending, ChevronDown as CaretDown } from 'lucide-react';
 import PageHero from '@/components/common/PageHero';
-import EyebrowTag from '@/components/ui/EyebrowTag';
+import { TechLabel } from '@/components/ui';
 import ModernProjectCard from '@/components/portfolio/ModernProjectCard';
 import { usePortfolioFilters } from '@/hooks/usePortfolioFilters';
 import { useLocale } from '@/hooks/useLocale';
@@ -72,17 +72,16 @@ function CategoryFilterBar({ categories, activeCategories, onToggle }: {
         onClick={() => {
           if (!allActive) onToggle('__all__');
         }}
-        className="group relative px-4 py-1.5 rounded-full text-sm font-medium transition-colors bg-secondary hover:bg-accent"
-        style={{ transitionDuration: '700ms', transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
+        className="group relative px-4 py-1.5 rounded-xs text-sm font-medium transition-colors duration-200 bg-secondary hover:bg-accent motion-reduce:transition-none"
       >
         {allActive && (
           <m.div
             layoutId="category-indicator"
-            className="absolute inset-0 rounded-full bg-primary"
+            className="absolute inset-0 rounded-xs bg-primary"
             transition={{ type: 'spring', stiffness: 380, damping: 30 }}
           />
         )}
-        <span className={`relative z-10 ${allActive ? 'text-white' : 'text-secondary-foreground group-hover:text-accent-foreground'}`}>
+        <span className={`relative z-10 ${allActive ? 'text-primary-foreground' : 'text-secondary-foreground group-hover:text-accent-foreground'}`}>
           Tümünü Göster
         </span>
       </button>
@@ -93,17 +92,16 @@ function CategoryFilterBar({ categories, activeCategories, onToggle }: {
           <button
             key={cat._id}
             onClick={() => onToggle(cat.slug)}
-            className="group relative px-4 py-1.5 rounded-full text-sm font-medium transition-colors bg-secondary hover:bg-accent"
-            style={{ transitionDuration: '700ms', transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
+            className="group relative px-4 py-1.5 rounded-xs text-sm font-medium transition-colors duration-200 bg-secondary hover:bg-accent motion-reduce:transition-none"
           >
             {isActive && (
               <m.div
                 layoutId="category-indicator"
-                className="absolute inset-0 rounded-full bg-primary"
+                className="absolute inset-0 rounded-xs bg-primary"
                 transition={{ type: 'spring', stiffness: 380, damping: 30 }}
               />
             )}
-            <span className={`relative z-10 ${isActive ? 'text-white' : 'text-secondary-foreground group-hover:text-accent-foreground'}`}>
+            <span className={`relative z-10 ${isActive ? 'text-primary-foreground' : 'text-secondary-foreground group-hover:text-accent-foreground'}`}>
               {cat.name}
             </span>
           </button>
@@ -121,12 +119,12 @@ function MasonrySkeleton() {
     <div className="grid grid-cols-1 md:grid-cols-12 gap-5">
       {[8, 4, 4, 8, 6, 6].map((span, i) => (
         <div key={i} className={`md:col-span-${span} animate-pulse`}>
-          <div className="rounded-lg overflow-hidden bg-card border border-border">
+          <div className="rounded-sm overflow-hidden bg-card border border-border">
             <div className={`${i % 3 === 0 ? 'aspect-[16/9]' : 'aspect-[3/2]'} bg-surface-tertiary`} />
             <div className="p-5 space-y-3">
-              <div className="h-5 bg-surface-tertiary rounded-lg w-3/4" />
-              <div className="h-4 bg-surface-tertiary rounded-lg w-full" />
-              <div className="h-3 bg-surface-tertiary rounded-lg w-1/2" />
+              <div className="h-5 bg-surface-tertiary rounded-xs w-3/4" />
+              <div className="h-4 bg-surface-tertiary rounded-xs w-full" />
+              <div className="h-3 bg-surface-tertiary rounded-xs w-1/2" />
             </div>
           </div>
         </div>
@@ -266,6 +264,7 @@ export default function PortfolioTemplate(props: any) {
         buttonLink={hero.buttonLink}
         showButton={true}
         showBreadcrumbs={true}
+        index={2}
       />
 
       {/* Projects section */}
@@ -273,7 +272,7 @@ export default function PortfolioTemplate(props: any) {
         <div className="container-content">
           {/* Section header */}
           <ScrollReveal className="mb-8 md:mb-10">
-            <EyebrowTag>Projeler</EyebrowTag>
+            <TechLabel as="p" index={1} marker="crosshair">Projeler</TechLabel>
             <h2 className="text-2xl md:text-3xl font-semibold text-foreground mt-4 tracking-tight">
               Çalışma Galerisi
             </h2>
@@ -305,13 +304,12 @@ export default function PortfolioTemplate(props: any) {
                   onChange={(e) => setFilters({ ...filters, search: e.target.value })}
                   onFocus={() => setSearchFocused(true)}
                   onBlur={() => setSearchFocused(false)}
-                  className="w-full pl-12 pr-10 py-3 bg-background rounded-2xl border border-input text-foreground placeholder:text-muted-foreground outline-none transition-all text-sm focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring"
-                  style={{ transitionDuration: '700ms', transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
+                  className="w-full pl-12 pr-10 py-3 bg-background rounded-xs border border-input text-foreground placeholder:text-muted-foreground outline-none transition-[border-color,box-shadow] duration-200 text-sm focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring motion-reduce:transition-none"
                 />
                 {filters.search && (
                   <button
                     onClick={() => setFilters({ ...filters, search: '' })}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-accent transition-colors"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-xs hover:bg-accent transition-colors"
                   >
                     <X className="w-4 h-4 text-muted-foreground" />
                   </button>
@@ -327,8 +325,7 @@ export default function PortfolioTemplate(props: any) {
                     const [sortBy, sortOrder] = e.target.value.split('-') as [typeof filters.sortBy, typeof filters.sortOrder];
                     setFilters({ ...filters, sortBy, sortOrder });
                   }}
-                  className="appearance-none pl-9 pr-9 py-3 bg-background rounded-2xl border border-input text-foreground text-sm outline-none cursor-pointer transition-all focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring"
-                  style={{ transitionDuration: '700ms', transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
+                  className="appearance-none pl-9 pr-9 py-3 bg-background rounded-xs border border-input text-foreground text-sm outline-none cursor-pointer transition-[border-color,box-shadow] duration-200 focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring motion-reduce:transition-none"
                   aria-label="Sırala"
                 >
                   <option value="newest-desc">En Yeni</option>
@@ -343,18 +340,17 @@ export default function PortfolioTemplate(props: any) {
               {/* Advanced toggle */}
               <button
                 onClick={() => setShowAdvanced(!showAdvanced)}
-                className={`flex items-center gap-2 px-5 py-3 rounded-2xl text-sm font-medium transition-all ${
+                className={`flex items-center gap-2 px-5 py-3 rounded-xs text-sm font-medium transition-colors duration-200 motion-reduce:transition-none ${
                   showAdvanced || activeFiltersCount > 0
                     ? 'bg-primary text-primary-foreground'
                     : 'bg-card border border-border text-muted-foreground hover:border-primary/30 hover:text-foreground'
                 }`}
-                style={{ transitionDuration: '700ms', transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
                 aria-expanded={showAdvanced}
               >
                 <FunnelSimple className="w-4 h-4" />
                 Filtreler
                 {activeFiltersCount > 0 && (
-                  <span className="ml-1 px-1.5 py-0.5 text-[10px] rounded-full bg-white/20 font-semibold">
+                  <span className="ml-1 px-1.5 py-0.5 text-[10px] rounded-xs bg-primary-foreground/20 font-mono font-semibold tabular-nums">
                     {activeFiltersCount}
                   </span>
                 )}
@@ -378,7 +374,7 @@ export default function PortfolioTemplate(props: any) {
                         <h4 className="text-sm font-semibold text-foreground mb-3">Kategoriler</h4>
                         <div className="space-y-1.5 max-h-48 overflow-y-auto">
                           {categories.map((cat: any) => (
-                            <label key={cat._id} className="flex items-center gap-2.5 p-2 rounded-xl hover:bg-accent cursor-pointer transition-colors">
+                            <label key={cat._id} className="flex items-center gap-2.5 p-2 rounded-xs hover:bg-accent cursor-pointer transition-colors">
                               <input
                                 type="checkbox"
                                 checked={filters.categories.includes(cat.slug)}
@@ -396,14 +392,14 @@ export default function PortfolioTemplate(props: any) {
                         <h4 className="text-sm font-semibold text-foreground mb-3">Teknolojiler</h4>
                         <div className="space-y-1.5 max-h-48 overflow-y-auto">
                           {availableTechnologies.map((tech) => (
-                            <label key={tech} className="flex items-center gap-2.5 p-2 rounded-xl hover:bg-accent cursor-pointer transition-colors">
+                            <label key={tech} className="flex items-center gap-2.5 p-2 rounded-xs hover:bg-accent cursor-pointer transition-colors">
                               <input
                                 type="checkbox"
                                 checked={filters.technologies.includes(tech)}
                                 onChange={() => handleTechToggle(tech)}
                                 className="w-4 h-4 rounded border-input text-accent-foreground focus:ring-ring"
                               />
-                              <span className="font-[family-name:var(--font-geist-mono)] text-sm text-foreground">{tech}</span>
+                              <span className="font-mono text-sm text-foreground">{tech}</span>
                             </label>
                           ))}
                         </div>
@@ -419,7 +415,7 @@ export default function PortfolioTemplate(props: any) {
                               type="date"
                               value={filters.dateRange.start}
                               onChange={(e) => setFilters({ ...filters, dateRange: { ...filters.dateRange, start: e.target.value } })}
-                              className="w-full px-3 py-2.5 bg-background border border-input rounded-xl text-sm text-foreground outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring transition-all"
+                              className="w-full px-3 py-2.5 bg-background border border-input rounded-xs text-sm text-foreground outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring transition-[border-color,box-shadow] duration-200 motion-reduce:transition-none"
                             />
                           </div>
                           <div>
@@ -428,7 +424,7 @@ export default function PortfolioTemplate(props: any) {
                               type="date"
                               value={filters.dateRange.end}
                               onChange={(e) => setFilters({ ...filters, dateRange: { ...filters.dateRange, end: e.target.value } })}
-                              className="w-full px-3 py-2.5 bg-background border border-input rounded-xl text-sm text-foreground outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring transition-all"
+                              className="w-full px-3 py-2.5 bg-background border border-input rounded-xs text-sm text-foreground outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring transition-[border-color,box-shadow] duration-200 motion-reduce:transition-none"
                             />
                           </div>
                         </div>
@@ -441,7 +437,7 @@ export default function PortfolioTemplate(props: any) {
 
             {/* Results count + clear */}
             <div className="flex items-center justify-between mt-4 pt-3 border-t border-border">
-              <span className="font-[family-name:var(--font-geist-mono)] text-xs text-muted-foreground">
+              <span className="font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground tabular-nums">
                 {totalResults} proje bulundu
               </span>
               {activeFiltersCount > 0 && (
@@ -489,7 +485,7 @@ export default function PortfolioTemplate(props: any) {
                 transition={{ duration: DURATION, ease: EASING }}
                 className="text-center py-20"
               >
-                <div className="w-20 h-20 bg-surface-secondary border border-border rounded-full flex items-center justify-center mx-auto mb-5">
+                <div className="w-20 h-20 bg-surface-secondary border border-border rounded-sm flex items-center justify-center mx-auto mb-5">
                   <MagnifyingGlass className="w-8 h-8 text-primary" />
                 </div>
                 <h3 className="text-xl font-semibold text-foreground mb-3">
@@ -498,7 +494,7 @@ export default function PortfolioTemplate(props: any) {
                 <p className="text-muted-foreground max-w-md mx-auto mb-5 text-sm">
                   Arama kriterlerinize uygun proje bulunamadı. Filtreleri değiştirmeyi veya temizlemeyi deneyin.
                 </p>
-                <button onClick={clearAll} className="px-5 py-2.5 rounded-2xl border border-border bg-card text-sm font-medium text-muted-foreground hover:border-primary hover:text-accent-foreground transition-colors">
+                <button onClick={clearAll} className="px-5 py-2.5 rounded-xs border border-border bg-card text-sm font-medium text-muted-foreground hover:border-primary hover:text-accent-foreground transition-colors">
                   Filtreleri Temizle
                 </button>
               </m.div>
@@ -509,12 +505,15 @@ export default function PortfolioTemplate(props: any) {
 
       {/* CTA section */}
       <section className="py-16 md:py-24 bg-primary relative overflow-hidden">
-        {/* Ambient background */}
-        <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: 'radial-gradient(circle at 20% 50%, white 0%, transparent 50%), radial-gradient(circle at 80% 50%, white 0%, transparent 50%)' }} />
+        {/* Ambient background — token tabanlı, tema bağımsız aksan yüzeyi */}
+        <div
+          className="absolute inset-0 opacity-[0.04] bg-[radial-gradient(circle_at_20%_50%,hsl(var(--primary-foreground))_0%,transparent_50%),radial-gradient(circle_at_80%_50%,hsl(var(--primary-foreground))_0%,transparent_50%)]"
+          aria-hidden="true"
+        />
 
         <div className="container-content text-center relative z-10">
           <ScrollReveal>
-            <EyebrowTag variant="light">Birlikte Çalışalım</EyebrowTag>
+            <TechLabel as="p" marker="tick" className="justify-center text-primary-foreground/80 [&>span[aria-hidden]]:bg-primary-foreground">Birlikte Çalışalım</TechLabel>
             <h2 className="text-2xl md:text-4xl font-semibold text-primary-foreground mt-5 mb-4 tracking-tight">
               Projenizi Birlikte Gerçekleştirelim
             </h2>
@@ -527,14 +526,14 @@ export default function PortfolioTemplate(props: any) {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 href={`/${lang}/contact`}
-                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-primary-foreground text-primary rounded-lg text-sm font-semibold hover:bg-primary-foreground/90 transition-colors duration-200 motion-reduce:transition-none"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-primary-foreground text-primary rounded-xs text-sm font-semibold hover:bg-primary-foreground/90 transition-colors duration-200 motion-reduce:transition-none"
               >
                 <Sparkle className="w-4 h-4" />
                 Proje Başlatalım
               </Link>
               <Link
                 href={`/${lang}/services`}
-                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 border border-primary-foreground/30 text-primary-foreground rounded-lg text-sm font-medium hover:bg-black/10 transition-colors duration-200 motion-reduce:transition-none"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 border border-primary-foreground/30 text-primary-foreground rounded-xs text-sm font-medium hover:bg-primary-foreground/10 transition-colors duration-200 motion-reduce:transition-none"
               >
                 Hizmetlerimizi İnceleyin
                 <ArrowRight className="w-4 h-4" />

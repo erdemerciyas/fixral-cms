@@ -5,7 +5,7 @@ import { m } from 'framer-motion';
 import { MapPin, Mail as EnvelopeSimple, Phone, Clock, ArrowRight, CheckCircle, AlertCircle as WarningCircle } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import PageHero from '@/components/common/PageHero';
-import EyebrowTag from '@/components/ui/EyebrowTag';
+import { BlueprintGrid, TechLabel } from '@/components/ui';
 import { ScrollReveal, ScrollRevealItem } from '@/components/ui/ScrollReveal';
 
 const ease = [0.32, 0.72, 0, 1] as const;
@@ -149,12 +149,19 @@ function ContactPageContent() {
         buttonLink="#contact-form"
         showButton={true}
         showBreadcrumbs={true}
+        index={5}
       />
 
-      <section id="contact-form" className="py-16 lg:py-24">
-        <div className="container-content">
+      <section id="contact-form" className="relative py-16 lg:py-24">
+        {/* Blueprint band — bölüm başında aşağı doğru sönen teknik ızgara */}
+        <BlueprintGrid
+          density="coarse"
+          opacity="faint"
+          className="[mask-image:linear-gradient(to_bottom,black,transparent_45%)]"
+        />
+        <div className="container-content relative">
           <ScrollReveal className="mb-12 lg:mb-16">
-            <EyebrowTag>İletişim</EyebrowTag>
+            <TechLabel as="p" index={1} marker="crosshair">İletişim</TechLabel>
             <h2 className="mt-4 text-3xl lg:text-4xl font-semibold tracking-tight text-foreground">
               Size nasıl yardımcı olabiliriz?
             </h2>
@@ -166,7 +173,7 @@ function ContactPageContent() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
             {/* Form — left, 7 cols */}
             <ScrollReveal className="lg:col-span-7" delay={0.05}>
-              <div className="rounded-3xl bg-card border border-border p-8 lg:p-10 shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
+              <div className="rounded-sm bg-card border border-border p-8 lg:p-10 shadow-[var(--shadow-sm)]">
                 <form onSubmit={handleSubmit} className="space-y-5">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div className="flex flex-col gap-2">
@@ -181,8 +188,7 @@ function ContactPageContent() {
                         onChange={handleInputChange}
                         placeholder="Örn: Ali Veli"
                         required
-                        className="h-12 rounded-xl border border-input bg-background px-4 text-sm text-foreground placeholder:text-muted-foreground outline-hidden transition-all duration-150 focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring"
-                        style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
+                        className="h-12 rounded-xs border border-input bg-background px-4 text-sm text-foreground placeholder:text-muted-foreground outline-hidden transition-[border-color,box-shadow] duration-150 focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring motion-reduce:transition-none"
                       />
                     </div>
                     <div className="flex flex-col gap-2">
@@ -197,8 +203,7 @@ function ContactPageContent() {
                         onChange={handleInputChange}
                         placeholder="iletisim@example.com"
                         required
-                        className="h-12 rounded-xl border border-input bg-background px-4 text-sm text-foreground placeholder:text-muted-foreground outline-hidden transition-all duration-150 focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring"
-                        style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
+                        className="h-12 rounded-xs border border-input bg-background px-4 text-sm text-foreground placeholder:text-muted-foreground outline-hidden transition-[border-color,box-shadow] duration-150 focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring motion-reduce:transition-none"
                       />
                     </div>
                   </div>
@@ -215,8 +220,7 @@ function ContactPageContent() {
                       onChange={handleInputChange}
                       placeholder="Proje Teklifi"
                       required
-                      className="h-12 rounded-xl border border-input bg-background px-4 text-sm text-foreground placeholder:text-muted-foreground outline-hidden transition-all duration-150 focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring"
-                      style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
+                      className="h-12 rounded-xs border border-input bg-background px-4 text-sm text-foreground placeholder:text-muted-foreground outline-hidden transition-[border-color,box-shadow] duration-150 focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring motion-reduce:transition-none"
                     />
                   </div>
 
@@ -232,8 +236,7 @@ function ContactPageContent() {
                       rows={5}
                       placeholder="Merhaba, ..."
                       required
-                      className="rounded-xl border border-input bg-background px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground outline-hidden resize-none transition-all duration-150 focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring"
-                      style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
+                      className="rounded-xs border border-input bg-background px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground outline-hidden resize-none transition-[border-color,box-shadow] duration-150 focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring motion-reduce:transition-none"
                     />
                   </div>
 
@@ -242,8 +245,7 @@ function ContactPageContent() {
                     disabled={isSubmitting}
                     whileTap={{ scale: 0.98 }}
                     transition={{ duration: 0.15, ease }}
-                    className="group relative mt-2 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-primary text-sm font-medium text-primary-foreground shadow-[var(--shadow-md)] transition-all duration-150 hover:bg-primary disabled:opacity-60 disabled:cursor-not-allowed"
-                    style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
+                    className="group relative mt-2 flex h-12 w-full items-center justify-center gap-2 rounded-xs bg-primary text-sm font-medium text-primary-foreground shadow-[var(--shadow-md)] transition-colors duration-150 hover:bg-primary/90 disabled:opacity-60 disabled:cursor-not-allowed motion-reduce:transition-none"
                   >
                     {isSubmitting ? (
                       <span className="flex items-center gap-2">
@@ -254,8 +256,7 @@ function ContactPageContent() {
                       <>
                         <span>Mesajı Gönder</span>
                         <ArrowRight
-                          className="h-4.5 w-4.5 transition-transform duration-700 group-hover:translate-x-0.5"
-                          style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
+                          className="h-4.5 w-4.5 transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none"
                         />
                       </>
                     )}
@@ -266,7 +267,7 @@ function ContactPageContent() {
                       initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.5, ease }}
-                      className="flex items-start gap-3 rounded-xl border border-success/30 bg-success/10 p-4 text-sm text-success"
+                      className="flex items-start gap-3 rounded-sm border border-success/30 bg-success/10 p-4 text-sm text-success"
                     >
                       <CheckCircle className="mt-0.5 h-5 w-5 shrink-0 text-success" />
                       <span>{submitMessage}</span>
@@ -277,7 +278,7 @@ function ContactPageContent() {
                       initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.5, ease }}
-                      className="flex items-start gap-3 rounded-xl border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive"
+                      className="flex items-start gap-3 rounded-sm border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive"
                     >
                       <WarningCircle className="mt-0.5 h-5 w-5 shrink-0 text-destructive" />
                       <span>{submitMessage}</span>
@@ -290,7 +291,7 @@ function ContactPageContent() {
             {/* Info — right, 5 cols */}
             <ScrollReveal className="lg:col-span-5" delay={0.15}>
               <div className="space-y-8">
-                <div className="rounded-3xl border border-border bg-card p-8 shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
+                <div className="rounded-sm border border-border bg-card p-8 shadow-[var(--shadow-sm)]">
                   <h3 className="text-lg font-semibold tracking-tight text-foreground mb-6">
                     İletişim Bilgilerimiz
                   </h3>
@@ -298,7 +299,7 @@ function ContactPageContent() {
                     <div className="space-y-5">
                       {Array.from({ length: 4 }).map((_, i) => (
                         <div key={i} className="flex items-start gap-4">
-                          <Skeleton className="h-10 w-10 rounded-xl shrink-0" />
+                          <Skeleton className="h-10 w-10 rounded-xs shrink-0" />
                           <div className="flex-1 space-y-2">
                             <Skeleton className="h-4 w-1/3" />
                             <Skeleton className="h-4 w-2/3" />
@@ -311,18 +312,17 @@ function ContactPageContent() {
                       {infoItems.map((item) => (
                         <ScrollRevealItem key={item.label}>
                           <div className="flex items-start gap-4">
-                            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent">
+                            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xs bg-accent">
                               <item.icon className="h-5 w-5 text-accent-foreground" />
                             </span>
                             <div className="min-w-0">
-                              <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground mb-1">
+                              <p className="font-mono text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground mb-1">
                                 {item.label}
                               </p>
                               {item.href ? (
                                 <a
                                   href={item.href}
-                                  className="text-sm text-foreground transition-colors duration-150 hover:text-accent-foreground"
-                                  style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
+                                  className="text-sm text-foreground transition-colors duration-150 hover:text-accent-foreground motion-reduce:transition-none"
                                 >
                                   {item.value}
                                 </a>
@@ -338,7 +338,7 @@ function ContactPageContent() {
                 </div>
 
                 {!contactLoading && (contactInfo.socialLinks.linkedin || contactInfo.socialLinks.twitter || contactInfo.socialLinks.instagram || contactInfo.socialLinks.facebook) && (
-                  <div className="rounded-3xl border border-border bg-card p-8 shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
+                  <div className="rounded-sm border border-border bg-card p-8 shadow-[var(--shadow-sm)]">
                     <h3 className="text-lg font-semibold tracking-tight text-foreground mb-5">
                       Sosyal Medya
                     </h3>
@@ -348,8 +348,7 @@ function ContactPageContent() {
                           href={contactInfo.socialLinks.linkedin}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex h-10 w-10 items-center justify-center rounded-xl border border-border text-muted-foreground transition-all duration-150 hover:border-primary hover:text-accent-foreground hover:bg-accent"
-                          style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
+                          className="flex h-10 w-10 items-center justify-center rounded-xs border border-border text-muted-foreground transition-colors duration-150 hover:border-primary hover:text-accent-foreground hover:bg-accent motion-reduce:transition-none"
                         >
                           <span className="sr-only">LinkedIn</span>
                           <svg className="w-4.5 h-4.5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.338 16.338H13.67V12.16c0-.995-.017-2.277-1.387-2.277-1.39 0-1.601 1.086-1.601 2.207v4.248H8.014v-8.59h2.559v1.174h.037c.356-.675 1.227-1.387 2.526-1.387 2.703 0 3.203 1.778 3.203 4.092v4.711zM5.005 6.575a1.548 1.548 0 11-.003-3.096 1.548 1.548 0 01.003 3.096zm-1.337 9.763H6.34v-8.59H3.667v8.59zM17.668 1H2.328C1.595 1 1 1.581 1 2.298v15.403C1 18.418 1.595 19 2.328 19h15.34c.734 0 1.332-.582 1.332-1.299V2.298C19 1.581 18.402 1 17.668 1z" clipRule="evenodd" /></svg>
@@ -360,8 +359,7 @@ function ContactPageContent() {
                           href={contactInfo.socialLinks.twitter}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex h-10 w-10 items-center justify-center rounded-xl border border-border text-muted-foreground transition-all duration-150 hover:border-primary hover:text-accent-foreground hover:bg-accent"
-                          style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
+                          className="flex h-10 w-10 items-center justify-center rounded-xs border border-border text-muted-foreground transition-colors duration-150 hover:border-primary hover:text-accent-foreground hover:bg-accent motion-reduce:transition-none"
                         >
                           <span className="sr-only">Twitter</span>
                           <svg className="w-4.5 h-4.5" fill="currentColor" viewBox="0 0 20 20"><path d="M6.29 18.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0020 3.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.073 4.073 0 01.8 7.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 010 16.407a11.616 11.616 0 006.29 1.84" /></svg>
@@ -372,8 +370,7 @@ function ContactPageContent() {
                           href={contactInfo.socialLinks.instagram}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex h-10 w-10 items-center justify-center rounded-xl border border-border text-muted-foreground transition-all duration-150 hover:border-primary hover:text-accent-foreground hover:bg-accent"
-                          style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
+                          className="flex h-10 w-10 items-center justify-center rounded-xs border border-border text-muted-foreground transition-colors duration-150 hover:border-primary hover:text-accent-foreground hover:bg-accent motion-reduce:transition-none"
                         >
                           <span className="sr-only">Instagram</span>
                           <svg className="w-4.5 h-4.5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 0C4.477 0 0 4.484 0 10.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0110 4.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.203 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.942.359.31.678.921.678 1.856 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0020 10.017C20 4.484 15.522 0 10 0z" clipRule="evenodd" /></svg>
@@ -384,8 +381,7 @@ function ContactPageContent() {
                           href={contactInfo.socialLinks.facebook}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex h-10 w-10 items-center justify-center rounded-xl border border-border text-muted-foreground transition-all duration-150 hover:border-primary hover:text-accent-foreground hover:bg-accent"
-                          style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
+                          className="flex h-10 w-10 items-center justify-center rounded-xs border border-border text-muted-foreground transition-colors duration-150 hover:border-primary hover:text-accent-foreground hover:bg-accent motion-reduce:transition-none"
                         >
                           <span className="sr-only">Facebook</span>
                           <svg className="w-4.5 h-4.5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M20 10c0-5.523-4.477-10-10-10S0 4.477 0 10c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V10h2.54V7.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V10h2.773l-.443 2.89h-2.33v6.988C16.343 19.128 20 14.991 20 10z" clipRule="evenodd" /></svg>
@@ -400,7 +396,7 @@ function ContactPageContent() {
 
           {/* Map section */}
           <ScrollReveal className="mt-16 lg:mt-24" delay={0.1}>
-            <div className="rounded-3xl border border-border bg-card p-8 shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
+            <div className="rounded-sm border border-border bg-card p-8 shadow-[var(--shadow-sm)]">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-lg font-semibold tracking-tight text-foreground">Konumumuz</h3>
                 <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
@@ -410,16 +406,16 @@ function ContactPageContent() {
               </div>
 
               {contactLoading ? (
-                <div className="rounded-2xl bg-muted p-4 space-y-3">
-                  <Skeleton className="h-10 w-10 rounded-xl" />
+                <div className="rounded-sm bg-muted p-4 space-y-3">
+                  <Skeleton className="h-10 w-10 rounded-xs" />
                   <Skeleton className="h-4 w-1/2" />
                   <Skeleton className="h-4 w-3/4" />
                 </div>
               ) : (
                 <div className="space-y-4">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-2xl bg-surface-secondary p-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-sm bg-surface-secondary p-4">
                     <div className="flex items-center gap-3">
-                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent">
+                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xs bg-accent">
                         <MapPin className="h-5 w-5 text-accent-foreground" />
                       </span>
                       <div>
@@ -432,8 +428,7 @@ function ContactPageContent() {
                         href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(contactInfo.address)}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center rounded-lg border border-border px-4 py-2 text-xs font-medium text-foreground transition-all duration-150 hover:border-primary hover:text-accent-foreground"
-                        style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
+                        className="inline-flex items-center rounded-xs border border-border px-4 py-2 text-xs font-medium text-foreground transition-colors duration-150 hover:border-primary hover:text-accent-foreground motion-reduce:transition-none"
                       >
                         Büyük Harita
                       </a>
@@ -441,15 +436,14 @@ function ContactPageContent() {
                         href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(contactInfo.address)}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center rounded-lg bg-primary px-4 py-2 text-xs font-medium text-primary-foreground transition-colors duration-200 hover:bg-[hsl(var(--primary)/0.85)] active:scale-[0.98]"
-                        style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
+                        className="inline-flex items-center rounded-xs bg-primary px-4 py-2 text-xs font-medium text-primary-foreground transition-colors duration-200 hover:bg-primary/90 active:scale-[0.98] motion-reduce:transition-none"
                       >
                         Yol Tarifi
                       </a>
                     </div>
                   </div>
 
-                  <div className="relative h-96 overflow-hidden rounded-2xl bg-muted">
+                  <div className="relative h-96 overflow-hidden rounded-sm bg-muted">
                     <iframe
                       src={`https://maps.google.com/maps?width=100%25&height=400&hl=tr&q=${encodeURIComponent(contactInfo.address)}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
                       className="w-full h-full border-0"
@@ -461,7 +455,6 @@ function ContactPageContent() {
                     <div
                       className="absolute inset-0 flex items-center justify-center bg-muted pointer-events-none opacity-100 transition-opacity duration-700"
                       id="map-loading"
-                      style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
                     >
                       <div className="text-center">
                         <span className="mb-2 block h-8 w-8 mx-auto animate-spin rounded-full border-2 border-border border-t-primary" />

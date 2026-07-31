@@ -67,6 +67,7 @@ export default async function VideosPage({ params }: { params: Promise<{ lang: s
         buttonText={hero.buttonText}
         buttonLink={hero.buttonLink}
         showBreadcrumbs={true}
+        index={4}
       />
 
       <BreadcrumbsJsonLd

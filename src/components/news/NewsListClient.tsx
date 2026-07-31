@@ -4,7 +4,7 @@ import { m, useReducedMotion } from 'framer-motion'
 import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowRight, Search as MagnifyingGlass, Newspaper } from 'lucide-react';
-import EyebrowTag from '@/components/ui/EyebrowTag'
+import { TechLabel } from '@/components/ui'
 import { ScrollReveal } from '@/components/ui/ScrollReveal'
 import { cn } from '@/lib/utils'
 
@@ -61,7 +61,7 @@ function HeroCard({ article, lang, newsT, basePath, translationKey, dateLocale }
     >
       <Link
         href={`/${lang}/${basePath}/${article.slug}`}
-        className="group relative block w-full rounded-lg overflow-hidden bg-surface-tertiary border border-border"
+        className="group relative block w-full rounded-sm overflow-hidden bg-surface-tertiary border border-border"
       >
         <div className="relative aspect-21/9 md:aspect-[2.4/1] w-full overflow-hidden">
           <Image
@@ -81,7 +81,7 @@ function HeroCard({ article, lang, newsT, basePath, translationKey, dateLocale }
           <div className="max-w-2xl space-y-4">
             <div className="flex items-center gap-3">
               {article.tags?.[0] && (
-                <EyebrowTag variant="light">{article.tags[0]}</EyebrowTag>
+                <TechLabel as="span" marker="tick">{article.tags[0]}</TechLabel>
               )}
               <span className="font-mono text-[11px] text-muted-foreground tracking-wide">
                 {formatDate(article.publishedAt || article.createdAt, dateLocale)}
@@ -161,13 +161,13 @@ function ArticleCard({
             style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
             sizes={isLarge ? '(max-width: 768px) 100vw, 55vw' : '(max-width: 768px) 100vw, 45vw'}
           />
-          <div className="absolute inset-0 bg-linear-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+          <div className="absolute inset-0 bg-linear-to-t from-[hsl(var(--scrim)/0.2)] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
         </div>
 
         <div className={cn('flex flex-col grow', isLarge ? 'p-7' : 'p-5 md:p-6')}>
           <div className="flex items-center gap-3 mb-3">
             {article.tags?.[0] && (
-              <EyebrowTag>{article.tags[0]}</EyebrowTag>
+              <TechLabel as="span" marker="tick">{article.tags[0]}</TechLabel>
             )}
             <span className="font-mono text-[11px] text-muted-foreground tracking-wide">
               {formatDate(article.publishedAt || article.createdAt, dateLocale)}
@@ -229,7 +229,7 @@ export default function NewsListClient({
       {/* Search + Filters */}
       <ScrollReveal
         className={cn(
-          'flex flex-col md:flex-row gap-4 justify-between items-center rounded-xl border border-border bg-surface-primary backdrop-blur-xs p-4 md:p-5 shadow-xs'
+          'flex flex-col md:flex-row gap-4 justify-between items-center rounded-sm border border-border bg-surface-primary backdrop-blur-xs p-4 md:p-5 shadow-xs'
         )}
       >
         <form className="relative w-full md:w-80 group">
@@ -246,12 +246,11 @@ export default function NewsListClient({
             placeholder={newsT.searchPlaceholder || 'Haberlerde ara...'}
             defaultValue={search}
             className={cn(
-              'block w-full pl-10 pr-4 py-2.5 rounded-xl text-sm text-foreground placeholder:text-muted-foreground',
+              'block w-full pl-10 pr-4 py-2.5 rounded-xs text-sm text-foreground placeholder:text-muted-foreground',
               'border border-border bg-surface-secondary',
               'focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus:border-primary/40',
-              'transition-all duration-700'
+              'transition-[border-color,box-shadow] duration-200 motion-reduce:transition-none'
             )}
-            style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
           />
         </form>
 
@@ -260,12 +259,11 @@ export default function NewsListClient({
             <Link
               href={`/${lang}/${basePath}`}
               className={cn(
-                'px-4 py-1.5 rounded-full text-xs font-medium tracking-wide transition-all duration-200',
+                'px-4 py-1.5 rounded-xs text-xs font-medium tracking-wide transition-colors duration-200 motion-reduce:transition-none',
                 !tag
                   ? 'bg-primary text-primary-foreground'
                   : 'bg-secondary text-secondary-foreground hover:bg-accent hover:text-accent-foreground'
               )}
-              style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
             >
               {commonT.all || 'Tümü'}
             </Link>
@@ -274,12 +272,11 @@ export default function NewsListClient({
                 key={t}
                 href={`/${lang}/${basePath}?tag=${encodeURIComponent(t)}`}
                 className={cn(
-                  'px-4 py-1.5 rounded-full text-xs font-medium tracking-wide transition-all duration-200',
+                  'px-4 py-1.5 rounded-xs text-xs font-medium tracking-wide transition-colors duration-200 motion-reduce:transition-none',
                   tag === t
                     ? 'bg-primary text-primary-foreground'
                     : 'bg-secondary text-secondary-foreground hover:bg-accent hover:text-accent-foreground'
                 )}
-                style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
               >
                 {t}
               </Link>
@@ -352,8 +349,7 @@ export default function NewsListClient({
               {page > 1 && (
                 <Link
                   href={`/${lang}/${basePath}?page=${page - 1}${search ? `&search=${search}` : ''}${tag ? `&tag=${tag}` : ''}`}
-                  className="px-4 py-1.5 rounded-full text-sm font-medium bg-secondary text-secondary-foreground hover:bg-accent hover:text-accent-foreground transition-all duration-200"
-                  style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
+                  className="px-4 py-1.5 rounded-xs text-sm font-medium bg-secondary text-secondary-foreground hover:bg-accent hover:text-accent-foreground transition-colors duration-200 motion-reduce:transition-none"
                 >
                   {commonT.previous || 'Önceki'}
                 </Link>
@@ -364,12 +360,11 @@ export default function NewsListClient({
                   key={p}
                   href={`/${lang}/${basePath}?page=${p}${search ? `&search=${search}` : ''}${tag ? `&tag=${tag}` : ''}`}
                   className={cn(
-                    'w-10 h-10 flex items-center justify-center rounded-full text-sm font-medium transition-all duration-200',
+                    'w-10 h-10 flex items-center justify-center rounded-xs font-mono text-sm font-medium tabular-nums transition-colors duration-200 motion-reduce:transition-none',
                     p === page
                       ? 'bg-primary text-primary-foreground'
                       : 'bg-secondary text-secondary-foreground hover:bg-accent hover:text-accent-foreground'
                   )}
-                  style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
                 >
                   {p}
                 </Link>
@@ -378,8 +373,7 @@ export default function NewsListClient({
               {page < totalPages && (
                 <Link
                   href={`/${lang}/${basePath}?page=${page + 1}${search ? `&search=${search}` : ''}${tag ? `&tag=${tag}` : ''}`}
-                  className="px-4 py-1.5 rounded-full text-sm font-medium bg-secondary text-secondary-foreground hover:bg-accent hover:text-accent-foreground transition-all duration-200"
-                  style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
+                  className="px-4 py-1.5 rounded-xs text-sm font-medium bg-secondary text-secondary-foreground hover:bg-accent hover:text-accent-foreground transition-colors duration-200 motion-reduce:transition-none"
                 >
                   {commonT.next || 'Sonraki'}
                 </Link>
@@ -389,9 +383,9 @@ export default function NewsListClient({
         </>
       ) : (
         <ScrollReveal
-          className="text-center py-20 rounded-xl border border-dashed border-border bg-surface-primary"
+          className="text-center py-20 rounded-sm border border-dashed border-border bg-surface-primary"
         >
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-surface-secondary border border-border text-primary mb-4">
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-sm bg-surface-secondary border border-border text-primary mb-4">
             <Newspaper size={28} />
           </div>
           <h3 className="text-lg font-medium text-foreground mb-1">
@@ -402,8 +396,7 @@ export default function NewsListClient({
           </p>
           <Link
             href={`/${lang}/${basePath}`}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium bg-primary text-primary-foreground hover:bg-primary transition-all duration-700 shadow-xs"
-            style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xs text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors duration-200 shadow-xs motion-reduce:transition-none"
           >
             {newsT.showAll || 'Tüm Haberleri Göster'}
           </Link>

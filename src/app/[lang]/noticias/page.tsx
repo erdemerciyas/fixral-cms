@@ -90,6 +90,7 @@ export default async function NewsListPage({ params: paramsPromise, searchParams
           description={newsT.pageDescription || ''}
           showButton={false}
           showBreadcrumbs={true}
+          index={3}
         />
 
         <div className="container-content py-8">

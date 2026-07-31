@@ -67,14 +67,14 @@ export default function RegisterPage() {
     return (
         <div className="min-h-dvh pt-32 pb-20 bg-background flex items-center justify-center">
             <div className="container-main max-w-md w-full">
-                <div className="bg-card p-8 rounded-2xl shadow-xs border border-border">
+                <div className="bg-card p-8 rounded-sm shadow-[var(--shadow-sm)] border border-border">
                     <h1 className="text-2xl font-bold text-foreground mb-2 text-center">Kayıt Ol</h1>
                     <p className="text-muted-foreground mb-8 text-center">
                         Yeni bir hesap oluşturun ve alışverişe başlayın.
                     </p>
 
                     {error && (
-                        <div className="mb-6 p-4 bg-destructive/10 text-destructive text-sm rounded-lg border border-destructive/20 font-medium">
+                        <div className="mb-6 p-4 bg-destructive/10 text-destructive text-sm rounded-sm border border-destructive/20 font-medium">
                             {error}
                         </div>
                     )}
@@ -88,7 +88,7 @@ export default function RegisterPage() {
                                 required
                                 value={formData.name}
                                 onChange={handleChange}
-                                className="w-full px-4 py-2 rounded-lg border border-input bg-background text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary outline-hidden transition-all"
+                                className="w-full px-4 py-2 rounded-xs border border-input bg-background text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary outline-hidden transition-[border-color,box-shadow] duration-150 motion-reduce:transition-none"
                             />
                         </div>
                         <div>
@@ -99,7 +99,7 @@ export default function RegisterPage() {
                                 required
                                 value={formData.email}
                                 onChange={handleChange}
-                                className="w-full px-4 py-2 rounded-lg border border-input bg-background text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary outline-hidden transition-all"
+                                className="w-full px-4 py-2 rounded-xs border border-input bg-background text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary outline-hidden transition-[border-color,box-shadow] duration-150 motion-reduce:transition-none"
                             />
                         </div>
                         <div>
@@ -111,7 +111,7 @@ export default function RegisterPage() {
                                 minLength={6}
                                 value={formData.password}
                                 onChange={handleChange}
-                                className="w-full px-4 py-2 rounded-lg border border-input bg-background text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary outline-hidden transition-all"
+                                className="w-full px-4 py-2 rounded-xs border border-input bg-background text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary outline-hidden transition-[border-color,box-shadow] duration-150 motion-reduce:transition-none"
                             />
                         </div>
                         <div>
@@ -123,14 +123,14 @@ export default function RegisterPage() {
                                 minLength={6}
                                 value={formData.confirmPassword}
                                 onChange={handleChange}
-                                className="w-full px-4 py-2 rounded-lg border border-input bg-background text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary outline-hidden transition-all"
+                                className="w-full px-4 py-2 rounded-xs border border-input bg-background text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary outline-hidden transition-[border-color,box-shadow] duration-150 motion-reduce:transition-none"
                             />
                         </div>
 
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full py-3 bg-primary text-primary-foreground font-bold rounded-xl hover:bg-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-4"
+                            className="w-full py-3 bg-primary text-primary-foreground font-bold rounded-xs hover:bg-primary/90 transition-colors duration-150 motion-reduce:transition-none disabled:opacity-50 disabled:cursor-not-allowed mt-4"
                         >
                             {loading ? 'Kayıt Yapılıyor...' : 'Kayıt Ol'}
                         </button>

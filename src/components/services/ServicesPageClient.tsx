@@ -8,7 +8,7 @@ import { CheckCircle, ArrowRight, Clock, Star, Sparkles, AlertCircle } from 'luc
 import { AnimatedSection } from '@/components/ui/AnimatedSection';
 import { MagneticButton } from '@/components/ui/MagneticButton';
 import { ScrollReveal } from '@/components/ui/ScrollReveal';
-import EyebrowTag from '@/components/ui/EyebrowTag';
+import { MeasureRule, TechLabel } from '@/components/ui';
 import { useLocale } from '@/hooks/useLocale';
 
 const ease = [0.32, 0.72, 0, 1] as const;
@@ -36,7 +36,7 @@ function SidebarSkeleton() {
   return (
     <div className="space-y-2">
       {Array.from({ length: 4 }).map((_, i) => (
-        <div key={i} className="h-12 rounded-xl bg-surface-secondary animate-pulse" />
+        <div key={i} className="h-12 rounded-xs bg-surface-secondary animate-pulse" />
       ))}
     </div>
   );
@@ -45,12 +45,12 @@ function SidebarSkeleton() {
 function DetailSkeleton() {
   return (
     <div className="space-y-6 animate-pulse">
-      <div className="h-8 w-2/3 rounded-lg bg-surface-secondary" />
-      <div className="aspect-video rounded-2xl bg-surface-secondary" />
+      <div className="h-8 w-2/3 rounded-sm bg-surface-secondary" />
+      <div className="aspect-video rounded-sm bg-surface-secondary" />
       <div className="space-y-3">
-        <div className="h-4 rounded bg-surface-secondary w-full" />
-        <div className="h-4 rounded bg-surface-secondary w-5/6" />
-        <div className="h-4 rounded bg-surface-secondary w-4/6" />
+        <div className="h-4 rounded-xs bg-surface-secondary w-full" />
+        <div className="h-4 rounded-xs bg-surface-secondary w-5/6" />
+        <div className="h-4 rounded-xs bg-surface-secondary w-4/6" />
       </div>
     </div>
   );
@@ -64,10 +64,10 @@ function ServiceDetail({ service, index, lang }: { service: Service; index: numb
 
   return (
     <AnimatedSection className="space-y-8" delay={0.05}>
-      {/* Eyebrow */}
-      <EyebrowTag>
-        {String(index + 1).padStart(2, '0')} / {service.title}
-      </EyebrowTag>
+      {/* Teknik etiket — "01 / HIZMET ADİ" deseni */}
+      <TechLabel as="p" index={index + 1} marker="tick">
+        {service.title}
+      </TechLabel>
 
       {/* Title */}
       <h2
@@ -133,12 +133,9 @@ function ServiceDetail({ service, index, lang }: { service: Service; index: numb
         </m.ul>
       )}
 
-      {/* Meta strip */}
+      {/* Meta strip — monospace teknik satır, hairline ayraçlar */}
       {(service.duration || service.rating || service.price) && (
-        <div
-          className="flex flex-wrap items-center gap-5 py-4 border-y border-border"
-          style={{ fontFamily: 'var(--font-geist-mono, monospace)' }}
-        >
+        <div className="flex flex-wrap items-center gap-5 py-4 border-y border-border font-mono">
           {service.duration && (
             <div className="flex items-center gap-2 text-muted-foreground text-sm">
               <Clock className="w-4 h-4" />
@@ -147,7 +144,7 @@ function ServiceDetail({ service, index, lang }: { service: Service; index: numb
           )}
           {service.rating && (
             <div className="flex items-center gap-2 text-muted-foreground text-sm">
-              <Star className="w-4 h-4 text-amber-500" />
+              <Star className="w-4 h-4 text-primary" />
               <span>{service.rating}/5</span>
             </div>
           )}
@@ -164,14 +161,11 @@ function ServiceDetail({ service, index, lang }: { service: Service; index: numb
       >
         <Link
           href={`/${lang}/contact?service=${encodeURIComponent(service.title)}`}
-          className="group inline-flex items-center gap-2.5 bg-primary text-primary-foreground px-7 py-3.5 rounded-lg text-sm font-medium
-            transition-colors duration-200 hover:bg-[hsl(var(--primary)/0.85)] active:scale-[0.98] shadow-[var(--shadow-sm)]"
-          style={{
-            transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)',
-          }}
+          className="group inline-flex items-center gap-2.5 bg-primary text-primary-foreground px-7 py-3.5 rounded-xs text-sm font-medium
+            transition-colors duration-200 hover:bg-primary/90 active:scale-[0.98] shadow-[var(--shadow-sm)] motion-reduce:transition-none"
         >
           <span>Teklif Al</span>
-          <ArrowRight className="w-4 h-4 transition-transform duration-700 group-hover:translate-x-1" />
+          <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none" />
         </Link>
       </MagneticButton>
     </AnimatedSection>
@@ -240,7 +234,7 @@ export default function ServicesPageClient() {
     return (
       <section id="services" className="py-16 bg-background">
         <div className="container-content text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-surface-secondary border border-border text-muted-foreground mb-5">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-sm bg-surface-secondary border border-border text-muted-foreground mb-5">
             <AlertCircle className="w-8 h-8" />
           </div>
           <h2
@@ -251,7 +245,7 @@ export default function ServicesPageClient() {
           <p className="text-muted-foreground text-sm mb-5">{error}</p>
           <button
             onClick={() => window.location.reload()}
-            className="px-5 py-2.5 rounded-lg text-sm font-medium bg-primary text-primary-foreground hover:bg-[hsl(var(--primary)/0.85)] transition-colors duration-200 active:scale-[0.98]"
+            className="px-5 py-2.5 rounded-xs text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors duration-200 active:scale-[0.98]"
           >
             Tekrar Dene
           </button>
@@ -266,7 +260,7 @@ export default function ServicesPageClient() {
       <section id="services" className="py-24 bg-background">
         <div className="container-content text-center">
           <ScrollReveal>
-            <div className="w-20 h-20 rounded-2xl bg-surface-secondary border border-border flex items-center justify-center mx-auto mb-6">
+            <div className="w-20 h-20 rounded-sm bg-surface-secondary border border-border flex items-center justify-center mx-auto mb-6">
               <Sparkles className="w-8 h-8 text-accent-foreground" />
             </div>
             <h2
@@ -292,7 +286,7 @@ export default function ServicesPageClient() {
         <div className="container-content">
           {/* Section intro */}
           <ScrollReveal className="max-w-2xl mb-10 md:mb-14">
-            <EyebrowTag className="mb-5">Hizmetler</EyebrowTag>
+            <TechLabel as="p" marker="crosshair" className="mb-5">Hizmetler</TechLabel>
             <h2
               className="text-2xl md:text-3xl font-semibold text-foreground tracking-tight leading-snug mb-3"
             >
@@ -301,6 +295,7 @@ export default function ServicesPageClient() {
             <p className="text-muted-foreground text-base md:text-[17px] leading-relaxed">
               Her bir hizmetimizin detaylarını inceleyin ve ihtiyaçlarınıza en uygun çözümü keşfedin.
             </p>
+            <MeasureRule ticks="sparse" className="mt-8" />
           </ScrollReveal>
 
           {/* 2-column grid */}
@@ -314,17 +309,14 @@ export default function ServicesPageClient() {
                     <li key={service._id} className="shrink-0 lg:shrink">
                       <button
                         onClick={() => handleNavClick(index)}
-                        className={`w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 whitespace-nowrap lg:whitespace-normal ${
+                        className={`w-full text-left px-4 py-3 rounded-xs text-sm font-medium transition-colors duration-200 motion-reduce:transition-none whitespace-nowrap lg:whitespace-normal ${
                           isActive
                             ? 'bg-primary text-primary-foreground shadow-[var(--shadow-sm)]'
                             : 'bg-surface-primary border border-border text-muted-foreground hover:bg-accent hover:border-primary/30 hover:text-foreground'
                         }`}
-                        style={{
-                          transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)',
-                        }}
                         aria-current={isActive ? 'true' : undefined}
                       >
-                        <span className="inline-block w-6 text-xs opacity-50 mr-1">
+                        <span className="inline-block w-6 font-mono text-xs opacity-60 mr-1 tabular-nums">
                           {String(index + 1).padStart(2, '0')}
                         </span>
                         {service.title}
@@ -357,7 +349,7 @@ export default function ServicesPageClient() {
 
         <div className="container-content relative z-10 text-center">
           <ScrollReveal>
-            <EyebrowTag variant="light" className="mb-6 mx-auto">Özel Proje</EyebrowTag>
+            <TechLabel as="p" marker="tick" className="mb-6 justify-center text-primary-foreground/80 [&>span[aria-hidden]]:bg-primary-foreground">Özel Proje</TechLabel>
           </ScrollReveal>
 
           <ScrollReveal delay={0.1}>
@@ -378,7 +370,7 @@ export default function ServicesPageClient() {
             <MagneticButton asChild>
               <Link
                 href={`/${lang}/contact`}
-                className="group inline-flex items-center justify-center gap-2.5 bg-primary-foreground text-primary px-7 py-3.5 rounded-lg text-sm font-medium
+                className="group inline-flex items-center justify-center gap-2.5 bg-primary-foreground text-primary px-7 py-3.5 rounded-xs text-sm font-medium
                   transition-all duration-200 hover:bg-primary-foreground/90 active:scale-[0.98] motion-reduce:transition-none"
               >
                 <Sparkles className="w-4 h-4" />
@@ -388,11 +380,11 @@ export default function ServicesPageClient() {
 
             <Link
               href={`/${lang}/portfolio`}
-              className="group inline-flex items-center justify-center gap-2.5 border border-primary-foreground/30 text-primary-foreground px-7 py-3.5 rounded-lg text-sm font-medium
-                transition-all duration-200 hover:bg-black/10 active:scale-[0.98] motion-reduce:transition-none"
+              className="group inline-flex items-center justify-center gap-2.5 border border-primary-foreground/30 text-primary-foreground px-7 py-3.5 rounded-xs text-sm font-medium
+                transition-all duration-200 hover:bg-primary-foreground/10 active:scale-[0.98] motion-reduce:transition-none"
             >
               <span>Örnek Projelerimizi İnceleyin</span>
-              <ArrowRight className="w-4 h-4 transition-transform duration-700 group-hover:translate-x-1" />
+              <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none" />
             </Link>
           </ScrollReveal>
         </div>

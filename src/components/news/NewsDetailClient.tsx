@@ -4,7 +4,7 @@ import { m, useScroll, useSpring } from 'framer-motion'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Calendar as CalendarBlank, ArrowRight, Share2 as ShareNetwork, ArrowLeft, User as UserIcon, Tag } from 'lucide-react';
-import EyebrowTag from '@/components/ui/EyebrowTag'
+import { TechLabel } from '@/components/ui'
 import Breadcrumbs from '@/components/Breadcrumbs'
 import { SITE_URL } from '@/lib/seo-utils'
 
@@ -102,7 +102,7 @@ export default function NewsDetailClient({ lang, locale = 'tr', news, translatio
                   className="flex flex-wrap items-center gap-3"
                 >
                   {news.tags?.map((t) => (
-                    <EyebrowTag key={t}>{t}</EyebrowTag>
+                    <TechLabel key={t} as="span" marker="tick">{t}</TechLabel>
                   ))}
                 </m.div>
 
@@ -173,7 +173,7 @@ export default function NewsDetailClient({ lang, locale = 'tr', news, translatio
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.2, ease }}
-                className="relative w-full aspect-video mb-10 rounded-xl overflow-hidden shadow-xs border border-border"
+                className="relative w-full aspect-video mb-10 rounded-sm overflow-hidden shadow-xs border border-border"
               >
                 <Image
                   src={news.featuredImage!.url}
@@ -192,15 +192,15 @@ export default function NewsDetailClient({ lang, locale = 'tr', news, translatio
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-40px' }}
               transition={{ duration: 0.7, delay: 0.2, ease }}
-              className="prose prose-lg prose-zinc max-w-none
+              className="prose prose-lg max-w-none
                 prose-headings:font-semibold prose-headings:tracking-tight prose-headings:text-foreground
                 prose-p:text-muted-foreground prose-p:leading-[1.8]
                 prose-a:text-accent-foreground prose-a:no-underline prose-a:hover:underline
                 prose-strong:text-foreground prose-strong:font-semibold
-                prose-img:rounded-2xl prose-img:shadow-xs
+                prose-img:rounded-sm prose-img:shadow-xs
                 prose-blockquote:border-l-primary/30 prose-blockquote:text-muted-foreground prose-blockquote:italic
-                prose-code:font-mono prose-code:text-accent-foreground prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-md prose-code:text-sm
-                prose-pre:bg-zinc-900 prose-pre:rounded-2xl
+                prose-code:font-mono prose-code:text-accent-foreground prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-xs prose-code:text-sm
+                prose-pre:bg-surface-tertiary prose-pre:border prose-pre:border-border prose-pre:rounded-sm
                 prose-li:text-muted-foreground
               "
             >
@@ -224,15 +224,14 @@ export default function NewsDetailClient({ lang, locale = 'tr', news, translatio
               >
                 <div className="flex items-center gap-2 mb-3">
                   <Tag size={16} className="text-muted-foreground" />
-                  <span className="text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground">{t.topics}</span>
+                  <span className="font-mono text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground">{t.topics}</span>
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {news.tags.map((tag: string) => (
                     <Link
                       key={tag}
                       href={`/${lang}/${basePath}?tag=${encodeURIComponent(tag)}`}
-                      className="px-3.5 py-1.5 rounded-xl bg-accent text-accent-foreground text-sm hover:bg-accent transition-all duration-150"
-                      style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
+                      className="px-3.5 py-1.5 rounded-xs bg-accent text-accent-foreground font-mono text-sm hover:bg-accent transition-colors duration-150 motion-reduce:transition-none"
                     >
                       #{tag}
                     </Link>
@@ -251,7 +250,7 @@ export default function NewsDetailClient({ lang, locale = 'tr', news, translatio
             >
               <div className="flex items-center gap-2 mb-4">
                 <ShareNetwork size={16} className="text-muted-foreground" />
-                <span className="text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground">{t.share}</span>
+                <span className="font-mono text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground">{t.share}</span>
               </div>
               <div className="flex gap-3">
                 {[
@@ -289,8 +288,7 @@ export default function NewsDetailClient({ lang, locale = 'tr', news, translatio
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={social.label}
-                    className="w-10 h-10 rounded-xl bg-card border border-border text-muted-foreground flex items-center justify-center hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-150"
-                    style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
+                    className="w-10 h-10 rounded-xs bg-card border border-border text-muted-foreground flex items-center justify-center hover:bg-primary hover:text-primary-foreground hover:border-primary transition-colors duration-150 motion-reduce:transition-none"
                   >
                     {social.icon}
                   </a>
@@ -342,8 +340,7 @@ export default function NewsDetailClient({ lang, locale = 'tr', news, translatio
                 >
                   <Link
                     href={`/${lang}/portfolio/${portfolio.slug}`}
-                    className="group relative block h-52 rounded-xl overflow-hidden shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] transition-all duration-700"
-                    style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
+                    className="group relative block h-52 rounded-sm overflow-hidden border border-border shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] transition-shadow duration-200 motion-reduce:transition-none"
                   >
                     <Image
                       src={portfolio.coverImage}
@@ -352,7 +349,7 @@ export default function NewsDetailClient({ lang, locale = 'tr', news, translatio
                       className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
                       style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
                     />
-                    <div className="absolute inset-0 bg-linear-to-t from-black/75 via-black/25 to-transparent" />
+                    <div className="absolute inset-0 bg-linear-to-t from-[hsl(var(--scrim)/0.75)] via-[hsl(var(--scrim)/0.25)] to-transparent" />
                     <div className="absolute bottom-0 left-0 p-5">
                       <h3 className="text-white font-semibold text-lg line-clamp-1 group-hover:text-white/90 transition-colors duration-700">
                         {portfolio.title}
@@ -394,8 +391,7 @@ export default function NewsDetailClient({ lang, locale = 'tr', news, translatio
                 >
                   <Link
                     href={`/${lang}/${basePath}/${relatedNews.slug}`}
-                    className="group block rounded-xl overflow-hidden bg-card border border-border shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] transition-all duration-700"
-                    style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
+                    className="group block rounded-sm overflow-hidden bg-card border border-border shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] transition-shadow duration-200 motion-reduce:transition-none"
                   >
                     {relatedNews.featuredImage?.url && (
                       <div className="relative aspect-16/10 overflow-hidden bg-muted">

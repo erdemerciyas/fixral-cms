@@ -57,6 +57,8 @@ export default async function ServicesPage() {
       <PageHero
         title={hero.title}
         description={hero.description}
+        badge="Hizmetler"
+        index={1}
         buttonText="Hizmetleri İncele"
         buttonLink="#services"
         showButton={true}

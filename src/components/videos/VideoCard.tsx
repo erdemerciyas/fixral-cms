@@ -23,12 +23,12 @@ export interface Video {
 export function SkeletonCard({ large = false }: { large?: boolean }) {
   return (
     <div
-      className={`rounded-xl overflow-hidden bg-muted col-span-12 ${
+      className={`rounded-sm overflow-hidden bg-muted col-span-12 ${
         large ? 'md:col-span-8 aspect-video' : 'md:col-span-4 aspect-16/10'
       }`}
     >
       <div className="relative h-full w-full">
-        <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/5 to-transparent animate-[shimmer_2s_infinite] -translate-x-full" />
+        <div className="absolute inset-0 bg-linear-to-r from-transparent via-foreground/5 to-transparent animate-[shimmer_2s_infinite] -translate-x-full" />
       </div>
     </div>
   );
@@ -72,24 +72,27 @@ export default function VideoCard({
         href={`https://www.youtube.com/watch?v=${video.videoId}`}
         target="_blank"
         rel="noopener noreferrer"
-        className="block rounded-lg overflow-hidden bg-card border border-border hover:border-primary/30 hover:shadow-xs hover:-translate-y-0.5 transition-all duration-200"
+        className="block rounded-sm overflow-hidden bg-card border border-border hover:border-primary/30 hover:shadow-xs hover:-translate-y-0.5 transition-[transform,box-shadow,border-color] duration-200 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
       >
         <div className={`relative overflow-hidden ${isLarge ? 'aspect-video' : 'aspect-16/10'}`}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={video.thumbnail}
             alt={video.title}
-            className="w-full h-full object-cover transition-transform"
-            style={{ transitionDuration: '700ms', transitionTimingFunction: 'cubic-bezier(0.32,0.72,0,1)' }}
+            className="w-full h-full object-cover"
+          />
+
+          {/* Scan-line overlay — yalnızca hover'da görünür, reduced-motion'da gizli */}
+          <span
+            className="scan-line opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+            aria-hidden="true"
           />
 
           <div
-            className="absolute inset-0 bg-black/0 group-hover:bg-black/30 flex items-center justify-center transition-colors"
-            style={{ transitionDuration: '700ms', transitionTimingFunction: 'cubic-bezier(0.32,0.72,0,1)' }}
+            className="absolute inset-0 bg-transparent group-hover:bg-[hsl(var(--scrim)/0.3)] flex items-center justify-center transition-colors duration-200 motion-reduce:transition-none"
           >
             <div
-              className="w-14 h-14 rounded-full bg-white/90 backdrop-blur-xs flex items-center justify-center shadow-xs opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100 transition-all"
-              style={{ transitionDuration: '700ms', transitionTimingFunction: 'cubic-bezier(0.32,0.72,0,1)' }}
+              className="w-14 h-14 rounded-sm bg-background/90 backdrop-blur-xs flex items-center justify-center shadow-xs opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100 transition-[opacity,transform] duration-200 motion-reduce:transition-none motion-reduce:scale-100"
             >
               <Play className="w-6 h-6 text-primary ml-0.5" />
             </div>
@@ -97,10 +100,10 @@ export default function VideoCard({
 
           <div className="absolute top-3 right-3">
             <span
-              className={`inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-medium tracking-wide rounded-full backdrop-blur-xs ${
+              className={`inline-flex items-center gap-1 px-2.5 py-1 font-mono text-[10px] font-medium uppercase tracking-[0.14em] rounded-xs backdrop-blur-xs ${
                 video.type === 'short'
-                  ? 'bg-primary/80 text-white'
-                  : 'bg-primary/80 text-white'
+                  ? 'bg-primary/90 text-primary-foreground'
+                  : 'bg-primary/90 text-primary-foreground'
               }`}
             >
               {video.type === 'short' ? (
@@ -115,14 +118,9 @@ export default function VideoCard({
 
         <div className={`p-5 ${isLarge ? 'md:p-7' : ''}`}>
           <h3
-            className={`font-semibold text-foreground line-clamp-2 mb-2 group-hover:text-accent-foreground transition-colors ${
+            className={`font-semibold text-foreground line-clamp-2 mb-2 group-hover:text-accent-foreground transition-colors duration-200 motion-reduce:transition-none ${
               isLarge ? 'text-lg md:text-xl' : 'text-base'
             }`}
-            style={{
-              fontFamily: 'var(--font-geist-sans)',
-              transitionDuration: '700ms',
-              transitionTimingFunction: 'cubic-bezier(0.32,0.72,0,1)',
-            }}
           >
             {video.title}
           </h3>
@@ -138,13 +136,13 @@ export default function VideoCard({
               {video.tags.slice(0, isLarge ? 4 : 2).map((tag, i) => (
                 <span
                   key={i}
-                  className="px-2 py-0.5 rounded-md text-[11px] font-medium bg-muted text-muted-foreground tracking-wide"
+                  className="px-2 py-0.5 rounded-xs font-mono text-[11px] font-medium bg-muted text-muted-foreground tracking-wide"
                 >
                   {tag}
                 </span>
               ))}
               {video.tags.length > (isLarge ? 4 : 2) && (
-                <span className="px-2 py-0.5 rounded-md text-[11px] font-medium bg-muted text-muted-foreground">
+                <span className="px-2 py-0.5 rounded-xs font-mono text-[11px] font-medium bg-muted text-muted-foreground">
                   +{video.tags.length - (isLarge ? 4 : 2)}
                 </span>
               )}
@@ -152,10 +150,7 @@ export default function VideoCard({
           )}
 
           <div className="flex items-center justify-between">
-            <span
-              className="text-xs text-muted-foreground tabular-nums"
-              style={{ fontFamily: 'var(--font-geist-mono)' }}
-            >
+            <span className="font-mono text-xs text-muted-foreground tabular-nums">
               {new Date(video.publishedAt).toLocaleDateString('tr-TR', {
                 year: 'numeric',
                 month: 'short',
@@ -163,12 +158,7 @@ export default function VideoCard({
               })}
             </span>
             <span
-              className="text-xs font-medium text-primary opacity-0 group-hover:opacity-100 transition-opacity"
-              style={{
-                fontFamily: 'var(--font-geist-sans)',
-                transitionDuration: '700ms',
-                transitionTimingFunction: 'cubic-bezier(0.32,0.72,0,1)',
-              }}
+              className="text-xs font-medium text-primary opacity-0 group-hover:opacity-100 transition-opacity duration-200 motion-reduce:transition-none"
             >
               İzle &rarr;
             </span>
