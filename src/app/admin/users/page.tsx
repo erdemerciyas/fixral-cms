@@ -322,7 +322,7 @@ export default function AdminUsersPage() {
       </div>
 
       {/* Search and Filter Bar */}
-      <div className="bg-card rounded-xl shadow-sm border border-border/60 p-4">
+      <div className="bg-card rounded-xl shadow-xs border border-border/60 p-4">
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex-1 relative">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -331,14 +331,14 @@ export default function AdminUsersPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search users..."
-              className="w-full pl-12 pr-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
+              className="w-full pl-12 pr-4 py-3 border border-border rounded-xl focus:outline-hidden focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
             />
           </div>
           <div className="flex space-x-2 bg-muted p-1 rounded-xl">
             <button
               onClick={() => setRoleFilter('all')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${roleFilter === 'all'
-                ? 'bg-card text-primary shadow-sm'
+                ? 'bg-card text-primary shadow-xs'
                 : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
@@ -347,7 +347,7 @@ export default function AdminUsersPage() {
             <button
               onClick={() => setRoleFilter('admin')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${roleFilter === 'admin'
-                ? 'bg-card text-primary shadow-sm'
+                ? 'bg-card text-primary shadow-xs'
                 : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
@@ -356,7 +356,7 @@ export default function AdminUsersPage() {
             <button
               onClick={() => setRoleFilter('editor')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${roleFilter === 'editor'
-                ? 'bg-card text-primary shadow-sm'
+                ? 'bg-card text-primary shadow-xs'
                 : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
@@ -365,7 +365,7 @@ export default function AdminUsersPage() {
             <button
               onClick={() => setRoleFilter('user')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${roleFilter === 'user'
-                ? 'bg-card text-primary shadow-sm'
+                ? 'bg-card text-primary shadow-xs'
                 : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
@@ -376,7 +376,7 @@ export default function AdminUsersPage() {
       </div>
 
       {/* Users List */}
-      <div className="bg-card rounded-xl shadow-sm border border-border/60 overflow-hidden">
+      <div className="bg-card rounded-xl shadow-xs border border-border/60 overflow-hidden">
         {filteredUsers.length > 0 ? (
           <div className="divide-y divide-border">
             {filteredUsers.map((user) => (
@@ -385,7 +385,7 @@ export default function AdminUsersPage() {
                 className="flex items-center justify-between px-6 py-4 hover:bg-muted/50 transition-colors group"
               >
                 <div className="flex items-center space-x-4 flex-1 min-w-0">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary/80 to-primary flex items-center justify-center flex-shrink-0 text-primary-foreground font-semibold text-lg">
+                  <div className="w-12 h-12 rounded-full bg-linear-to-br from-primary/80 to-primary flex items-center justify-center shrink-0 text-primary-foreground font-semibold text-lg">
                     {user.name.charAt(0).toUpperCase()}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -470,7 +470,7 @@ export default function AdminUsersPage() {
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-hidden focus:ring-2 focus:ring-ring"
                   required
                 />
               </div>
@@ -480,7 +480,7 @@ export default function AdminUsersPage() {
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-hidden focus:ring-2 focus:ring-ring"
                   required
                 />
               </div>
@@ -489,7 +489,7 @@ export default function AdminUsersPage() {
                 <select
                   value={formData.role}
                   onChange={(e) => setFormData({ ...formData, role: e.target.value as any })}
-                  className="flex h-9 w-full rounded-md border border-border bg-card px-3 py-1 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-ring"
+                  className="flex h-9 w-full rounded-md border border-border bg-card px-3 py-1 text-sm shadow-xs focus:outline-hidden focus:ring-1 focus:ring-ring"
                 >
                   <option value="user">User</option>
                   <option value="editor">Editor</option>
@@ -501,7 +501,7 @@ export default function AdminUsersPage() {
                 <select
                   value={formData.status}
                   onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                  className="flex h-9 w-full rounded-md border border-border bg-card px-3 py-1 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-ring"
+                  className="flex h-9 w-full rounded-md border border-border bg-card px-3 py-1 text-sm shadow-xs focus:outline-hidden focus:ring-1 focus:ring-ring"
                 >
                   <option value="active">Active</option>
                   <option value="inactive">Inactive</option>
@@ -572,7 +572,7 @@ export default function AdminUsersPage() {
                 type="text"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+                className="w-full px-3 py-2 border border-border rounded-lg focus:outline-hidden focus:ring-2 focus:ring-ring"
                 required
               />
             </div>
@@ -582,7 +582,7 @@ export default function AdminUsersPage() {
                 type="email"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+                className="w-full px-3 py-2 border border-border rounded-lg focus:outline-hidden focus:ring-2 focus:ring-ring"
                 required
               />
             </div>
@@ -592,7 +592,7 @@ export default function AdminUsersPage() {
                 type="password"
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+                className="w-full px-3 py-2 border border-border rounded-lg focus:outline-hidden focus:ring-2 focus:ring-ring"
                 required
                 minLength={6}
               />
@@ -602,7 +602,7 @@ export default function AdminUsersPage() {
               <select
                 value={formData.role}
                 onChange={(e) => setFormData({ ...formData, role: e.target.value as any })}
-                className="flex h-9 w-full rounded-md border border-border bg-card px-3 py-1 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-ring"
+                className="flex h-9 w-full rounded-md border border-border bg-card px-3 py-1 text-sm shadow-xs focus:outline-hidden focus:ring-1 focus:ring-ring"
               >
                 <option value="user">User</option>
                 <option value="editor">Editor</option>
@@ -664,7 +664,7 @@ export default function AdminUsersPage() {
                     type="text"
                     value={passwordData.verificationCode}
                     onChange={(e) => setPasswordData({ ...passwordData, verificationCode: e.target.value })}
-                    className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:outline-hidden focus:ring-2 focus:ring-ring"
                     placeholder="Enter 6-digit code"
                     required
                   />
@@ -675,7 +675,7 @@ export default function AdminUsersPage() {
                     type="password"
                     value={passwordData.newPassword}
                     onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
-                    className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:outline-hidden focus:ring-2 focus:ring-ring"
                     required
                     minLength={6}
                   />
@@ -686,7 +686,7 @@ export default function AdminUsersPage() {
                     type="password"
                     value={passwordData.confirmPassword}
                     onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
-                    className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"
+                    className="w-full px-3 py-2 border border-border rounded-lg focus:outline-hidden focus:ring-2 focus:ring-ring"
                     required
                     minLength={6}
                   />

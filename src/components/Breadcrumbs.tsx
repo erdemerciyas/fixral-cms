@@ -80,7 +80,7 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items, className = '' }) => {
   return (
     <nav
       aria-label="Breadcrumb"
-      className={`rounded-2xl border border-primary/20 bg-surface-primary shadow-sm backdrop-blur px-4 py-3 text-sm text-muted-foreground ${className}`}
+      className={`rounded-2xl border border-primary/20 bg-surface-primary shadow-xs backdrop-blur-sm px-4 py-3 text-sm text-muted-foreground ${className}`}
     >
       <ol className="flex flex-wrap items-center gap-x-2 gap-y-1">
         {breadcrumbs.map((crumb, index) => {

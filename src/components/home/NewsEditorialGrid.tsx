@@ -44,7 +44,7 @@ const CARD_SHELL = cn(
   'transition-[transform,box-shadow,border-color] duration-200 ease-out',
   'hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-lg',
   'motion-reduce:transition-none motion-reduce:hover:translate-y-0',
-  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+  'focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring',
   'focus-visible:ring-offset-2 focus-visible:ring-offset-background',
 )
 
@@ -131,7 +131,7 @@ export default function NewsEditorialGrid() {
             return (
               <Link key={item._id} href={getNewsUrl(item.slug)} className={CARD_SHELL}>
                 {/* Görsel */}
-                <div className="relative aspect-[16/9] w-full overflow-hidden bg-muted">
+                <div className="relative aspect-video w-full overflow-hidden bg-muted">
                   {item.featuredImage?.url ? (
                     <Image
                       src={item.featuredImage.url}
@@ -186,7 +186,7 @@ export default function NewsEditorialGrid() {
               'border border-border bg-card text-foreground',
               'hover:bg-accent hover:text-accent-foreground hover:border-primary/40',
               'transition-[background-color,color,border-color] duration-200 motion-reduce:transition-none',
-              'focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+              'focus:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
             )}
           >
             <span>Tüm Haberler</span>

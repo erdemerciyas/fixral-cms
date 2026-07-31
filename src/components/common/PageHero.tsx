@@ -80,7 +80,7 @@ export default function PageHero({
         <div className="absolute inset-0 blueprint-grid opacity-40" />
       </div>
 
-      <div className="container-content relative z-10 flex-grow flex flex-col justify-center">
+      <div className="container-content relative z-10 grow flex flex-col justify-center">
         <div className="flex flex-col items-start text-left w-full">
           {/* Integrated breadcrumbs */}
           {showBreadcrumbs && (
@@ -150,7 +150,7 @@ export default function PageHero({
               {showButton && (
                 <Link
                   href={buttonLink}
-                  className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary/90 transition-colors duration-200 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                  className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary/90 transition-colors duration-200 motion-reduce:transition-none focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 >
                   {resolvedButtonText}
                   <ArrowRightIcon className="w-5 h-5" aria-hidden="true" />
@@ -160,7 +160,7 @@ export default function PageHero({
               {showSecondaryButton && secondaryButtonLink && (
                 <Link
                   href={secondaryButtonLink}
-                  className="inline-flex items-center gap-2 px-8 py-4 bg-card border border-border text-foreground font-semibold rounded-lg hover:bg-accent hover:text-accent-foreground transition-colors duration-200 motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                  className="inline-flex items-center gap-2 px-8 py-4 bg-card border border-border text-foreground font-semibold rounded-lg hover:bg-accent hover:text-accent-foreground transition-colors duration-200 motion-reduce:transition-none focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 >
                   {secondaryButtonText}
                   <ArrowRightIcon className="w-5 h-5" aria-hidden="true" />

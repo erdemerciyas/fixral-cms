@@ -107,7 +107,7 @@ export default function ModelGallery({ models, className = '' }: ModelGalleryPro
             <SwiperSlide key={index}>
               <div className="bg-muted/60 rounded-lg shadow-md border border-zinc-400/25 overflow-hidden">
                 {/* Model Önizleme Alanı */}
-                <div className="aspect-square bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center relative group">
+                <div className="aspect-square bg-linear-to-br from-blue-50 to-indigo-100 flex items-center justify-center relative group">
                   <CubeIcon className="w-16 h-16 text-blue-400" />
                   
                   {/* Hover Overlay */}

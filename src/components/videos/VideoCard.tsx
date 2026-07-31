@@ -24,11 +24,11 @@ export function SkeletonCard({ large = false }: { large?: boolean }) {
   return (
     <div
       className={`rounded-xl overflow-hidden bg-muted col-span-12 ${
-        large ? 'md:col-span-8 aspect-[16/9]' : 'md:col-span-4 aspect-[16/10]'
+        large ? 'md:col-span-8 aspect-video' : 'md:col-span-4 aspect-16/10'
       }`}
     >
       <div className="relative h-full w-full">
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-[shimmer_2s_infinite] -translate-x-full" />
+        <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/5 to-transparent animate-[shimmer_2s_infinite] -translate-x-full" />
       </div>
     </div>
   );
@@ -72,9 +72,9 @@ export default function VideoCard({
         href={`https://www.youtube.com/watch?v=${video.videoId}`}
         target="_blank"
         rel="noopener noreferrer"
-        className="block rounded-lg overflow-hidden bg-card border border-border hover:border-primary/30 hover:shadow-sm hover:-translate-y-0.5 transition-all duration-200"
+        className="block rounded-lg overflow-hidden bg-card border border-border hover:border-primary/30 hover:shadow-xs hover:-translate-y-0.5 transition-all duration-200"
       >
-        <div className={`relative overflow-hidden ${isLarge ? 'aspect-[16/9]' : 'aspect-[16/10]'}`}>
+        <div className={`relative overflow-hidden ${isLarge ? 'aspect-video' : 'aspect-16/10'}`}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={video.thumbnail}
@@ -88,7 +88,7 @@ export default function VideoCard({
             style={{ transitionDuration: '700ms', transitionTimingFunction: 'cubic-bezier(0.32,0.72,0,1)' }}
           >
             <div
-              className="w-14 h-14 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-sm opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100 transition-all"
+              className="w-14 h-14 rounded-full bg-white/90 backdrop-blur-xs flex items-center justify-center shadow-xs opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100 transition-all"
               style={{ transitionDuration: '700ms', transitionTimingFunction: 'cubic-bezier(0.32,0.72,0,1)' }}
             >
               <Play className="w-6 h-6 text-primary ml-0.5" />
@@ -97,7 +97,7 @@ export default function VideoCard({
 
           <div className="absolute top-3 right-3">
             <span
-              className={`inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-medium tracking-wide rounded-full backdrop-blur-sm ${
+              className={`inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-medium tracking-wide rounded-full backdrop-blur-xs ${
                 video.type === 'short'
                   ? 'bg-primary/80 text-white'
                   : 'bg-primary/80 text-white'

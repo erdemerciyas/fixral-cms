@@ -244,7 +244,7 @@ export default function AdminFooterPage() {
         <Button
           onClick={handleSave}
           disabled={saving}
-          className="flex items-center space-x-2 bg-primary text-primary-foreground px-6 py-2.5 rounded-xl hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+          className="flex items-center space-x-2 bg-primary text-primary-foreground px-6 py-2.5 rounded-xl hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-xs"
         >
           {saving ? (
             <RefreshCw className="w-5 h-5 animate-spin" />
@@ -257,8 +257,8 @@ export default function AdminFooterPage() {
 
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Sidebar Navigation */}
-        <div className="lg:w-64 flex-shrink-0">
-          <div className="bg-card rounded-xl shadow-sm border border-border p-2 space-y-1 sticky top-6">
+        <div className="lg:w-64 shrink-0">
+          <div className="bg-card rounded-xl shadow-xs border border-border p-2 space-y-1 sticky top-6">
             {tabs.map(tab => (
               <button
                 key={tab.id}
@@ -276,7 +276,7 @@ export default function AdminFooterPage() {
         </div>
 
         {/* Content Area */}
-        <div className="flex-1 bg-card rounded-xl shadow-sm border border-border p-6 min-h-[500px]">
+        <div className="flex-1 bg-card rounded-xl shadow-xs border border-border p-6 min-h-[500px]">
 
           {/* GENERAL TAB */}
           {activeTab === 'general' && (
@@ -290,7 +290,7 @@ export default function AdminFooterPage() {
                   rows={4}
                   value={settings.mainDescription}
                   onChange={(e) => handleChange('mainDescription', null, e.target.value)}
-                  className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-ring focus:border-transparent outline-none transition-all"
+                  className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-ring focus:border-transparent outline-hidden transition-all"
                   placeholder="Şirketiniz hakkında kısa bir açıklama..."
                 />
                 <p className="text-xs text-muted-foreground mt-2">Footer sol tarafında logo altında görünen metin.</p>
@@ -309,7 +309,7 @@ export default function AdminFooterPage() {
                     type="email"
                     value={settings.contactInfo.email}
                     onChange={(e) => handleChange('contactInfo', 'email', e.target.value)}
-                    className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-ring outline-none"
+                    className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-ring outline-hidden"
                     placeholder="ornek@sirket.com"
                   />
                 </div>
@@ -319,7 +319,7 @@ export default function AdminFooterPage() {
                     type="text"
                     value={settings.contactInfo.phone}
                     onChange={(e) => handleChange('contactInfo', 'phone', e.target.value)}
-                    className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-ring outline-none"
+                    className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-ring outline-hidden"
                     placeholder="+90 555 123 45 67"
                   />
                 </div>
@@ -329,7 +329,7 @@ export default function AdminFooterPage() {
                     rows={3}
                     value={settings.contactInfo.address}
                     onChange={(e) => handleChange('contactInfo', 'address', e.target.value)}
-                    className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-ring outline-none"
+                    className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-ring outline-hidden"
                     placeholder="Şirket adresi..."
                   />
                 </div>
@@ -367,7 +367,7 @@ export default function AdminFooterPage() {
                             type="text"
                             value={link.title}
                             onChange={(e) => updateQuickLink(index, 'title', e.target.value)}
-                            className="w-full px-3 py-2 bg-card border border-border rounded-lg text-sm focus:ring-2 focus:ring-ring outline-none"
+                            className="w-full px-3 py-2 bg-card border border-border rounded-lg text-sm focus:ring-2 focus:ring-ring outline-hidden"
                             placeholder="Anasayfa"
                           />
                         </div>
@@ -377,7 +377,7 @@ export default function AdminFooterPage() {
                             type="text"
                             value={link.url}
                             onChange={(e) => updateQuickLink(index, 'url', e.target.value)}
-                            className="w-full px-3 py-2 bg-card border border-border rounded-lg text-sm focus:ring-2 focus:ring-ring outline-none"
+                            className="w-full px-3 py-2 bg-card border border-border rounded-lg text-sm focus:ring-2 focus:ring-ring outline-hidden"
                             placeholder="/anasayfa veya https://..."
                           />
                         </div>
@@ -426,7 +426,7 @@ export default function AdminFooterPage() {
                       type="text"
                       value={(settings.socialLinks as any)[social.key] || ''}
                       onChange={(e) => handleChange('socialLinks', social.key, e.target.value)}
-                      className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-ring outline-none"
+                      className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-ring outline-hidden"
                       placeholder={`https://${social.key.toLowerCase()}.com/...`}
                     />
                   </div>
@@ -447,7 +447,7 @@ export default function AdminFooterPage() {
                       type="text"
                       value={settings.copyrightInfo.companyName}
                       onChange={(e) => handleChange('copyrightInfo', 'companyName', e.target.value)}
-                      className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-ring outline-none"
+                      className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-ring outline-hidden"
                     />
                   </div>
                   <div>
@@ -456,7 +456,7 @@ export default function AdminFooterPage() {
                       type="number"
                       value={settings.copyrightInfo.year}
                       onChange={(e) => handleChange('copyrightInfo', 'year', parseInt(e.target.value))}
-                      className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-ring outline-none"
+                      className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-ring outline-hidden"
                     />
                   </div>
                   <div className="md:col-span-2">
@@ -465,7 +465,7 @@ export default function AdminFooterPage() {
                       type="text"
                       value={settings.copyrightInfo.additionalText}
                       onChange={(e) => handleChange('copyrightInfo', 'additionalText', e.target.value)}
-                      className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-ring outline-none"
+                      className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-ring outline-hidden"
                       placeholder="Tüm Hakları Saklıdır."
                     />
                   </div>
@@ -481,7 +481,7 @@ export default function AdminFooterPage() {
                       type="text"
                       value={settings.developerInfo.name}
                       onChange={(e) => handleChange('developerInfo', 'name', e.target.value)}
-                      className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-ring outline-none"
+                      className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-ring outline-hidden"
                     />
                   </div>
                   <div>
@@ -490,7 +490,7 @@ export default function AdminFooterPage() {
                       type="text"
                       value={settings.developerInfo.companyName}
                       onChange={(e) => handleChange('developerInfo', 'companyName', e.target.value)}
-                      className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-ring outline-none"
+                      className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-ring outline-hidden"
                     />
                   </div>
                   <div className="md:col-span-2">
@@ -499,7 +499,7 @@ export default function AdminFooterPage() {
                       type="text"
                       value={settings.developerInfo.website}
                       onChange={(e) => handleChange('developerInfo', 'website', e.target.value)}
-                      className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-ring outline-none"
+                      className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-ring outline-hidden"
                     />
                   </div>
                 </div>

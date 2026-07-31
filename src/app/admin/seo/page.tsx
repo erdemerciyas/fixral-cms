@@ -179,7 +179,7 @@ export default function AdminSeoPage() {
       )}
 
       {/* Meta Tags Section */}
-      <div className="bg-card rounded-xl shadow-sm border border-border/60 p-6">
+      <div className="bg-card rounded-xl shadow-xs border border-border/60 p-6">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 rounded-lg bg-info/15 flex items-center justify-center">
             <Search className="w-5 h-5 text-info" />
@@ -201,7 +201,7 @@ export default function AdminSeoPage() {
               type="text"
               value={config.metaTitleSuffix}
               onChange={(e) => setConfig((prev) => ({ ...prev, metaTitleSuffix: e.target.value }))}
-              className="w-full px-3 py-2 bg-transparent border border-input rounded-lg text-foreground text-sm focus:ring-2 focus:ring-ring focus:border-transparent outline-none transition-shadow"
+              className="w-full px-3 py-2 bg-transparent border border-input rounded-lg text-foreground text-sm focus:ring-2 focus:ring-ring focus:border-transparent outline-hidden transition-shadow"
               placeholder=" | Fixral"
             />
             <p className="text-xs text-muted-foreground mt-1.5">
@@ -219,7 +219,7 @@ export default function AdminSeoPage() {
                 setConfig((prev) => ({ ...prev, globalMetaDescription: e.target.value }))
               }
               rows={3}
-              className="w-full px-3 py-2 bg-transparent border border-input rounded-lg text-foreground text-sm focus:ring-2 focus:ring-ring focus:border-transparent outline-none transition-shadow resize-none"
+              className="w-full px-3 py-2 bg-transparent border border-input rounded-lg text-foreground text-sm focus:ring-2 focus:ring-ring focus:border-transparent outline-hidden transition-shadow resize-none"
               placeholder="Sitenizin genel açıklamasını girin..."
             />
             <div className="flex justify-between mt-1.5">
@@ -241,7 +241,7 @@ export default function AdminSeoPage() {
       </div>
 
       {/* Keywords Section */}
-      <div className="bg-card rounded-xl shadow-sm border border-border/60 p-6">
+      <div className="bg-card rounded-xl shadow-xs border border-border/60 p-6">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
             <span className="text-primary font-bold text-sm">#</span>
@@ -261,7 +261,7 @@ export default function AdminSeoPage() {
               value={keywordInput}
               onChange={(e) => setKeywordInput(e.target.value)}
               onKeyDown={handleKeywordKeyDown}
-              className="flex-1 px-3 py-2 bg-transparent border border-input rounded-lg text-foreground text-sm focus:ring-2 focus:ring-ring focus:border-transparent outline-none transition-shadow"
+              className="flex-1 px-3 py-2 bg-transparent border border-input rounded-lg text-foreground text-sm focus:ring-2 focus:ring-ring focus:border-transparent outline-hidden transition-shadow"
               placeholder="Anahtar kelime ekleyin (virgülle ayırarak birden fazla ekleyebilirsiniz)"
             />
             <button
@@ -299,7 +299,7 @@ export default function AdminSeoPage() {
       </div>
 
       {/* Structured Data & Social Section */}
-      <div className="bg-card rounded-xl shadow-sm border border-border/60 p-6">
+      <div className="bg-card rounded-xl shadow-xs border border-border/60 p-6">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 rounded-lg bg-success/15 flex items-center justify-center">
             <span className="text-success font-bold text-base">{ }</span>

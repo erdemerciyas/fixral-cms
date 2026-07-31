@@ -38,7 +38,7 @@ const CARD_SHELL = cn(
   'transition-[transform,box-shadow,border-color] duration-200 ease-out',
   'hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-lg',
   'motion-reduce:transition-none motion-reduce:hover:translate-y-0',
-  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+  'focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring',
   'focus-visible:ring-offset-2 focus-visible:ring-offset-background',
 )
 
@@ -147,7 +147,7 @@ export default function ServicesBentoGrid() {
                         style={{ background: 'radial-gradient(circle, hsl(var(--primary) / 0.18) 0%, transparent 70%)' }}
                         aria-hidden="true"
                       />
-                      <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl border border-border bg-card shadow-sm transition-transform duration-300 group-hover:scale-105 motion-reduce:transition-none">
+                      <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl border border-border bg-card shadow-xs transition-transform duration-300 group-hover:scale-105 motion-reduce:transition-none">
                         {Icon && <Icon className="h-8 w-8 text-primary" aria-hidden="true" />}
                       </div>
                     </div>

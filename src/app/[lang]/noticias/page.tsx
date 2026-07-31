@@ -84,7 +84,7 @@ export default async function NewsListPage({ params: paramsPromise, searchParams
     }));
 
     return (
-      <div className="min-h-[100dvh] bg-background">
+      <div className="min-h-dvh bg-background">
         <PageHero
           title={newsT.pageTitle || 'Noticias y Anuncios'}
           description={newsT.pageDescription || ''}

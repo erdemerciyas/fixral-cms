@@ -271,7 +271,7 @@ export default async function RootLayout({
             />
           </noscript>
         )}
-        <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[10000] focus:bg-background focus:text-foreground focus:px-4 focus:py-2 focus:rounded-lg focus:shadow focus:border focus:border-border" aria-label="Skip to main content">
+        <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-10000 focus:bg-background focus:text-foreground focus:px-4 focus:py-2 focus:rounded-lg focus:shadow-sm focus:border focus:border-border" aria-label="Skip to main content">
           Skip to content
         </a>
         <ThemeScope />
@@ -282,7 +282,7 @@ export default async function RootLayout({
               <Header />
               <GlobalBreadcrumbsJsonLd />
               <PageTransitionWrapper>
-                <div className="relative flex-grow">
+                <div className="relative grow">
                   <main id="main-content" className="relative z-100">
                     <div>{children}</div>
                   </main>

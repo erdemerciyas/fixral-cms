@@ -32,10 +32,10 @@ const SCRIM_GRADIENT =
 /* ─── Ok butonu: token tabanlı chip, hover'da turuncu dolgu ─── */
 const ARROW_BUTTON = cn(
   'inline-flex h-10 w-10 items-center justify-center rounded-full',
-  'border border-border bg-background/85 text-foreground backdrop-blur-sm',
+  'border border-border bg-background/85 text-foreground backdrop-blur-xs',
   'hover:bg-primary hover:text-primary-foreground hover:border-primary',
   'transition-[background-color,color,border-color] duration-200 motion-reduce:transition-none',
-  'focus:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+  'focus:outline-hidden focus-visible:ring-2 focus-visible:ring-ring',
   'focus-visible:ring-offset-2 focus-visible:ring-offset-background',
 )
 
@@ -308,7 +308,7 @@ export const NewHero = () => {
                     : hasImage
                       ? 'w-2 bg-white/40 hover:bg-white/70'
                       : 'w-2 bg-foreground/25 hover:bg-foreground/50',
-                  'focus:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                  'focus:outline-hidden focus-visible:ring-2 focus-visible:ring-ring',
                   'focus-visible:ring-offset-2 focus-visible:ring-offset-background',
                 )}
                 role="tab"

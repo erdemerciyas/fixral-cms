@@ -187,7 +187,7 @@ const ModernEditor: React.FC<ModernEditorProps> = ({
     },
     editorProps: {
       attributes: {
-        class: `focus:outline-none ${className}`,
+        class: `focus:outline-hidden ${className}`,
         style: `min-height: ${minHeight}; max-height: ${maxHeight}; overflow-y: auto;`,
       },
     },

@@ -19,7 +19,7 @@ export const SectionTransition = () => {
         className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-center pointer-events-none"
         aria-hidden="true"
       >
-        <div className="h-px w-64 bg-gradient-to-r from-transparent via-border to-transparent" />
+        <div className="h-px w-64 bg-linear-to-r from-transparent via-border to-transparent" />
       </div>
     </AnimatedSection>
   )

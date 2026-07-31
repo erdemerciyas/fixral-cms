@@ -100,7 +100,7 @@ E-posta: ${projectForm.email}
     if (!mounted || !isOpen) return null;
 
     return createPortal(
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9999] flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-xs z-9999 flex items-center justify-center p-4">
             <div className="bg-card border border-border rounded-sm shadow-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
                 <div className="p-6 border-b border-border flex items-center justify-between">
                     <h2 className="text-xl font-semibold text-foreground flex items-center space-x-2">
@@ -110,7 +110,7 @@ E-posta: ${projectForm.email}
                     <button
                         onClick={onClose}
                         aria-label="Diyaloğu kapat"
-                        className="p-2 rounded-full hover:bg-accent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        className="p-2 rounded-full hover:bg-accent transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring"
                     >
                         <XMarkIcon className="w-6 h-6 text-muted-foreground" />
                     </button>
@@ -150,7 +150,7 @@ E-posta: ${projectForm.email}
                                 onChange={handleProjectFormChange}
                                 required
                                 aria-required="true"
-                                className="w-full px-4 py-3 border border-border bg-background text-foreground rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 transition-all"
+                                className="w-full px-4 py-3 border border-border bg-background text-foreground rounded-lg focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 transition-all"
                                 placeholder="Adınız ve soyadınız"
                             />
                         </div>
@@ -167,7 +167,7 @@ E-posta: ${projectForm.email}
                                 onChange={handleProjectFormChange}
                                 required
                                 aria-required="true"
-                                className="w-full px-4 py-3 border border-border bg-background text-foreground rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 transition-all"
+                                className="w-full px-4 py-3 border border-border bg-background text-foreground rounded-lg focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 transition-all"
                                 placeholder="ornek@email.com"
                             />
                         </div>
@@ -182,7 +182,7 @@ E-posta: ${projectForm.email}
                                 name="phone"
                                 value={projectForm.phone}
                                 onChange={handleProjectFormChange}
-                                className="w-full px-4 py-3 border border-border bg-background text-foreground rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 transition-all"
+                                className="w-full px-4 py-3 border border-border bg-background text-foreground rounded-lg focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 transition-all"
                                 placeholder="05XX XXX XX XX"
                             />
                         </div>
@@ -198,7 +198,7 @@ E-posta: ${projectForm.email}
                                 onChange={handleProjectFormChange}
                                 required
                                 aria-required="true"
-                                className="w-full px-4 py-3 border border-border bg-background text-foreground rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 transition-all"
+                                className="w-full px-4 py-3 border border-border bg-background text-foreground rounded-lg focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 transition-all"
                             >
                                 <option value="">Seçiniz</option>
                                 <option value="3d-scanning">3D Tarama</option>
@@ -220,7 +220,7 @@ E-posta: ${projectForm.email}
                                 name="budget"
                                 value={projectForm.budget}
                                 onChange={handleProjectFormChange}
-                                className="w-full px-4 py-3 border border-border bg-background text-foreground rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 transition-all"
+                                className="w-full px-4 py-3 border border-border bg-background text-foreground rounded-lg focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 transition-all"
                             >
                                 <option value="">Seçiniz</option>
                                 <option value="under-5k">5.000 TL altı</option>
@@ -240,7 +240,7 @@ E-posta: ${projectForm.email}
                                 name="timeline"
                                 value={projectForm.timeline}
                                 onChange={handleProjectFormChange}
-                                className="w-full px-4 py-3 border border-border bg-background text-foreground rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 transition-all"
+                                className="w-full px-4 py-3 border border-border bg-background text-foreground rounded-lg focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 transition-all"
                             >
                                 <option value="">Seçiniz</option>
                                 <option value="asap">Mümkün olan en kısa sürede</option>
@@ -264,7 +264,7 @@ E-posta: ${projectForm.email}
                             required
                             aria-required="true"
                             rows={4}
-                            className="w-full px-4 py-3 border border-border bg-background text-foreground rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 transition-all resize-none"
+                            className="w-full px-4 py-3 border border-border bg-background text-foreground rounded-lg focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 transition-all resize-none"
                             placeholder="Projenizin detaylarını, hedeflerinizi ve özel gereksinimlerinizi açıklayın..."
                         />
                     </div>
@@ -273,14 +273,14 @@ E-posta: ${projectForm.email}
                         <button
                             type="button"
                             onClick={onClose}
-                            className="flex-1 px-6 py-3 border border-border bg-card text-foreground rounded-lg font-semibold hover:bg-accent hover:text-accent-foreground transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                            className="flex-1 px-6 py-3 border border-border bg-card text-foreground rounded-lg font-semibold hover:bg-accent hover:text-accent-foreground transition-colors duration-200 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring"
                         >
                             İptal
                         </button>
                         <button
                             type="submit"
                             disabled={isSubmitting}
-                            className="flex-1 px-6 py-3 bg-primary text-primary-foreground rounded-lg font-semibold hover:bg-primary/90 transition-colors duration-200 disabled:opacity-50 flex items-center justify-center space-x-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                            className="flex-1 px-6 py-3 bg-primary text-primary-foreground rounded-lg font-semibold hover:bg-primary/90 transition-colors duration-200 disabled:opacity-50 flex items-center justify-center space-x-2 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                         >
                             {isSubmitting ? (
                                 <span>Gönderiliyor...</span>

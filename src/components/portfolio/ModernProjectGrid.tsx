@@ -158,7 +158,7 @@ function ProjectGridSkeleton() {
           className="bg-card rounded-sm border border-border overflow-hidden animate-pulse"
         >
           {/* Image Skeleton */}
-          <div className="aspect-[4/3] bg-secondary"></div>
+          <div className="aspect-4/3 bg-secondary"></div>
 
           {/* Content Skeleton */}
           <div className="p-4 space-y-3">

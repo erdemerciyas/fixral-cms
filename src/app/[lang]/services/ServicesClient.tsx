@@ -75,7 +75,7 @@ function ServiceSection({ service, index }: { service: Service; index: number })
           <ScrollReveal
             className={isReversed ? 'lg:order-2' : ''}
           >
-            <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-muted">
+            <div className="relative aspect-4/3 rounded-2xl overflow-hidden bg-muted">
               {service.image ? (
                 <Image
                   src={service.image}
@@ -86,7 +86,7 @@ function ServiceSection({ service, index }: { service: Service; index: number })
                   sizes="(max-width: 1024px) 100vw, 50vw"
                 />
               ) : (
-                <div className="absolute inset-0 bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center">
+                <div className="absolute inset-0 bg-linear-to-br from-primary to-primary/70 flex items-center justify-center">
                   <span
                     className="text-white/10 font-bold select-none"
                     style={{ fontSize: 'clamp(6rem, 12vw, 10rem)' }}
@@ -96,7 +96,7 @@ function ServiceSection({ service, index }: { service: Service; index: number })
                 </div>
               )}
               {/* Subtle overlay gradient */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent pointer-events-none" />
+              <div className="absolute inset-0 bg-linear-to-t from-black/10 to-transparent pointer-events-none" />
             </div>
           </ScrollReveal>
 
@@ -143,7 +143,7 @@ function ServiceSection({ service, index }: { service: Service; index: number })
                     className="flex items-start gap-3 text-muted-foreground text-[15px]"
                   >
                     <CheckCircle
-                      className="w-5 h-5 text-primary mt-0.5 flex-shrink-0"
+                      className="w-5 h-5 text-primary mt-0.5 shrink-0"
                     />
                     <span>{feature}</span>
                   </m.li>
@@ -254,10 +254,10 @@ export default function ServicesClient({ services, hero }: ServicesClientProps) 
       <section className="relative py-24 md:py-32 bg-primary overflow-hidden">
         {/* Geometric accents */}
         <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-          <div className="absolute top-12 left-12 w-24 h-24 rounded-full border border-black/[0.08]" />
-          <div className="absolute top-40 right-16 w-16 h-16 border border-black/[0.08] rotate-45" />
-          <div className="absolute bottom-16 left-1/4 w-32 h-32 rounded-full border border-black/[0.06]" />
-          <div className="absolute bottom-12 right-12 w-14 h-14 border border-black/[0.08] rotate-12" />
+          <div className="absolute top-12 left-12 w-24 h-24 rounded-full border border-black/8" />
+          <div className="absolute top-40 right-16 w-16 h-16 border border-black/8 rotate-45" />
+          <div className="absolute bottom-16 left-1/4 w-32 h-32 rounded-full border border-black/6" />
+          <div className="absolute bottom-12 right-12 w-14 h-14 border border-black/8 rotate-12" />
         </div>
 
         <div className="container-content relative z-10 text-center">

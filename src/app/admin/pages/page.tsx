@@ -331,7 +331,7 @@ export default function AdminPagesPage() {
       </div>
 
       {/* Search and Filter Bar */}
-      <Card className="shadow-sm">
+      <Card className="shadow-xs">
         <CardContent className="p-4">
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="relative flex-1">
@@ -353,7 +353,7 @@ export default function AdminPagesPage() {
               className={cn(
                 'rounded-lg font-medium',
                 statusFilter === 'all'
-                  ? 'bg-card text-primary shadow-sm hover:bg-card hover:text-primary'
+                  ? 'bg-card text-primary shadow-xs hover:bg-card hover:text-primary'
                   : 'text-muted-foreground hover:text-foreground'
               )}
             >
@@ -367,7 +367,7 @@ export default function AdminPagesPage() {
               className={cn(
                 'rounded-lg font-medium',
                 statusFilter === 'published'
-                  ? 'bg-card text-primary shadow-sm hover:bg-card hover:text-primary'
+                  ? 'bg-card text-primary shadow-xs hover:bg-card hover:text-primary'
                   : 'text-muted-foreground hover:text-foreground'
               )}
             >
@@ -381,7 +381,7 @@ export default function AdminPagesPage() {
               className={cn(
                 'rounded-lg font-medium',
                 statusFilter === 'draft'
-                  ? 'bg-card text-primary shadow-sm hover:bg-card hover:text-primary'
+                  ? 'bg-card text-primary shadow-xs hover:bg-card hover:text-primary'
                   : 'text-muted-foreground hover:text-foreground'
               )}
             >
@@ -399,7 +399,7 @@ export default function AdminPagesPage() {
       </Card>
 
       {/* Pages List */}
-      <Card className="overflow-hidden shadow-sm">
+      <Card className="overflow-hidden shadow-xs">
         <CardContent className="p-0">
         {filteredPages.length > 0 ? (
           isReorderEnabled ? (
@@ -612,7 +612,7 @@ function DraggablePageItem({
             <Menu className="w-5 h-5" />
           </div>
 
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/80 to-primary flex items-center justify-center flex-shrink-0">
+          <div className="w-10 h-10 rounded-xl bg-linear-to-br from-primary/80 to-primary flex items-center justify-center shrink-0">
             <PageIconDisplay page={page} />
           </div>
           <div className="flex-1 min-w-0">
@@ -700,7 +700,7 @@ function PageListItem({
             <Menu className="w-5 h-5" />
           </div>
         )}
-        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/80 to-primary flex items-center justify-center flex-shrink-0">
+        <div className="w-10 h-10 rounded-xl bg-linear-to-br from-primary/80 to-primary flex items-center justify-center shrink-0">
           <PageIconDisplay page={page} />
         </div>
         <div className="flex-1 min-w-0">

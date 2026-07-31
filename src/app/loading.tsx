@@ -2,12 +2,12 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 export default function Loading() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-accent/30">
+    <div className="min-h-screen bg-linear-to-br from-background to-accent/30">
       {/* Header Skeleton */}
       <div className="bg-card border-b border-border">
         <div className="container-main py-4">
           <div className="flex items-center justify-between">
-            <Skeleton className="h-10 w-10 rounded-full flex-shrink-0" />
+            <Skeleton className="h-10 w-10 rounded-full shrink-0" />
             <div className="hidden md:flex space-x-4">
               {Array.from({ length: 5 }).map((_, i) => (
                 <Skeleton key={i} className="h-9 w-24 rounded-lg" />

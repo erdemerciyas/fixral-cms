@@ -63,7 +63,7 @@ function HeroCard({ article, lang, newsT, basePath, translationKey, dateLocale }
         href={`/${lang}/${basePath}/${article.slug}`}
         className="group relative block w-full rounded-lg overflow-hidden bg-surface-tertiary border border-border"
       >
-        <div className="relative aspect-[21/9] md:aspect-[2.4/1] w-full overflow-hidden">
+        <div className="relative aspect-21/9 md:aspect-[2.4/1] w-full overflow-hidden">
           <Image
             src={article.featuredImage?.url || '/images/placeholder.jpg'}
             alt={article.featuredImage?.altText || translation.title}
@@ -73,8 +73,8 @@ function HeroCard({ article, lang, newsT, basePath, translationKey, dateLocale }
             style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
             sizes="100vw"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-surface-tertiary/95 via-surface-tertiary/40 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-r from-surface-tertiary/30 to-transparent" />
+          <div className="absolute inset-0 bg-linear-to-t from-surface-tertiary/95 via-surface-tertiary/40 to-transparent" />
+          <div className="absolute inset-0 bg-linear-to-r from-surface-tertiary/30 to-transparent" />
         </div>
 
         <div className="absolute bottom-0 left-0 right-0 p-6 md:p-10 lg:p-14">
@@ -151,7 +151,7 @@ function ArticleCard({
       >
         <div className={cn(
           'relative w-full overflow-hidden bg-surface-tertiary',
-          isLarge ? 'aspect-[4/3]' : 'aspect-[16/10]'
+          isLarge ? 'aspect-4/3' : 'aspect-16/10'
         )}>
           <Image
             src={article.featuredImage?.url || '/images/placeholder.jpg'}
@@ -161,10 +161,10 @@ function ArticleCard({
             style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
             sizes={isLarge ? '(max-width: 768px) 100vw, 55vw' : '(max-width: 768px) 100vw, 45vw'}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+          <div className="absolute inset-0 bg-linear-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
         </div>
 
-        <div className={cn('flex flex-col flex-grow', isLarge ? 'p-7' : 'p-5 md:p-6')}>
+        <div className={cn('flex flex-col grow', isLarge ? 'p-7' : 'p-5 md:p-6')}>
           <div className="flex items-center gap-3 mb-3">
             {article.tags?.[0] && (
               <EyebrowTag>{article.tags[0]}</EyebrowTag>
@@ -185,7 +185,7 @@ function ArticleCard({
           </h2>
 
           <p className={cn(
-            'text-muted-foreground line-clamp-3 flex-grow leading-relaxed',
+            'text-muted-foreground line-clamp-3 grow leading-relaxed',
             isLarge ? 'text-sm md:text-base' : 'text-sm'
           )}>
             {translation.excerpt}
@@ -229,7 +229,7 @@ export default function NewsListClient({
       {/* Search + Filters */}
       <ScrollReveal
         className={cn(
-          'flex flex-col md:flex-row gap-4 justify-between items-center rounded-xl border border-border bg-surface-primary backdrop-blur-sm p-4 md:p-5 shadow-sm'
+          'flex flex-col md:flex-row gap-4 justify-between items-center rounded-xl border border-border bg-surface-primary backdrop-blur-xs p-4 md:p-5 shadow-xs'
         )}
       >
         <form className="relative w-full md:w-80 group">
@@ -248,7 +248,7 @@ export default function NewsListClient({
             className={cn(
               'block w-full pl-10 pr-4 py-2.5 rounded-xl text-sm text-foreground placeholder:text-muted-foreground',
               'border border-border bg-surface-secondary',
-              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus:border-primary/40',
+              'focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus:border-primary/40',
               'transition-all duration-700'
             )}
             style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
@@ -402,7 +402,7 @@ export default function NewsListClient({
           </p>
           <Link
             href={`/${lang}/${basePath}`}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium bg-primary text-primary-foreground hover:bg-primary transition-all duration-700 shadow-sm"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium bg-primary text-primary-foreground hover:bg-primary transition-all duration-700 shadow-xs"
             style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
           >
             {newsT.showAll || 'Tüm Haberleri Göster'}

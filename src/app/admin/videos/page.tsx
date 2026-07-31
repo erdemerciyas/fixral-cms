@@ -149,7 +149,7 @@ export default function AdminVideosPage() {
       </div>
 
       {/* Search and Filter Bar */}
-      <div className="bg-card rounded-xl shadow-sm border border-border/60 p-4">
+      <div className="bg-card rounded-xl shadow-xs border border-border/60 p-4">
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex-1 relative">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -158,14 +158,14 @@ export default function AdminVideosPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search videos..."
-              className="w-full pl-12 pr-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
+              className="w-full pl-12 pr-4 py-3 border border-border rounded-xl focus:outline-hidden focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
             />
           </div>
           <div className="flex space-x-2 bg-muted p-1 rounded-xl">
             <button
               onClick={() => setStatusFilter('all')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${statusFilter === 'all'
-                ? 'bg-card text-primary shadow-sm'
+                ? 'bg-card text-primary shadow-xs'
                 : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
@@ -174,7 +174,7 @@ export default function AdminVideosPage() {
             <button
               onClick={() => setStatusFilter('published')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${statusFilter === 'published'
-                ? 'bg-card text-primary shadow-sm'
+                ? 'bg-card text-primary shadow-xs'
                 : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
@@ -183,7 +183,7 @@ export default function AdminVideosPage() {
             <button
               onClick={() => setStatusFilter('draft')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${statusFilter === 'draft'
-                ? 'bg-card text-primary shadow-sm'
+                ? 'bg-card text-primary shadow-xs'
                 : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
@@ -198,10 +198,10 @@ export default function AdminVideosPage() {
         {filteredVideos.map((video) => (
           <div
             key={video._id}
-            className="bg-card rounded-xl shadow-sm border border-border/60 overflow-hidden hover:shadow-lg transition-all duration-300 group"
+            className="bg-card rounded-xl shadow-xs border border-border/60 overflow-hidden hover:shadow-lg transition-all duration-300 group"
           >
             {/* Thumbnail */}
-            <div className="relative aspect-video bg-gradient-to-br from-primary/10 to-primary/10">
+            <div className="relative aspect-video bg-linear-to-br from-primary/10 to-primary/10">
               {video.thumbnail ? (
                 <img
                   src={video.thumbnail}

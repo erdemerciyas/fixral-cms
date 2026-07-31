@@ -76,7 +76,7 @@ export default function MailSystemStatus() {
   };
 
   return (
-    <div className="bg-card rounded-lg shadow-sm border border-border p-6">
+    <div className="bg-card rounded-lg shadow-xs border border-border p-6">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center space-x-3">
           <EnvelopeIcon className="w-8 h-8 text-info" />

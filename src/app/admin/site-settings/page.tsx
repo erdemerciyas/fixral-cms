@@ -17,7 +17,7 @@ import { cn } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
 
 const selectInputClass = cn(
-  'flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm'
+  'flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-xs transition-colors focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm'
 );
 
 export default function AdminSiteSettingsPage() {
@@ -164,7 +164,7 @@ export default function AdminSiteSettingsPage() {
         <div className="space-y-6">
 
           {/* Temel Site Ayarları */}
-          <div className="bg-card rounded-xl shadow-sm border border-border/60 p-6">
+          <div className="bg-card rounded-xl shadow-xs border border-border/60 p-6">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
                 <Globe className="w-6 h-6 text-primary" />
@@ -178,29 +178,29 @@ export default function AdminSiteSettingsPage() {
             <div className="space-y-4">
               <div>
                 <Label className="block text-sm font-medium text-foreground mb-1">Site Adı</Label>
-                <Input type="text" value={settings.siteName} onChange={(e) => setSettings({ ...settings, siteName: e.target.value })} className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-ring outline-none" />
+                <Input type="text" value={settings.siteName} onChange={(e) => setSettings({ ...settings, siteName: e.target.value })} className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-ring outline-hidden" />
                 <p className="text-xs text-muted-foreground mt-1">Tarayıcı sekmesinde ve arama sonuçlarında görünür (title)</p>
               </div>
               <div>
                 <Label className="block text-sm font-medium text-foreground mb-1">Site URL</Label>
-                <Input type="url" value={settings.siteUrl} onChange={(e) => setSettings({ ...settings, siteUrl: e.target.value })} className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-ring outline-none" placeholder="https://example.com" />
+                <Input type="url" value={settings.siteUrl} onChange={(e) => setSettings({ ...settings, siteUrl: e.target.value })} className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-ring outline-hidden" placeholder="https://example.com" />
               </div>
               <div>
                 <Label className="block text-sm font-medium text-foreground mb-1">Slogan</Label>
-                <Input type="text" value={settings.slogan || ''} onChange={(e) => setSettings({ ...settings, slogan: e.target.value })} className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-ring outline-none" />
+                <Input type="text" value={settings.slogan || ''} onChange={(e) => setSettings({ ...settings, slogan: e.target.value })} className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-ring outline-hidden" />
                 <p className="text-xs text-muted-foreground mt-1">Arama sonuçlarında açıklama olarak görünür (meta description)</p>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label className="block text-sm font-medium text-foreground mb-1">Dil</Label>
-                  <select value={settings.language} onChange={(e) => setSettings({ ...settings, language: e.target.value })} className={cn(selectInputClass, 'w-full px-3 py-2 border rounded-lg outline-none')}>
+                  <select value={settings.language} onChange={(e) => setSettings({ ...settings, language: e.target.value })} className={cn(selectInputClass, 'w-full px-3 py-2 border rounded-lg outline-hidden')}>
                     <option value="tr">Türkçe</option>
                     <option value="en">English</option>
                   </select>
                 </div>
                 <div>
                   <Label className="block text-sm font-medium text-foreground mb-1">Saat Dilimi</Label>
-                  <select value={settings.timezone} onChange={(e) => setSettings({ ...settings, timezone: e.target.value })} className={cn(selectInputClass, 'w-full px-3 py-2 border rounded-lg outline-none')}>
+                  <select value={settings.timezone} onChange={(e) => setSettings({ ...settings, timezone: e.target.value })} className={cn(selectInputClass, 'w-full px-3 py-2 border rounded-lg outline-hidden')}>
                     <option value="Europe/Istanbul">Istanbul (UTC+3)</option>
                     <option value="UTC">UTC</option>
                     <option value="Europe/London">London</option>
@@ -212,7 +212,7 @@ export default function AdminSiteSettingsPage() {
           </div>
 
           {/* Logo & Görsel Ayarlar */}
-          <div className="bg-card rounded-xl shadow-sm border border-border/60 p-6">
+          <div className="bg-card rounded-xl shadow-xs border border-border/60 p-6">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
                 <ImageIcon className="w-6 h-6 text-primary" />
@@ -237,7 +237,7 @@ export default function AdminSiteSettingsPage() {
 
               <div>
                 <Label className="block text-sm font-medium text-foreground mb-1">Logo Kelimesi</Label>
-                <Input type="text" value={settings.logoText || ''} onChange={(e) => setSettings({ ...settings, logoText: e.target.value })} className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-ring outline-none" placeholder="Logo yanında görünecek metin" />
+                <Input type="text" value={settings.logoText || ''} onChange={(e) => setSettings({ ...settings, logoText: e.target.value })} className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-ring outline-hidden" placeholder="Logo yanında görünecek metin" />
                 <p className="text-xs text-muted-foreground mt-1">Navigasyonda logo yanında gösterilecek kısa isim</p>
               </div>
 
@@ -256,7 +256,7 @@ export default function AdminSiteSettingsPage() {
 
 
           {/* İletişim & Sosyal Medya — ayrı sayfadan yönetilir */}
-          <div className="bg-card rounded-xl shadow-sm border border-border/60 p-6">
+          <div className="bg-card rounded-xl shadow-xs border border-border/60 p-6">
             <h2 className="text-lg font-bold text-foreground mb-2">İletişim & Sosyal Medya</h2>
             <p className="text-sm text-muted-foreground mb-4">Bu ayarlar ayrı sayfalardan yönetilmektedir.</p>
             <div className="flex flex-wrap gap-2">
@@ -274,7 +274,7 @@ export default function AdminSiteSettingsPage() {
         <div className="space-y-6">
 
           {/* Özellik Kontrolleri (Toggle'lar) */}
-          <div className="bg-card rounded-xl shadow-sm border border-border/60 p-6">
+          <div className="bg-card rounded-xl shadow-xs border border-border/60 p-6">
             <h2 className="text-lg font-bold text-foreground mb-4">Sistem Durumu</h2>
             <div className="space-y-4">
               <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
@@ -309,7 +309,7 @@ export default function AdminSiteSettingsPage() {
 
               <div>
                 <Label className="block text-sm font-medium text-foreground mb-1">Maksimum Dosya Yükleme Boyutu (MB)</Label>
-                <Input type="number" value={settings.system?.maxUploadSize || 10} onChange={(e) => updateNested('system', 'maxUploadSize', parseInt(e.target.value))} className="w-full px-3 py-2 border rounded-lg outline-none" min="1" max="100" />
+                <Input type="number" value={settings.system?.maxUploadSize || 10} onChange={(e) => updateNested('system', 'maxUploadSize', parseInt(e.target.value))} className="w-full px-3 py-2 border rounded-lg outline-hidden" min="1" max="100" />
               </div>
             </div>
           </div>

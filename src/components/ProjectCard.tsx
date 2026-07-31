@@ -18,7 +18,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
     e.currentTarget.style.display = 'none';
     const parent = e.currentTarget.parentElement;
     if (parent) {
-      parent.classList.add('bg-gradient-to-br', 'from-accent', 'to-blue-100');
+      parent.classList.add('bg-linear-to-br', 'from-accent', 'to-blue-100');
       const fallback = document.createElement('div');
       fallback.className = 'flex flex-col items-center justify-center h-full text-accent-foreground';
       fallback.innerHTML = `
@@ -44,7 +44,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
             className="object-cover transition-transform duration-500"
             onError={handleImageError}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent opacity-80 group-hover:opacity-60 transition-opacity duration-300"></div>
+          <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/40 to-transparent opacity-80 group-hover:opacity-60 transition-opacity duration-300"></div>
         </div>
         <div className="p-6">
           <h3 className="text-xl font-bold text-foreground mb-2 group-hover:text-accent-foreground transition-colors duration-200 line-clamp-2">

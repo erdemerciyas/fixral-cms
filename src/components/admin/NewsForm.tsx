@@ -324,7 +324,7 @@ export default function NewsForm({ initialData, onSubmit, isLoading = false }: N
   const translation = formData.translations[activeLanguage] || emptyTranslation();
 
   const inputBase =
-    'w-full px-4 py-2.5 border bg-transparent text-foreground rounded-xl focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all text-sm';
+    'w-full px-4 py-2.5 border bg-transparent text-foreground rounded-xl focus:outline-hidden focus:ring-2 focus:ring-ring focus:border-transparent transition-all text-sm';
   const inputNormal = `${inputBase} border-border`;
   const inputError = `${inputBase} border-destructive dark:border-destructive ring-1 ring-destructive`;
 
@@ -333,7 +333,7 @@ export default function NewsForm({ initialData, onSubmit, isLoading = false }: N
       {/* Alerts */}
       {error && (
         <div className="mb-6 bg-destructive/10 border border-destructive/30 text-destructive p-4 rounded-xl flex items-start space-x-3 animate-in fade-in slide-in-from-top-2 duration-300">
-          <AlertIcon className="w-5 h-5 flex-shrink-0 mt-0.5" />
+          <AlertIcon className="w-5 h-5 shrink-0 mt-0.5" />
           <div className="flex-1">
             <p className="font-semibold text-sm">Hata</p>
             <p className="text-sm mt-0.5 opacity-90">{error}</p>
@@ -346,7 +346,7 @@ export default function NewsForm({ initialData, onSubmit, isLoading = false }: N
 
       {success && (
         <div className="mb-6 bg-success/10 border border-success/30 text-success p-4 rounded-xl flex items-start space-x-3 animate-in fade-in slide-in-from-top-2 duration-300">
-          <CheckIcon className="w-5 h-5 flex-shrink-0 mt-0.5" />
+          <CheckIcon className="w-5 h-5 shrink-0 mt-0.5" />
           <div className="flex-1">
             <p className="font-semibold text-sm">Başarılı</p>
             <p className="text-sm mt-0.5 opacity-90">{success}</p>
@@ -370,7 +370,7 @@ export default function NewsForm({ initialData, onSubmit, isLoading = false }: N
         {/* === LEFT COLUMN: Main content === */}
         <div className="space-y-6 min-w-0">
           {/* Title */}
-          <div className="bg-card rounded-xl shadow-sm border border-border p-5">
+          <div className="bg-card rounded-xl shadow-xs border border-border p-5">
             <label className="block text-sm font-semibold text-foreground mb-2">
               Başlık <span className="text-destructive">*</span>
             </label>
@@ -404,7 +404,7 @@ export default function NewsForm({ initialData, onSubmit, isLoading = false }: N
           </div>
 
           {/* Content Editor */}
-          <div className="bg-card rounded-xl shadow-sm border border-border p-5">
+          <div className="bg-card rounded-xl shadow-xs border border-border p-5">
             <div className="flex items-center justify-between mb-3">
               <label className="block text-sm font-semibold text-foreground">
                 İçerik
@@ -423,7 +423,7 @@ export default function NewsForm({ initialData, onSubmit, isLoading = false }: N
           </div>
 
           {/* Excerpt */}
-          <div className="bg-card rounded-xl shadow-sm border border-border p-5">
+          <div className="bg-card rounded-xl shadow-xs border border-border p-5">
             <label className="block text-sm font-semibold text-foreground mb-2">
               Özet
             </label>
@@ -453,7 +453,7 @@ export default function NewsForm({ initialData, onSubmit, isLoading = false }: N
         {/* === RIGHT COLUMN: Sidebar === */}
         <div className="space-y-5">
           {/* Action Buttons - sticky at top */}
-          <div className="bg-card rounded-xl shadow-sm border border-border p-4 xl:sticky xl:top-24 z-10">
+          <div className="bg-card rounded-xl shadow-xs border border-border p-4 xl:sticky xl:top-24 z-10">
             <div className="flex flex-col gap-2.5">
               <button
                 type="submit"
@@ -490,7 +490,7 @@ export default function NewsForm({ initialData, onSubmit, isLoading = false }: N
           </div>
 
           {/* Status */}
-          <div className="bg-card rounded-xl shadow-sm border border-border p-4">
+          <div className="bg-card rounded-xl shadow-xs border border-border p-4">
             <div className="flex items-center gap-2 mb-3">
               <SettingsIcon className="w-4 h-4 text-muted-foreground" />
               <label className="text-sm font-semibold text-foreground">Durum</label>
@@ -522,7 +522,7 @@ export default function NewsForm({ initialData, onSubmit, isLoading = false }: N
           </div>
 
           {/* Featured Image */}
-          <div className="bg-card rounded-xl shadow-sm border border-border p-4">
+          <div className="bg-card rounded-xl shadow-xs border border-border p-4">
             <div className="flex items-center gap-2 mb-3">
               <PhotoIcon className="w-4 h-4 text-muted-foreground" />
               <label className="text-sm font-semibold text-foreground">Öne Çıkan Resim</label>
@@ -583,7 +583,7 @@ export default function NewsForm({ initialData, onSubmit, isLoading = false }: N
           </div>
 
           {/* Tags */}
-          <div className="bg-card rounded-xl shadow-sm border border-border p-4">
+          <div className="bg-card rounded-xl shadow-xs border border-border p-4">
             <div className="flex items-center gap-2 mb-3">
               <TagIcon className="w-4 h-4 text-muted-foreground" />
               <label className="text-sm font-semibold text-foreground">Etiketler</label>
@@ -633,7 +633,7 @@ export default function NewsForm({ initialData, onSubmit, isLoading = false }: N
           </div>
 
           {/* SEO Section - Collapsible */}
-          <div className="bg-card rounded-xl shadow-sm border border-border overflow-hidden">
+          <div className="bg-card rounded-xl shadow-xs border border-border overflow-hidden">
             <button
               type="button"
               onClick={() => setSeoExpanded(!seoExpanded)}
@@ -656,7 +656,7 @@ export default function NewsForm({ initialData, onSubmit, isLoading = false }: N
                   type="button"
                   onClick={handleGenerateMetadata}
                   disabled={generatingMetadata || loading}
-                  className="w-full bg-gradient-to-r from-primary to-primary hover:shadow-lg hover:shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed text-primary-foreground px-4 py-2 rounded-xl font-semibold transition-all flex items-center justify-center gap-2 text-sm"
+                  className="w-full bg-linear-to-r from-primary to-primary hover:shadow-lg hover:shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed text-primary-foreground px-4 py-2 rounded-xl font-semibold transition-all flex items-center justify-center gap-2 text-sm"
                 >
                   <SparklesIcon className="w-4 h-4" />
                   {generatingMetadata ? 'Oluşturuluyor...' : 'AI ile Oluştur'}

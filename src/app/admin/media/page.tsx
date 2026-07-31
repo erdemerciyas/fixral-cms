@@ -272,7 +272,7 @@ export default function AdminMediaPage() {
       <div className="flex flex-col lg:flex-row gap-6 items-start">
         {/* Sidebar: Folder Tree */}
         <aside className="hidden lg:block w-64 shrink-0 sticky top-4">
-          <div className="bg-card rounded-xl shadow-sm border border-border p-3">
+          <div className="bg-card rounded-xl shadow-xs border border-border p-3">
             <div className="flex items-center gap-2 px-2 pb-3 mb-2 border-b border-border">
               <FolderTreeIcon className="w-4 h-4 text-primary" />
               <h3 className="text-sm font-semibold text-foreground">Klasörler</h3>
@@ -291,7 +291,7 @@ export default function AdminMediaPage() {
         {/* Main Content */}
         <div className="flex-1 w-full min-w-0 space-y-4">
           {/* Toolbar */}
-          <div className="bg-card rounded-xl shadow-sm border border-border p-4 sticky top-4 z-20 backdrop-blur-xl bg-card/90">
+          <div className="bg-card rounded-xl shadow-xs border border-border p-4 sticky top-4 z-20 backdrop-blur-xl bg-card/90">
             <div className="flex flex-col xl:flex-row gap-4 justify-between xl:items-center">
               {/* Left: Search & Filter */}
               <div className="flex flex-col sm:flex-row gap-3 w-full xl:w-auto flex-1">
@@ -314,7 +314,7 @@ export default function AdminMediaPage() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Dosya ara..."
-                    className="w-full pl-10 pr-4 py-2.5 bg-muted/50 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring focus:bg-card transition-all"
+                    className="w-full pl-10 pr-4 py-2.5 bg-muted/50 border border-border rounded-xl focus:outline-hidden focus:ring-2 focus:ring-ring focus:bg-card transition-all"
                   />
                 </div>
 
@@ -324,7 +324,7 @@ export default function AdminMediaPage() {
                       key={f}
                       onClick={() => setFilter(f)}
                       className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${filter === f
-                        ? 'bg-card text-primary shadow-sm'
+                        ? 'bg-card text-primary shadow-xs'
                         : 'text-muted-foreground hover:text-foreground hover:bg-muted'
                         }`}
                     >
@@ -339,14 +339,14 @@ export default function AdminMediaPage() {
                 <div className="flex items-center bg-muted p-1 rounded-xl">
                   <button
                     onClick={() => setViewMode('grid')}
-                    className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-card text-primary shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+                    className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-card text-primary shadow-xs' : 'text-muted-foreground hover:text-foreground'}`}
                     title="Izgara Görünümü"
                   >
                     <LayoutGrid className="w-5 h-5" />
                   </button>
                   <button
                     onClick={() => setViewMode('list')}
-                    className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-card text-primary shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+                    className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-card text-primary shadow-xs' : 'text-muted-foreground hover:text-foreground'}`}
                     title="Liste Görünümü"
                   >
                     <List className="w-5 h-5" />
@@ -397,7 +397,7 @@ export default function AdminMediaPage() {
                 {filteredItems.map((item) => (
                   <div
                     key={item._id}
-                    className={`group relative w-full bg-card rounded-xl shadow-sm border overflow-hidden cursor-pointer transition-all duration-200 ${selectedItems.has(item._id)
+                    className={`group relative w-full bg-card rounded-xl shadow-xs border overflow-hidden cursor-pointer transition-all duration-200 ${selectedItems.has(item._id)
                       ? 'ring-2 ring-ring border-transparent shadow-primary/10'
                       : 'border-border hover:shadow-md hover:border-primary/50'
                       }`}
@@ -432,8 +432,8 @@ export default function AdminMediaPage() {
                         )}
 
                         {/* Overlay for Actions */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-3 z-20">
-                          <p className="text-white text-xs font-medium truncate mb-2 drop-shadow-sm" title={item.name}>{item.name}</p>
+                        <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-3 z-20">
+                          <p className="text-white text-xs font-medium truncate mb-2 drop-shadow-xs" title={item.name}>{item.name}</p>
                           <div className="flex items-center justify-between">
                             <button
                               onClick={(e) => {
@@ -461,7 +461,7 @@ export default function AdminMediaPage() {
 
                       {/* Checkbox */}
                       <div className={`absolute top-2 left-2 z-30 transition-all duration-200 ${selectedItems.has(item._id) ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
-                        <div className="bg-card rounded-md shadow-sm p-0.5">
+                        <div className="bg-card rounded-md shadow-xs p-0.5">
                           <input
                             type="checkbox"
                             checked={selectedItems.has(item._id)}
@@ -474,7 +474,7 @@ export default function AdminMediaPage() {
 
                       {/* Type badge */}
                       {item.type.startsWith('video/') && (
-                        <div className="absolute top-2 right-2 z-20 p-1 bg-black/50 rounded-md backdrop-blur-sm">
+                        <div className="absolute top-2 right-2 z-20 p-1 bg-black/50 rounded-md backdrop-blur-xs">
                           <VideoIcon className="w-4 h-4 text-white" />
                         </div>
                       )}
@@ -483,7 +483,7 @@ export default function AdminMediaPage() {
                 ))}
               </div>
             ) : (
-              <div className="bg-card rounded-xl shadow-sm border border-border overflow-hidden">
+              <div className="bg-card rounded-xl shadow-xs border border-border overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-sm text-muted-foreground">
                     <thead className="bg-muted/50 text-xs uppercase font-semibold text-muted-foreground">
@@ -577,7 +577,7 @@ export default function AdminMediaPage() {
               </div>
             )
           ) : (
-            <div className="flex flex-col items-center justify-center py-20 bg-card rounded-xl shadow-sm border border-border border-dashed">
+            <div className="flex flex-col items-center justify-center py-20 bg-card rounded-xl shadow-xs border border-border border-dashed">
               <div className="w-20 h-20 bg-muted/50 rounded-full flex items-center justify-center mb-4">
                 <ImageIcon className="w-10 h-10 text-muted-foreground/50" />
               </div>
@@ -604,8 +604,8 @@ export default function AdminMediaPage() {
 
       {/* Mobile Folder Tree Drawer */}
       {showMobileTree && (
-        <div className="lg:hidden fixed inset-0 z-[9999] flex">
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200" onClick={() => setShowMobileTree(false)} />
+        <div className="lg:hidden fixed inset-0 z-9999 flex">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200" onClick={() => setShowMobileTree(false)} />
           <div className="relative w-80 max-w-[85vw] h-full bg-card border-r border-border shadow-2xl p-4 overflow-y-auto animate-in slide-in-from-left duration-200">
             <div className="flex items-center justify-between pb-3 mb-2 border-b border-border">
               <div className="flex items-center gap-2">
@@ -628,7 +628,7 @@ export default function AdminMediaPage() {
 
       {/* Upload Modal */}
       {showUploadModal && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[9999] p-4 animate-in fade-in duration-200">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-9999 p-4 animate-in fade-in duration-200">
           <div className="bg-card rounded-xl max-w-2xl w-full shadow-2xl overflow-hidden scale-100 animate-in zoom-in-95 duration-200">
             <div className="flex items-center justify-between p-6 border-b border-border">
               <div>
@@ -699,7 +699,7 @@ export default function AdminMediaPage() {
 
       {/* Preview Modal */}
       {showPreviewModal && previewItem && (
-        <div className="fixed inset-0 bg-black/90 backdrop-blur-md flex items-center justify-center z-[9999] p-4 animate-in fade-in duration-200" onClick={() => setShowPreviewModal(false)}>
+        <div className="fixed inset-0 bg-black/90 backdrop-blur-md flex items-center justify-center z-9999 p-4 animate-in fade-in duration-200" onClick={() => setShowPreviewModal(false)}>
           <div className="relative max-w-6xl w-full max-h-[90vh] flex flex-col md:flex-row gap-6 bg-transparent" onClick={e => e.stopPropagation()}>
             {/* Media Container */}
             <div className="flex-1 flex items-center justify-center bg-black/40 rounded-xl overflow-hidden relative group min-h-[300px]">

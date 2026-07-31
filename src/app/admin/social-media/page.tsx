@@ -178,7 +178,7 @@ export default function AdminSocialMediaPage() {
       )}
 
       {/* Stats Bar */}
-      <div className="bg-card rounded-xl shadow-sm border border-border/60 p-4 flex items-center gap-6">
+      <div className="bg-card rounded-xl shadow-xs border border-border/60 p-4 flex items-center gap-6">
         <div className="flex items-center gap-2 text-sm">
           <Link className="w-4 h-4 text-primary" />
           <span className="text-muted-foreground">Aktif bağlantılar:</span>
@@ -195,7 +195,7 @@ export default function AdminSocialMediaPage() {
       </div>
 
       {/* Social Links Card */}
-      <div className="bg-card rounded-xl shadow-sm border border-border/60 p-6">
+      <div className="bg-card rounded-xl shadow-xs border border-border/60 p-6">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
             <Link className="w-5 h-5 text-primary" />
@@ -217,7 +217,7 @@ export default function AdminSocialMediaPage() {
                 type="url"
                 value={config[key]}
                 onChange={(e) => updateField(key, e.target.value)}
-                className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
+                className="w-full px-4 py-3 border border-border rounded-xl focus:outline-hidden focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
                 placeholder={placeholder}
               />
             </div>
@@ -226,7 +226,7 @@ export default function AdminSocialMediaPage() {
       </div>
 
       {/* Sharing Settings Card */}
-      <div className="bg-card rounded-xl shadow-sm border border-border/60 p-6">
+      <div className="bg-card rounded-xl shadow-xs border border-border/60 p-6">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
             <Share2 className="w-5 h-5 text-primary" />

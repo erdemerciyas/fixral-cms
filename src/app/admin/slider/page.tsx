@@ -175,7 +175,7 @@ export default function AdminSliderPage() {
       }
     >
       {/* Search and Filter Bar */}
-      <div className="bg-card rounded-xl shadow-sm border border-border/60 p-4">
+      <div className="bg-card rounded-xl shadow-xs border border-border/60 p-4">
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex-1 relative">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -184,14 +184,14 @@ export default function AdminSliderPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search sliders..."
-              className="w-full pl-12 pr-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
+              className="w-full pl-12 pr-4 py-3 border border-border rounded-xl focus:outline-hidden focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
             />
           </div>
           <div className="flex space-x-2 bg-muted p-1 rounded-xl">
             <button
               onClick={() => setStatusFilter('all')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${statusFilter === 'all'
-                ? 'bg-card text-primary shadow-sm'
+                ? 'bg-card text-primary shadow-xs'
                 : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
@@ -200,7 +200,7 @@ export default function AdminSliderPage() {
             <button
               onClick={() => setStatusFilter('active')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${statusFilter === 'active'
-                ? 'bg-card text-primary shadow-sm'
+                ? 'bg-card text-primary shadow-xs'
                 : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
@@ -209,7 +209,7 @@ export default function AdminSliderPage() {
             <button
               onClick={() => setStatusFilter('inactive')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${statusFilter === 'inactive'
-                ? 'bg-card text-primary shadow-sm'
+                ? 'bg-card text-primary shadow-xs'
                 : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
@@ -224,10 +224,10 @@ export default function AdminSliderPage() {
         {filteredSliders.map((slider, index) => (
           <div
             key={slider._id}
-            className="bg-card rounded-xl shadow-sm border border-border/60 overflow-hidden hover:shadow-lg transition-all duration-300 group"
+            className="bg-card rounded-xl shadow-xs border border-border/60 overflow-hidden hover:shadow-lg transition-all duration-300 group"
           >
             {/* Image */}
-            <div className="relative aspect-video bg-gradient-to-br from-primary/10 to-primary/10">
+            <div className="relative aspect-video bg-linear-to-br from-primary/10 to-primary/10">
               {(slider.imageUrl || slider.image) ? (
                 <img
                   src={slider.imageUrl || slider.image}

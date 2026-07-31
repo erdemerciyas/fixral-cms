@@ -117,16 +117,16 @@ export default function SliderForm({ initialData, isEditing = false }: SliderFor
         }
     };
 
-    const inputClass = 'w-full rounded-lg border border-border bg-transparent px-3 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring';
+    const inputClass = 'w-full rounded-lg border border-border bg-transparent px-3 py-2 text-sm transition-colors focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring';
 
     return (
         <div className="max-w-[1400px] mx-auto pb-20">
             {/* Header */}
-            <div className="flex items-center justify-between mb-8 sticky top-0 z-20 bg-background/80 backdrop-blur-sm py-4 -mx-2 px-2">
+            <div className="flex items-center justify-between mb-8 sticky top-0 z-20 bg-background/80 backdrop-blur-xs py-4 -mx-2 px-2">
                 <div className="flex items-center gap-4">
                     <Link
                         href="/admin/slider"
-                        className="p-2 hover:bg-muted hover:shadow-sm rounded-xl transition-all border border-transparent hover:border-border"
+                        className="p-2 hover:bg-muted hover:shadow-xs rounded-xl transition-all border border-transparent hover:border-border"
                     >
                         <ArrowLeft className="w-5 h-5 text-muted-foreground" />
                     </Link>
@@ -190,7 +190,7 @@ export default function SliderForm({ initialData, isEditing = false }: SliderFor
                             </CardHeader>
                             <CardContent className="p-4 space-y-4">
                                 {formData.imageUrl && (
-                                    <div className="relative aspect-[16/7] w-full rounded-lg overflow-hidden bg-muted border border-border group">
+                                    <div className="relative aspect-16/7 w-full rounded-lg overflow-hidden bg-muted border border-border group">
                                         <Image
                                             src={formData.imageUrl}
                                             alt={formData.title || 'Slider preview'}

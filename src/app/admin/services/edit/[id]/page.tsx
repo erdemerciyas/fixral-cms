@@ -320,7 +320,7 @@ export default function EditServicePage(props: { params: Promise<{ id: string }>
   }, [isDirty, router]);
 
   const inputBase =
-    'w-full px-4 py-2.5 border bg-transparent text-foreground rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-sm';
+    'w-full px-4 py-2.5 border bg-transparent text-foreground rounded-xl focus:outline-hidden focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-sm';
   const inputNormal = `${inputBase} border-border`;
 
   if (status === 'loading' || loading || langsLoading) {
@@ -336,7 +336,7 @@ export default function EditServicePage(props: { params: Promise<{ id: string }>
       {/* Alerts */}
       {error && (
         <div className="mb-6 bg-destructive/10 border border-destructive/30 text-destructive p-4 rounded-xl flex items-start space-x-3 animate-in fade-in slide-in-from-top-2 duration-300">
-          <AlertTriangle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+          <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5" />
           <div className="flex-1">
             <p className="font-semibold text-sm">Hata</p>
             <p className="text-sm mt-0.5 opacity-90">{error}</p>
@@ -349,7 +349,7 @@ export default function EditServicePage(props: { params: Promise<{ id: string }>
 
       {success && (
         <div className="mb-6 bg-success/10 border border-success/30 text-success p-4 rounded-xl flex items-start space-x-3 animate-in fade-in slide-in-from-top-2 duration-300">
-          <Check className="w-5 h-5 flex-shrink-0 mt-0.5" />
+          <Check className="w-5 h-5 shrink-0 mt-0.5" />
           <div className="flex-1">
             <p className="font-semibold text-sm">Başarılı</p>
             <p className="text-sm mt-0.5 opacity-90">{success}</p>
@@ -373,7 +373,7 @@ export default function EditServicePage(props: { params: Promise<{ id: string }>
         {/* LEFT COLUMN */}
         <div className="space-y-6 min-w-0">
           {/* Title */}
-          <div className="bg-card rounded-xl shadow-sm border border-border p-5">
+          <div className="bg-card rounded-xl shadow-xs border border-border p-5">
             <label className="block text-sm font-semibold text-foreground mb-2">
               Servis Başlığı <span className="text-destructive">*</span>
             </label>
@@ -393,7 +393,7 @@ export default function EditServicePage(props: { params: Promise<{ id: string }>
           </div>
 
           {/* Content Editor */}
-          <div className="bg-card rounded-xl shadow-sm border border-border p-5">
+          <div className="bg-card rounded-xl shadow-xs border border-border p-5">
             <div className="flex items-center justify-between mb-3">
               <label className="block text-sm font-semibold text-foreground">
                 Servis Açıklaması
@@ -413,7 +413,7 @@ export default function EditServicePage(props: { params: Promise<{ id: string }>
           </div>
 
           {/* Excerpt */}
-          <div className="bg-card rounded-xl shadow-sm border border-border p-5">
+          <div className="bg-card rounded-xl shadow-xs border border-border p-5">
             <label className="block text-sm font-semibold text-foreground mb-2">
               Kısa Açıklama (Excerpt)
             </label>
@@ -430,7 +430,7 @@ export default function EditServicePage(props: { params: Promise<{ id: string }>
           </div>
 
           {/* Features */}
-          <div className="bg-card rounded-xl shadow-sm border border-border p-5">
+          <div className="bg-card rounded-xl shadow-xs border border-border p-5">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
                 <ListIcon className="w-4 h-4 text-muted-foreground" />
@@ -519,7 +519,7 @@ export default function EditServicePage(props: { params: Promise<{ id: string }>
         {/* RIGHT COLUMN: Sidebar */}
         <div className="space-y-5">
           {/* Action Buttons */}
-          <div className="bg-card rounded-xl shadow-sm border border-border p-4 xl:sticky xl:top-24 z-10">
+          <div className="bg-card rounded-xl shadow-xs border border-border p-4 xl:sticky xl:top-24 z-10">
             <div className="flex flex-col gap-2.5">
               <button
                 type="submit"
@@ -556,7 +556,7 @@ export default function EditServicePage(props: { params: Promise<{ id: string }>
           </div>
 
           {/* Service Image */}
-          <div className="bg-card rounded-xl shadow-sm border border-border p-4">
+          <div className="bg-card rounded-xl shadow-xs border border-border p-4">
             <div className="flex items-center gap-2 mb-3">
               <PhotoIcon className="w-4 h-4 text-muted-foreground" />
               <label className="text-sm font-semibold text-foreground">Hizmet Görseli</label>
@@ -599,7 +599,7 @@ export default function EditServicePage(props: { params: Promise<{ id: string }>
           </div>
 
           {/* Icon Picker */}
-          <div className="bg-card rounded-xl shadow-sm border border-border p-4">
+          <div className="bg-card rounded-xl shadow-xs border border-border p-4">
             <div className="flex items-center gap-2 mb-3">
               <Shapes className="w-4 h-4 text-muted-foreground" />
               <label className="text-sm font-semibold text-foreground">Hizmet İkonu</label>
@@ -635,7 +635,7 @@ export default function EditServicePage(props: { params: Promise<{ id: string }>
           </div>
 
           {/* SEO Section - Collapsible */}
-          <div className="bg-card rounded-xl shadow-sm border border-border overflow-hidden">
+          <div className="bg-card rounded-xl shadow-xs border border-border overflow-hidden">
             <div className="flex items-center justify-between p-4 hover:bg-muted/50 transition-colors">
               <button
                 type="button"
@@ -734,7 +734,7 @@ export default function EditServicePage(props: { params: Promise<{ id: string }>
           </div>
 
           {/* Preview Card */}
-          <div className="bg-card rounded-xl shadow-sm border border-border p-4">
+          <div className="bg-card rounded-xl shadow-xs border border-border p-4">
             <div className="flex items-center gap-2 mb-3">
               <Eye className="w-4 h-4 text-muted-foreground" />
               <label className="text-sm font-semibold text-foreground">Önizleme</label>

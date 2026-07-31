@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils"
 
 /* Printables etiket dili: 4px radius, kompakt padding, düşük kontrastlı zemin. */
 const badgeVariants = cva(
-  "inline-flex items-center rounded-sm border px-2 py-0.5 text-xs font-semibold transition-colors duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+  "inline-flex items-center rounded-sm border px-2 py-0.5 text-xs font-semibold transition-colors duration-200 ease-out focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2",
   {
     variants: {
       variant: {

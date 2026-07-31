@@ -238,10 +238,10 @@ export default function ProfilePage() {
     return (
         <div className="space-y-6">
             {/* Header */}
-            <div className="bg-gradient-to-r from-primary to-primary rounded-xl p-8 text-primary-foreground shadow-lg">
+            <div className="bg-linear-to-r from-primary to-primary rounded-xl p-8 text-primary-foreground shadow-lg">
                 <div className="flex items-center gap-6">
                     <div className="relative group">
-                        <div className="w-20 h-20 rounded-full border-4 border-primary-foreground/30 overflow-hidden bg-primary-foreground/10 backdrop-blur-sm flex items-center justify-center relative">
+                        <div className="w-20 h-20 rounded-full border-4 border-primary-foreground/30 overflow-hidden bg-primary-foreground/10 backdrop-blur-xs flex items-center justify-center relative">
                             {userData.avatar ? (
                                 <img src={userData.avatar} alt={userData.name} className="w-full h-full object-cover" />
                             ) : (
@@ -309,7 +309,7 @@ export default function ProfilePage() {
             )}
 
             {/* Content Area */}
-            <div className="bg-card rounded-xl shadow-sm border border-border p-6 min-h-[400px]">
+            <div className="bg-card rounded-xl shadow-xs border border-border p-6 min-h-[400px]">
 
                 {/* 1. Profile Tab */}
                 {activeTab === 'profile' && (
@@ -352,7 +352,7 @@ export default function ProfilePage() {
                             <Button
                                 type="submit"
                                 disabled={loading}
-                                className="px-6 py-2.5 bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 transition-colors disabled:opacity-50 font-medium shadow-sm hover:shadow-primary/25"
+                                className="px-6 py-2.5 bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 transition-colors disabled:opacity-50 font-medium shadow-xs hover:shadow-primary/25"
                             >
                                 {loading ? 'Kaydediliyor...' : 'Değişiklikleri Kaydet'}
                             </Button>
@@ -398,7 +398,7 @@ export default function ProfilePage() {
                             <Button
                                 type="submit"
                                 disabled={loading}
-                                className="px-6 py-2.5 bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 transition-colors disabled:opacity-50 font-medium shadow-sm hover:shadow-primary/25"
+                                className="px-6 py-2.5 bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 transition-colors disabled:opacity-50 font-medium shadow-xs hover:shadow-primary/25"
                             >
                                 {loading ? 'Güncelleniyor...' : 'Şifreyi Güncelle'}
                             </Button>
@@ -411,7 +411,7 @@ export default function ProfilePage() {
                     <div className="max-w-2xl animate-in fade-in">
                         <div className="bg-primary/10 rounded-xl p-6 mb-8 border border-primary/20">
                             <div className="flex items-center gap-4">
-                                <div className="p-3 bg-card rounded-full shadow-sm text-primary">
+                                <div className="p-3 bg-card rounded-full shadow-xs text-primary">
                                     <ShieldCheck className="w-8 h-8" />
                                 </div>
                                 <div>
@@ -454,7 +454,7 @@ export default function ProfilePage() {
 
                                 <div className="flex flex-col md:flex-row gap-8 items-center bg-muted/50 p-6 rounded-xl border border-border">
                                     {setupData.qrCodeUrl && (
-                                        <div className="bg-card p-2 rounded-xl shadow-sm border border-border">
+                                        <div className="bg-card p-2 rounded-xl shadow-xs border border-border">
                                             <Image
                                                 src={setupData.qrCodeUrl}
                                                 alt="QR Code"
@@ -480,7 +480,7 @@ export default function ProfilePage() {
                                             value={verificationCode}
                                             onChange={(e) => setVerificationCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
                                             placeholder="000 000"
-                                            className="flex-1 px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-ring outline-none text-center tracking-[0.5em] text-xl font-mono"
+                                            className="flex-1 px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-ring outline-hidden text-center tracking-[0.5em] text-xl font-mono"
                                         />
                                     </div>
                                     <Button
@@ -509,7 +509,7 @@ export default function ProfilePage() {
                                     Hesabınız artık 2FA ile korunuyor. Erişimini kaybetmeniz durumunda kullanabileceğiniz yedek kodlar aşağıdadır.
                                 </p>
 
-                                <div className="bg-card p-6 rounded-xl border border-success/30 shadow-sm max-w-lg mx-auto mb-6">
+                                <div className="bg-card p-6 rounded-xl border border-success/30 shadow-xs max-w-lg mx-auto mb-6">
                                     <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-4 border-b pb-2">Kurtarma Kodları</p>
                                     <div className="grid grid-cols-2 gap-3 font-mono text-muted-foreground">
                                         {backupCodes?.map((code, i) => (

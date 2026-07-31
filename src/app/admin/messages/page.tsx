@@ -257,13 +257,13 @@ export default function AdminMessagesPage() {
       title="Mesajlar"
       description="Gelen kutusu ve proje başvuruları"
       actions={
-        <span className="text-sm text-muted-foreground bg-card px-3 py-1 rounded-full border border-border shadow-sm">
+        <span className="text-sm text-muted-foreground bg-card px-3 py-1 rounded-full border border-border shadow-xs">
           {unreadCount} okunmamış
         </span>
       }
     >
       {/* Search and Filter Bar */}
-      <div className="bg-card rounded-xl shadow-sm border border-border/60 p-4">
+      <div className="bg-card rounded-xl shadow-xs border border-border/60 p-4">
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex-1 relative">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -272,14 +272,14 @@ export default function AdminMessagesPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Mesajlarda ara..."
-              className="w-full pl-12 pr-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
+              className="w-full pl-12 pr-4 py-3 border border-border rounded-xl focus:outline-hidden focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
             />
           </div>
           <div className="flex space-x-2 bg-muted p-1 rounded-xl">
             <button
               onClick={() => setStatusFilter('all')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${statusFilter === 'all'
-                ? 'bg-card text-primary shadow-sm'
+                ? 'bg-card text-primary shadow-xs'
                 : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
@@ -288,7 +288,7 @@ export default function AdminMessagesPage() {
             <button
               onClick={() => setStatusFilter('unread')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${statusFilter === 'unread'
-                ? 'bg-card text-primary shadow-sm'
+                ? 'bg-card text-primary shadow-xs'
                 : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
@@ -297,7 +297,7 @@ export default function AdminMessagesPage() {
             <button
               onClick={() => setStatusFilter('read')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${statusFilter === 'read'
-                ? 'bg-card text-primary shadow-sm'
+                ? 'bg-card text-primary shadow-xs'
                 : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
@@ -325,7 +325,7 @@ export default function AdminMessagesPage() {
       </div>
 
       {/* Messages List */}
-      <div className="bg-card rounded-xl shadow-sm border border-border/60 overflow-hidden">
+      <div className="bg-card rounded-xl shadow-xs border border-border/60 overflow-hidden">
         {filteredMessages.length > 0 ? (
           <>
             <div className="px-6 py-3 border-b border-border bg-muted/50 flex items-center">
@@ -352,7 +352,7 @@ export default function AdminMessagesPage() {
                   onClick={() => openMessageDetail(message)}
                 >
                   <div className="flex items-start gap-4">
-                    <div className="flex-shrink-0 pt-1" onClick={(e) => e.stopPropagation()}>
+                    <div className="shrink-0 pt-1" onClick={(e) => e.stopPropagation()}>
                       <input
                         type="checkbox"
                         checked={selectedMessages.has(message._id)}
@@ -414,7 +414,7 @@ export default function AdminMessagesPage() {
                       </p>
                     </div>
 
-                    <div className="flex-shrink-0 self-center opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="shrink-0 self-center opacity-0 group-hover:opacity-100 transition-opacity">
                       <Button
                         type="button"
                         onClick={(e) => {
@@ -505,13 +505,13 @@ export default function AdminMessagesPage() {
                             <h4 className="text-xs font-bold text-info uppercase tracking-wider mb-2">Proje Detayları</h4>
                             <div className="flex flex-wrap gap-4 text-sm">
                               {viewMessage.projectType && (
-                                <div className="flex items-center gap-2 bg-card px-3 py-1.5 rounded-lg border border-info/30 shadow-sm text-info">
+                                <div className="flex items-center gap-2 bg-card px-3 py-1.5 rounded-lg border border-info/30 shadow-xs text-info">
                                   <Flame className="w-4 h-4 text-warning" />
                                   <span className="font-medium">{viewMessage.projectType}</span>
                                 </div>
                               )}
                               {viewMessage.budget && (
-                                <div className="flex items-center gap-2 bg-card px-3 py-1.5 rounded-lg border border-info/30 shadow-sm text-info">
+                                <div className="flex items-center gap-2 bg-card px-3 py-1.5 rounded-lg border border-info/30 shadow-xs text-info">
                                   <DollarSign className="w-4 h-4 text-success" />
                                   <span className="font-medium">Bütçe: {viewMessage.budget}</span>
                                 </div>
@@ -552,7 +552,7 @@ export default function AdminMessagesPage() {
                         <Textarea
                           value={replyText}
                           onChange={(e) => setReplyText(e.target.value)}
-                          className="w-full rounded-xl border border-border shadow-sm focus:border-ring focus:ring-ring text-sm p-3 min-h-[100px]"
+                          className="w-full rounded-xl border border-border shadow-xs focus:border-ring focus:ring-ring text-sm p-3 min-h-[100px]"
                           placeholder="Müşteriye gönderilecek yanıtınızı buraya yazın..."
                         />
                         <div className="mt-3 flex justify-end gap-3">
@@ -567,7 +567,7 @@ export default function AdminMessagesPage() {
                             type="button"
                             onClick={handleSendReply}
                             disabled={!replyText.trim() || sendingReply}
-                            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-primary-foreground bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-xs text-primary-foreground bg-primary hover:bg-primary/90 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-ring disabled:opacity-50 disabled:cursor-not-allowed"
                           >
                             {sendingReply ? (
                               <>

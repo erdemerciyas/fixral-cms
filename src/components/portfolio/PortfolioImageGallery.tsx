@@ -101,7 +101,7 @@ export default function PortfolioImageGallery({
   if (!allImages.length) {
     return (
       <div className="bg-card/80 backdrop-blur-xl rounded-3xl shadow-xl border border-border p-8">
-        <div className="aspect-[16/10] bg-gradient-to-br from-muted to-surface-secondary rounded-2xl flex items-center justify-center">
+        <div className="aspect-16/10 bg-linear-to-br from-muted to-surface-secondary rounded-2xl flex items-center justify-center">
           <div className="text-center">
             <PhotoIcon className="w-16 h-16 text-muted-foreground/50 mx-auto mb-4" />
             <p className="text-muted-foreground text-lg">Görsel bulunamadı</p>
@@ -120,7 +120,7 @@ export default function PortfolioImageGallery({
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6 }}
-          className="relative aspect-[16/10] rounded-3xl overflow-hidden shadow-2xl border border-border bg-card group cursor-pointer"
+          className="relative aspect-16/10 rounded-3xl overflow-hidden shadow-2xl border border-border bg-card group cursor-pointer"
           onClick={(e) => {
             e.preventDefault();
             if (selectedImage) {
@@ -147,7 +147,7 @@ export default function PortfolioImageGallery({
                   whileHover={{ opacity: 1, scale: 1 }}
                   className="opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                 >
-                  <div className="bg-white/90 backdrop-blur-sm rounded-full p-4 shadow-xl">
+                  <div className="bg-white/90 backdrop-blur-xs rounded-full p-4 shadow-xl">
                     <MagnifyingGlassIcon className="w-8 h-8 text-foreground" />
                   </div>
                 </m.div>
@@ -187,7 +187,7 @@ export default function PortfolioImageGallery({
                     e.stopPropagation();
                     setSelectedImage(image);
                   }}
-                  className={`relative aspect-square w-full h-20 sm:h-24 md:h-28 lg:h-32 xl:h-36 rounded-xl overflow-hidden border-2 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 ${selectedImage === image
+                  className={`relative aspect-square w-full h-20 sm:h-24 md:h-28 lg:h-32 xl:h-36 rounded-xl overflow-hidden border-2 transition-all duration-300 focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2 ${selectedImage === image
                     ? 'border-primary shadow-lg ring-2 ring-ring scale-105'
                     : 'border-border hover:border-border hover:shadow-md'
                     }`}
@@ -223,7 +223,7 @@ export default function PortfolioImageGallery({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black/95 backdrop-blur-sm flex items-center justify-center"
+          className="fixed inset-0 bg-black/95 backdrop-blur-xs flex items-center justify-center"
           style={{
             position: 'fixed',
             top: 0,
@@ -322,14 +322,14 @@ export default function PortfolioImageGallery({
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6 }}
-                className="absolute bottom-24 left-1/2 transform -translate-x-1/2 z-10 bg-black/50 backdrop-blur-sm rounded-3xl p-4 max-w-6xl overflow-x-auto"
+                className="absolute bottom-24 left-1/2 transform -translate-x-1/2 z-10 bg-black/50 backdrop-blur-xs rounded-3xl p-4 max-w-6xl overflow-x-auto"
               >
                 <div className="flex space-x-3">
                   {allImages.map((image, index) => (
                     <button
                       key={index}
                       onClick={() => setLightboxImageIndex(index)}
-                      className={`relative flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden border-3 transition-all duration-200 hover:scale-105 ${lightboxImageIndex === index
+                      className={`relative shrink-0 w-20 h-20 rounded-xl overflow-hidden border-3 transition-all duration-200 hover:scale-105 ${lightboxImageIndex === index
                         ? 'border-primary shadow-lg'
                         : 'border-white/30 hover:border-white/60'
                         }`}

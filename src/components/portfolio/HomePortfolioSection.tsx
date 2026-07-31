@@ -53,7 +53,7 @@ export default function HomePortfolioSection({
                 key={i}
                 className="rounded-sm border border-border bg-card overflow-hidden"
               >
-                <div className="aspect-[4/3] w-full bg-secondary animate-pulse" />
+                <div className="aspect-4/3 w-full bg-secondary animate-pulse" />
                 <div className="p-4 space-y-2">
                   <div className="h-4 w-3/4 rounded bg-secondary animate-pulse" />
                   <div className="h-3 w-1/2 rounded bg-secondary animate-pulse" />

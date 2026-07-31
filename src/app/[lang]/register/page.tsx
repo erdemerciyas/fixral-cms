@@ -65,9 +65,9 @@ export default function RegisterPage() {
     };
 
     return (
-        <div className="min-h-[100dvh] pt-32 pb-20 bg-background flex items-center justify-center">
+        <div className="min-h-dvh pt-32 pb-20 bg-background flex items-center justify-center">
             <div className="container-main max-w-md w-full">
-                <div className="bg-card p-8 rounded-2xl shadow-sm border border-border">
+                <div className="bg-card p-8 rounded-2xl shadow-xs border border-border">
                     <h1 className="text-2xl font-bold text-foreground mb-2 text-center">Kayıt Ol</h1>
                     <p className="text-muted-foreground mb-8 text-center">
                         Yeni bir hesap oluşturun ve alışverişe başlayın.
@@ -88,7 +88,7 @@ export default function RegisterPage() {
                                 required
                                 value={formData.name}
                                 onChange={handleChange}
-                                className="w-full px-4 py-2 rounded-lg border border-input bg-background text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary outline-none transition-all"
+                                className="w-full px-4 py-2 rounded-lg border border-input bg-background text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary outline-hidden transition-all"
                             />
                         </div>
                         <div>
@@ -99,7 +99,7 @@ export default function RegisterPage() {
                                 required
                                 value={formData.email}
                                 onChange={handleChange}
-                                className="w-full px-4 py-2 rounded-lg border border-input bg-background text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary outline-none transition-all"
+                                className="w-full px-4 py-2 rounded-lg border border-input bg-background text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary outline-hidden transition-all"
                             />
                         </div>
                         <div>
@@ -111,7 +111,7 @@ export default function RegisterPage() {
                                 minLength={6}
                                 value={formData.password}
                                 onChange={handleChange}
-                                className="w-full px-4 py-2 rounded-lg border border-input bg-background text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary outline-none transition-all"
+                                className="w-full px-4 py-2 rounded-lg border border-input bg-background text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary outline-hidden transition-all"
                             />
                         </div>
                         <div>
@@ -123,7 +123,7 @@ export default function RegisterPage() {
                                 minLength={6}
                                 value={formData.confirmPassword}
                                 onChange={handleChange}
-                                className="w-full px-4 py-2 rounded-lg border border-input bg-background text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary outline-none transition-all"
+                                className="w-full px-4 py-2 rounded-lg border border-input bg-background text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary outline-hidden transition-all"
                             />
                         </div>
 

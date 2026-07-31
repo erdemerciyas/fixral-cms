@@ -245,15 +245,15 @@ export default function AdminNewsPage() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Haber başlığı veya özet ara..."
-                className="w-full pl-10 pr-4 py-2.5 bg-surface-secondary border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary focus:bg-card transition-all shadow-sm"
+                className="w-full pl-10 pr-4 py-2.5 bg-surface-secondary border border-border rounded-xl focus:outline-hidden focus:ring-2 focus:ring-primary/50 focus:border-primary focus:bg-card transition-all shadow-xs"
               />
             </div>
 
-            <div className="flex items-center bg-surface-tertiary border border-border/50 rounded-xl p-1 shadow-sm shrink-0 overflow-x-auto">
+            <div className="flex items-center bg-surface-tertiary border border-border/50 rounded-xl p-1 shadow-xs shrink-0 overflow-x-auto">
               <button
                 onClick={() => setStatusFilter('all')}
                 className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${statusFilter === 'all'
-                  ? 'bg-card text-foreground shadow-sm'
+                  ? 'bg-card text-foreground shadow-xs'
                   : 'text-muted-foreground hover:text-foreground'
                   }`}
               >
@@ -263,7 +263,7 @@ export default function AdminNewsPage() {
               <button
                 onClick={() => setStatusFilter('published')}
                 className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${statusFilter === 'published'
-                  ? 'bg-success-light text-success-dark shadow-sm'
+                  ? 'bg-success-light text-success-dark shadow-xs'
                   : 'text-muted-foreground hover:text-success-dark'
                   }`}
               >
@@ -273,7 +273,7 @@ export default function AdminNewsPage() {
               <button
                 onClick={() => setStatusFilter('draft')}
                 className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${statusFilter === 'draft'
-                  ? 'bg-warning-light text-warning-dark shadow-sm'
+                  ? 'bg-warning-light text-warning-dark shadow-xs'
                   : 'text-muted-foreground hover:text-warning-dark'
                   }`}
               >
@@ -299,17 +299,17 @@ export default function AdminNewsPage() {
               </div>
             )}
 
-            <div className="flex bg-surface-tertiary border border-border/50 rounded-xl p-1 shadow-sm shrink-0">
+            <div className="flex bg-surface-tertiary border border-border/50 rounded-xl p-1 shadow-xs shrink-0">
               <button
                 onClick={() => setViewMode('grid')}
-                className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-card text-primary shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+                className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-card text-primary shadow-xs' : 'text-muted-foreground hover:text-foreground'}`}
                 title="Grid Görünümü"
               >
                 <LayoutGrid className="w-5 h-5" />
               </button>
               <button
                 onClick={() => setViewMode('list')}
-                className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-card text-primary shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+                className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-card text-primary shadow-xs' : 'text-muted-foreground hover:text-foreground'}`}
                 title="Liste Görünümü"
               >
                 <List className="w-5 h-5" />
@@ -389,7 +389,7 @@ export default function AdminNewsPage() {
 
                     {/* Status Badge */}
                     <div className="absolute top-3 right-3 pointer-events-none">
-                      <span className={`px-2.5 py-1 rounded-lg text-xs font-semibold backdrop-blur-md shadow-sm border border-white/20
+                      <span className={`px-2.5 py-1 rounded-lg text-xs font-semibold backdrop-blur-md shadow-xs border border-white/20
                                ${item.status === 'published' ? 'bg-success/90 text-success-foreground' : 'bg-warning/90 text-warning-foreground'}
                             `}>
                         {item.status === 'published' ? 'Yayında' : 'Taslak'}
@@ -484,7 +484,7 @@ export default function AdminNewsPage() {
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-4">
-                          <div className="w-16 h-12 bg-surface-tertiary rounded-lg overflow-hidden flex-shrink-0 border border-border">
+                          <div className="w-16 h-12 bg-surface-tertiary rounded-lg overflow-hidden shrink-0 border border-border">
                             {item.featuredImage ? (
                               <img src={item.featuredImage} alt="" className="w-full h-full object-cover" />
                             ) : (

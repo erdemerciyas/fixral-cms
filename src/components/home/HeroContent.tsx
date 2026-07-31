@@ -106,7 +106,7 @@ export default function HeroContent({ slide, slideIndex = 0, onImage = false }: 
                     'bg-primary text-sm font-medium text-primary-foreground',
                     'hover:bg-primary/90 active:scale-[0.98]',
                     'transition-[background-color,transform] duration-200 motion-reduce:transition-none',
-                    'focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+                    'focus:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
                   )}
                 >
                   <span>{ctaText}</span>
@@ -126,7 +126,7 @@ export default function HeroContent({ slide, slideIndex = 0, onImage = false }: 
                       ? 'border border-white/40 text-white hover:bg-white/10'
                       : 'border border-border bg-card text-foreground hover:bg-accent hover:text-accent-foreground',
                     'active:scale-[0.98] transition-[background-color,color,border-color,transform] duration-200 motion-reduce:transition-none',
-                    'focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+                    'focus:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
                   )}
                 >
                   İletişime Geç

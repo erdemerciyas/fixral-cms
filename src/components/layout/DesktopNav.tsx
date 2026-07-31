@@ -77,7 +77,7 @@ export default function DesktopNav({ navLinks, pathname }: DesktopNavProps) {
                         const linkClasses = `
                             relative px-3.5 py-1.5 text-sm
                             tracking-wide whitespace-nowrap
-                            focus-visible:outline-none focus-visible:ring-2
+                            focus-visible:outline-hidden focus-visible:ring-2
                             focus-visible:ring-ring focus-visible:ring-offset-0
                             rounded-xl transition-colors duration-150
                             ${isActive
@@ -126,12 +126,12 @@ export default function DesktopNav({ navLinks, pathname }: DesktopNavProps) {
                 <div ref={accountRef} className="relative" onMouseEnter={handleAccountEnter} onMouseLeave={handleAccountLeave}>
                     <button
                         onClick={() => setIsAccountOpen(!isAccountOpen)}
-                        className="p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-accent transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0"
+                        className="p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-accent transition-colors duration-150 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0"
                         aria-label="Hesabım"
                         aria-expanded={isAccountOpen}
                     >
                         {session?.user ? (
-                            <div className="w-5 h-5 rounded-full bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center text-primary-foreground text-[10px] font-bold ring-1 ring-border">
+                            <div className="w-5 h-5 rounded-full bg-linear-to-br from-primary to-primary/70 flex items-center justify-center text-primary-foreground text-[10px] font-bold ring-1 ring-border">
                                 {(session.user.name?.[0] || session.user.email?.[0] || 'U').toUpperCase()}
                             </div>
                         ) : (
@@ -145,7 +145,7 @@ export default function DesktopNav({ navLinks, pathname }: DesktopNavProps) {
                                 animate={{ opacity: 1, y: 0, scale: 1 }}
                                 exit={{ opacity: 0, y: 8, scale: 0.96 }}
                                 transition={{ duration: 0.15, ease: [0.4, 0, 0.2, 1] }}
-                                className="absolute right-0 top-full mt-2 w-56 bg-popover rounded-xl overflow-hidden z-[60] border border-border"
+                                className="absolute right-0 top-full mt-2 w-56 bg-popover rounded-xl overflow-hidden z-60 border border-border"
                                 style={{
                                     boxShadow: '0 2px 20px rgba(0,0,0,0.15)',
                                 }}
@@ -154,7 +154,7 @@ export default function DesktopNav({ navLinks, pathname }: DesktopNavProps) {
                                     <>
                                         <div className="px-4 py-3 border-b border-border">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center text-primary-foreground text-sm font-bold flex-shrink-0">
+                                                <div className="w-9 h-9 rounded-full bg-linear-to-br from-primary to-primary/70 flex items-center justify-center text-primary-foreground text-sm font-bold shrink-0">
                                                     {(session.user.name?.[0] || session.user.email?.[0] || 'U').toUpperCase()}
                                                 </div>
                                                 <div className="min-w-0">
@@ -203,14 +203,14 @@ export default function DesktopNav({ navLinks, pathname }: DesktopNavProps) {
                                     <div className="p-3 space-y-2">
                                         <Link
                                             href={`/${currentLang}/login`}
-                                            className="flex items-center justify-center w-full px-3 py-2.5 rounded-lg text-sm font-medium bg-primary text-primary-foreground hover:bg-[hsl(var(--primary)/0.85)] transition-colors duration-200 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                                            className="flex items-center justify-center w-full px-3 py-2.5 rounded-lg text-sm font-medium bg-primary text-primary-foreground hover:bg-[hsl(var(--primary)/0.85)] transition-colors duration-200 active:scale-[0.98] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring"
                                             onClick={() => setIsAccountOpen(false)}
                                         >
                                             Giriş Yap
                                         </Link>
                                         <Link
                                             href={`/${currentLang}/register`}
-                                            className="flex items-center justify-center w-full px-3 py-2.5 rounded-lg text-sm font-medium text-primary border border-primary hover:bg-primary/10 transition-colors duration-200 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                                            className="flex items-center justify-center w-full px-3 py-2.5 rounded-lg text-sm font-medium text-primary border border-primary hover:bg-primary/10 transition-colors duration-200 active:scale-[0.98] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring"
                                             onClick={() => setIsAccountOpen(false)}
                                         >
                                             Kayıt Ol

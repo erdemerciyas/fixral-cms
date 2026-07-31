@@ -231,7 +231,7 @@ export default function AdminPortfolioPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Proje ara..."
-              className="w-full pl-10 pr-4 py-2.5 bg-surface-secondary border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500 focus:bg-card transition-all"
+              className="w-full pl-10 pr-4 py-2.5 bg-surface-secondary border border-border rounded-xl focus:outline-hidden focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500 focus:bg-card transition-all"
             />
           </div>
 
@@ -242,7 +242,7 @@ export default function AdminPortfolioPage() {
                   key={s}
                   onClick={() => setStatusFilter(s)}
                   className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${statusFilter === s
-                      ? 'bg-card text-foreground shadow-sm'
+                      ? 'bg-card text-foreground shadow-xs'
                       : 'text-muted-foreground hover:text-foreground'
                     }`}
                 >
@@ -256,14 +256,14 @@ export default function AdminPortfolioPage() {
             <div className="flex bg-surface-tertiary p-1 rounded-xl shrink-0">
               <button
                 onClick={() => setViewMode('grid')}
-                className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-card text-brand-600 shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+                className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-card text-brand-600 shadow-xs' : 'text-muted-foreground hover:text-foreground'}`}
                 title="Izgara Görünümü"
               >
                 <LayoutGrid className="w-5 h-5" />
               </button>
               <button
                 onClick={() => setViewMode('list')}
-                className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-card text-brand-600 shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+                className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-card text-brand-600 shadow-xs' : 'text-muted-foreground hover:text-foreground'}`}
                 title="Liste Görünümü"
               >
                 <List className="w-5 h-5" />
@@ -313,14 +313,14 @@ export default function AdminPortfolioPage() {
               {filteredItems.map(item => (
                 <li
                   key={item._id}
-                  className={`group relative bg-card rounded-xl shadow-sm border transition-all duration-300 overflow-hidden hover:shadow-xl hover:-translate-y-1 ${selectedItems.has(item._id)
+                  className={`group relative bg-card rounded-xl shadow-xs border transition-all duration-300 overflow-hidden hover:shadow-xl hover:-translate-y-1 ${selectedItems.has(item._id)
                       ? 'ring-2 ring-brand-500 border-transparent'
                       : 'border-border'
                     }`}
                   onClick={() => handleSelectItem(item._id)}
                 >
                   {/* Selection Checkbox */}
-                  <div className={`absolute top-3 left-3 z-10 p-1 bg-card/90 backdrop-blur rounded-lg shadow-sm transition-opacity duration-200 ${selectedItems.has(item._id) ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
+                  <div className={`absolute top-3 left-3 z-10 p-1 bg-card/90 backdrop-blur-sm rounded-lg shadow-xs transition-opacity duration-200 ${selectedItems.has(item._id) ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
                     <input
                       type="checkbox"
                       checked={selectedItems.has(item._id)}
@@ -330,7 +330,7 @@ export default function AdminPortfolioPage() {
                   </div>
 
                   {/* Image Container */}
-                  <div className="aspect-[4/3] bg-surface-tertiary relative overflow-hidden">
+                  <div className="aspect-4/3 bg-surface-tertiary relative overflow-hidden">
                     {item.coverImage || (item.images && item.images.length > 0) ? (
                       <img
                         src={item.coverImage || item.images![0]}
@@ -345,7 +345,7 @@ export default function AdminPortfolioPage() {
                     )}
 
                     {/* Overlay Actions */}
-                    <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex justify-end gap-2">
+                    <div className="absolute inset-x-0 bottom-0 p-4 bg-linear-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex justify-end gap-2">
                       <Link
                         href={`/admin/portfolio/edit/${item._id}`}
                         onClick={(e) => e.stopPropagation()}
@@ -365,7 +365,7 @@ export default function AdminPortfolioPage() {
 
                     {/* Status Badge */}
                     <div className="absolute top-3 right-3">
-                      <span className={`px-2.5 py-1 rounded-full text-xs font-semibold backdrop-blur-md border border-white/20 shadow-sm ${item.status === 'published'
+                      <span className={`px-2.5 py-1 rounded-full text-xs font-semibold backdrop-blur-md border border-white/20 shadow-xs ${item.status === 'published'
                           ? 'bg-success/90 text-success-foreground'
                           : 'bg-warning/90 text-warning-foreground'
                         }`}>
@@ -383,7 +383,7 @@ export default function AdminPortfolioPage() {
                     <h3 className="text-lg font-bold text-foreground mb-2 line-clamp-1 group-hover:text-brand-600 transition-colors" title={item.title}>
                       {item.title}
                     </h3>
-                    <p className="text-muted-foreground text-sm line-clamp-2 leading-relaxed mb-4 min-h-[2.5rem]">
+                    <p className="text-muted-foreground text-sm line-clamp-2 leading-relaxed mb-4 min-h-10">
                       {item.description ? (() => { let r = '', t = false; for (let i = 0; i < item.description.length; i++) { if (item.description[i] === '<') { t = true; } else if (item.description[i] === '>') { t = false; } else if (!t) { r += item.description[i]; } } return r; })() : 'Açıklama yok'}
                     </p>
 

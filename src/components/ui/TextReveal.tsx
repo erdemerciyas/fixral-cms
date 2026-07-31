@@ -81,7 +81,7 @@ export const TextReveal = forwardRef<HTMLSpanElement, TextRevealProps>(
                 {segment}
               </span>
             ) : (
-              <span key={`${i}-${segment}`} className="inline-block overflow-hidden pb-[0.08em] -mb-[0.08em] align-bottom">
+              <span key={`${i}-${segment}`} className="inline-block overflow-hidden pb-[0.08em] mb-[-0.08em] align-bottom">
                 <m.span
                   className="inline-block will-change-transform"
                   initial={{ y: '115%' }}

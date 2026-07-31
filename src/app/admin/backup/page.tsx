@@ -129,9 +129,9 @@ export default function AdminBackupPage() {
             : 'bg-destructive/10 border-destructive/30 text-destructive'
         }`}>
           {importResult.type === 'success' ? (
-            <CheckCircle2 className="w-5 h-5 flex-shrink-0" />
+            <CheckCircle2 className="w-5 h-5 shrink-0" />
           ) : (
-            <AlertCircle className="w-5 h-5 flex-shrink-0" />
+            <AlertCircle className="w-5 h-5 shrink-0" />
           )}
           {importResult.text}
         </div>
@@ -139,9 +139,9 @@ export default function AdminBackupPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Export Card */}
-        <div className="bg-card rounded-xl shadow-sm border border-border/60 p-6 flex flex-col">
+        <div className="bg-card rounded-xl shadow-xs border border-border/60 p-6 flex flex-col">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+            <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
               <CloudDownload className="w-6 h-6 text-primary" />
             </div>
             <div>
@@ -184,9 +184,9 @@ export default function AdminBackupPage() {
         </div>
 
         {/* Import Card */}
-        <div className="bg-card rounded-xl shadow-sm border border-border/60 p-6 flex flex-col">
+        <div className="bg-card rounded-xl shadow-xs border border-border/60 p-6 flex flex-col">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 rounded-xl bg-warning/15 flex items-center justify-center flex-shrink-0">
+            <div className="w-12 h-12 rounded-xl bg-warning/15 flex items-center justify-center shrink-0">
               <CloudUpload className="w-6 h-6 text-warning" />
             </div>
             <div>
@@ -229,9 +229,9 @@ export default function AdminBackupPage() {
       </div>
 
       {/* Info */}
-      <div className="bg-gradient-to-r from-primary/5 to-primary/5 rounded-xl p-6 border border-primary/30">
+      <div className="bg-linear-to-r from-primary/5 to-primary/5 rounded-xl p-6 border border-primary/30">
         <div className="flex items-start space-x-4">
-          <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+          <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
             <Archive className="w-6 h-6 text-primary" />
           </div>
           <div>

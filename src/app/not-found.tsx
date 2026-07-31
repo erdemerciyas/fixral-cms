@@ -26,11 +26,11 @@ export default function NotFound() {
               </div>
               
               {/* Floating icons */}
-              <div className="absolute top-0 left-1/4 w-12 h-12 bg-gradient-to-br from-primary to-primary rounded-2xl flex items-center justify-center animate-bounce">
+              <div className="absolute top-0 left-1/4 w-12 h-12 bg-linear-to-br from-primary to-primary rounded-2xl flex items-center justify-center animate-bounce">
                 <ExclamationCircleIcon className="w-6 h-6 text-white" />
               </div>
               
-              <div className="absolute top-8 right-1/4 w-10 h-10 bg-gradient-to-br from-primary to-primary rounded-xl flex items-center justify-center animate-pulse">
+              <div className="absolute top-8 right-1/4 w-10 h-10 bg-linear-to-br from-primary to-primary rounded-xl flex items-center justify-center animate-pulse">
                 <MagnifyingGlassIcon className="w-5 h-5 text-white" />
               </div>
             </div>
@@ -89,7 +89,7 @@ export default function NotFound() {
           </div>
 
           {/* Popular Pages */}
-          <div className="mt-12 p-6 bg-gradient-to-br from-accent to-accent rounded-2xl border border-border">
+          <div className="mt-12 p-6 bg-linear-to-br from-accent to-accent rounded-2xl border border-border">
             <div className="flex items-center space-x-3 mb-4">
               <SparklesIcon className="w-6 h-6 text-accent-foreground" />
               <h3 className="text-lg font-semibold text-accent-foreground">

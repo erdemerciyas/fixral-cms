@@ -23,21 +23,21 @@ function SkeletonFilterPanel() {
     <div className="rounded-xl bg-card border border-border p-6 md:p-8 mb-10">
       <div className="flex flex-col lg:flex-row gap-4 mb-6">
         <div className="flex-1 h-14 rounded-xl bg-muted relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-[shimmer_2s_infinite] -translate-x-full" />
+          <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/5 to-transparent animate-[shimmer_2s_infinite] -translate-x-full" />
         </div>
         <div className="flex gap-3">
           <div className="h-14 w-48 rounded-xl bg-muted relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-[shimmer_2s_infinite] -translate-x-full" />
+            <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/5 to-transparent animate-[shimmer_2s_infinite] -translate-x-full" />
           </div>
           <div className="h-14 w-40 rounded-xl bg-muted relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-[shimmer_2s_infinite] -translate-x-full" />
+            <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/5 to-transparent animate-[shimmer_2s_infinite] -translate-x-full" />
           </div>
         </div>
       </div>
       <div className="flex gap-2">
         {Array.from({ length: 5 }).map((_, i) => (
           <div key={i} className="h-9 w-20 rounded-full bg-muted relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-[shimmer_2s_infinite] -translate-x-full" />
+            <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/5 to-transparent animate-[shimmer_2s_infinite] -translate-x-full" />
           </div>
         ))}
       </div>
@@ -209,7 +209,7 @@ export default function VideosClient() {
 
       {/* Glassmorphism filter panel */}
       <ScrollReveal>
-        <div className="rounded-xl bg-card border border-border p-6 md:p-8 mb-10 shadow-sm">
+        <div className="rounded-xl bg-card border border-border p-6 md:p-8 mb-10 shadow-xs">
           <div className="flex flex-col lg:flex-row gap-4 mb-6">
             {/* Search */}
             <div className="flex-1 relative">
@@ -220,7 +220,7 @@ export default function VideosClient() {
                 placeholder="Video ara..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-12 pr-10 py-3.5 bg-background border border-input rounded-2xl text-foreground placeholder:text-muted-foreground focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring outline-none shadow-sm"
+                className="w-full pl-12 pr-10 py-3.5 bg-background border border-input rounded-2xl text-foreground placeholder:text-muted-foreground focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring outline-hidden shadow-xs"
                 style={{
                   transitionDuration: '700ms',
                   transitionTimingFunction: 'cubic-bezier(0.32,0.72,0,1)',
@@ -292,7 +292,7 @@ export default function VideosClient() {
                       }
                       router.push(url.pathname + url.search);
                     }}
-                    className="appearance-none bg-background border border-input rounded-2xl pl-4 pr-10 py-3 text-sm text-foreground focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring outline-none cursor-pointer"
+                    className="appearance-none bg-background border border-input rounded-2xl pl-4 pr-10 py-3 text-sm text-foreground focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring outline-hidden cursor-pointer"
                     style={{
                       transitionDuration: '700ms',
                       transitionTimingFunction: 'cubic-bezier(0.32,0.72,0,1)',

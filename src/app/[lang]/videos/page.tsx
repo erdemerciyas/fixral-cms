@@ -60,7 +60,7 @@ export default async function VideosPage({ params }: { params: Promise<{ lang: s
   const hero = await getHeroData();
 
   return (
-    <div className="min-h-[100dvh] bg-background">
+    <div className="min-h-dvh bg-background">
       <PageHero
         title={hero.title}
         description={hero.description}

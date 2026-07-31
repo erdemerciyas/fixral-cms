@@ -46,7 +46,7 @@ export default async function PortfolioPage() {
   } catch (error) {
     console.error('Portfolio fetch error:', error);
     return (
-      <div className="min-h-[100dvh] bg-background flex items-center justify-center">
+      <div className="min-h-dvh bg-background flex items-center justify-center">
         <div className="text-center max-w-md mx-auto px-4 py-8">
           <h3 className="text-xl font-semibold text-foreground mb-4" style={{ fontFamily: 'var(--font-geist-sans)' }}>
             Bir Hata Oluştu

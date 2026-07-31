@@ -165,7 +165,7 @@ export default function PortfolioMediaGallery({
   if (!allMediaItems.length) {
     return (
       <div className="bg-surface-primary rounded-3xl border border-border p-8">
-        <div className="aspect-[16/10] bg-gradient-to-br from-surface-secondary to-surface-tertiary rounded-2xl flex items-center justify-center">
+        <div className="aspect-16/10 bg-linear-to-br from-surface-secondary to-surface-tertiary rounded-2xl flex items-center justify-center">
           <div className="text-center">
             <PhotoIcon className="w-16 h-16 text-primary/60 mx-auto mb-4" />
             <p className="text-muted-foreground text-lg">Medya bulunamadı</p>
@@ -184,7 +184,7 @@ export default function PortfolioMediaGallery({
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6 }}
-          className="relative aspect-[16/10] rounded-3xl overflow-hidden shadow-2xl border border-border bg-surface-tertiary group cursor-pointer"
+          className="relative aspect-16/10 rounded-3xl overflow-hidden shadow-2xl border border-border bg-surface-tertiary group cursor-pointer"
           onClick={(e) => {
             e.preventDefault();
             if (selectedItem) {
@@ -213,7 +213,7 @@ export default function PortfolioMediaGallery({
                       whileHover={{ opacity: 1, scale: 1 }}
                       className="opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                     >
-                      <div className="bg-primary/90 backdrop-blur-sm rounded-full p-4 shadow-xl">
+                      <div className="bg-primary/90 backdrop-blur-xs rounded-full p-4 shadow-xl">
                         <MagnifyingGlassIcon className="w-8 h-8 text-white" />
                       </div>
                     </m.div>
@@ -223,7 +223,7 @@ export default function PortfolioMediaGallery({
                 <>
                   {/* 3D Model Preview - Mini viewer */}
                   <div className="w-full h-full relative">
-                    <div className="w-full h-full bg-gradient-to-br from-surface-secondary to-surface-tertiary">
+                    <div className="w-full h-full bg-linear-to-br from-surface-secondary to-surface-tertiary">
                       <ModelViewer
                         modelUrl={selectedItem.url}
                         format={selectedItem.format || 'gltf'}
@@ -249,7 +249,7 @@ export default function PortfolioMediaGallery({
                       whileHover={{ opacity: 1, scale: 1 }}
                       className="opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                     >
-                      <div className="bg-primary/90 backdrop-blur-sm rounded-full p-4 shadow-xl">
+                      <div className="bg-primary/90 backdrop-blur-xs rounded-full p-4 shadow-xl">
                         <CubeIcon className="w-8 h-8 text-white" />
                       </div>
                     </m.div>
@@ -296,7 +296,7 @@ export default function PortfolioMediaGallery({
                     e.stopPropagation();
                     setSelectedItem(item);
                   }}
-                  className={`relative aspect-square w-full h-20 sm:h-24 md:h-28 lg:h-32 xl:h-36 rounded-xl overflow-hidden border-2 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background ${selectedItem?.url === item.url
+                  className={`relative aspect-square w-full h-20 sm:h-24 md:h-28 lg:h-32 xl:h-36 rounded-xl overflow-hidden border-2 transition-all duration-300 focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background ${selectedItem?.url === item.url
                       ? 'border-primary shadow-lg ring-4 ring-ring/25 scale-105'
                       : 'border-border hover:border-primary/40 hover:shadow-md'
                     }`}
@@ -311,7 +311,7 @@ export default function PortfolioMediaGallery({
                       sizes="(max-width: 640px) 25vw, (max-width: 768px) 16vw, (max-width: 1024px) 12vw, 10vw"
                     />
                   ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-primary/15 to-primary/10 flex items-center justify-center">
+                    <div className="w-full h-full bg-linear-to-br from-primary/15 to-primary/10 flex items-center justify-center">
                       <CubeIcon className="w-8 h-8 text-primary" />
                     </div>
                   )}
@@ -348,7 +348,7 @@ export default function PortfolioMediaGallery({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black/95 backdrop-blur-sm flex items-center justify-center"
+          className="fixed inset-0 bg-black/95 backdrop-blur-xs flex items-center justify-center"
           style={{
             position: 'fixed',
             top: 0,

@@ -73,7 +73,7 @@ export default function ApiDocsPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white rounded-lg shadow-sm p-6">
             <h3 className="text-lg font-semibold mb-2">📚 Resources</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>• Portfolio Management</li>
@@ -82,7 +82,7 @@ export default function ApiDocsPage() {
             </ul>
           </div>
 
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white rounded-lg shadow-sm p-6">
             <h3 className="text-lg font-semibold mb-2">🔐 Authentication</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>• Bearer Token (JWT)</li>
@@ -92,7 +92,7 @@ export default function ApiDocsPage() {
             </ul>
           </div>
 
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white rounded-lg shadow-sm p-6">
             <h3 className="text-lg font-semibold mb-2">⚡ Features</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>• Rate Limiting</li>

@@ -305,10 +305,10 @@ const MediaBrowser: React.FC<MediaBrowserProps> = ({
   const filteredItems = getFilteredItems();
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
+    <div className="fixed inset-0 z-100 flex items-center justify-center p-4 sm:p-6">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
+        className="absolute inset-0 bg-black/60 backdrop-blur-xs transition-opacity"
         onClick={onClose}
       />
 
@@ -329,7 +329,7 @@ const MediaBrowser: React.FC<MediaBrowserProps> = ({
         `}
       >
         {/* Header */}
-        <div className="flex-shrink-0 px-6 py-4 border-b border-border bg-card/80 backdrop-blur z-10 sticky top-0 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="shrink-0 px-6 py-4 border-b border-border bg-card/80 backdrop-blur-sm z-10 sticky top-0 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center border border-primary/20">
               <PhotoIcon className="w-5 h-5 text-primary" />
@@ -349,7 +349,7 @@ const MediaBrowser: React.FC<MediaBrowserProps> = ({
                 placeholder="Dosya ara..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 bg-muted/50 border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:bg-card transition-all placeholder:text-muted-foreground"
+                className="w-full pl-9 pr-4 py-2 bg-muted/50 border border-border rounded-xl text-sm focus:outline-hidden focus:ring-2 focus:ring-ring focus:bg-card transition-all placeholder:text-muted-foreground"
               />
             </div>
 
@@ -361,7 +361,7 @@ const MediaBrowser: React.FC<MediaBrowserProps> = ({
                   type="button"
                   onClick={() => setFilter(f)}
                   className={`px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all whitespace-nowrap ${filter === f
-                    ? 'bg-card text-primary shadow-sm'
+                    ? 'bg-card text-primary shadow-xs'
                     : 'text-muted-foreground hover:text-foreground'
                     }`}
                 >
@@ -384,7 +384,7 @@ const MediaBrowser: React.FC<MediaBrowserProps> = ({
                   onUploadNew();
                 }
               }}
-              className="upload-btn flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-xl text-sm font-medium hover:opacity-90 transition-all shadow-sm hover:shadow-md hover:shadow-primary/20"
+              className="upload-btn flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-xl text-sm font-medium hover:opacity-90 transition-all shadow-xs hover:shadow-md hover:shadow-primary/20"
             >
               <ArrowUpTrayIcon className="w-4 h-4" />
               <span className="hidden sm:inline">Yeni Yükle</span>
@@ -458,7 +458,7 @@ const MediaBrowser: React.FC<MediaBrowserProps> = ({
                   <button
                     type="button"
                     onClick={() => enableInlineUpload ? fileInputRef.current?.click() : onUploadNew()}
-                    className="upload-btn px-6 py-2 bg-primary text-primary-foreground rounded-xl text-sm font-medium hover:opacity-90 transition-colors shadow-sm"
+                    className="upload-btn px-6 py-2 bg-primary text-primary-foreground rounded-xl text-sm font-medium hover:opacity-90 transition-colors shadow-xs"
                   >
                     İlk Dosyayı Yükle
                   </button>
@@ -483,7 +483,7 @@ const MediaBrowser: React.FC<MediaBrowserProps> = ({
                       >
                         {/* Selection Badge */}
                         {isSelected && (
-                          <div className="absolute top-2 right-2 z-20 bg-card rounded-full text-primary shadow-sm animate-in zoom-in duration-200">
+                          <div className="absolute top-2 right-2 z-20 bg-card rounded-full text-primary shadow-xs animate-in zoom-in duration-200">
                             <CheckCircleIconSolid className="w-6 h-6" />
                           </div>
                         )}
@@ -493,7 +493,7 @@ const MediaBrowser: React.FC<MediaBrowserProps> = ({
                           <button
                             type="button"
                             onClick={(e) => { e.stopPropagation(); setPreviewItem(item); }}
-                            className="p-2 bg-card/90 rounded-full text-foreground hover:text-primary transition-colors shadow-sm hover:scale-110"
+                            className="p-2 bg-card/90 rounded-full text-foreground hover:text-primary transition-colors shadow-xs hover:scale-110"
                             title="Önizle"
                           >
                             <EyeIcon className="w-5 h-5" />
@@ -501,7 +501,7 @@ const MediaBrowser: React.FC<MediaBrowserProps> = ({
                           <button
                             type="button"
                             onClick={(e) => { e.stopPropagation(); handleDelete(item._id); }}
-                            className="p-2 bg-card/90 rounded-full text-foreground hover:text-destructive transition-colors shadow-sm hover:scale-110"
+                            className="p-2 bg-card/90 rounded-full text-foreground hover:text-destructive transition-colors shadow-xs hover:scale-110"
                             title="Sil"
                           >
                             <TrashIcon className="w-5 h-5" />
@@ -527,8 +527,8 @@ const MediaBrowser: React.FC<MediaBrowserProps> = ({
                         </div>
 
                         {/* Info Overlay (Bottom) */}
-                        <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/60 to-transparent">
-                          <p className="text-white text-xs font-medium truncate drop-shadow-sm">
+                        <div className="absolute bottom-0 left-0 right-0 p-2 bg-linear-to-t from-black/60 to-transparent">
+                          <p className="text-white text-xs font-medium truncate drop-shadow-xs">
                             {item.originalName}
                           </p>
                           <p className="text-white/80 text-[10px] truncate">
@@ -545,7 +545,7 @@ const MediaBrowser: React.FC<MediaBrowserProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="flex-shrink-0 px-6 py-4 border-t border-border bg-card flex items-center justify-between gap-4">
+        <div className="shrink-0 px-6 py-4 border-t border-border bg-card flex items-center justify-between gap-4">
           <div className="text-sm">
             <span className="text-muted-foreground">{filteredItems.length} dosya gösteriliyor</span>
             {allowMultipleSelect && selectedItems.length > 0 && (
@@ -568,7 +568,7 @@ const MediaBrowser: React.FC<MediaBrowserProps> = ({
               onClick={handleConfirmSelection}
               disabled={allowMultipleSelect ? selectedItems.length === 0 : !selectedItem}
               className={`
-                px-6 py-2 rounded-xl text-sm font-semibold shadow-sm transition-all
+                px-6 py-2 rounded-xl text-sm font-semibold shadow-xs transition-all
                 ${(allowMultipleSelect ? selectedItems.length > 0 : selectedItem)
                   ? 'bg-primary text-primary-foreground hover:opacity-90 hover:shadow-md hover:shadow-primary/20'
                   : 'bg-muted text-muted-foreground cursor-not-allowed'}
@@ -581,7 +581,7 @@ const MediaBrowser: React.FC<MediaBrowserProps> = ({
 
         {/* Preview Modal */}
         {previewItem && (
-          <div className="absolute inset-0 z-50 bg-card/95 backdrop-blur flex flex-col items-center justify-center p-8 animate-in fade-in duration-200">
+          <div className="absolute inset-0 z-50 bg-card/95 backdrop-blur-sm flex flex-col items-center justify-center p-8 animate-in fade-in duration-200">
             <button
               type="button"
               onClick={() => setPreviewItem(null)}

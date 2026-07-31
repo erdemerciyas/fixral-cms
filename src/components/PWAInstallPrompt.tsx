@@ -24,8 +24,8 @@ export default function PWAInstallPrompt() {
 
         {/* App Icon */}
         <div className="flex items-start space-x-3">
-          <div className="flex-shrink-0">
-            <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary/80 rounded-lg flex items-center justify-center">
+          <div className="shrink-0">
+            <div className="w-12 h-12 bg-linear-to-br from-primary to-primary/80 rounded-lg flex items-center justify-center">
               <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
               </svg>
@@ -71,13 +71,13 @@ export default function PWAInstallPrompt() {
             <div className="flex space-x-2">
               <button
                 onClick={handleInstall}
-                className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-medium py-2 px-3 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-medium py-2 px-3 rounded-md transition-colors duration-200 focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2"
               >
                 Install
               </button>
               <button
                 onClick={dismissPrompt}
-                className="flex-1 bg-muted hover:bg-accent text-foreground text-xs font-medium py-2 px-3 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring/30 focus:ring-offset-2"
+                className="flex-1 bg-muted hover:bg-accent text-foreground text-xs font-medium py-2 px-3 rounded-md transition-colors duration-200 focus:outline-hidden focus:ring-2 focus:ring-ring/30 focus:ring-offset-2"
               >
                 Not now
               </button>

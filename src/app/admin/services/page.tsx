@@ -272,7 +272,7 @@ export default function AdminServicesPage() {
       }
     >
       {/* Toolbar */}
-      <div className="bg-card rounded-xl shadow-sm border border-border p-2 sm:p-3 sticky top-24 z-10 transition-all duration-300">
+      <div className="bg-card rounded-xl shadow-xs border border-border p-2 sm:p-3 sticky top-24 z-10 transition-all duration-300">
         <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
           {/* Search & Filter Group */}
           <div className="flex-1 w-full lg:w-auto flex flex-col sm:flex-row gap-3">
@@ -283,15 +283,15 @@ export default function AdminServicesPage() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Hizmetlerde ara..."
-                className="w-full pl-10 pr-4 py-2.5 bg-muted/50 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary focus:bg-card transition-all shadow-sm"
+                className="w-full pl-10 pr-4 py-2.5 bg-muted/50 border border-border rounded-xl focus:outline-hidden focus:ring-2 focus:ring-primary/50 focus:border-primary focus:bg-card transition-all shadow-xs"
               />
             </div>
 
-            <div className="flex items-center bg-muted border border-border/50 rounded-xl p-1 shadow-sm shrink-0 overflow-x-auto">
+            <div className="flex items-center bg-muted border border-border/50 rounded-xl p-1 shadow-xs shrink-0 overflow-x-auto">
               <button
                 onClick={() => setStatusFilter('all')}
                 className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${statusFilter === 'all'
-                  ? 'bg-card text-foreground shadow-sm'
+                  ? 'bg-card text-foreground shadow-xs'
                   : 'text-muted-foreground hover:text-foreground'
                   }`}
               >
@@ -301,7 +301,7 @@ export default function AdminServicesPage() {
               <button
                 onClick={() => setStatusFilter('published')}
                 className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${statusFilter === 'published'
-                  ? 'bg-success/15 text-success shadow-sm'
+                  ? 'bg-success/15 text-success shadow-xs'
                   : 'text-muted-foreground hover:text-success'
                   }`}
               >
@@ -311,7 +311,7 @@ export default function AdminServicesPage() {
               <button
                 onClick={() => setStatusFilter('draft')}
                 className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${statusFilter === 'draft'
-                  ? 'bg-warning/15 text-warning shadow-sm'
+                  ? 'bg-warning/15 text-warning shadow-xs'
                   : 'text-muted-foreground hover:text-warning'
                   }`}
               >
@@ -337,17 +337,17 @@ export default function AdminServicesPage() {
               </div>
             )}
 
-            <div className="flex bg-muted border border-border/50 rounded-xl p-1 shadow-sm shrink-0">
+            <div className="flex bg-muted border border-border/50 rounded-xl p-1 shadow-xs shrink-0">
               <button
                 onClick={() => setViewMode('list')}
-                className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-card text-primary shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+                className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-card text-primary shadow-xs' : 'text-muted-foreground hover:text-foreground'}`}
                 title="Liste Görünümü (Sıralama)"
               >
                 <ArrowUpDown className="w-5 h-5" />
               </button>
               <button
                 onClick={() => setViewMode('grid')}
-                className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-card text-primary shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+                className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-card text-primary shadow-xs' : 'text-muted-foreground hover:text-foreground'}`}
                 title="Grid Görünümü"
               >
                 <LayoutGrid className="w-5 h-5" />
@@ -365,7 +365,7 @@ export default function AdminServicesPage() {
 
       {/* Content Area */}
       {filteredServices.length === 0 ? (
-        <div className="bg-card rounded-xl shadow-sm border border-border border-dashed p-12 text-center">
+        <div className="bg-card rounded-xl shadow-xs border border-border border-dashed p-12 text-center">
           <div className="w-16 h-16 bg-muted/50 rounded-full flex items-center justify-center mx-auto mb-4">
             <Box className="w-8 h-8 text-muted-foreground" />
           </div>
@@ -395,7 +395,7 @@ export default function AdminServicesPage() {
       ) : (
         <>
           {viewMode === 'list' ? (
-            <div className="bg-card rounded-xl shadow-sm border border-border overflow-hidden">
+            <div className="bg-card rounded-xl shadow-xs border border-border overflow-hidden">
               {isReorderEnabled ? (
                 <ServiceReorderList
                   services={filteredServices}
@@ -427,7 +427,7 @@ export default function AdminServicesPage() {
                       `}
                 >
                   {/* Image / Icon Cover */}
-                  <div className="aspect-[4/3] bg-muted relative overflow-hidden group-hover:bg-muted/50 transition-colors">
+                  <div className="aspect-4/3 bg-muted relative overflow-hidden group-hover:bg-muted/50 transition-colors">
                     {service.image ? (
                       <img
                         src={service.image}
@@ -436,7 +436,7 @@ export default function AdminServicesPage() {
                       />
                     ) : (
                       <div className="w-full h-full flex flex-col items-center justify-center text-muted-foreground/50 gap-3">
-                        <div className="w-16 h-16 rounded-xl flex items-center justify-center bg-card shadow-sm border border-border">
+                        <div className="w-16 h-16 rounded-xl flex items-center justify-center bg-card shadow-xs border border-border">
                           <Box className="w-8 h-8 text-primary" />
                         </div>
                       </div>
@@ -458,7 +458,7 @@ export default function AdminServicesPage() {
 
                     {/* Status Badge */}
                     <div className="absolute top-3 right-3 pointer-events-none">
-                      <span className={`px-2.5 py-1 rounded-lg text-xs font-semibold backdrop-blur-md shadow-sm border border-white/20
+                      <span className={`px-2.5 py-1 rounded-lg text-xs font-semibold backdrop-blur-md shadow-xs border border-white/20
                                ${service.status === 'published' ? 'bg-success/90 text-success-foreground' : 'bg-warning/90 text-warning-foreground'}
                             `}>
                         {service.status === 'published' ? 'Yayında' : 'Taslak'}
@@ -534,7 +534,7 @@ function StaticServiceItem({
           {index + 1}
         </span>
 
-        <div className="w-12 h-12 bg-muted rounded-xl overflow-hidden flex-shrink-0 border border-border flex items-center justify-center">
+        <div className="w-12 h-12 bg-muted rounded-xl overflow-hidden shrink-0 border border-border flex items-center justify-center">
           {service.image ? (
             <img src={service.image} alt="" className="w-full h-full object-cover" />
           ) : (

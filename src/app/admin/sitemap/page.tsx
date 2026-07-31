@@ -99,7 +99,7 @@ export default function SitemapPage() {
     return (
         <div className="space-y-8">
             {/* Header Section */}
-            <div className="bg-gradient-to-r from-primary/80 to-primary rounded-xl p-8 text-primary-foreground shadow-xl">
+            <div className="bg-linear-to-r from-primary/80 to-primary rounded-xl p-8 text-primary-foreground shadow-xl">
                 <div className="flex items-center justify-between">
                     <div>
                         <h1 className="text-3xl font-bold mb-2 flex items-center gap-3">
@@ -144,7 +144,7 @@ export default function SitemapPage() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Status Card */}
                 <div className="lg:col-span-2 space-y-6">
-                    <div className="bg-card rounded-xl p-6 shadow-sm border border-border">
+                    <div className="bg-card rounded-xl p-6 shadow-xs border border-border">
                         <h2 className="text-xl font-bold text-foreground mb-6 flex items-center gap-2">
                             <FileText className="w-6 h-6 text-primary" />
                             Sitemap Durumu
@@ -203,7 +203,7 @@ export default function SitemapPage() {
                         )}
                     </div>
 
-                    <div className="bg-card rounded-xl p-6 shadow-sm border border-border">
+                    <div className="bg-card rounded-xl p-6 shadow-xs border border-border">
                         <h2 className="text-xl font-bold text-foreground mb-4">İçerik Kapsamı</h2>
                         <p className="text-muted-foreground mb-4">
                             Aşağıdaki içerik türleri otomatik olarak sitemap dosyasına dahil edilir:

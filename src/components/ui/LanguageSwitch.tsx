@@ -116,7 +116,7 @@ export default function LanguageSwitch({
       <div ref={dropdownRef} className={`relative ${className}`}>
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center gap-1.5 rounded-xl px-2.5 py-1.5 text-xs font-medium text-primary-foreground/85 hover:text-primary-foreground hover:bg-white/15 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80"
+          className="flex items-center gap-1.5 rounded-xl px-2.5 py-1.5 text-xs font-medium text-primary-foreground/85 hover:text-primary-foreground hover:bg-white/15 transition-colors duration-150 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-white/80"
           aria-label="Dil seç"
           aria-expanded={isOpen}
         >
@@ -127,7 +127,7 @@ export default function LanguageSwitch({
         </button>
 
         {isOpen && (
-          <div className="absolute right-0 top-full mt-1.5 w-40 rounded-xl bg-popover text-popover-foreground border border-border overflow-hidden z-[60] animate-in fade-in slide-in-from-top-2 duration-150" style={{ boxShadow: '0 2px 20px rgba(0,0,0,0.15)' }}>
+          <div className="absolute right-0 top-full mt-1.5 w-40 rounded-xl bg-popover text-popover-foreground border border-border overflow-hidden z-60 animate-in fade-in slide-in-from-top-2 duration-150" style={{ boxShadow: '0 2px 20px rgba(0,0,0,0.15)' }}>
             {languages.map((lang) => (
               <Link
                 key={lang.code}
@@ -174,7 +174,7 @@ export default function LanguageSwitch({
         </button>
 
         {isOpen && (
-          <div className="absolute right-0 top-full mt-1.5 w-40 rounded-lg bg-popover text-popover-foreground shadow-xl border border-border overflow-hidden z-[60] animate-in fade-in slide-in-from-top-2 duration-150">
+          <div className="absolute right-0 top-full mt-1.5 w-40 rounded-lg bg-popover text-popover-foreground shadow-xl border border-border overflow-hidden z-60 animate-in fade-in slide-in-from-top-2 duration-150">
             {languages.map((lang) => (
               <Link
                 key={lang.code}
@@ -216,7 +216,7 @@ export default function LanguageSwitch({
         </button>
 
         {isOpen && (
-          <div className="absolute right-0 top-full mt-1.5 w-40 rounded-lg bg-popover text-popover-foreground shadow-xl border border-border overflow-hidden z-[60]">
+          <div className="absolute right-0 top-full mt-1.5 w-40 rounded-lg bg-popover text-popover-foreground shadow-xl border border-border overflow-hidden z-60">
             {languages.map((lang) => (
               <Link
                 key={lang.code}
@@ -258,7 +258,7 @@ export default function LanguageSwitch({
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 top-full mt-1 w-44 rounded-lg border border-border bg-popover text-popover-foreground shadow-lg overflow-hidden z-[60]">
+        <div className="absolute right-0 top-full mt-1 w-44 rounded-lg border border-border bg-popover text-popover-foreground shadow-lg overflow-hidden z-60">
           {languages.map((lang) => (
             <Link
               key={lang.code}

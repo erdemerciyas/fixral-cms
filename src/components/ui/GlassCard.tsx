@@ -29,15 +29,15 @@ export default function GlassCard({
       className={cn(
         'relative rounded-[2rem]',
         dark
-          ? 'bg-foreground/5 ring-1 ring-white/[0.06]'
-          : 'bg-foreground/[0.02] ring-1 ring-foreground/[0.05]',
+          ? 'bg-foreground/5 ring-1 ring-white/6'
+          : 'bg-foreground/2 ring-1 ring-foreground/5',
         'p-1.5',
         className
       )}
     >
       <div
         className={cn(
-          'rounded-[calc(2rem-0.375rem)]',
+          'rounded-[1.625rem]',
           paddingClass,
           dark
             ? 'bg-foreground/90 backdrop-blur-2xl'

@@ -159,7 +159,7 @@ export default function AdminContentPage() {
       </div>
 
       {/* Search and Filter Bar */}
-      <div className="bg-card rounded-xl shadow-sm border border-border/60 p-4">
+      <div className="bg-card rounded-xl shadow-xs border border-border/60 p-4">
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex-1 relative">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -168,14 +168,14 @@ export default function AdminContentPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search content..."
-              className="w-full pl-12 pr-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all"
+              className="w-full pl-12 pr-4 py-3 border border-border rounded-xl focus:outline-hidden focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all"
             />
           </div>
           <div className="flex space-x-2 bg-muted p-1 rounded-xl overflow-x-auto">
             <button
               onClick={() => setTypeFilter('all')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${typeFilter === 'all'
-                ? 'bg-card text-primary shadow-sm'
+                ? 'bg-card text-primary shadow-xs'
                 : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
@@ -184,7 +184,7 @@ export default function AdminContentPage() {
             <button
               onClick={() => setTypeFilter('news')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${typeFilter === 'news'
-                ? 'bg-card text-primary shadow-sm'
+                ? 'bg-card text-primary shadow-xs'
                 : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
@@ -193,7 +193,7 @@ export default function AdminContentPage() {
             <button
               onClick={() => setTypeFilter('page')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${typeFilter === 'page'
-                ? 'bg-card text-primary shadow-sm'
+                ? 'bg-card text-primary shadow-xs'
                 : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
@@ -202,7 +202,7 @@ export default function AdminContentPage() {
             <button
               onClick={() => setTypeFilter('portfolio')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${typeFilter === 'portfolio'
-                ? 'bg-card text-primary shadow-sm'
+                ? 'bg-card text-primary shadow-xs'
                 : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
@@ -211,7 +211,7 @@ export default function AdminContentPage() {
             <button
               onClick={() => setTypeFilter('service')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${typeFilter === 'service'
-                ? 'bg-card text-primary shadow-sm'
+                ? 'bg-card text-primary shadow-xs'
                 : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
@@ -222,7 +222,7 @@ export default function AdminContentPage() {
       </div>
 
       {/* Content List */}
-      <div className="bg-card rounded-xl shadow-sm border border-border/60 overflow-hidden">
+      <div className="bg-card rounded-xl shadow-xs border border-border/60 overflow-hidden">
         {filteredContent.length > 0 ? (
           <div className="divide-y divide-border">
             {filteredContent.map((item) => (
@@ -231,7 +231,7 @@ export default function AdminContentPage() {
                 className="flex items-center justify-between px-6 py-4 hover:bg-muted/50 transition-colors group"
               >
                 <div className="flex items-center space-x-4 flex-1 min-w-0">
-                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${getTypeColor(item.type)} flex items-center justify-center flex-shrink-0 text-xl`}>
+                  <div className={`w-12 h-12 rounded-xl bg-linear-to-br ${getTypeColor(item.type)} flex items-center justify-center shrink-0 text-xl`}>
                     {getTypeIcon(item.type)}
                   </div>
                   <div className="flex-1 min-w-0">

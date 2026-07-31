@@ -136,11 +136,11 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.2 }}
-                    className="fixed inset-0 z-[100] flex items-start justify-center pt-[12vh]"
+                    className="fixed inset-0 z-100 flex items-start justify-center pt-[12vh]"
                     onClick={onClose}
                 >
                     {/* Backdrop */}
-                    <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+                    <div className="absolute inset-0 bg-black/60 backdrop-blur-xs" />
 
                     {/* Modal */}
                     <m.div
@@ -161,7 +161,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                                     value={query}
                                     onChange={handleInputChange}
                                     placeholder="Site genelinde ara..."
-                                    className="w-full pl-14 pr-20 py-5 text-lg text-foreground placeholder:text-muted-foreground focus:outline-none bg-transparent"
+                                    className="w-full pl-14 pr-20 py-5 text-lg text-foreground placeholder:text-muted-foreground focus:outline-hidden bg-transparent"
                                     autoComplete="off"
                                 />
                                 <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
@@ -217,7 +217,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                                                                         </p>
                                                                     )}
                                                                 </div>
-                                                                <ArrowRightIcon className="w-4 h-4 text-muted-foreground/60 group-hover:text-primary transition-colors flex-shrink-0" />
+                                                                <ArrowRightIcon className="w-4 h-4 text-muted-foreground/60 group-hover:text-primary transition-colors shrink-0" />
                                                             </Link>
                                                         ))}
                                                     </div>

@@ -1,9 +1,554 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
 
 /* TipTap Editor Styles */
-@import '../styles/editor.css';
+@import '../styles/editor.css' layer(utilities);
+
+@config '../../tailwind.config.js';
+
+/* v4 dark mode: v3 `darkMode: 'class'` davranışının birebir karşılığı.
+   Faz 2'de public-dark scope'u buraya eklenecek. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-border);
+  }
+}
+
+@utility btn {
+  /* Buttons -- taste-skill: Interactive UI States + Active Press Feedback
+   * Radius token'dan gelir: public 8px, admin 12px. */
+  @apply inline-flex items-center justify-center px-6 py-3 text-sm font-medium cursor-pointer focus:outline-hidden transform-gpu;
+  border-radius: var(--radius-button);
+  transition: all 150ms ease-in-out;
+
+  &:active {
+    transform: scale(0.98) translateY(1px);
+  }
+}
+
+@utility btn-primary {
+  @apply btn bg-primary text-primary-foreground border-none hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 w-auto;
+
+  &:hover {
+    box-shadow: 0 4px 16px hsl(var(--brand-primary-500-hsl) / 0.3);
+  }
+}
+
+@utility btn-secondary {
+  @apply btn bg-secondary text-secondary-foreground border-none hover:bg-secondary/80 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 w-auto;
+}
+
+@utility btn-outline {
+  @apply inline-flex items-center justify-center px-8 py-3.5 bg-transparent border border-primary/20 text-foreground font-medium focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 transform-gpu;
+  border-radius: var(--radius-button);
+  transition: all 150ms ease-in-out;
+
+  &:hover {
+    @apply bg-primary text-primary-foreground border-primary;
+  }
+
+  &:active {
+    transform: scale(0.98) translateY(1px);
+  }
+}
+
+@utility btn-ghost {
+  @apply inline-flex items-center justify-center px-6 py-3 bg-transparent text-muted-foreground hover:text-foreground hover:bg-muted font-medium focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 transform-gpu;
+  border-radius: var(--radius-button);
+  transition: all 150ms ease-in-out;
+
+  &:active {
+    transform: scale(0.98) translateY(1px);
+  }
+}
+
+@utility card {
+  /* Cards -- flat: dinlenimde gölge yok, hover'da tek yumuşak lift */
+  @apply bg-card text-card-foreground p-6 border border-border;
+  border-radius: var(--radius-card);
+  box-shadow: none;
+  transition: all 150ms ease-in-out;
+
+  &:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+  }
+}
+
+@utility card-modern {
+  @apply bg-card text-card-foreground p-8 border border-border;
+  border-radius: var(--radius-card);
+  box-shadow: none;
+  transition: all 150ms ease-in-out;
+
+  &:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+  }
+}
+
+@utility card-glass {
+  /* Glass kartlar — token tabanlı: kart/border token'ları sayesinde
+   * light ve dark scope'ta ayrı override gerektirmez. */
+  background: hsl(var(--card) / 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid hsl(var(--border) / 0.6);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-md);
+  transition: all 700ms cubic-bezier(0.32, 0.72, 0, 1);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+  }
+}
+
+@utility card-glass-premium {
+  background: hsl(var(--card) / 0.72);
+  backdrop-filter: blur(24px) saturate(1.4);
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  border: 1px solid hsl(var(--border) / 0.5);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-inner-premium), var(--shadow-md);
+  transition: all 700ms cubic-bezier(0.32, 0.72, 0, 1);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-inner-premium), var(--shadow-xl);
+  }
+}
+
+@utility surface-elevated {
+  /* Surface elevation tokens */
+  background: var(--color-surface-secondary);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-md);
+}
+
+@utility surface-sunken {
+  background: var(--color-surface-tertiary);
+  border-radius: var(--radius-card);
+  box-shadow: inset 0 2px 4px hsl(var(--shadow-color) / 0.04);
+}
+
+@utility hex-grid {
+  /* Industrial Textures — taste-skill: Subtle Background Patterns */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='49' viewBox='0 0 28 49'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23FA6831' fill-opacity='0.05'%3E%3Cpath d='M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5zM3 17.9v12.7l10.99 6.34 11-6.35V17.9l-11-6.34L3 17.9zM0 15l12.98-7.5V0h-2v6.35L0 12.69v2.3zm0 18.5L12.98 41v8h-2v-6.85L0 35.81v-2.3zM15 0v7.5L27.99 15H28v-2.31h-.01L17 6.35V0h-2zm0 49v-8l12.99-7.5H28v2.31h-.01L17 42.15V49h-2z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  opacity: 0.4;
+}
+
+@utility blueprint-grid {
+  background-image:
+    linear-gradient(hsl(var(--primary) / 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, hsl(var(--primary) / 0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+@utility grain {
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 256px 256px;
+    pointer-events: none;
+    z-index: 1;
+  }
+}
+
+@utility input-field {
+  /* Form Elements -- token-based, dark/light uyumlu; radius token'dan gelir */
+  @apply w-full bg-background border border-input px-3 py-3 text-foreground placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-ring focus-visible:outline-hidden focus-visible:ring-offset-2 outline-hidden transition-all duration-200 font-sans text-base;
+  border-radius: var(--radius-input);
+}
+
+@utility label-text {
+  @apply block text-sm font-medium text-foreground mb-2 font-sans;
+}
+
+@utility textarea-field {
+  @apply input-field resize-y min-h-[100px];
+}
+
+@utility select-field {
+  @apply input-field appearance-none bg-no-repeat bg-right bg-size-[16px_16px] pr-10;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+}
+
+@utility text-display {
+  /* Typography -- taste-skill: Deterministic Typography */
+  @apply text-5xl md:text-7xl lg:text-8xl font-bold;
+  letter-spacing: -0.045em;
+  line-height: 1;
+  padding: 0.1em 0;
+  text-wrap: balance;
+  font-display: swap;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@utility hero-title {
+  @apply text-4xl md:text-6xl lg:text-7xl font-bold;
+  letter-spacing: -0.045em;
+  line-height: 1;
+  padding: 0.15em 0;
+  font-display: swap;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@utility hero-title-responsive {
+  @apply text-4xl md:text-6xl xl:text-7xl font-bold;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+  padding: 0.15em 0;
+  word-spacing: -0.1em;
+  hyphens: none;
+  font-display: swap;
+  text-rendering: optimizeLegibility;
+}
+
+@utility hero-title-compact {
+  @apply text-3xl md:text-5xl xl:text-5xl font-bold;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  padding: 0.15em 0;
+  font-display: swap;
+  text-rendering: optimizeLegibility;
+}
+
+@utility page-title {
+  @apply text-4xl md:text-5xl lg:text-6xl font-bold;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  padding: 0.05em 0;
+  font-display: swap;
+  text-rendering: optimizeLegibility;
+}
+
+@utility section-title {
+  @apply text-3xl md:text-5xl font-bold;
+  letter-spacing: -0.035em;
+  line-height: 1.1;
+  padding: 0.05em 0;
+  font-display: swap;
+  text-rendering: optimizeLegibility;
+}
+
+@utility section-subtitle {
+  @apply text-base md:text-lg font-normal text-muted-foreground;
+  line-height: 1.6;
+  max-width: 65ch;
+  padding: 0.05em 0;
+  font-display: swap;
+  text-rendering: optimizeLegibility;
+}
+
+@utility text-body {
+  @apply text-base leading-relaxed text-muted-foreground;
+  max-width: 65ch;
+}
+
+@utility text-small {
+  @apply text-sm leading-relaxed text-muted-foreground;
+}
+
+@utility text-heading {
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+
+@utility text-subheading {
+  font-size: clamp(1.125rem, 1.5vw, 1.5rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+}
+
+@utility text-caption {
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: oklch(0.65 0.01 250);
+}
+
+@utility text-gradient {
+  @apply bg-linear-to-r from-brand-primary-800 to-brand-primary-600 bg-clip-text text-transparent;
+  line-height: 1.2;
+  padding: 0.1em 0;
+  text-rendering: optimizeLegibility;
+}
+
+@utility text-gradient-hero {
+  @apply bg-linear-to-r from-white via-zinc-100 to-zinc-300 bg-clip-text text-transparent;
+  line-height: 1.1;
+  padding: 0.1em 0;
+  text-rendering: optimizeLegibility;
+}
+
+@utility container-boxed {
+  /* Containers — Boxed layout standardı (Printables paradigması).
+     TEK kaynak: 1280px kutu; tüm container-* sınıfları aynı ölçüye hizalı. */
+  @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+}
+
+@utility container-wide {
+  @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+}
+
+@utility container-main {
+  @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+}
+
+@utility container-content {
+  @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+}
+
+@utility container-narrow {
+  @apply max-w-3xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+@utility section {
+  /* Modern Sections -- taste-skill: Macro-Whitespace */
+  @apply py-24 md:py-32 lg:py-40;
+}
+
+@utility section-sm {
+  @apply py-16 md:py-24 lg:py-28;
+}
+
+@utility section-hero {
+  @apply flex items-center justify-center py-28 md:py-40 lg:py-48;
+  min-height: 100dvh;
+}
+
+@utility section-header {
+  /* Unified section header -- left aligned for DESIGN_VARIANCE 8 */
+  @apply mb-16 md:mb-20;
+
+  & h2 {
+    @apply section-title;
+  }
+
+  & p {
+    @apply section-subtitle;
+  }
+}
+
+@utility bg-gradient-primary {
+  /* Backgrounds -- koyu turuncu gradyan (CTA bantları) */
+  background: linear-gradient(135deg, #1e0c05 0%, #7a3011 50%, #2a1108 100%);
+}
+
+@utility bg-gradient-subtle {
+  @apply bg-linear-to-b from-zinc-50/80 via-white to-zinc-50/50 dark:from-zinc-900 dark:via-zinc-900 dark:to-zinc-900;
+}
+
+@utility bg-glass {
+  background: hsl(var(--card) / 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid hsl(var(--border) / 0.6);
+}
+
+@utility bg-glass-dark {
+  background: rgba(28, 30, 33, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+@utility bg-mesh {
+  /* Mesh gradient background for premium sections — turuncu tint */
+  background:
+    radial-gradient(
+      ellipse at 20% 50%,
+      rgba(250, 104, 49, 0.07) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse at 80% 20%,
+      rgba(194, 78, 30, 0.05) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse at 40% 80%,
+      rgba(250, 104, 49, 0.04) 0%,
+      transparent 50%
+    ),
+    #ffffff;
+}
+
+@utility bg-mesh-dark {
+  background:
+    radial-gradient(
+      ellipse at 20% 50%,
+      rgba(250, 104, 49, 0.15) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse at 80% 20%,
+      rgba(122, 48, 17, 0.12) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse at 40% 80%,
+      rgba(122, 48, 17, 0.08) 0%,
+      transparent 50%
+    ),
+    #1c1e21;
+}
+
+@utility eyebrow-tag {
+  /* Eyebrow tag -- taste-skill: Spatial Rhythm */
+  @apply inline-flex items-center rounded-full px-3 py-1 text-[11px] uppercase font-medium border border-primary/10 text-primary bg-primary/5;
+  letter-spacing: 0.15em;
+}
+
+@utility section-heading {
+  /* Section heading — shared typographic base */
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--foreground);
+  text-wrap: balance;
+}
+
+@utility card-surface {
+  /* Card surface — token tabanlı yarı saydam kart */
+  background: hsl(var(--card) / 0.4);
+  border: 1px solid hsl(var(--border) / 0.5);
+  backdrop-filter: blur(12px);
+  border-radius: var(--radius-card);
+}
+
+@utility transition-premium {
+  /* Premium transition shorthand */
+  transition: all var(--duration-premium, 700ms)
+    var(--ease-default, cubic-bezier(0.32, 0.72, 0, 1));
+}
+
+/* Add better focus states */
+
+@utility focus-ring {
+  /* ring-opacity-75 kaldırıldı (v4'te yok; v3'te de var() tabanlı renkte etkisizdi) */
+  @apply focus:outline-hidden focus:ring-2 focus:ring-brand-primary-600;
+}
+
+@utility transition-smooth {
+  transition: all 700ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+@utility transform-gpu {
+  /* Transform utilities for better browser compatibility */
+  transform: translateZ(0);
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+@utility transform-3d {
+  /* Additional transform utilities */
+  transform-style: preserve-3d;
+}
+
+@utility transform-smooth {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@utility transform-hardware {
+  transform: translate3d(0, 0, 0);
+  will-change: transform, opacity;
+}
+
+@utility translate-center {
+  transform: translate(-50%, -50%);
+}
+
+@utility translate-x-center {
+  transform: translateX(-50%);
+}
+
+@utility translate-y-center {
+  transform: translateY(-50%);
+}
+
+@utility fade-in-on-scroll {
+  /* Intersection Observer utilities */
+  opacity: 0;
+  transform: translateY(30px);
+  transition:
+    opacity 0.6s ease-out,
+    transform 0.6s ease-out;
+
+  &.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@utility visible {
+  &.fade-in-on-scroll {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  &.slide-in-left-on-scroll {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  &.slide-in-right-on-scroll {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@utility slide-in-left-on-scroll {
+  opacity: 0;
+  transform: translateX(-30px);
+  transition:
+    opacity 0.6s ease-out,
+    transform 0.6s ease-out;
+
+  &.visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@utility slide-in-right-on-scroll {
+  opacity: 0;
+  transform: translateX(30px);
+  transition:
+    opacity 0.6s ease-out,
+    transform 0.6s ease-out;
+
+  &.visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
 
 @layer base {
   * {
@@ -14,9 +559,10 @@
   }
 }
 
-/* Premium Design System -- taste-skill enforced */
+@layer utilities {
+  /* Premium Design System -- taste-skill enforced */
 
-/*
+  /*
  * COLOR SYSTEM GUIDE:
  * - Use `bg-primary` / `text-primary` for SCOPE-AWARE colors (changes between light/dark themes)
  * - Use `bg-brand-primary-500` etc. for FIXED brand colors (always the same regardless of theme)
@@ -26,1002 +572,560 @@
  * - Border tokens: `border-border`, `border-border-strong`, `border-border-subtle`
  */
 
-:root {
-  /* Static brand theme colors — Printables mantığı: 10 kademeli ölçek, ana renk #FA6831 */
-  --theme-primary: #FA6831;
-  --theme-accent: #FA6831;
-  --theme-background: #FFFFFF;
+  :root {
+    /* Static brand theme colors — Printables mantığı: 10 kademeli ölçek, ana renk #FA6831 */
+    --theme-primary: #fa6831;
+    --theme-accent: #fa6831;
+    --theme-background: #ffffff;
 
-  /* Brand Color System — Printables turuncu ölçeği (hue 16–18 ailesi) */
-  --brand-primary-50: #FFF0EB;   /* faint — en açık tint */
-  --brand-primary-100: #FFE1D6;  /* subtle — seçili chip bg, hover dolgu */
-  --brand-primary-200: #FEC7B3;
-  --brand-primary-300: #FDA686;  /* muted — aktif açık bg */
-  --brand-primary-400: #FC895F;
-  --brand-primary-500: #FA6831;  /* MAIN — buton, marka (Printables turuncusu) */
-  --brand-primary-600: #EB6F40;  /* strong — hover (Printables hover turuncusu) */
-  --brand-primary-700: #C24E1E;  /* bold — active, link metni (beyaz zeminde 4.77:1 AA) */
-  --brand-primary-800: #9E3F17;  /* subtle tint üzeri metin (AA) */
-  --brand-primary-900: #7A3011;
-  --brand-primary: var(--brand-primary-500);
+    /* Brand Color System — Printables turuncu ölçeği (hue 16–18 ailesi) */
+    --brand-primary-50: #fff0eb; /* faint — en açık tint */
+    --brand-primary-100: #ffe1d6; /* subtle — seçili chip bg, hover dolgu */
+    --brand-primary-200: #fec7b3;
+    --brand-primary-300: #fda686; /* muted — aktif açık bg */
+    --brand-primary-400: #fc895f;
+    --brand-primary-500: #fa6831; /* MAIN — buton, marka (Printables turuncusu) */
+    --brand-primary-600: #eb6f40; /* strong — hover (Printables hover turuncusu) */
+    --brand-primary-700: #c24e1e; /* bold — active, link metni (beyaz zeminde 4.77:1 AA) */
+    --brand-primary-800: #9e3f17; /* subtle tint üzeri metin (AA) */
+    --brand-primary-900: #7a3011;
+    --brand-primary: var(--brand-primary-500);
 
-  /* HSL kanal tokenları — alpha ile kullanım için: hsl(var(--brand-primary-500-hsl) / 0.35) */
-  --brand-primary-400-hsl: 16 96% 68%;   /* #FC895F */
-  --brand-primary-500-hsl: 16 95% 59%;   /* #FA6831 */
+    /* HSL kanal tokenları — alpha ile kullanım için: hsl(var(--brand-primary-500-hsl) / 0.35) */
+    --brand-primary-400-hsl: 16 96% 68%; /* #FC895F */
+    --brand-primary-500-hsl: 16 95% 59%; /* #FA6831 */
 
-  /* Font variables */
-  --font-geist-sans: 'Geist', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-geist-mono: 'Geist Mono', ui-monospace, SFMono-Regular, monospace;
-  /* Thingiverse mantığı: tek kurumsal sans (Barlow) tüm arayüzde */
-  --font-barlow: 'Barlow', var(--font-geist-sans);
-  --font-inter: var(--font-barlow);
+    /* Font variables */
+    --font-geist-sans:
+      'Geist', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+      sans-serif;
+    --font-geist-mono: 'Geist Mono', ui-monospace, SFMono-Regular, monospace;
+    /* Thingiverse mantığı: tek kurumsal sans (Barlow) tüm arayüzde */
+    --font-barlow: 'Barlow', var(--font-geist-sans);
+    --font-inter: var(--font-barlow);
 
-  /* Premium Motion */
-  --ease-premium: cubic-bezier(0.32, 0.72, 0, 1);
-  --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
-  --duration-premium: 700ms;
-  --duration-reveal: 600ms;
-  --stagger-reveal: 60ms;
+    /* Premium Motion */
+    --ease-premium: cubic-bezier(0.32, 0.72, 0, 1);
+    --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+    --duration-premium: 700ms;
+    --duration-reveal: 600ms;
+    --stagger-reveal: 60ms;
 
-  /* ── shadcn/ui Design Tokens ── */
-  --background: 210 20% 98%;
-  --foreground: 222 47% 11%;
-  --card: 0 0% 100%;
-  --card-foreground: 222 47% 11%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 222 47% 11%;
-  --primary: 24 91% 36%;
-  --primary-foreground: 210 40% 98%;
-  --secondary: 30 20% 94%;
-  --secondary-foreground: 222 47% 11%;
-  --muted: 30 16% 94%;
-  --muted-foreground: 215 19% 44%;
-  --accent: 28 95% 93%;
-  --accent-foreground: 25 85% 32%;
-  --destructive: 0 72% 45%;
-  --destructive-foreground: 210 40% 98%;
-  --success: 143 64% 24%;
-  --success-foreground: 210 40% 98%;
-  --warning: 26 90% 33%;
-  --warning-foreground: 210 40% 98%;
-  --info: 221 83% 45%;
-  --info-foreground: 210 40% 98%;
-  --border: 30 12% 89%;
-  --input: 30 12% 89%;
-  --ring: 24 91% 39%;
-  --radius: 0.75rem;
-  --chart-1: 28 89% 52%;
-  --chart-2: 173 58% 39%;
-  --chart-3: 25 85% 32%;
-  --chart-4: 43 96% 56%;
-  --chart-5: 27 87% 67%;
-  --sidebar-background: 30 18% 96%;
-  --sidebar-foreground: 222 30% 28%;
-  --sidebar-primary: 24 91% 39%;
-  --sidebar-primary-foreground: 210 40% 98%;
-  --sidebar-accent: 28 80% 92%;
-  --sidebar-accent-foreground: 25 85% 32%;
-  --sidebar-border: 30 14% 88%;
-  --sidebar-ring: 24 91% 39%;
+    /* ── shadcn/ui Design Tokens ── */
+    --background: 210 20% 98%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    --primary: 24 91% 36%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 30 20% 94%;
+    --secondary-foreground: 222 47% 11%;
+    --muted: 30 16% 94%;
+    --muted-foreground: 215 19% 44%;
+    --accent: 28 95% 93%;
+    --accent-foreground: 25 85% 32%;
+    --destructive: 0 72% 45%;
+    --destructive-foreground: 210 40% 98%;
+    --success: 143 64% 24%;
+    --success-foreground: 210 40% 98%;
+    --warning: 26 90% 33%;
+    --warning-foreground: 210 40% 98%;
+    --info: 221 83% 45%;
+    --info-foreground: 210 40% 98%;
+    --border: 30 12% 89%;
+    --input: 30 12% 89%;
+    --ring: 24 91% 39%;
+    --radius: 0.75rem;
+    --chart-1: 28 89% 52%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 25 85% 32%;
+    --chart-4: 43 96% 56%;
+    --chart-5: 27 87% 67%;
+    --sidebar-background: 30 18% 96%;
+    --sidebar-foreground: 222 30% 28%;
+    --sidebar-primary: 24 91% 39%;
+    --sidebar-primary-foreground: 210 40% 98%;
+    --sidebar-accent: 28 80% 92%;
+    --sidebar-accent-foreground: 25 85% 32%;
+    --sidebar-border: 30 14% 88%;
+    --sidebar-ring: 24 91% 39%;
 
-  /* ── Design System: Semantic Status Colors ── */
-  --color-success-light: #f0fdf4;
-  --color-success:       #15803d;
-  --color-success-dark:  #166534;
-  --color-warning-light: #fffbeb;
-  --color-warning:       #b45309;
-  --color-warning-dark:  #92400e;
-  --color-danger-light:  #fef2f2;
-  --color-danger:        #c52020;
-  --color-danger-dark:   #991b1b;
-  --color-info-light:    #eff6ff;
-  --color-info:          var(--brand-primary-600);
-  --color-info-dark:     #1e40af;
+    /* ── Design System: Semantic Status Colors ── */
+    --color-success-light: #f0fdf4;
+    --color-success: #15803d;
+    --color-success-dark: #166534;
+    --color-warning-light: #fffbeb;
+    --color-warning: #b45309;
+    --color-warning-dark: #92400e;
+    --color-danger-light: #fef2f2;
+    --color-danger: #c52020;
+    --color-danger-dark: #991b1b;
+    --color-info-light: #eff6ff;
+    --color-info: var(--brand-primary-600);
+    --color-info-dark: #1e40af;
 
-  /* ── Design System: Surface Colors (no pure white — off-white tones) ── */
-  --color-surface-primary:   oklch(0.98 0.005 240);
-  --color-surface-secondary: oklch(0.96 0.008 240);
-  --color-surface-tertiary:  oklch(0.94 0.01 240);
+    /* ── Design System: Surface Colors (no pure white — off-white tones) ── */
+    --color-surface-primary: oklch(0.98 0.005 240);
+    --color-surface-secondary: oklch(0.96 0.008 240);
+    --color-surface-tertiary: oklch(0.94 0.01 240);
 
-  /* ── Design System: Border Colors ── */
-  --color-border:        oklch(0.91 0.01 240);
-  --color-border-strong: oklch(0.86 0.012 240);
-  --color-border-subtle: oklch(0.95 0.006 240);
+    /* ── Design System: Border Colors ── */
+    --color-border: oklch(0.91 0.01 240);
+    --color-border-strong: oklch(0.86 0.012 240);
+    --color-border-subtle: oklch(0.95 0.006 240);
 
-  /* ── Design System: Gradient Palette — Printables turuncusu ── */
-  --gradient-accent: linear-gradient(135deg, #FA6831 0%, #C24E1E 100%);
-  --gradient-accent-soft: linear-gradient(135deg, rgba(252, 137, 95, 0.12) 0%, rgba(194, 78, 30, 0.12) 100%);
-  --gradient-surface: linear-gradient(180deg, #ffffff 0%, #f5f5f5 100%);
-  --gradient-hero: linear-gradient(135deg, #FFF0EB 0%, #FFE1D6 50%, #F5F5F5 100%);
+    /* ── Design System: Gradient Palette — Printables turuncusu ── */
+    --gradient-accent: linear-gradient(135deg, #fa6831 0%, #c24e1e 100%);
+    --gradient-accent-soft: linear-gradient(
+      135deg,
+      rgba(252, 137, 95, 0.12) 0%,
+      rgba(194, 78, 30, 0.12) 100%
+    );
+    --gradient-surface: linear-gradient(180deg, #ffffff 0%, #f5f5f5 100%);
+    --gradient-hero: linear-gradient(
+      135deg,
+      #fff0eb 0%,
+      #ffe1d6 50%,
+      #f5f5f5 100%
+    );
 
-  /* ── Design System: Tinted Shadows (no pure black — hue-tinted) ── */
-  --shadow-color: 235 30% 12%;
-  --shadow-sm: 0 1px 2px hsl(var(--shadow-color) / 0.04), 0 2px 4px hsl(var(--shadow-color) / 0.03);
-  --shadow-md: 0 4px 6px hsl(var(--shadow-color) / 0.05), 0 8px 16px hsl(var(--shadow-color) / 0.04);
-  --shadow-lg: 0 8px 16px hsl(var(--shadow-color) / 0.06), 0 20px 40px hsl(var(--shadow-color) / 0.06);
-  --shadow-xl: 0 16px 32px hsl(var(--shadow-color) / 0.08), 0 32px 64px hsl(var(--shadow-color) / 0.08);
-  --shadow-inner-premium: inset 0 1px 0 hsl(240 20% 95% / 0.08);
-  --shadow-glass: 0 8px 32px rgba(122, 48, 17, 0.12);
-  --shadow-premium: 0 25px 50px -12px rgba(122, 48, 17, 0.25);
-  --shadow-tinted-sm: 0 2px 8px rgba(250, 104, 49, 0.15);
-  --shadow-tinted-md: 0 4px 16px rgba(250, 104, 49, 0.2);
-  --shadow-tinted-lg: 0 8px 32px rgba(250, 104, 49, 0.25);
+    /* ── Design System: Tinted Shadows (no pure black — hue-tinted) ── */
+    --shadow-color: 235 30% 12%;
+    --shadow-sm:
+      0 1px 2px hsl(var(--shadow-color) / 0.04),
+      0 2px 4px hsl(var(--shadow-color) / 0.03);
+    --shadow-md:
+      0 4px 6px hsl(var(--shadow-color) / 0.05),
+      0 8px 16px hsl(var(--shadow-color) / 0.04);
+    --shadow-lg:
+      0 8px 16px hsl(var(--shadow-color) / 0.06),
+      0 20px 40px hsl(var(--shadow-color) / 0.06);
+    --shadow-xl:
+      0 16px 32px hsl(var(--shadow-color) / 0.08),
+      0 32px 64px hsl(var(--shadow-color) / 0.08);
+    --shadow-inner-premium: inset 0 1px 0 hsl(240 20% 95% / 0.08);
+    --shadow-glass: 0 8px 32px rgba(122, 48, 17, 0.12);
+    --shadow-premium: 0 25px 50px -12px rgba(122, 48, 17, 0.25);
+    --shadow-tinted-sm: 0 2px 8px rgba(250, 104, 49, 0.15);
+    --shadow-tinted-md: 0 4px 16px rgba(250, 104, 49, 0.2);
+    --shadow-tinted-lg: 0 8px 32px rgba(250, 104, 49, 0.25);
 
-  /* Spacing Scale */
-  --spacing-xs: 0.25rem;    /* 4px */
-  --spacing-sm: 0.5rem;     /* 8px */
-  --spacing-md: 1rem;       /* 16px */
-  --spacing-lg: 1.5rem;     /* 24px */
-  --spacing-xl: 2rem;       /* 32px */
-  --spacing-2xl: 3rem;      /* 48px */
-  --spacing-3xl: 4rem;      /* 64px */
+    /* Spacing Scale */
+    --spacing-xs: 0.25rem; /* 4px */
+    --spacing-sm: 0.5rem; /* 8px */
+    --spacing-md: 1rem; /* 16px */
+    --spacing-lg: 1.5rem; /* 24px */
+    --spacing-xl: 2rem; /* 32px */
+    --spacing-2xl: 3rem; /* 48px */
+    --spacing-3xl: 4rem; /* 64px */
 
-  /* Z-Index Scale — systemic layers only; no arbitrary z-10/z-50 spam.
+    /* Z-Index Scale — systemic layers only; no arbitrary z-10/z-50 spam.
    * grain overlay = fixed pointer-events-none, header = sticky layer. */
-  --z-base: 0;
-  --z-dropdown: 100;
-  --z-sticky: 200;
-  --z-overlay: 300;
-  --z-modal: 400;
-  --z-toast: 500;
-  --z-tooltip: 600;
+    --z-base: 0;
+    --z-dropdown: 100;
+    --z-sticky: 200;
+    --z-overlay: 300;
+    --z-modal: 400;
+    --z-toast: 500;
+    --z-tooltip: 600;
 
-  /* ── Shape Consistency Lock (Thingiverse §radius ölçeği) ──
+    /* ── Shape Consistency Lock (Thingiverse §radius ölçeği) ──
    * ONE radius system for the whole page:
    * buttons/CTAs = 12px, cards = 12px, inputs = 12px, görsel kutular = 8px.
    * Flat tasarım: dinlenimde gölge yok, 1px border + zemin farkı.
    */
-  --radius-button: 0.75rem;
-  --radius-card: 0.75rem;
-  --radius-input: 0.75rem;
+    --radius-button: 0.75rem;
+    --radius-card: 0.75rem;
+    --radius-input: 0.75rem;
 
-  /* Transition Tokens */
-  --duration-fast: 150ms;
-  --duration-base: 300ms;
-  --duration-slow: 500ms;
-  --ease-default: cubic-bezier(0.32, 0.72, 0, 1);
-  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --ease-in: cubic-bezier(0.4, 0, 1, 1);
-  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+    /* Transition Tokens */
+    --duration-fast: 150ms;
+    --duration-base: 300ms;
+    --duration-slow: 500ms;
+    --ease-default: cubic-bezier(0.32, 0.72, 0, 1);
+    --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --ease-in: cubic-bezier(0.4, 0, 1, 1);
+    --ease-out: cubic-bezier(0, 0, 0.2, 1);
 
-  /* Page background */
-  --color-page-bg: #f8f6f4;
-}
+    /* Page background */
+    --color-page-bg: #f8f6f4;
+  }
 
-/* ── Public Light Theme — Printables mantığı: beyaz zemin + turuncu marka ──
+  /* ── Public Light Theme — Printables mantığı: beyaz zemin + turuncu marka ──
  * Sayfa/kart zemini #FFFFFF, batık alanlar #F5F5F5/#EEEEEE, 1px #E0E0E0 border,
  * dinlenimde gölge yok; derinlik border + zemin farkından gelir.
  * Radius dili: buton 8px, kart/input 4px.
  */
-.public-theme {
-  /* shadcn/ui tokens — Printables light paleti */
-  --background: 0 0% 100%;           /* #FFFFFF — sayfa zemini */
-  --foreground: 0 0% 20%;            /* #333333 — birincil metin (12.63:1) */
-  --card: 0 0% 100%;                 /* #FFFFFF — kart katmanı */
-  --card-foreground: 0 0% 20%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 0 0% 20%;
-  --primary: 16 95% 59%;             /* #FA6831 — MAIN (dolgu rengi) */
-  --primary-foreground: 0 0% 11%;    /* #1C1C1C — turuncu üzeri koyu ink (5.75:1) */
-  --secondary: 0 0% 96%;             /* #F5F5F5 */
-  --secondary-foreground: 0 0% 20%;
-  --muted: 0 0% 96%;                 /* #F5F5F5 */
-  --muted-foreground: 0 0% 43%;      /* #6E6E6E — #808080'den AA için koyultuldu (5.13:1) */
-  --accent: 16 100% 95%;             /* #FFECE6 — brand subtle, hover/seçili dolgu */
-  --accent-foreground: 18 75% 35%;   /* #9E3F17 — subtle üzeri metin + link ink (5.89:1) */
-  --destructive: 0 64% 48%;          /* #CB2C2C */
-  --destructive-foreground: 0 0% 100%;
-  --success: 88 90% 23%;             /* #3E6F06 — #4C9600'den AA için koyultuldu */
-  --success-foreground: 0 0% 100%;
-  --warning: 40 90% 30%;             /* #916308 */
-  --warning-foreground: 0 0% 100%;
-  --info: 217 80% 48%;               /* #1863DC */
-  --info-foreground: 0 0% 100%;
-  --border: 0 0% 88%;                /* #E0E0E0 — hairline */
-  --input: 0 0% 88%;                 /* #E0E0E0 */
-  --ring: 16 92% 52%;                /* #F55014 — focus ring (3.48:1 ≥ 3.0) */
-  --chart-1: 16 95% 59%;
-  --chart-2: 191 79% 34%;
-  --chart-3: 18 73% 44%;
-  --chart-4: 40 90% 40%;
-  --chart-5: 16 96% 68%;
+  .public-theme {
+    /* shadcn/ui tokens — Printables light paleti */
+    --background: 0 0% 100%; /* #FFFFFF — sayfa zemini */
+    --foreground: 0 0% 20%; /* #333333 — birincil metin (12.63:1) */
+    --card: 0 0% 100%; /* #FFFFFF — kart katmanı */
+    --card-foreground: 0 0% 20%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 20%;
+    --primary: 16 95% 59%; /* #FA6831 — MAIN (dolgu rengi) */
+    --primary-foreground: 0 0% 11%; /* #1C1C1C — turuncu üzeri koyu ink (5.75:1) */
+    --secondary: 0 0% 96%; /* #F5F5F5 */
+    --secondary-foreground: 0 0% 20%;
+    --muted: 0 0% 96%; /* #F5F5F5 */
+    --muted-foreground: 0 0% 43%; /* #6E6E6E — #808080'den AA için koyultuldu (5.13:1) */
+    --accent: 16 100% 95%; /* #FFECE6 — brand subtle, hover/seçili dolgu */
+    --accent-foreground: 18 75% 35%; /* #9E3F17 — subtle üzeri metin + link ink (5.89:1) */
+    --destructive: 0 64% 48%; /* #CB2C2C */
+    --destructive-foreground: 0 0% 100%;
+    --success: 88 90% 23%; /* #3E6F06 — #4C9600'den AA için koyultuldu */
+    --success-foreground: 0 0% 100%;
+    --warning: 40 90% 30%; /* #916308 */
+    --warning-foreground: 0 0% 100%;
+    --info: 217 80% 48%; /* #1863DC */
+    --info-foreground: 0 0% 100%;
+    --border: 0 0% 88%; /* #E0E0E0 — hairline */
+    --input: 0 0% 88%; /* #E0E0E0 */
+    --ring: 16 92% 52%; /* #F55014 — focus ring (3.48:1 ≥ 3.0) */
+    --chart-1: 16 95% 59%;
+    --chart-2: 191 79% 34%;
+    --chart-3: 18 73% 44%;
+    --chart-4: 40 90% 40%;
+    --chart-5: 16 96% 68%;
 
-  /* Shape dili — Printables: buton 8px, kart 4px, input 4px */
-  --radius: 0.5rem;                  /* shadcn rounded-lg → 8px (public scope) */
-  --radius-button: 0.5rem;
-  --radius-card: 0.25rem;
-  --radius-input: 0.25rem;
+    /* Shape dili — Printables: buton 8px, kart 4px, input 4px */
+    --radius: 0.5rem; /* shadcn rounded-lg → 8px (public scope) */
+    --radius-button: 0.5rem;
+    --radius-card: 0.25rem;
+    --radius-input: 0.25rem;
 
-  /* Yüzey hiyerarşisi: beyaz kart > #F5F5F5 bölüm > #EEEEEE batık */
-  --color-surface-primary:   #ffffff;
-  --color-surface-secondary: #f5f5f5;
-  --color-surface-tertiary:  #eeeeee;
-  --color-border:        #e0e0e0;
-  --color-border-strong: #d0d0d0;
-  --color-border-subtle: #eeeeee;
+    /* Yüzey hiyerarşisi: beyaz kart > #F5F5F5 bölüm > #EEEEEE batık */
+    --color-surface-primary: #ffffff;
+    --color-surface-secondary: #f5f5f5;
+    --color-surface-tertiary: #eeeeee;
+    --color-border: #e0e0e0;
+    --color-border-strong: #d0d0d0;
+    --color-border-subtle: #eeeeee;
 
-  /* Semantic renkler — *-light badge zemini, DEFAULT metin/kenar (AA), *-dark vurgu */
-  --color-success-light: #edf7e1;
-  --color-success:       #3e6f06;
-  --color-success-dark:  #2e5304;
-  --color-warning-light: #fbf2db;
-  --color-warning:       #916308;
-  --color-warning-dark:  #6d4a06;
-  --color-danger-light:  #fcebeb;
-  --color-danger:        #cb2c2c;
-  --color-danger-dark:   #9d2222;
-  --color-info-light:    #e9f1fd;
-  --color-info:          #1863dc;
-  --color-info-dark:     #124aa6;
+    /* Semantic renkler — *-light badge zemini, DEFAULT metin/kenar (AA), *-dark vurgu */
+    --color-success-light: #edf7e1;
+    --color-success: #3e6f06;
+    --color-success-dark: #2e5304;
+    --color-warning-light: #fbf2db;
+    --color-warning: #916308;
+    --color-warning-dark: #6d4a06;
+    --color-danger-light: #fcebeb;
+    --color-danger: #cb2c2c;
+    --color-danger-dark: #9d2222;
+    --color-info-light: #e9f1fd;
+    --color-info: #1863dc;
+    --color-info-dark: #124aa6;
 
-  /* Flat shadows — dinlenimde yok, hover'da tek yumuşak lift */
-  --shadow-color: 0 0% 8%;
-  --shadow-sm: 0 1px 2px hsl(var(--shadow-color) / 0.05);
-  --shadow-md: 0 1px 3px hsl(var(--shadow-color) / 0.08), 0 0 1px hsl(var(--shadow-color) / 0.05);
-  --shadow-lg: 0 2px 20px hsl(var(--shadow-color) / 0.12);
-  --shadow-xl: 0 8px 32px hsl(var(--shadow-color) / 0.14), 0 2px 8px hsl(var(--shadow-color) / 0.06);
-  --shadow-inner-premium: inset 0 1px 0 hsl(0 0% 100% / 0.5);
+    /* Flat shadows — dinlenimde yok, hover'da tek yumuşak lift */
+    --shadow-color: 0 0% 8%;
+    --shadow-sm: 0 1px 2px hsl(var(--shadow-color) / 0.05);
+    --shadow-md:
+      0 1px 3px hsl(var(--shadow-color) / 0.08),
+      0 0 1px hsl(var(--shadow-color) / 0.05);
+    --shadow-lg: 0 2px 20px hsl(var(--shadow-color) / 0.12);
+    --shadow-xl:
+      0 8px 32px hsl(var(--shadow-color) / 0.14),
+      0 2px 8px hsl(var(--shadow-color) / 0.06);
+    --shadow-inner-premium: inset 0 1px 0 hsl(0 0% 100% / 0.5);
 
-  /* Gradient overrides — beyaz/nötr gri */
-  --gradient-surface: linear-gradient(180deg, #ffffff 0%, #f5f5f5 100%);
-  --gradient-hero: linear-gradient(135deg, #ffffff 0%, #f5f5f5 60%, #eeeeee 100%);
+    /* Gradient overrides — beyaz/nötr gri */
+    --gradient-surface: linear-gradient(180deg, #ffffff 0%, #f5f5f5 100%);
+    --gradient-hero: linear-gradient(
+      135deg,
+      #ffffff 0%,
+      #f5f5f5 60%,
+      #eeeeee 100%
+    );
 
-  color-scheme: light;
+    color-scheme: light;
 
-  /* Page background — beyaz */
-  --color-page-bg: #ffffff;
-}
+    /* Page background — beyaz */
+    --color-page-bg: #ffffff;
+  }
 
-/* Dark Mode — katmanlı yüzey hiyerarşisi: background < card < popover */
-.dark {
-  /* ── shadcn/ui Dark Mode Tokens ── */
-  --background: 224 48% 6%;
-  --foreground: 213 30% 94%;
-  --card: 223 40% 9%;
-  --card-foreground: 213 30% 94%;
-  --popover: 223 40% 10%;
-  --popover-foreground: 213 30% 94%;
-  --primary: 28 89% 52%;
-  --primary-foreground: 30 45% 9%;
-  --secondary: 220 30% 14%;
-  --secondary-foreground: 213 30% 94%;
-  --muted: 220 30% 13%;
-  --muted-foreground: 216 15% 64%;
-  --accent: 28 60% 18%;
-  --accent-foreground: 28 95% 80%;
-  --destructive: 0 78% 64%;
-  --destructive-foreground: 224 48% 7%;
-  --success: 142 69% 58%;
-  --success-foreground: 224 48% 7%;
-  --warning: 43 96% 56%;
-  --warning-foreground: 224 48% 7%;
-  --info: 28 89% 60%;
-  --info-foreground: 224 48% 7%;
-  --border: 220 26% 15%;
-  --input: 220 26% 18%;
-  --ring: 28 89% 52%;
-  --chart-1: 28 89% 52%;
-  --chart-2: 173 58% 39%;
-  --chart-3: 28 70% 45%;
-  --chart-4: 43 96% 56%;
-  --chart-5: 27 87% 67%;
-  --sidebar-background: 225 50% 4.5%;
-  --sidebar-foreground: 216 18% 72%;
-  --sidebar-primary: 28 89% 52%;
-  --sidebar-primary-foreground: 30 45% 9%;
-  --sidebar-accent: 28 45% 14%;
-  --sidebar-accent-foreground: 28 95% 80%;
-  --sidebar-border: 221 30% 11%;
-  --sidebar-ring: 28 89% 52%;
+  /* Dark Mode — katmanlı yüzey hiyerarşisi: background < card < popover */
+  .dark {
+    /* ── shadcn/ui Dark Mode Tokens ── */
+    --background: 224 48% 6%;
+    --foreground: 213 30% 94%;
+    --card: 223 40% 9%;
+    --card-foreground: 213 30% 94%;
+    --popover: 223 40% 10%;
+    --popover-foreground: 213 30% 94%;
+    --primary: 28 89% 52%;
+    --primary-foreground: 30 45% 9%;
+    --secondary: 220 30% 14%;
+    --secondary-foreground: 213 30% 94%;
+    --muted: 220 30% 13%;
+    --muted-foreground: 216 15% 64%;
+    --accent: 28 60% 18%;
+    --accent-foreground: 28 95% 80%;
+    --destructive: 0 78% 64%;
+    --destructive-foreground: 224 48% 7%;
+    --success: 142 69% 58%;
+    --success-foreground: 224 48% 7%;
+    --warning: 43 96% 56%;
+    --warning-foreground: 224 48% 7%;
+    --info: 28 89% 60%;
+    --info-foreground: 224 48% 7%;
+    --border: 220 26% 15%;
+    --input: 220 26% 18%;
+    --ring: 28 89% 52%;
+    --chart-1: 28 89% 52%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 28 70% 45%;
+    --chart-4: 43 96% 56%;
+    --chart-5: 27 87% 67%;
+    --sidebar-background: 225 50% 4.5%;
+    --sidebar-foreground: 216 18% 72%;
+    --sidebar-primary: 28 89% 52%;
+    --sidebar-primary-foreground: 30 45% 9%;
+    --sidebar-accent: 28 45% 14%;
+    --sidebar-accent-foreground: 28 95% 80%;
+    --sidebar-border: 221 30% 11%;
+    --sidebar-ring: 28 89% 52%;
 
-  /* ── Design System: Dark Mode Overrides (no pure black — zinc-950 depth) ── */
-  --color-success-light: #052e16;
-  --color-success:       #4ade80;
-  --color-success-dark:  #86efac;
-  --color-warning-light: #451a03;
-  --color-warning:       #fbbf24;
-  --color-warning-dark:  #fcd34d;
-  --color-danger-light:  #450a0a;
-  --color-danger:        #f87171;
-  --color-danger-dark:   #fca5a5;
-  --color-info-light:    #172554;
-  --color-info:          #60a5fa;
-  --color-info-dark:     #93c5fd;
-  --color-surface-primary:   oklch(0.13 0.01 240);
-  --color-surface-secondary: oklch(0.17 0.012 240);
-  --color-surface-tertiary:  oklch(0.21 0.015 240);
-  --color-border:        oklch(0.26 0.018 240);
-  --color-border-strong: oklch(0.32 0.02 240);
-  --color-border-subtle: oklch(0.20 0.014 240);
+    /* ── Design System: Dark Mode Overrides (no pure black — zinc-950 depth) ── */
+    --color-success-light: #052e16;
+    --color-success: #4ade80;
+    --color-success-dark: #86efac;
+    --color-warning-light: #451a03;
+    --color-warning: #fbbf24;
+    --color-warning-dark: #fcd34d;
+    --color-danger-light: #450a0a;
+    --color-danger: #f87171;
+    --color-danger-dark: #fca5a5;
+    --color-info-light: #172554;
+    --color-info: #60a5fa;
+    --color-info-dark: #93c5fd;
+    --color-surface-primary: oklch(0.13 0.01 240);
+    --color-surface-secondary: oklch(0.17 0.012 240);
+    --color-surface-tertiary: oklch(0.21 0.015 240);
+    --color-border: oklch(0.26 0.018 240);
+    --color-border-strong: oklch(0.32 0.02 240);
+    --color-border-subtle: oklch(0.2 0.014 240);
 
-  /* ── Dark Mode: Tinted Shadows ── */
-  --shadow-color: 235 30% 4%;
-  --shadow-sm: 0 1px 2px hsl(var(--shadow-color) / 0.2), 0 2px 4px hsl(var(--shadow-color) / 0.15);
-  --shadow-md: 0 4px 6px hsl(var(--shadow-color) / 0.25), 0 8px 16px hsl(var(--shadow-color) / 0.2);
-  --shadow-lg: 0 8px 16px hsl(var(--shadow-color) / 0.3), 0 20px 40px hsl(var(--shadow-color) / 0.25);
-  --shadow-xl: 0 16px 32px hsl(var(--shadow-color) / 0.35), 0 32px 64px hsl(var(--shadow-color) / 0.3);
-  --shadow-inner-premium: inset 0 1px 0 hsl(240 10% 80% / 0.05);
-}
+    /* ── Dark Mode: Tinted Shadows ── */
+    --shadow-color: 235 30% 4%;
+    --shadow-sm:
+      0 1px 2px hsl(var(--shadow-color) / 0.2),
+      0 2px 4px hsl(var(--shadow-color) / 0.15);
+    --shadow-md:
+      0 4px 6px hsl(var(--shadow-color) / 0.25),
+      0 8px 16px hsl(var(--shadow-color) / 0.2);
+    --shadow-lg:
+      0 8px 16px hsl(var(--shadow-color) / 0.3),
+      0 20px 40px hsl(var(--shadow-color) / 0.25);
+    --shadow-xl:
+      0 16px 32px hsl(var(--shadow-color) / 0.35),
+      0 32px 64px hsl(var(--shadow-color) / 0.3);
+    --shadow-inner-premium: inset 0 1px 0 hsl(240 10% 80% / 0.05);
+  }
 
-/* ── Public Dark Theme — Printables dark paleti ──
+  /* ── Public Dark Theme — Printables dark paleti ──
  * .public-theme ile birlikte kullanılır (html'de iki class); iki sınıflı selector
  * specificity'yi 0-2-0'a çıkarıp .public-theme (0-1-0) üzerinde kesin üstünlük sağlar.
  * .public-theme'in TÜM token anahtarlarını birebir karşılar.
  */
-.public-theme.public-dark {
-  /* shadcn/ui tokens — Printables dark paleti */
-  --background: 216 8% 12%;          /* #1C1E21 — sayfa zemini */
-  --foreground: 0 0% 88%;            /* #E0E0E0 — birincil metin (12.69:1) */
-  --card: 216 6% 16%;                /* #26282B — kart katmanı */
-  --card-foreground: 0 0% 88%;
-  --popover: 216 7% 18%;             /* #2B2D31 — en üst katman */
-  --popover-foreground: 0 0% 88%;
-  --primary: 16 95% 59%;             /* #FA6831 — MAIN (dolgu rengi) */
-  --primary-foreground: 0 0% 11%;    /* #1C1C1C — turuncu üzeri koyu ink (5.75:1) */
-  --secondary: 216 7% 14%;           /* #212428 — bölüm bandı; kart (#26282B) zemininden ayrışır */
-  --secondary-foreground: 0 0% 88%;
-  --muted: 210 4% 10%;               /* #181A1B — batık bölüm zemini */
-  --muted-foreground: 0 0% 70%;      /* #B3B3B3 — ikincil metin (7.91:1) */
-  --accent: 16 45% 18%;              /* #432419 — brand subtle, hover/seçili dolgu */
-  --accent-foreground: 16 96% 68%;   /* #FC895F — subtle üzeri metin + link ink (5.89:1) */
-  --destructive: 0 80% 68%;          /* #EF6C6C — #CB2C2C'nin koyu zemin için açılmışı */
-  --destructive-foreground: 216 8% 12%;
-  --success: 90 88% 36%;             /* #5CAD0B */
-  --success-foreground: 216 8% 12%;
-  --warning: 38 92% 55%;             /* #F6A823 */
-  --warning-foreground: 216 8% 12%;
-  --info: 191 79% 58%;               /* #3FC9E9 */
-  --info-foreground: 216 8% 12%;
-  --border: 210 3% 25%;              /* #3E4042 — hairline */
-  --input: 210 3% 25%;               /* #3E4042 */
-  --ring: 16 95% 59%;                /* #FA6831 — focus ring (5.63:1) */
-  --chart-1: 16 95% 59%;
-  --chart-2: 191 79% 58%;
-  --chart-3: 16 96% 68%;
-  --chart-4: 38 92% 55%;
-  --chart-5: 90 88% 36%;
+  .public-theme.public-dark {
+    /* shadcn/ui tokens — Printables dark paleti */
+    --background: 216 8% 12%; /* #1C1E21 — sayfa zemini */
+    --foreground: 0 0% 88%; /* #E0E0E0 — birincil metin (12.69:1) */
+    --card: 216 6% 16%; /* #26282B — kart katmanı */
+    --card-foreground: 0 0% 88%;
+    --popover: 216 7% 18%; /* #2B2D31 — en üst katman */
+    --popover-foreground: 0 0% 88%;
+    --primary: 16 95% 59%; /* #FA6831 — MAIN (dolgu rengi) */
+    --primary-foreground: 0 0% 11%; /* #1C1C1C — turuncu üzeri koyu ink (5.75:1) */
+    --secondary: 216 7% 14%; /* #212428 — bölüm bandı; kart (#26282B) zemininden ayrışır */
+    --secondary-foreground: 0 0% 88%;
+    --muted: 210 4% 10%; /* #181A1B — batık bölüm zemini */
+    --muted-foreground: 0 0% 70%; /* #B3B3B3 — ikincil metin (7.91:1) */
+    --accent: 16 45% 18%; /* #432419 — brand subtle, hover/seçili dolgu */
+    --accent-foreground: 16 96% 68%; /* #FC895F — subtle üzeri metin + link ink (5.89:1) */
+    --destructive: 0 80% 68%; /* #EF6C6C — #CB2C2C'nin koyu zemin için açılmışı */
+    --destructive-foreground: 216 8% 12%;
+    --success: 90 88% 36%; /* #5CAD0B */
+    --success-foreground: 216 8% 12%;
+    --warning: 38 92% 55%; /* #F6A823 */
+    --warning-foreground: 216 8% 12%;
+    --info: 191 79% 58%; /* #3FC9E9 */
+    --info-foreground: 216 8% 12%;
+    --border: 210 3% 25%; /* #3E4042 — hairline */
+    --input: 210 3% 25%; /* #3E4042 */
+    --ring: 16 95% 59%; /* #FA6831 — focus ring (5.63:1) */
+    --chart-1: 16 95% 59%;
+    --chart-2: 191 79% 58%;
+    --chart-3: 16 96% 68%;
+    --chart-4: 38 92% 55%;
+    --chart-5: 90 88% 36%;
 
-  /* Shape dili — light ile aynı: buton 8px, kart 4px, input 4px */
-  --radius: 0.5rem;
-  --radius-button: 0.5rem;
-  --radius-card: 0.25rem;
-  --radius-input: 0.25rem;
+    /* Shape dili — light ile aynı: buton 8px, kart 4px, input 4px */
+    --radius: 0.5rem;
+    --radius-button: 0.5rem;
+    --radius-card: 0.25rem;
+    --radius-input: 0.25rem;
 
-  /* Yüzey hiyerarşisi: #1C1E21 sayfa > #18191A batık > #26282B yükseltilmiş */
-  --color-surface-primary:   #1c1e21;
-  --color-surface-secondary: #18191a;
-  --color-surface-tertiary:  #26282b;
-  --color-border:        #3f4143;
-  --color-border-strong: #55585b;
-  --color-border-subtle: #26282b;
+    /* Yüzey hiyerarşisi: #1C1E21 sayfa > #18191A batık > #26282B yükseltilmiş */
+    --color-surface-primary: #1c1e21;
+    --color-surface-secondary: #18191a;
+    --color-surface-tertiary: #26282b;
+    --color-border: #3f4143;
+    --color-border-strong: #55585b;
+    --color-border-subtle: #26282b;
 
-  /* Semantic renkler — *-light derin tint zemin, DEFAULT metin/kenar (AA), *-dark vurgu */
-  --color-success-light: #16250a;
-  --color-success:       #5cad0b;
-  --color-success-dark:  #8fd83f;
-  --color-warning-light: #2a1d06;
-  --color-warning:       #f6a823;
-  --color-warning-dark:  #fac55f;
-  --color-danger-light:  #2e1414;
-  --color-danger:        #ef6c6c;
-  --color-danger-dark:   #f7a0a0;
-  --color-info-light:    #0c2830;
-  --color-info:          #3fc9e9;
-  --color-info-dark:     #7fdcf0;
+    /* Semantic renkler — *-light derin tint zemin, DEFAULT metin/kenar (AA), *-dark vurgu */
+    --color-success-light: #16250a;
+    --color-success: #5cad0b;
+    --color-success-dark: #8fd83f;
+    --color-warning-light: #2a1d06;
+    --color-warning: #f6a823;
+    --color-warning-dark: #fac55f;
+    --color-danger-light: #2e1414;
+    --color-danger: #ef6c6c;
+    --color-danger-dark: #f7a0a0;
+    --color-info-light: #0c2830;
+    --color-info: #3fc9e9;
+    --color-info-dark: #7fdcf0;
 
-  /* Flat shadows — koyu zeminde derinlik başlıca border'dan gelir */
-  --shadow-color: 216 12% 3%;
-  --shadow-sm: 0 1px 2px hsl(var(--shadow-color) / 0.3);
-  --shadow-md: 0 1px 3px hsl(var(--shadow-color) / 0.4), 0 0 1px hsl(var(--shadow-color) / 0.3);
-  --shadow-lg: 0 2px 20px hsl(var(--shadow-color) / 0.5);
-  --shadow-xl: 0 8px 32px hsl(var(--shadow-color) / 0.55), 0 2px 8px hsl(var(--shadow-color) / 0.35);
-  --shadow-inner-premium: inset 0 1px 0 hsl(0 0% 100% / 0.05);
+    /* Flat shadows — koyu zeminde derinlik başlıca border'dan gelir */
+    --shadow-color: 216 12% 3%;
+    --shadow-sm: 0 1px 2px hsl(var(--shadow-color) / 0.3);
+    --shadow-md:
+      0 1px 3px hsl(var(--shadow-color) / 0.4),
+      0 0 1px hsl(var(--shadow-color) / 0.3);
+    --shadow-lg: 0 2px 20px hsl(var(--shadow-color) / 0.5);
+    --shadow-xl:
+      0 8px 32px hsl(var(--shadow-color) / 0.55),
+      0 2px 8px hsl(var(--shadow-color) / 0.35);
+    --shadow-inner-premium: inset 0 1px 0 hsl(0 0% 100% / 0.05);
 
-  /* Gradient overrides — koyu nötr */
-  --gradient-surface: linear-gradient(180deg, #26282b 0%, #1c1e21 100%);
-  --gradient-hero: linear-gradient(135deg, #26282b 0%, #1c1e21 60%, #18191a 100%);
+    /* Gradient overrides — koyu nötr */
+    --gradient-surface: linear-gradient(180deg, #26282b 0%, #1c1e21 100%);
+    --gradient-hero: linear-gradient(
+      135deg,
+      #26282b 0%,
+      #1c1e21 60%,
+      #18191a 100%
+    );
 
-  color-scheme: dark;
+    color-scheme: dark;
 
-  /* Page background — koyu nötr */
-  --color-page-bg: #1c1e21;
-}
-
-/* ── Admin: Shimmer Skeleton ── */
-@keyframes skeleton-shimmer {
-  100% {
-    transform: translateX(100%);
-  }
-}
-
-.skeleton-shimmer {
-  position: relative;
-  overflow: hidden;
-}
-
-.skeleton-shimmer::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  transform: translateX(-100%);
-  background: linear-gradient(
-    90deg,
-    transparent,
-    hsl(var(--foreground) / 0.08),
-    transparent
-  );
-  animation: skeleton-shimmer 1.6s ease-in-out infinite;
-}
-
-
-* {
-  box-sizing: border-box;
-}
-
-html {
-  scroll-behavior: smooth;
-  scroll-padding-top: 80px;
-}
-
-@media (min-width: 1024px) {
-  html {
-    scroll-padding-top: 88px;
-  }
-}
-
-/* Smooth scrolling for anchor links */
-@media (prefers-reduced-motion: no-preference) {
-  html {
-    scroll-behavior: smooth;
-  }
-}
-
-body {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  font-family: var(--font-barlow), var(--font-geist-sans);
-  line-height: 1.6;
-  font-weight: 400;
-  font-display: swap;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: hsl(var(--foreground));
-}
-
-/* Global Text Selection */
-::selection {
-  background-color: hsl(var(--primary));
-  color: hsl(var(--primary-foreground));
-  text-shadow: none;
-}
-
-::-moz-selection {
-  background-color: hsl(var(--primary));
-  color: hsl(var(--primary-foreground));
-  text-shadow: none;
-}
-
-/* Typography — renk miras alınır: body varsayılanı foreground,
-   renkli zeminlerde (ör. bg-primary) ebeveynin metin rengi geçerli olur */
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: var(--font-barlow), var(--font-geist-sans);
-  color: inherit;
-  font-weight: 600;
-  line-height: 1.15;
-  letter-spacing: -0.02em;
-  font-display: swap;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-/* Hide scrollbar but keep functionality */
-.hide-scrollbar {
-  -ms-overflow-style: none;
-  /* IE and Edge */
-  scrollbar-width: none;
-  /* Firefox */
-}
-
-.hide-scrollbar::-webkit-scrollbar {
-  display: none;
-  /* Chrome, Safari and Opera */
-}
-
-
-
-/* Design System Components */
-@layer components {
-
-  /* Buttons -- taste-skill: Interactive UI States + Active Press Feedback
-   * Radius token'dan gelir: public 8px, admin 12px. */
-  .btn {
-    @apply inline-flex items-center justify-center px-6 py-3 text-sm font-medium cursor-pointer focus:outline-none transform-gpu;
-    border-radius: var(--radius-button);
-    transition: all 150ms ease-in-out;
+    /* Page background — koyu nötr */
+    --color-page-bg: #1c1e21;
   }
 
-  .btn:active {
-    transform: scale(0.98) translateY(1px);
+  /* ── Admin: Shimmer Skeleton ── */
+  @keyframes skeleton-shimmer {
+    100% {
+      transform: translateX(100%);
+    }
   }
 
-  .btn-primary {
-    @apply btn bg-primary text-primary-foreground border-none hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 w-auto;
-  }
-
-  .btn-primary:hover {
-    box-shadow: 0 4px 16px hsl(var(--brand-primary-500-hsl) / 0.3);
-  }
-
-  .btn-secondary {
-    @apply btn bg-secondary text-secondary-foreground border-none hover:bg-secondary/80 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 w-auto;
-  }
-
-  .btn-outline {
-    @apply inline-flex items-center justify-center px-8 py-3.5 bg-transparent border border-primary/20 text-foreground font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 transform-gpu;
-    border-radius: var(--radius-button);
-    transition: all 150ms ease-in-out;
-  }
-
-  .btn-outline:hover {
-    @apply bg-primary text-primary-foreground border-primary;
-  }
-
-  .btn-outline:active {
-    transform: scale(0.98) translateY(1px);
-  }
-
-  .btn-ghost {
-    @apply inline-flex items-center justify-center px-6 py-3 bg-transparent text-muted-foreground hover:text-foreground hover:bg-muted font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 transform-gpu;
-    border-radius: var(--radius-button);
-    transition: all 150ms ease-in-out;
-  }
-
-  .btn-ghost:active {
-    transform: scale(0.98) translateY(1px);
-  }
-
-  /* Cards -- flat: dinlenimde gölge yok, hover'da tek yumuşak lift */
-  .card {
-    @apply bg-card text-card-foreground p-6 border border-border;
-    border-radius: var(--radius-card);
-    box-shadow: none;
-    transition: all 150ms ease-in-out;
-  }
-
-  .card:hover {
-    box-shadow: var(--shadow-lg);
-    transform: translateY(-2px);
-  }
-
-  .card-modern {
-    @apply bg-card text-card-foreground p-8 border border-border;
-    border-radius: var(--radius-card);
-    box-shadow: none;
-    transition: all 150ms ease-in-out;
-  }
-
-  .card-modern:hover {
-    box-shadow: var(--shadow-lg);
-    transform: translateY(-2px);
-  }
-
-  /* Glass kartlar — token tabanlı: kart/border token'ları sayesinde
-   * light ve dark scope'ta ayrı override gerektirmez. */
-  .card-glass {
-    background: hsl(var(--card) / 0.8);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid hsl(var(--border) / 0.6);
-    border-radius: var(--radius-card);
-    box-shadow: var(--shadow-md);
-    transition: all 700ms cubic-bezier(0.32, 0.72, 0, 1);
-  }
-
-  .card-glass:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
-  }
-
-  .card-glass-premium {
-    background: hsl(var(--card) / 0.72);
-    backdrop-filter: blur(24px) saturate(1.4);
-    -webkit-backdrop-filter: blur(24px) saturate(1.4);
-    border: 1px solid hsl(var(--border) / 0.5);
-    border-radius: var(--radius-card);
-    box-shadow: var(--shadow-inner-premium), var(--shadow-md);
-    transition: all 700ms cubic-bezier(0.32, 0.72, 0, 1);
-  }
-
-  .card-glass-premium:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-inner-premium), var(--shadow-xl);
-  }
-
-  /* Surface elevation tokens */
-  .surface-elevated {
-    background: var(--color-surface-secondary);
-    border-radius: var(--radius-card);
-    box-shadow: var(--shadow-md);
-  }
-
-  .surface-sunken {
-    background: var(--color-surface-tertiary);
-    border-radius: var(--radius-card);
-    box-shadow: inset 0 2px 4px hsl(var(--shadow-color) / 0.04);
-  }
-
-  /* Industrial Textures — taste-skill: Subtle Background Patterns */
-  .hex-grid {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='49' viewBox='0 0 28 49'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23FA6831' fill-opacity='0.05'%3E%3Cpath d='M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5zM3 17.9v12.7l10.99 6.34 11-6.35V17.9l-11-6.34L3 17.9zM0 15l12.98-7.5V0h-2v6.35L0 12.69v2.3zm0 18.5L12.98 41v8h-2v-6.85L0 35.81v-2.3zM15 0v7.5L27.99 15H28v-2.31h-.01L17 6.35V0h-2zm0 49v-8l12.99-7.5H28v2.31h-.01L17 42.15V49h-2z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-    opacity: 0.4;
-  }
-
-  .blueprint-grid {
-    background-image:
-      linear-gradient(hsl(var(--primary) / 0.04) 1px, transparent 1px),
-      linear-gradient(90deg, hsl(var(--primary) / 0.04) 1px, transparent 1px);
-    background-size: 40px 40px;
-  }
-
-  .grain {
+  .skeleton-shimmer {
     position: relative;
+    overflow: hidden;
   }
 
-  .grain::after {
+  .skeleton-shimmer::after {
     content: '';
     position: absolute;
     inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-    background-repeat: repeat;
-    background-size: 256px 256px;
-    pointer-events: none;
-    z-index: 1;
+    transform: translateX(-100%);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      hsl(var(--foreground) / 0.08),
+      transparent
+    );
+    animation: skeleton-shimmer 1.6s ease-in-out infinite;
   }
 
-  /* Form Elements -- token-based, dark/light uyumlu; radius token'dan gelir */
-  .input-field {
-    @apply w-full bg-background border border-input px-3 py-3 text-foreground placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-ring focus-visible:outline-none focus-visible:ring-offset-2 outline-none transition-all duration-200 font-sans text-base;
-    border-radius: var(--radius-input);
+  * {
+    box-sizing: border-box;
   }
 
-  .label-text {
-    @apply block text-sm font-medium text-foreground mb-2 font-sans;
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 80px;
   }
 
-  .textarea-field {
-    @apply input-field resize-y min-h-[100px];
+  @media (min-width: 1024px) {
+    html {
+      scroll-padding-top: 88px;
+    }
   }
 
-  .select-field {
-    @apply input-field appearance-none bg-no-repeat bg-right bg-[length:16px_16px] pr-10;
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  /* Smooth scrolling for anchor links */
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
   }
 
-  /* Typography -- taste-skill: Deterministic Typography */
-  .text-display {
-    @apply text-5xl md:text-7xl lg:text-8xl font-bold;
-    letter-spacing: -0.045em;
-    line-height: 1.0;
-    padding: 0.1em 0;
-    text-wrap: balance;
-    font-display: swap;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-
-  .hero-title {
-    @apply text-4xl md:text-6xl lg:text-7xl font-bold;
-    letter-spacing: -0.045em;
-    line-height: 1.0;
-    padding: 0.15em 0;
-    font-display: swap;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-
-  .hero-title-responsive {
-    @apply text-4xl md:text-6xl xl:text-7xl font-bold;
-    letter-spacing: -0.04em;
-    line-height: 1.05;
-    padding: 0.15em 0;
-    word-spacing: -0.1em;
-    hyphens: none;
-    font-display: swap;
-    text-rendering: optimizeLegibility;
-  }
-
-  .hero-title-compact {
-    @apply text-3xl md:text-5xl xl:text-5xl font-bold;
-    letter-spacing: -0.03em;
-    line-height: 1.1;
-    padding: 0.15em 0;
-    font-display: swap;
-    text-rendering: optimizeLegibility;
-  }
-
-  .page-title {
-    @apply text-4xl md:text-5xl lg:text-6xl font-bold;
-    letter-spacing: -0.03em;
-    line-height: 1.1;
-    padding: 0.05em 0;
-    font-display: swap;
-    text-rendering: optimizeLegibility;
-  }
-
-  .section-title {
-    @apply text-3xl md:text-5xl font-bold;
-    letter-spacing: -0.035em;
-    line-height: 1.1;
-    padding: 0.05em 0;
-    font-display: swap;
-    text-rendering: optimizeLegibility;
-  }
-
-  .section-subtitle {
-    @apply text-base md:text-lg font-normal text-muted-foreground;
+  body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    font-family: var(--font-barlow), var(--font-geist-sans);
     line-height: 1.6;
-    max-width: 65ch;
-    padding: 0.05em 0;
+    font-weight: 400;
     font-display: swap;
     text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: hsl(var(--foreground));
   }
 
-  .text-body {
-    @apply text-base leading-relaxed text-muted-foreground;
-    max-width: 65ch;
+  /* Global Text Selection */
+  ::selection {
+    background-color: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+    text-shadow: none;
   }
 
-  .text-small {
-    @apply text-sm leading-relaxed text-muted-foreground;
+  ::-moz-selection {
+    background-color: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+    text-shadow: none;
   }
 
-  .text-heading {
-    font-size: clamp(1.75rem, 3vw, 2.5rem);
-    font-weight: 700;
-    letter-spacing: -0.03em;
-    line-height: 1.15;
-    text-wrap: balance;
-  }
-
-  .text-subheading {
-    font-size: clamp(1.125rem, 1.5vw, 1.5rem);
+  /* Typography — renk miras alınır: body varsayılanı foreground,
+   renkli zeminlerde (ör. bg-primary) ebeveynin metin rengi geçerli olur */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-barlow), var(--font-geist-sans);
+    color: inherit;
     font-weight: 600;
+    line-height: 1.15;
     letter-spacing: -0.02em;
-    line-height: 1.3;
-  }
-
-  .text-caption {
-    font-size: 0.875rem;
-    font-weight: 400;
-    line-height: 1.5;
-    color: oklch(0.65 0.01 250);
-  }
-
-  .text-gradient {
-    @apply bg-gradient-to-r from-brand-primary-800 to-brand-primary-600 bg-clip-text text-transparent;
-    line-height: 1.2;
-    padding: 0.1em 0;
+    font-display: swap;
     text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
-  .text-gradient-hero {
-    @apply bg-gradient-to-r from-white via-zinc-100 to-zinc-300 bg-clip-text text-transparent;
-    line-height: 1.1;
-    padding: 0.1em 0;
-    text-rendering: optimizeLegibility;
+  /* Hide scrollbar but keep functionality */
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
   }
 
-  /* Containers — Boxed layout standardı (Printables paradigması).
-     TEK kaynak: 1280px kutu; tüm container-* sınıfları aynı ölçüye hizalı. */
-  .container-boxed {
-    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+    /* Chrome, Safari and Opera */
   }
 
-  .container-wide {
-    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
-  }
-
-  .container-main {
-    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
-  }
-
-  .container-content {
-    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
-  }
-
-  .container-narrow {
-    @apply max-w-3xl mx-auto px-4 sm:px-6 lg:px-8;
-  }
-
-  /* Modern Sections -- taste-skill: Macro-Whitespace */
-  .section {
-    @apply py-24 md:py-32 lg:py-40;
-  }
-
-  .section-sm {
-    @apply py-16 md:py-24 lg:py-28;
-  }
-
-  .section-hero {
-    @apply flex items-center justify-center py-28 md:py-40 lg:py-48;
-    min-height: 100dvh;
-  }
-
-  /* Unified section header -- left aligned for DESIGN_VARIANCE 8 */
-  .section-header {
-    @apply mb-16 md:mb-20;
-  }
-
-  .section-header h2 {
-    @apply section-title;
-  }
-
-  .section-header p {
-    @apply section-subtitle;
-  }
-
-
-
-
-
-
-
-  /* Backgrounds -- koyu turuncu gradyan (CTA bantları) */
-  .bg-gradient-primary {
-    background: linear-gradient(135deg, #1e0c05 0%, #7a3011 50%, #2a1108 100%);
-  }
-
-  .bg-gradient-subtle {
-    @apply bg-gradient-to-b from-zinc-50/80 via-white to-zinc-50/50 dark:from-zinc-900 dark:via-zinc-900 dark:to-zinc-900;
-  }
-
-  .bg-glass {
-    background: hsl(var(--card) / 0.7);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid hsl(var(--border) / 0.6);
-  }
-
-  .bg-glass-dark {
-    background: rgba(28, 30, 33, 0.8);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-  }
-
-  /* Mesh gradient background for premium sections — turuncu tint */
-  .bg-mesh {
-    background:
-      radial-gradient(ellipse at 20% 50%, rgba(250, 104, 49, 0.07) 0%, transparent 50%),
-      radial-gradient(ellipse at 80% 20%, rgba(194, 78, 30, 0.05) 0%, transparent 50%),
-      radial-gradient(ellipse at 40% 80%, rgba(250, 104, 49, 0.04) 0%, transparent 50%),
-      #ffffff;
-  }
-
-  .bg-mesh-dark {
-    background:
-      radial-gradient(ellipse at 20% 50%, rgba(250, 104, 49, 0.15) 0%, transparent 50%),
-      radial-gradient(ellipse at 80% 20%, rgba(122, 48, 17, 0.12) 0%, transparent 50%),
-      radial-gradient(ellipse at 40% 80%, rgba(122, 48, 17, 0.08) 0%, transparent 50%),
-      #1c1e21;
-  }
-
-  /* Eyebrow tag -- taste-skill: Spatial Rhythm */
-  .eyebrow-tag {
-    @apply inline-flex items-center rounded-full px-3 py-1 text-[11px] uppercase font-medium border border-primary/10 text-primary bg-primary/5;
-    letter-spacing: 0.15em;
-  }
-
-  /* Section heading — shared typographic base */
-  .section-heading {
-    font-weight: 700;
-    letter-spacing: -0.03em;
-    color: var(--foreground);
-    text-wrap: balance;
-  }
-
-  /* Card surface — token tabanlı yarı saydam kart */
-  .card-surface {
-    background: hsl(var(--card) / 0.4);
-    border: 1px solid hsl(var(--border) / 0.5);
-    backdrop-filter: blur(12px);
-    border-radius: var(--radius-card);
-  }
-
-  /* Premium transition shorthand */
-  .transition-premium {
-    transition: all var(--duration-premium, 700ms) var(--ease-default, cubic-bezier(0.32, 0.72, 0, 1));
-  }
-
-}
-
-/* Add better focus states */
-@layer utilities {
-  .focus-ring {
-    /* ring-opacity-75 kaldırıldı (v4'te yok; v3'te de var() tabanlı renkte etkisizdi) */
-    @apply focus:outline-none focus:ring-2 focus:ring-brand-primary-600;
-  }
-
-  .transition-smooth {
-    transition: all 700ms cubic-bezier(0.32, 0.72, 0, 1);
-  }
-
-  /* Transform utilities for better browser compatibility */
-  .transform-gpu {
-    transform: translateZ(0);
-    will-change: transform;
-    backface-visibility: hidden;
-  }
-
-  /* Additional transform utilities */
-  .transform-3d {
-    transform-style: preserve-3d;
-  }
-
-  .transform-smooth {
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .transform-hardware {
-    transform: translate3d(0, 0, 0);
-    will-change: transform, opacity;
-  }
-
-  .translate-center {
-    transform: translate(-50%, -50%);
-  }
-
-  .translate-x-center {
-    transform: translateX(-50%);
-  }
-
-  .translate-y-center {
-    transform: translateY(-50%);
-  }
-
-  /* Intersection Observer utilities */
-  .fade-in-on-scroll {
-    opacity: 0;
-    transform: translateY(30px);
-    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-  }
-
-  .fade-in-on-scroll.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  .slide-in-left-on-scroll {
-    opacity: 0;
-    transform: translateX(-30px);
-    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-  }
-
-  .slide-in-left-on-scroll.visible {
-    opacity: 1;
-    transform: translateX(0);
-  }
-
-  .slide-in-right-on-scroll {
-    opacity: 0;
-    transform: translateX(30px);
-    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-  }
-
-  .slide-in-right-on-scroll.visible {
-    opacity: 1;
-    transform: translateX(0);
-  }
+  /* Design System Components */
 }
 
 /* Global Select Styling -- token-based, dark/light uyumlu */

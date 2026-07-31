@@ -129,7 +129,7 @@ export default function PortfolioFilters({
               placeholder="Proje ara..."
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-ring outline-none transition-colors duration-200 motion-reduce:transition-none"
+              className="w-full pl-12 pr-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-ring outline-hidden transition-colors duration-200 motion-reduce:transition-none"
             />
             {searchValue && (
               <button
@@ -153,7 +153,7 @@ export default function PortfolioFilters({
                 const [sortBy, sortOrder] = e.target.value.split('-') as [FilterState['sortBy'], FilterState['sortOrder']];
                 onFiltersChange({ ...filters, sortBy, sortOrder });
               }}
-              className="appearance-none bg-background border border-border rounded-lg px-4 py-3 pr-10 text-foreground focus:border-primary focus:ring-2 focus:ring-ring outline-none transition-colors duration-200 cursor-pointer motion-reduce:transition-none"
+              className="appearance-none bg-background border border-border rounded-lg px-4 py-3 pr-10 text-foreground focus:border-primary focus:ring-2 focus:ring-ring outline-hidden transition-colors duration-200 cursor-pointer motion-reduce:transition-none"
               aria-label="Sırala"
             >
               <option value="newest-desc">En Yeni</option>
@@ -360,7 +360,7 @@ export default function PortfolioFilters({
                         ...filters,
                         dateRange: { ...filters.dateRange, start: e.target.value }
                       })}
-                      className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground focus:border-primary focus:ring-2 focus:ring-ring outline-none transition-colors duration-200 motion-reduce:transition-none"
+                      className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground focus:border-primary focus:ring-2 focus:ring-ring outline-hidden transition-colors duration-200 motion-reduce:transition-none"
                     />
                   </div>
                   <div>
@@ -374,7 +374,7 @@ export default function PortfolioFilters({
                         ...filters,
                         dateRange: { ...filters.dateRange, end: e.target.value }
                       })}
-                      className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground focus:border-primary focus:ring-2 focus:ring-ring outline-none transition-colors duration-200 motion-reduce:transition-none"
+                      className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground focus:border-primary focus:ring-2 focus:ring-ring outline-hidden transition-colors duration-200 motion-reduce:transition-none"
                     />
                   </div>
                 </div>

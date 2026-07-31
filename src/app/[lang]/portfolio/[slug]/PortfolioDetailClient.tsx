@@ -40,7 +40,7 @@ export default function PortfolioDetailClient({ portfolioItem, relatedProjects, 
   })();
 
   return (
-    <div className="min-h-[100dvh] bg-background">
+    <div className="min-h-dvh bg-background">
       <PageHero
         title={portfolioItem.title}
         showButton={false}
@@ -88,15 +88,15 @@ export default function PortfolioDetailClient({ portfolioItem, relatedProjects, 
                 transition={{ duration: 0.8, delay: 0.15, ease: EASE }}
               >
                 <div className="flex items-center gap-4 mb-6">
-                  <div className="h-px flex-1 bg-gradient-to-r from-primary/30 to-transparent" />
+                  <div className="h-px flex-1 bg-linear-to-r from-primary/30 to-transparent" />
                   <h2 className="text-xl md:text-2xl font-semibold text-foreground tracking-tight shrink-0">Proje Detayları</h2>
-                  <div className="h-px flex-1 bg-gradient-to-l from-primary/30 to-transparent" />
+                  <div className="h-px flex-1 bg-linear-to-l from-primary/30 to-transparent" />
                 </div>
                 <div className="rounded-2xl border border-border bg-card p-6 md:p-8 lg:p-10">
                   <div className="prose prose-lg max-w-none
                     prose-headings:font-semibold prose-headings:tracking-tight prose-headings:text-foreground
                     prose-p:text-muted-foreground prose-p:leading-relaxed
-                    prose-a:text-accent-foreground hover:prose-a:text-accent-foreground
+                    prose-a:text-accent-foreground prose-a:hover:text-accent-foreground
                     prose-strong:text-foreground
                     prose-li:text-muted-foreground">
                     <HTMLContent content={portfolioItem.description} className="leading-relaxed" />
@@ -186,7 +186,7 @@ export default function PortfolioDetailClient({ portfolioItem, relatedProjects, 
                   </dl>
                 </div>
 
-                <div className="rounded-2xl p-6 md:p-8 text-center relative overflow-hidden border border-primary/30 bg-gradient-to-br from-primary/20 via-primary/12 to-primary/15">
+                <div className="rounded-2xl p-6 md:p-8 text-center relative overflow-hidden border border-primary/30 bg-linear-to-br from-primary/20 via-primary/12 to-primary/15">
                   <div
                     className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl -mr-32 -mt-32 pointer-events-none"
                     style={{ background: 'radial-gradient(circle, hsl(var(--primary) / 0.25) 0%, transparent 70%)' }}

@@ -250,7 +250,7 @@ const ConditionalFooter: React.FC = () => {
           : `/${locale}${link.url.startsWith('/') ? link.url : `/${link.url}`}`;
 
     const sharedClasses =
-      'text-sm text-zinc-300 hover:text-primary transition-colors duration-200 inline-block py-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded';
+      'text-sm text-zinc-300 hover:text-primary transition-colors duration-200 inline-block py-0.5 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary rounded';
 
     return (
       <li key={index}>
@@ -291,7 +291,7 @@ const ConditionalFooter: React.FC = () => {
               {/* Logo & site name */}
               <div className="mb-4 flex items-center gap-3">
                 {site?.logo?.url && (
-                  <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-lg bg-white/[0.06]">
+                  <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-lg bg-white/6">
                     <Image
                       src={site.logo.url}
                       alt={site.logo.alt}
@@ -326,7 +326,7 @@ const ConditionalFooter: React.FC = () => {
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label={item.label}
-                        className="text-zinc-300 hover:text-primary transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded"
+                        className="text-zinc-300 hover:text-primary transition-colors duration-150 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary rounded"
                       >
                         {IconComp && <IconComp className="h-5 w-5" />}
                       </a>
@@ -445,7 +445,7 @@ const ConditionalFooter: React.FC = () => {
               duration: prefersReducedMotion ? 0 : 0.3,
               ease: [0.32, 0.72, 0, 1],
             }}
-            className="fixed bottom-6 right-6 z-40 inline-flex h-11 w-11 items-center justify-center rounded-full bg-primary text-white shadow-tinted-md hover:bg-primary/90 transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            className="fixed bottom-6 right-6 z-40 inline-flex h-11 w-11 items-center justify-center rounded-full bg-primary text-white shadow-tinted-md hover:bg-primary/90 transition-colors duration-150 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
             <ArrowUp className="h-5 w-5" />
           </m.button>

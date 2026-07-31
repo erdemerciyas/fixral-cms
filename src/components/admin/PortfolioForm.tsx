@@ -483,11 +483,11 @@ export default function PortfolioForm({
   return (
     <div className="max-w-[1600px] mx-auto pb-20">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8 sticky top-0 z-20 bg-surface-secondary/80 backdrop-blur-sm py-4">
+      <div className="flex items-center justify-between mb-8 sticky top-0 z-20 bg-surface-secondary/80 backdrop-blur-xs py-4">
         <div className="flex items-center gap-4">
           <Link
             href="/admin/portfolio"
-            className="p-2 hover:bg-card hover:shadow-sm rounded-xl transition-all border border-transparent hover:border-border"
+            className="p-2 hover:bg-card hover:shadow-xs rounded-xl transition-all border border-transparent hover:border-border"
           >
             <ArrowLeft className="w-5 h-5 text-muted-foreground" />
           </Link>
@@ -679,7 +679,7 @@ export default function PortfolioForm({
                     }
                   }}
                   onBlur={() => validateField('title')}
-                  className={`w-full h-11 px-3.5 text-sm border rounded-lg bg-card placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all ${fieldErrors.title ? 'border-destructive/40 focus:ring-destructive focus:border-destructive' : 'border-border'}`}
+                  className={`w-full h-11 px-3.5 text-sm border rounded-lg bg-card placeholder:text-muted-foreground focus:outline-hidden focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all ${fieldErrors.title ? 'border-destructive/40 focus:ring-destructive focus:border-destructive' : 'border-border'}`}
                   placeholder="Projenize bir isim verin"
                 />
                 {fieldErrors.title && <p className="mt-1.5 text-xs text-destructive">{fieldErrors.title}</p>}
@@ -699,7 +699,7 @@ export default function PortfolioForm({
                         setFormData(prev => ({ ...prev, slug: e.target.value }));
                       }}
                       readOnly={slugLocked}
-                      className="flex-1 bg-transparent border-none text-sm text-foreground focus:outline-none focus:ring-0 p-0 min-w-0"
+                      className="flex-1 bg-transparent border-none text-sm text-foreground focus:outline-hidden focus:ring-0 p-0 min-w-0"
                     />
                     <button
                       type="button"
@@ -728,7 +728,7 @@ export default function PortfolioForm({
                         setFormData(prev => ({ ...prev, client: e.target.value }));
                       }}
                       onBlur={() => validateField('client')}
-                      className={`w-full h-11 pl-10 pr-3.5 text-sm border rounded-lg bg-card placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all ${fieldErrors.client ? 'border-destructive/40 focus:ring-destructive focus:border-destructive' : 'border-border'}`}
+                      className={`w-full h-11 pl-10 pr-3.5 text-sm border rounded-lg bg-card placeholder:text-muted-foreground focus:outline-hidden focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all ${fieldErrors.client ? 'border-destructive/40 focus:ring-destructive focus:border-destructive' : 'border-border'}`}
                       placeholder="Şirket veya Kişi Adı"
                     />
                   </div>
@@ -768,7 +768,7 @@ export default function PortfolioForm({
                       [activeLanguage]: { ...prev[activeLanguage], excerpt: e.target.value }
                     }));
                   }}
-                  className="w-full px-3.5 py-2.5 text-sm border border-border rounded-lg bg-card placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all resize-y"
+                  className="w-full px-3.5 py-2.5 text-sm border border-border rounded-lg bg-card placeholder:text-muted-foreground focus:outline-hidden focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all resize-y"
                   placeholder="Proje için kısa açıklama..."
                 />
               </div>
@@ -787,7 +787,7 @@ export default function PortfolioForm({
                       [activeLanguage]: { ...prev[activeLanguage], metaDescription: e.target.value }
                     }));
                   }}
-                  className="w-full px-3.5 py-2.5 text-sm border border-border rounded-lg bg-card placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all resize-y"
+                  className="w-full px-3.5 py-2.5 text-sm border border-border rounded-lg bg-card placeholder:text-muted-foreground focus:outline-hidden focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all resize-y"
                   placeholder="SEO meta açıklaması..."
                 />
                 <p className="text-xs text-muted-foreground mt-1.5">{currentTranslation.metaDescription.length}/160 karakter</p>
@@ -849,7 +849,7 @@ export default function PortfolioForm({
                       setFormData(prev => ({ ...prev, completionDate: e.target.value }));
                     }}
                     onBlur={() => validateField('completionDate')}
-                    className={`w-full h-11 px-3.5 text-sm border rounded-lg bg-card focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all ${fieldErrors.completionDate ? 'border-destructive/40 focus:ring-destructive focus:border-destructive' : 'border-border'}`}
+                    className={`w-full h-11 px-3.5 text-sm border rounded-lg bg-card focus:outline-hidden focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all ${fieldErrors.completionDate ? 'border-destructive/40 focus:ring-destructive focus:border-destructive' : 'border-border'}`}
                   />
                   {fieldErrors.completionDate && <p className="mt-1.5 text-xs text-destructive">{fieldErrors.completionDate}</p>}
                 </div>
@@ -886,7 +886,7 @@ export default function PortfolioForm({
                       if (techInput.trim()) addTechnology(techInput);
                     }}
                     placeholder={formData.technologies.length === 0 ? 'Teknoloji ekle...' : 'Ekle...'}
-                    className="flex-1 min-w-[100px] bg-transparent border-none text-sm focus:outline-none focus:ring-0 p-0 placeholder:text-muted-foreground"
+                    className="flex-1 min-w-[100px] bg-transparent border-none text-sm focus:outline-hidden focus:ring-0 p-0 placeholder:text-muted-foreground"
                   />
                 </div>
                 <p className="text-xs text-muted-foreground mt-1.5">Enter ile ekleyin, Backspace ile son etiketi silin</p>

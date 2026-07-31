@@ -104,7 +104,7 @@ function FolderRow({ node, depth, selectedFolder, expanded, onToggle, onSelect }
         aria-selected={isSelected}
         onClick={() => onSelect(node.path)}
         onKeyDown={handleKeyDown}
-        className={`group flex items-center gap-1.5 pr-2 py-1.5 rounded-lg cursor-pointer select-none transition-colors text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+        className={`group flex items-center gap-1.5 pr-2 py-1.5 rounded-lg cursor-pointer select-none transition-colors text-sm focus:outline-hidden focus-visible:ring-2 focus-visible:ring-ring ${
           DEPTH_PADDING[Math.min(depth, DEPTH_PADDING.length - 1)]
         } ${
           isSelected
@@ -140,7 +140,7 @@ function FolderRow({ node, depth, selectedFolder, expanded, onToggle, onSelect }
         </span>
 
         <span
-          className={`shrink-0 min-w-[1.5rem] text-center px-1.5 py-0.5 rounded-md text-[11px] font-semibold tabular-nums ${
+          className={`shrink-0 min-w-6 text-center px-1.5 py-0.5 rounded-md text-[11px] font-semibold tabular-nums ${
             isSelected ? 'bg-primary/15 text-primary' : 'bg-muted text-muted-foreground group-hover:bg-muted-foreground/10'
           }`}
           title={`${node.directCount} dosya bu klasörde, toplam ${node.totalCount}`}
@@ -213,7 +213,7 @@ export default function MediaFolderTree({
             onSelect(null);
           }
         }}
-        className={`flex items-center gap-2 px-2 py-2 rounded-lg cursor-pointer select-none transition-colors text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+        className={`flex items-center gap-2 px-2 py-2 rounded-lg cursor-pointer select-none transition-colors text-sm focus:outline-hidden focus-visible:ring-2 focus-visible:ring-ring ${
           selectedFolder === null
             ? 'bg-primary/10 text-primary font-medium'
             : 'text-foreground/80 hover:bg-muted hover:text-foreground'
@@ -222,7 +222,7 @@ export default function MediaFolderTree({
         <HardDrive className={`w-4 h-4 shrink-0 ${selectedFolder === null ? 'text-primary' : 'text-muted-foreground'}`} />
         <span className="flex-1 truncate">Tüm Dosyalar</span>
         <span
-          className={`shrink-0 min-w-[1.5rem] text-center px-1.5 py-0.5 rounded-md text-[11px] font-semibold tabular-nums ${
+          className={`shrink-0 min-w-6 text-center px-1.5 py-0.5 rounded-md text-[11px] font-semibold tabular-nums ${
             selectedFolder === null ? 'bg-primary/15 text-primary' : 'bg-muted text-muted-foreground'
           }`}
         >

@@ -1,6 +1,6 @@
 export default function PortfolioLoading() {
     return (
-        <div className="min-h-[100dvh] bg-background pt-24 pb-20">
+        <div className="min-h-dvh bg-background pt-24 pb-20">
             <div className="container-content">
                 {/* Skeleton for Hero */}
                 <div className="w-full max-w-3xl mx-auto text-center mb-12 animate-pulse space-y-4">
@@ -19,7 +19,7 @@ export default function PortfolioLoading() {
                 {/* Skeleton for Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-pulse">
                     {[...Array(6)].map((_, i) => (
-                        <div key={i} className="bg-card rounded-2xl shadow-sm border border-border p-4 space-y-4">
+                        <div key={i} className="bg-card rounded-2xl shadow-xs border border-border p-4 space-y-4">
                             <div className="h-48 bg-muted rounded-xl w-full"></div>
                             <div className="h-6 bg-muted rounded-lg w-3/4"></div>
                             <div className="h-4 bg-muted rounded-lg w-1/2"></div>

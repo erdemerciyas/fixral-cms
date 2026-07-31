@@ -34,7 +34,7 @@ export function AdminShellSkeleton() {
         </div>
       </div>
       {/* İçerik iskeleti */}
-      <div className="flex min-h-svh flex-1 flex-col bg-background md:m-2 md:rounded-xl md:shadow">
+      <div className="flex min-h-svh flex-1 flex-col bg-background md:m-2 md:rounded-xl md:shadow-sm">
         <div className="flex h-14 items-center gap-3 border-b px-4">
           <Skeleton className="size-7 md:hidden" />
           <Skeleton className="h-4 w-40" />

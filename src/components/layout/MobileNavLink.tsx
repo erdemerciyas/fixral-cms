@@ -28,7 +28,7 @@ export default function MobileNavLink({
         rounded-xl
         text-base font-medium tracking-wide
         transition-all duration-200
-        focus-visible:outline-none
+        focus-visible:outline-hidden
         focus-visible:ring-2
         focus-visible:ring-ring
         focus-visible:ring-offset-2
@@ -42,7 +42,7 @@ export default function MobileNavLink({
     const content = (
         <>
             <span className={`flex items-center justify-center w-9 h-9 rounded-lg ${isActive ? 'bg-primary/15' : 'bg-muted'} transition-colors duration-200`}>
-                <Icon className={`w-5 h-5 flex-shrink-0 ${isActive ? 'text-primary' : 'text-muted-foreground'}`} aria-hidden="true" />
+                <Icon className={`w-5 h-5 shrink-0 ${isActive ? 'text-primary' : 'text-muted-foreground'}`} aria-hidden="true" />
             </span>
             <span className="flex-1">{label}</span>
             {isActive && (

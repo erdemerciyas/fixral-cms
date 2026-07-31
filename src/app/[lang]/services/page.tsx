@@ -53,7 +53,7 @@ export default async function ServicesPage() {
   const { services, hero } = await getData();
 
   return (
-    <div className="min-h-[100dvh] bg-background">
+    <div className="min-h-dvh bg-background">
       <PageHero
         title={hero.title}
         description={hero.description}

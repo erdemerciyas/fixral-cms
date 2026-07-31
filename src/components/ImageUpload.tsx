@@ -232,7 +232,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
         {hasImage && !uploading && (
           <div className="p-4 border-b border-zinc-400/15">
             <div className="flex items-center space-x-4">
-              <div className="relative w-24 h-24 bg-zinc-500/20 rounded-lg overflow-hidden flex-shrink-0">
+              <div className="relative w-24 h-24 bg-zinc-500/20 rounded-lg overflow-hidden shrink-0">
                 <Image
                   src={currentImageString!}
                   alt="Uploaded image"
@@ -257,7 +257,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
         {uploading && (
           <div className="p-4 border-b border-zinc-400/15">
             <div className="flex items-center space-x-3">
-              <ArrowUpTrayIcon className="w-5 h-5 text-blue-500 animate-pulse flex-shrink-0" />
+              <ArrowUpTrayIcon className="w-5 h-5 text-blue-500 animate-pulse shrink-0" />
               <div className="flex-1">
                 <div className="flex justify-between text-sm text-gray-600 mb-1">
                   <span>Yükleniyor...</span>
@@ -377,7 +377,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
                   value={urlInput}
                   onChange={(e) => setUrlInput(e.target.value)}
                   placeholder="https://example.com/image.jpg"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
               

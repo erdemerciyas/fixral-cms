@@ -147,7 +147,7 @@ export default function AdminContactPage() {
       )}
 
       {/* Contact Form */}
-      <div className="bg-card rounded-xl shadow-sm border border-border/60 p-6">
+      <div className="bg-card rounded-xl shadow-xs border border-border/60 p-6">
         <h2 className="text-lg font-bold text-foreground mb-6">Contact Information</h2>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -159,7 +159,7 @@ export default function AdminContactPage() {
               type="email"
               value={settings.email}
               onChange={(e) => handleInputChange('email', e.target.value)}
-              className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
+              className="w-full px-4 py-3 border border-border rounded-xl focus:outline-hidden focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
               placeholder="contact@example.com"
             />
           </div>
@@ -172,7 +172,7 @@ export default function AdminContactPage() {
               type="tel"
               value={settings.phone}
               onChange={(e) => handleInputChange('phone', e.target.value)}
-              className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
+              className="w-full px-4 py-3 border border-border rounded-xl focus:outline-hidden focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
               placeholder="+1 234 567 8900"
             />
           </div>
@@ -185,7 +185,7 @@ export default function AdminContactPage() {
               value={settings.address}
               onChange={(e) => handleInputChange('address', e.target.value)}
               rows={3}
-              className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all resize-none"
+              className="w-full px-4 py-3 border border-border rounded-xl focus:outline-hidden focus:ring-2 focus:ring-ring focus:border-transparent transition-all resize-none"
               placeholder="Your business address"
             />
           </div>
@@ -193,7 +193,7 @@ export default function AdminContactPage() {
       </div>
 
       {/* Social Links */}
-      <div className="bg-card rounded-xl shadow-sm border border-border/60 p-6">
+      <div className="bg-card rounded-xl shadow-xs border border-border/60 p-6">
         <h2 className="text-lg font-bold text-foreground mb-6">Social Media Links</h2>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -205,7 +205,7 @@ export default function AdminContactPage() {
               type="url"
               value={settings.socialLinks.twitter || ''}
               onChange={(e) => handleSocialLinkChange('twitter', e.target.value)}
-              className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
+              className="w-full px-4 py-3 border border-border rounded-xl focus:outline-hidden focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
               placeholder="https://twitter.com/yourhandle"
             />
           </div>
@@ -218,7 +218,7 @@ export default function AdminContactPage() {
               type="url"
               value={settings.socialLinks.facebook || ''}
               onChange={(e) => handleSocialLinkChange('facebook', e.target.value)}
-              className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
+              className="w-full px-4 py-3 border border-border rounded-xl focus:outline-hidden focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
               placeholder="https://facebook.com/yourpage"
             />
           </div>
@@ -231,7 +231,7 @@ export default function AdminContactPage() {
               type="url"
               value={settings.socialLinks.linkedin || ''}
               onChange={(e) => handleSocialLinkChange('linkedin', e.target.value)}
-              className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
+              className="w-full px-4 py-3 border border-border rounded-xl focus:outline-hidden focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
               placeholder="https://linkedin.com/in/yourprofile"
             />
           </div>
@@ -244,7 +244,7 @@ export default function AdminContactPage() {
               type="url"
               value={settings.socialLinks.instagram || ''}
               onChange={(e) => handleSocialLinkChange('instagram', e.target.value)}
-              className="w-full px-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
+              className="w-full px-4 py-3 border border-border rounded-xl focus:outline-hidden focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
               placeholder="https://instagram.com/yourhandle"
             />
           </div>

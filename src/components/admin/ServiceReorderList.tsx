@@ -73,7 +73,7 @@ function DraggableServiceItem({
             {index + 1}
           </span>
 
-          <div className="w-12 h-12 bg-muted rounded-xl overflow-hidden flex-shrink-0 border border-border flex items-center justify-center">
+          <div className="w-12 h-12 bg-muted rounded-xl overflow-hidden shrink-0 border border-border flex items-center justify-center">
             {service.image ? (
               <img src={service.image} alt="" className="w-full h-full object-cover" />
             ) : (

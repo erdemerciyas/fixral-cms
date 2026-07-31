@@ -38,7 +38,7 @@ export default function TagInput({ label, values, onChange, placeholder }: TagIn
           </span>
         ))}
         <input
-          className="flex-1 min-w-[120px] outline-none text-sm py-1"
+          className="flex-1 min-w-[120px] outline-hidden text-sm py-1"
           value={input}
           placeholder={placeholder}
           onChange={(e) => setInput(e.target.value)}

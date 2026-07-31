@@ -165,7 +165,7 @@ export default function LanguagesPage() {
       {showForm && (
         <form
           onSubmit={handleSubmit}
-          className="rounded-xl border border-border bg-card p-6 shadow-sm space-y-4"
+          className="rounded-xl border border-border bg-card p-6 shadow-xs space-y-4"
         >
           <h2 className="font-semibold text-foreground">
             {editId ? 'Dili Düzenle' : 'Yeni Dil Ekle'}
@@ -180,7 +180,7 @@ export default function LanguagesPage() {
                 value={form.code}
                 onChange={(e) => setForm({ ...form, code: e.target.value })}
                 placeholder="tr, es, en..."
-                className="block w-full rounded-lg border border-border px-3 py-2 text-sm focus:border-success focus:outline-none focus:ring-1 focus:ring-success disabled:bg-muted/50 disabled:text-muted-foreground"
+                className="block w-full rounded-lg border border-border px-3 py-2 text-sm focus:border-success focus:outline-hidden focus:ring-1 focus:ring-success disabled:bg-muted/50 disabled:text-muted-foreground"
               />
             </div>
             <div>
@@ -189,7 +189,7 @@ export default function LanguagesPage() {
                 value={form.flag}
                 onChange={(e) => setForm({ ...form, flag: e.target.value })}
                 placeholder="🇹🇷"
-                className="block w-full rounded-lg border border-border px-3 py-2 text-sm focus:border-success focus:outline-none focus:ring-1 focus:ring-success"
+                className="block w-full rounded-lg border border-border px-3 py-2 text-sm focus:border-success focus:outline-hidden focus:ring-1 focus:ring-success"
               />
             </div>
             <div>
@@ -199,7 +199,7 @@ export default function LanguagesPage() {
                 value={form.label}
                 onChange={(e) => setForm({ ...form, label: e.target.value })}
                 placeholder="Türkçe"
-                className="block w-full rounded-lg border border-border px-3 py-2 text-sm focus:border-success focus:outline-none focus:ring-1 focus:ring-success"
+                className="block w-full rounded-lg border border-border px-3 py-2 text-sm focus:border-success focus:outline-hidden focus:ring-1 focus:ring-success"
               />
             </div>
             <div>
@@ -209,7 +209,7 @@ export default function LanguagesPage() {
                 value={form.nativeLabel}
                 onChange={(e) => setForm({ ...form, nativeLabel: e.target.value })}
                 placeholder="Türkçe"
-                className="block w-full rounded-lg border border-border px-3 py-2 text-sm focus:border-success focus:outline-none focus:ring-1 focus:ring-success"
+                className="block w-full rounded-lg border border-border px-3 py-2 text-sm focus:border-success focus:outline-hidden focus:ring-1 focus:ring-success"
               />
             </div>
             <div>
@@ -217,7 +217,7 @@ export default function LanguagesPage() {
               <select
                 value={form.direction}
                 onChange={(e) => setForm({ ...form, direction: e.target.value as 'ltr' | 'rtl' })}
-                className="block w-full rounded-lg border border-border px-3 py-2 text-sm focus:border-success focus:outline-none focus:ring-1 focus:ring-success"
+                className="block w-full rounded-lg border border-border px-3 py-2 text-sm focus:border-success focus:outline-hidden focus:ring-1 focus:ring-success"
               >
                 <option value="ltr">Soldan sağa (LTR)</option>
                 <option value="rtl">Sağdan sola (RTL)</option>
@@ -266,7 +266,7 @@ export default function LanguagesPage() {
       )}
 
       {/* Language list */}
-      <div className="rounded-xl border border-border bg-card shadow-sm overflow-hidden">
+      <div className="rounded-xl border border-border bg-card shadow-xs overflow-hidden">
         {loading ? (
           <div className="space-y-6">
             <div className="flex items-center justify-between">

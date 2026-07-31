@@ -160,7 +160,7 @@ export default function NewsCarousel({
                 {/* Printables model-kart deseni: flat kart + hover lift */}
                 <article className="group bg-card border border-border rounded-sm overflow-hidden h-full flex flex-col transition-[transform,box-shadow,border-color] duration-200 ease-out hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-lg motion-reduce:transition-none motion-reduce:hover:translate-y-0">
                   {/* Image Container — 16/9 */}
-                  <div className="relative w-full aspect-[16/9] overflow-hidden bg-muted">
+                  <div className="relative w-full aspect-video overflow-hidden bg-muted">
                     <Image
                       src={item.featuredImage?.url || '/images/placeholder.jpg'}
                       alt={item.featuredImage?.altText || translation.title || ''}
@@ -173,14 +173,14 @@ export default function NewsCarousel({
                   </div>
 
                   {/* Content Container */}
-                  <div className="p-4 flex flex-col flex-grow">
+                  <div className="p-4 flex flex-col grow">
                     {/* Title */}
                     <h3 className="text-base font-medium leading-snug text-foreground line-clamp-2 mb-2">
                       {translation.title}
                     </h3>
 
                     {/* Excerpt */}
-                    <p className="text-sm text-muted-foreground line-clamp-2 mb-4 flex-grow">
+                    <p className="text-sm text-muted-foreground line-clamp-2 mb-4 grow">
                       {translation.excerpt}
                     </p>
 

@@ -49,13 +49,13 @@ export default function FloatingCta() {
   if (!isMounted) return null;
 
   return (
-    <div className="hidden md:block fixed right-0 top-[42%] -translate-y-1/2 z-[60]" style={{ right: 'max(0px, env(safe-area-inset-right))' }}>
+    <div className="hidden md:block fixed right-0 top-[42%] -translate-y-1/2 z-60" style={{ right: 'max(0px, env(safe-area-inset-right))' }}>
       <button
         onClick={handleClick}
         aria-label="Proje başvurusu formunu aç"
         aria-haspopup="dialog"
         aria-expanded={isOpen}
-        className={`group relative isolate overflow-hidden flex items-center h-16 ${isOpen ? 'w-56' : 'w-14'} hover:w-56 motion-safe:transition-all motion-safe:duration-300 motion-safe:ease-out ${isOpen ? 'translate-x-0' : 'translate-x-3'} hover:translate-x-0 rounded-l-lg bg-primary text-primary-foreground shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background`}
+        className={`group relative isolate overflow-hidden flex items-center h-16 ${isOpen ? 'w-56' : 'w-14'} hover:w-56 motion-safe:transition-all motion-safe:duration-300 motion-safe:ease-out ${isOpen ? 'translate-x-0' : 'translate-x-3'} hover:translate-x-0 rounded-l-lg bg-primary text-primary-foreground shadow-lg focus:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background`}
       >
         {/* İnce iç hat */}
         <span aria-hidden className="pointer-events-none absolute inset-0">
@@ -65,7 +65,7 @@ export default function FloatingCta() {
         {/* Kulak gövdesi – dar başlangıç, hover’da yazı belirir */}
         <div className="relative z-10 flex items-center gap-2 px-3">
           <PaperAirplaneIcon className="w-5 h-5 motion-safe:transition-transform motion-safe:duration-300 group-hover:translate-x-0.5" />
-          <span className={`font-semibold whitespace-nowrap overflow-hidden ${isOpen ? 'max-w-[11rem]' : 'max-w-0'} group-hover:max-w-[11rem] motion-safe:transition-all`}>Proje Başvurusu</span>
+          <span className={`font-semibold whitespace-nowrap overflow-hidden ${isOpen ? 'max-w-44' : 'max-w-0'} group-hover:max-w-44 motion-safe:transition-all`}>Proje Başvurusu</span>
         </div>
       </button>
     </div>

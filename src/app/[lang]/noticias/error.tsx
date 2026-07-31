@@ -2,7 +2,7 @@
 
 export default function NoticiasError({ error, reset }: { error: Error; reset: () => void }) {
     return (
-        <div className="min-h-[100dvh] bg-background flex items-center justify-center p-8">
+        <div className="min-h-dvh bg-background flex items-center justify-center p-8">
             <div className="text-center max-w-md">
                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-destructive/15 text-destructive mb-6">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8">

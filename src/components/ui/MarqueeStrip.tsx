@@ -46,7 +46,7 @@ export const MarqueeStrip = forwardRef<HTMLDivElement, MarqueeStripProps>(
         className={cn(
           'relative overflow-hidden',
           // Gradient mask: sol ve sağ kenarlarda fade-out
-          '[mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]',
+          'mask-[linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]',
           '[-webkit-mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]',
           pauseOnHover && 'group',
           className,
@@ -57,7 +57,7 @@ export const MarqueeStrip = forwardRef<HTMLDivElement, MarqueeStripProps>(
           className={cn(
             'flex min-w-max animate-[marquee-continuous_linear_infinite]',
             'motion-reduce:animate-none',
-            pauseOnHover && 'group-hover:[animation-play-state:paused]',
+            pauseOnHover && 'group-hover:paused',
           )}
           style={animationStyle}
         >

@@ -55,7 +55,7 @@ export function FormActions({ children, className, sticky }: FormActionsProps) {
       className={cn(
         'flex flex-col-reverse gap-2 sm:flex-row sm:items-center sm:justify-end',
         sticky &&
-          'sticky bottom-0 z-30 -mx-4 border-t bg-background/80 px-4 py-3 backdrop-blur supports-[backdrop-filter]:bg-background/60 md:-mx-6 md:px-6',
+          'sticky bottom-0 z-30 -mx-4 border-t bg-background/80 px-4 py-3 backdrop-blur-sm supports-backdrop-filter:bg-background/60 md:-mx-6 md:px-6',
         className
       )}
     >

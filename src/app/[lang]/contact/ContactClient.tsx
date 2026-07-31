@@ -141,7 +141,7 @@ function ContactPageContent() {
   ];
 
   return (
-    <div className="min-h-[100dvh] bg-background">
+    <div className="min-h-dvh bg-background">
       <PageHero
         title={hero.title || 'İletişim'}
         description={hero.description || 'Bizimle iletişime geçin ve projelerinizi konuşalım'}
@@ -181,7 +181,7 @@ function ContactPageContent() {
                         onChange={handleInputChange}
                         placeholder="Örn: Ali Veli"
                         required
-                        className="h-12 rounded-xl border border-input bg-background px-4 text-sm text-foreground placeholder:text-muted-foreground outline-none transition-all duration-150 focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring"
+                        className="h-12 rounded-xl border border-input bg-background px-4 text-sm text-foreground placeholder:text-muted-foreground outline-hidden transition-all duration-150 focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring"
                         style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
                       />
                     </div>
@@ -197,7 +197,7 @@ function ContactPageContent() {
                         onChange={handleInputChange}
                         placeholder="iletisim@example.com"
                         required
-                        className="h-12 rounded-xl border border-input bg-background px-4 text-sm text-foreground placeholder:text-muted-foreground outline-none transition-all duration-150 focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring"
+                        className="h-12 rounded-xl border border-input bg-background px-4 text-sm text-foreground placeholder:text-muted-foreground outline-hidden transition-all duration-150 focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring"
                         style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
                       />
                     </div>
@@ -215,7 +215,7 @@ function ContactPageContent() {
                       onChange={handleInputChange}
                       placeholder="Proje Teklifi"
                       required
-                      className="h-12 rounded-xl border border-input bg-background px-4 text-sm text-foreground placeholder:text-muted-foreground outline-none transition-all duration-150 focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring"
+                      className="h-12 rounded-xl border border-input bg-background px-4 text-sm text-foreground placeholder:text-muted-foreground outline-hidden transition-all duration-150 focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring"
                       style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
                     />
                   </div>
@@ -232,7 +232,7 @@ function ContactPageContent() {
                       rows={5}
                       placeholder="Merhaba, ..."
                       required
-                      className="rounded-xl border border-input bg-background px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground outline-none resize-none transition-all duration-150 focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring"
+                      className="rounded-xl border border-input bg-background px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground outline-hidden resize-none transition-all duration-150 focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring"
                       style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
                     />
                   </div>
@@ -268,7 +268,7 @@ function ContactPageContent() {
                       transition={{ duration: 0.5, ease }}
                       className="flex items-start gap-3 rounded-xl border border-success/30 bg-success/10 p-4 text-sm text-success"
                     >
-                      <CheckCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-success" />
+                      <CheckCircle className="mt-0.5 h-5 w-5 shrink-0 text-success" />
                       <span>{submitMessage}</span>
                     </m.div>
                   )}
@@ -279,7 +279,7 @@ function ContactPageContent() {
                       transition={{ duration: 0.5, ease }}
                       className="flex items-start gap-3 rounded-xl border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive"
                     >
-                      <WarningCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-destructive" />
+                      <WarningCircle className="mt-0.5 h-5 w-5 shrink-0 text-destructive" />
                       <span>{submitMessage}</span>
                     </m.div>
                   )}
@@ -482,7 +482,7 @@ function ContactPageContent() {
 export default function ContactClient() {
   return (
     <Suspense fallback={
-      <div className="min-h-[100dvh] bg-background">
+      <div className="min-h-dvh bg-background">
         <div className="bg-primary pt-32 pb-20 md:pt-40 md:pb-28">
           <div className="container-content text-center">
             <span className="mb-4 block h-16 w-16 mx-auto animate-spin rounded-full border-4 border-primary-foreground/25 border-t-primary-foreground" />

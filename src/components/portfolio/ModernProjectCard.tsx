@@ -56,7 +56,7 @@ export default function ModernProjectCard({
   const pathname = usePathname() || '';
   const currentLang = ['tr', 'es'].includes(pathname.split('/')[1]) ? pathname.split('/')[1] : 'tr';
 
-  const aspectClass = span === 'lg' ? 'aspect-[16/9]' : span === 'sm' ? 'aspect-[4/5]' : 'aspect-[4/3]';
+  const aspectClass = span === 'lg' ? 'aspect-video' : span === 'sm' ? 'aspect-4/5' : 'aspect-4/3';
 
   return (
     <m.div

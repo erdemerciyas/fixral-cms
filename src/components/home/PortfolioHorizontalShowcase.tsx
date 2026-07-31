@@ -48,7 +48,7 @@ const CARD_SHELL = cn(
   'transition-[transform,box-shadow,border-color] duration-200 ease-out',
   'hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-lg',
   'motion-reduce:transition-none motion-reduce:hover:translate-y-0',
-  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+  'focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring',
   'focus-visible:ring-offset-2 focus-visible:ring-offset-background',
 )
 
@@ -103,7 +103,7 @@ export default function PortfolioHorizontalShowcase() {
             action={
               <Link
                 href={`/${lang}/contact`}
-                className="inline-flex items-center gap-2 rounded-lg px-6 py-3 text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                className="inline-flex items-center gap-2 rounded-lg px-6 py-3 text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors duration-200 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               >
                 Proje talebi bırakın
               </Link>
@@ -153,7 +153,7 @@ export default function PortfolioHorizontalShowcase() {
               className={CARD_SHELL}
             >
               {/* Kapak görseli */}
-              <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted">
+              <div className="relative aspect-4/3 w-full overflow-hidden bg-muted">
                 {project.coverImage ? (
                   <Image
                     src={project.coverImage}
@@ -203,7 +203,7 @@ export default function PortfolioHorizontalShowcase() {
               'border border-border bg-card text-foreground',
               'hover:bg-accent hover:text-accent-foreground hover:border-primary/40',
               'transition-[background-color,color,border-color] duration-200 motion-reduce:transition-none',
-              'focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+              'focus:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
             )}
           >
             <span>Tüm Projeler</span>

@@ -204,7 +204,7 @@ const Header: React.FC = () => {
     <>
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[9999] focus:bg-background focus:text-primary focus:px-4 focus:py-2 focus:rounded-xl focus:shadow-lg focus:border focus:border-border"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-9999 focus:bg-background focus:text-primary focus:px-4 focus:py-2 focus:rounded-xl focus:shadow-lg focus:border focus:border-border"
       >
         {tHeader('skipToContent')}
       </a>
@@ -219,11 +219,11 @@ const Header: React.FC = () => {
             {/* Logo — sol blok: token tabanlı kutu + foreground metin */}
             <Link
               href={`/${currentLang}`}
-              className="flex items-center gap-2.5 group shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 rounded-xl"
+              className="flex items-center gap-2.5 group shrink-0 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 rounded-xl"
               aria-label={tHeader('goToHome')}
             >
               {siteSettings?.logo?.url && (
-                <div className="relative w-9 h-9 rounded-xl overflow-hidden bg-card border border-border shadow-sm transition-transform duration-150 group-hover:scale-[1.03]">
+                <div className="relative w-9 h-9 rounded-xl overflow-hidden bg-card border border-border shadow-xs transition-transform duration-150 group-hover:scale-[1.03]">
                   <Image
                     src={siteSettings.logo.url}
                     alt={siteSettings.logo.alt}
@@ -244,7 +244,7 @@ const Header: React.FC = () => {
             {/* Arama hapı — Printables paradigması: turuncu dolgulu, tam yuvarlak pill, hover/focus'ta genişler */}
             <button
               onClick={() => setIsSearchOpen(true)}
-              className="hidden lg:flex items-center gap-2 h-9 w-48 hover:w-64 focus-visible:w-64 px-4 rounded-full bg-primary text-sm text-white hover:bg-primary/90 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              className="hidden lg:flex items-center gap-2 h-9 w-48 hover:w-64 focus-visible:w-64 px-4 rounded-full bg-primary text-sm text-white hover:bg-primary/90 transition-all duration-200 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               aria-label={`${tHeader('search')} (Ctrl+K)`}
             >
               <MagnifyingGlass size={15} className="shrink-0 text-white" aria-hidden="true" />
@@ -273,7 +273,7 @@ const Header: React.FC = () => {
               {/* Mobile search trigger */}
               <button
                 onClick={() => setIsSearchOpen(true)}
-                className="lg:hidden p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-accent transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0"
+                className="lg:hidden p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-accent transition-colors duration-150 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0"
                 aria-label={tHeader('search')}
               >
                 <MagnifyingGlass size={18} />
@@ -283,7 +283,7 @@ const Header: React.FC = () => {
               <div className="hidden lg:block">
                 <MagneticButton
                   onClick={openProjectModal}
-                  className="rounded-lg bg-primary text-primary-foreground text-sm px-4 py-2 font-semibold hover:bg-[hsl(var(--primary)/0.85)] transition-colors duration-200 shadow-sm active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                  className="rounded-lg bg-primary text-primary-foreground text-sm px-4 py-2 font-semibold hover:bg-[hsl(var(--primary)/0.85)] transition-colors duration-200 shadow-xs active:scale-[0.98] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 >
                   <PaperPlaneTilt size={14} className="mr-1.5 inline-block" aria-hidden="true" />
                   Teklif Al
@@ -295,7 +295,7 @@ const Header: React.FC = () => {
                 onClick={toggleMobileMenu}
                 aria-label={tHeader('openMenu')}
                 aria-expanded={isMobileMenuOpen}
-                className="lg:hidden p-2 rounded-xl text-foreground hover:bg-accent transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0"
+                className="lg:hidden p-2 rounded-xl text-foreground hover:bg-accent transition-colors duration-150 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0"
               >
                 <AnimatePresence mode="wait">
                   {isMobileMenuOpen ? (

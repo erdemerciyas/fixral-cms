@@ -46,7 +46,7 @@ function DetailSkeleton() {
   return (
     <div className="space-y-6 animate-pulse">
       <div className="h-8 w-2/3 rounded-lg bg-surface-secondary" />
-      <div className="aspect-[16/9] rounded-2xl bg-surface-secondary" />
+      <div className="aspect-video rounded-2xl bg-surface-secondary" />
       <div className="space-y-3">
         <div className="h-4 rounded bg-surface-secondary w-full" />
         <div className="h-4 rounded bg-surface-secondary w-5/6" />
@@ -77,7 +77,7 @@ function ServiceDetail({ service, index, lang }: { service: Service; index: numb
       </h2>
 
       {/* Image */}
-      <div className="relative aspect-[16/9] bg-surface-tertiary rounded-sm overflow-hidden border border-border">
+      <div className="relative aspect-video bg-surface-tertiary rounded-sm overflow-hidden border border-border">
         {service.image ? (
           <Image
             src={service.image}
@@ -126,7 +126,7 @@ function ServiceDetail({ service, index, lang }: { service: Service; index: numb
               }}
               className="flex items-start gap-3 text-muted-foreground text-[15px]"
             >
-              <CheckCircle className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+              <CheckCircle className="w-5 h-5 text-primary mt-0.5 shrink-0" />
               <span>{feature}</span>
             </m.li>
           ))}
@@ -311,7 +311,7 @@ export default function ServicesPageClient() {
                 {services.map((service, index) => {
                   const isActive = activeIndex === index;
                   return (
-                    <li key={service._id} className="flex-shrink-0 lg:flex-shrink">
+                    <li key={service._id} className="shrink-0 lg:shrink">
                       <button
                         onClick={() => handleNavClick(index)}
                         className={`w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 whitespace-nowrap lg:whitespace-normal ${
@@ -350,9 +350,9 @@ export default function ServicesPageClient() {
       {/* CTA Section */}
       <section className="relative py-24 md:py-32 bg-primary overflow-hidden">
         <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-          <div className="absolute top-12 left-12 w-24 h-24 rounded-full border border-foreground/[0.06]" />
-          <div className="absolute top-40 right-16 w-16 h-16 border border-foreground/[0.06] rotate-45" />
-          <div className="absolute bottom-16 left-1/4 w-32 h-32 rounded-full border border-foreground/[0.04]" />
+          <div className="absolute top-12 left-12 w-24 h-24 rounded-full border border-foreground/6" />
+          <div className="absolute top-40 right-16 w-16 h-16 border border-foreground/6 rotate-45" />
+          <div className="absolute bottom-16 left-1/4 w-32 h-32 rounded-full border border-foreground/4" />
         </div>
 
         <div className="container-content relative z-10 text-center">

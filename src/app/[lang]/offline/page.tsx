@@ -5,7 +5,7 @@ import React from 'react';
 
 export default function OfflinePage() {
   return (
-    <div className="min-h-[100dvh] bg-background flex items-center justify-center p-4">
+    <div className="min-h-dvh bg-background flex items-center justify-center p-4">
       <div className="max-w-md w-full bg-card rounded-2xl p-8 text-center border border-border">
         {/* Offline Icon */}
         <div className="mb-6">
@@ -48,14 +48,14 @@ export default function OfflinePage() {
         <div className="space-y-3">
           <button
             onClick={() => window.location.reload()}
-            className="w-full bg-primary hover:bg-[hsl(var(--primary)/0.85)] text-primary-foreground font-semibold py-3 px-6 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background"
+            className="w-full bg-primary hover:bg-[hsl(var(--primary)/0.85)] text-primary-foreground font-semibold py-3 px-6 rounded-lg transition-colors duration-200 focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background"
           >
             Try Again
           </button>
 
           <button
             onClick={() => window.history.back()}
-            className="w-full bg-secondary hover:bg-accent text-secondary-foreground hover:text-accent-foreground font-semibold py-3 px-6 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background"
+            className="w-full bg-secondary hover:bg-accent text-secondary-foreground hover:text-accent-foreground font-semibold py-3 px-6 rounded-lg transition-colors duration-200 focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background"
           >
             Go Back
           </button>
@@ -65,7 +65,7 @@ export default function OfflinePage() {
         <div className="mt-8 p-4 bg-accent rounded-lg border border-primary/30">
           <div className="flex items-start space-x-3">
             <svg
-              className="w-5 h-5 text-primary mt-0.5 flex-shrink-0"
+              className="w-5 h-5 text-primary mt-0.5 shrink-0"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"

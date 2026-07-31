@@ -10,7 +10,7 @@ import { useConfirm } from '@/hooks/use-confirm';
 function Modal({ isOpen, onClose, title, children }: { isOpen: boolean; onClose: () => void; title: string; children: React.ReactNode }) {
     if (!isOpen) return null;
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
             <div className="bg-card rounded-2xl shadow-xl w-full max-w-md overflow-hidden border border-border">
                 <div className="px-6 py-4 border-b border-border flex justify-between items-center">
                     <h3 className="font-bold text-lg text-foreground">{title}</h3>
@@ -226,7 +226,7 @@ export default function AccountPage() {
 
     if (status === 'loading') {
         return (
-            <div className="min-h-[100dvh] pt-32 pb-20 flex justify-center items-center">
+            <div className="min-h-dvh pt-32 pb-20 flex justify-center items-center">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
             </div>
         );
@@ -255,7 +255,7 @@ export default function AccountPage() {
                         {addresses.length === 0 ? (
                             <div className="grid md:grid-cols-2 gap-6">
                                 <div className="md:col-span-2 text-center py-12 bg-surface-secondary rounded-xl border border-dashed border-border">
-                                    <div className="mx-auto w-16 h-16 bg-card rounded-full flex items-center justify-center mb-4 shadow-sm text-muted-foreground">
+                                    <div className="mx-auto w-16 h-16 bg-card rounded-full flex items-center justify-center mb-4 shadow-xs text-muted-foreground">
                                         <MapPinIcon className="w-8 h-8" />
                                     </div>
                                     <h3 className="text-lg font-bold text-foreground mb-2">Kayıtlı adresiniz yok</h3>
@@ -265,7 +265,7 @@ export default function AccountPage() {
                         ) : (
                             <div className="grid md:grid-cols-2 gap-6">
                                 {addresses.map((addr) => (
-                                    <div key={addr._id} className={`bg-card p-6 rounded-xl border ${addr.isPrimary ? 'border-primary ring-1 ring-ring' : 'border-border'} shadow-sm relative group`}>
+                                    <div key={addr._id} className={`bg-card p-6 rounded-xl border ${addr.isPrimary ? 'border-primary ring-1 ring-ring' : 'border-border'} shadow-xs relative group`}>
                                         {addr.isPrimary && (
                                             <span className="absolute top-4 right-4 bg-accent text-accent-foreground text-xs font-bold px-2 py-1 rounded">Varsayılan</span>
                                         )}
@@ -312,7 +312,7 @@ export default function AccountPage() {
                             </div>
                         ) : messages.length === 0 ? (
                             <div className="text-center py-12 bg-surface-secondary rounded-xl border border-dashed border-border">
-                                <div className="mx-auto w-16 h-16 bg-card rounded-full flex items-center justify-center mb-4 shadow-sm text-muted-foreground">
+                                <div className="mx-auto w-16 h-16 bg-card rounded-full flex items-center justify-center mb-4 shadow-xs text-muted-foreground">
                                     <EnvelopeIcon className="w-8 h-8" />
                                 </div>
                                 <h3 className="text-lg font-bold text-foreground mb-2">Henüz mesajınız yok</h3>
@@ -329,7 +329,7 @@ export default function AccountPage() {
                                     </div>
                                 )}
                                 {messages.map((msg) => (
-                                    <div key={msg._id} className={`p-6 rounded-xl border relative group transition-all ${selectedMessages.has(msg._id) ? 'bg-accent border-border shadow-sm' : msg.isGlobal || msg.type === 'announcement' ? 'bg-accent border-border' : 'bg-card border-border'}`}>
+                                    <div key={msg._id} className={`p-6 rounded-xl border relative group transition-all ${selectedMessages.has(msg._id) ? 'bg-accent border-border shadow-xs' : msg.isGlobal || msg.type === 'announcement' ? 'bg-accent border-border' : 'bg-card border-border'}`}>
                                         <div className="absolute top-6 left-4 z-10">
                                             <input
                                                 type="checkbox"
@@ -339,7 +339,7 @@ export default function AccountPage() {
                                             />
                                         </div>
                                         <div className="flex items-start gap-4 pl-8">
-                                            <div className={`p-3 rounded-lg flex-shrink-0 ${msg.isGlobal || msg.type === 'announcement' ? 'bg-accent text-accent-foreground' : 'bg-muted text-muted-foreground'}`}>
+                                            <div className={`p-3 rounded-lg shrink-0 ${msg.isGlobal || msg.type === 'announcement' ? 'bg-accent text-accent-foreground' : 'bg-muted text-muted-foreground'}`}>
                                                 {msg.isGlobal || msg.type === 'announcement' ? <MegaphoneIcon className="w-6 h-6" /> : <ChatBubbleLeftIcon className="w-6 h-6" />}
                                             </div>
                                             <div className="flex-1">
@@ -419,11 +419,11 @@ export default function AccountPage() {
                                 <div className="space-y-4">
                                     <div>
                                         <label className="block text-sm font-medium text-foreground mb-1">Mevcut Şifre</label>
-                                        <input type="password" className="w-full px-4 py-2 rounded-lg border border-input bg-background text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary outline-none" />
+                                        <input type="password" className="w-full px-4 py-2 rounded-lg border border-input bg-background text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary outline-hidden" />
                                     </div>
                                     <div>
                                         <label className="block text-sm font-medium text-foreground mb-1">Yeni Şifre</label>
-                                        <input type="password" className="w-full px-4 py-2 rounded-lg border border-input bg-background text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary outline-none" />
+                                        <input type="password" className="w-full px-4 py-2 rounded-lg border border-input bg-background text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary outline-hidden" />
                                     </div>
                                     <button className="px-6 py-2 bg-primary text-primary-foreground rounded-lg font-bold hover:bg-primary transition-colors">Şifreyi Güncelle</button>
                                 </div>
@@ -438,11 +438,11 @@ export default function AccountPage() {
     };
 
     return (
-        <main className="min-h-[100dvh] pt-28 pb-20 bg-background">
+        <main className="min-h-dvh pt-28 pb-20 bg-background">
             <div className="bg-foreground pb-20 pt-10">
                 <div className="container-main">
                     <div className="flex flex-col md:flex-row items-center gap-6">
-                        <div className="w-20 h-20 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-sm border border-white/20 text-white font-bold text-3xl shadow-xl">
+                        <div className="w-20 h-20 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-xs border border-white/20 text-white font-bold text-3xl shadow-xl">
                             {session?.user?.name?.[0]?.toUpperCase() || 'U'}
                         </div>
                         <div className="text-center md:text-left">
@@ -450,7 +450,7 @@ export default function AccountPage() {
                             <p className="text-white/60">Hesap durumunuzu yönetin.</p>
                         </div>
                         <div className="md:ml-auto flex gap-6 text-center">
-                            <div className="bg-white/5 rounded-xl p-4 px-6 border border-white/10 backdrop-blur-sm">
+                            <div className="bg-white/5 rounded-xl p-4 px-6 border border-white/10 backdrop-blur-xs">
                                 <div className="text-2xl font-bold text-white mb-1">{unreadCount}</div>
                                 <div className="text-xs text-white/60 font-medium uppercase tracking-wider">Mesaj</div>
                             </div>
@@ -462,7 +462,7 @@ export default function AccountPage() {
             <div className="container-main -mt-10">
                 <div className="grid lg:grid-cols-12 gap-8 items-start">
                     <div className="lg:col-span-3">
-                        <div className="bg-card rounded-2xl shadow-sm border border-border sticky top-24 overflow-hidden">
+                        <div className="bg-card rounded-2xl shadow-xs border border-border sticky top-24 overflow-hidden">
                             <nav className="p-2 space-y-1">
                                 <button
                                     onClick={() => setActiveTab('messages')}
@@ -505,7 +505,7 @@ export default function AccountPage() {
                     </div>
 
                     <div className="lg:col-span-9">
-                        <div className="bg-card p-8 rounded-2xl shadow-sm border border-border min-h-[500px]">
+                        <div className="bg-card p-8 rounded-2xl shadow-xs border border-border min-h-[500px]">
                             {renderContent()}
                         </div>
                     </div>
@@ -516,16 +516,16 @@ export default function AccountPage() {
                 <form onSubmit={handleSaveAddress} className="space-y-4">
                     <div>
                         <label className="block text-sm font-medium text-foreground mb-1">Adres Başlığı (Ev, İş vb.)</label>
-                        <input type="text" required className="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary outline-none" value={addressForm.title} onChange={e => setAddressForm({ ...addressForm, title: e.target.value })} />
+                        <input type="text" required className="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary outline-hidden" value={addressForm.title} onChange={e => setAddressForm({ ...addressForm, title: e.target.value })} />
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                         <div>
                             <label className="block text-sm font-medium text-foreground mb-1">Ad Soyad</label>
-                            <input type="text" required className="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary outline-none" value={addressForm.fullName} onChange={e => setAddressForm({ ...addressForm, fullName: e.target.value })} />
+                            <input type="text" required className="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary outline-hidden" value={addressForm.fullName} onChange={e => setAddressForm({ ...addressForm, fullName: e.target.value })} />
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-foreground mb-1">Telefon</label>
-                            <input type="text" required className="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary outline-none" value={addressForm.phone} onChange={e => setAddressForm({ ...addressForm, phone: e.target.value })} />
+                            <input type="text" required className="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary outline-hidden" value={addressForm.phone} onChange={e => setAddressForm({ ...addressForm, phone: e.target.value })} />
                         </div>
                     </div>
                     <div>
@@ -535,21 +535,21 @@ export default function AccountPage() {
                     <div className="grid grid-cols-2 gap-4">
                         <div>
                             <label className="block text-sm font-medium text-foreground mb-1">Şehir (İl)</label>
-                            <input type="text" required className="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary outline-none" value={addressForm.city} onChange={e => setAddressForm({ ...addressForm, city: e.target.value })} />
+                            <input type="text" required className="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary outline-hidden" value={addressForm.city} onChange={e => setAddressForm({ ...addressForm, city: e.target.value })} />
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-foreground mb-1">İlçe</label>
-                            <input type="text" required className="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary outline-none" value={addressForm.district} onChange={e => setAddressForm({ ...addressForm, district: e.target.value })} />
+                            <input type="text" required className="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary outline-hidden" value={addressForm.district} onChange={e => setAddressForm({ ...addressForm, district: e.target.value })} />
                         </div>
                     </div>
                     <div>
                         <label className="block text-sm font-medium text-foreground mb-1">Açık Adres</label>
-                        <textarea rows={3} required className="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary outline-none resize-none" value={addressForm.address} onChange={e => setAddressForm({ ...addressForm, address: e.target.value })} />
+                        <textarea rows={3} required className="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary outline-hidden resize-none" value={addressForm.address} onChange={e => setAddressForm({ ...addressForm, address: e.target.value })} />
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                         <div>
                             <label className="block text-sm font-medium text-foreground mb-1">Posta Kodu (Opsiyonel)</label>
-                            <input type="text" className="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary outline-none" value={addressForm.zipCode} onChange={e => setAddressForm({ ...addressForm, zipCode: e.target.value })} />
+                            <input type="text" className="w-full px-3 py-2 border border-input bg-background text-foreground rounded-lg focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-primary outline-hidden" value={addressForm.zipCode} onChange={e => setAddressForm({ ...addressForm, zipCode: e.target.value })} />
                         </div>
                         <div className="flex items-center pt-6">
                             <label className="flex items-center gap-2 cursor-pointer text-sm text-foreground font-medium">

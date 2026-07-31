@@ -43,7 +43,7 @@ const Select: React.FC<SelectProps> = ({
   /* Printables input dili: 4px radius, 1px hairline border, dinlenimde gölge yok. */
   const baseClasses = `
     relative w-full rounded-sm border appearance-none cursor-pointer
-    focus:outline-none focus:ring-2
+    focus:outline-hidden focus:ring-2
     transition-[color,background-color,border-color,box-shadow] duration-200 ease-out
     disabled:cursor-not-allowed disabled:opacity-50
     pr-10

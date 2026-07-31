@@ -173,7 +173,7 @@ export default function NewsDetailClient({ lang, locale = 'tr', news, translatio
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.2, ease }}
-                className="relative w-full aspect-video mb-10 rounded-xl overflow-hidden shadow-sm border border-border"
+                className="relative w-full aspect-video mb-10 rounded-xl overflow-hidden shadow-xs border border-border"
               >
                 <Image
                   src={news.featuredImage!.url}
@@ -195,9 +195,9 @@ export default function NewsDetailClient({ lang, locale = 'tr', news, translatio
               className="prose prose-lg prose-zinc max-w-none
                 prose-headings:font-semibold prose-headings:tracking-tight prose-headings:text-foreground
                 prose-p:text-muted-foreground prose-p:leading-[1.8]
-                prose-a:text-accent-foreground prose-a:no-underline hover:prose-a:underline
+                prose-a:text-accent-foreground prose-a:no-underline prose-a:hover:underline
                 prose-strong:text-foreground prose-strong:font-semibold
-                prose-img:rounded-2xl prose-img:shadow-sm
+                prose-img:rounded-2xl prose-img:shadow-xs
                 prose-blockquote:border-l-primary/30 prose-blockquote:text-muted-foreground prose-blockquote:italic
                 prose-code:font-mono prose-code:text-accent-foreground prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-md prose-code:text-sm
                 prose-pre:bg-zinc-900 prose-pre:rounded-2xl
@@ -329,7 +329,7 @@ export default function NewsDetailClient({ lang, locale = 'tr', news, translatio
           >
             <div className="flex items-center gap-3 mb-6">
               <h2 className="text-xl font-semibold text-foreground tracking-tight">{t.relatedProjects}</h2>
-              <div className="h-px bg-border flex-grow" />
+              <div className="h-px bg-border grow" />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               {(news.relatedPortfolioIds as any[]).filter(Boolean).map((portfolio, i) => (
@@ -352,7 +352,7 @@ export default function NewsDetailClient({ lang, locale = 'tr', news, translatio
                       className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
                       style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent" />
+                    <div className="absolute inset-0 bg-linear-to-t from-black/75 via-black/25 to-transparent" />
                     <div className="absolute bottom-0 left-0 p-5">
                       <h3 className="text-white font-semibold text-lg line-clamp-1 group-hover:text-white/90 transition-colors duration-700">
                         {portfolio.title}
@@ -376,7 +376,7 @@ export default function NewsDetailClient({ lang, locale = 'tr', news, translatio
             >
               <div className="flex items-center gap-3 mb-6">
                 <h2 className="text-xl font-semibold text-foreground tracking-tight">{t.relatedNews}</h2>
-                <div className="h-px bg-border flex-grow" />
+                <div className="h-px bg-border grow" />
               </div>
             </m.div>
 
@@ -390,7 +390,7 @@ export default function NewsDetailClient({ lang, locale = 'tr', news, translatio
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.7, delay: i * 0.1, ease }}
-                  className="flex-shrink-0 snap-start w-[280px] md:w-[320px]"
+                  className="shrink-0 snap-start w-[280px] md:w-[320px]"
                 >
                   <Link
                     href={`/${lang}/${basePath}/${relatedNews.slug}`}
@@ -398,7 +398,7 @@ export default function NewsDetailClient({ lang, locale = 'tr', news, translatio
                     style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
                   >
                     {relatedNews.featuredImage?.url && (
-                      <div className="relative aspect-[16/10] overflow-hidden bg-muted">
+                      <div className="relative aspect-16/10 overflow-hidden bg-muted">
                         <Image
                           src={relatedNews.featuredImage.url}
                           alt={relatedNews.featuredImage.altText || ''}

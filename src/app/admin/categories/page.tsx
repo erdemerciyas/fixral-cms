@@ -227,7 +227,7 @@ export default function AdminCategoriesPage() {
       </div>
 
       {/* Search Bar */}
-      <div className="bg-card rounded-xl shadow-sm border border-border/60 p-4">
+      <div className="bg-card rounded-xl shadow-xs border border-border/60 p-4">
         <div className="relative">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
           <input
@@ -235,7 +235,7 @@ export default function AdminCategoriesPage() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Kategori ara..."
-            className="w-full pl-12 pr-4 py-3 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all bg-background"
+            className="w-full pl-12 pr-4 py-3 border border-border rounded-xl focus:outline-hidden focus:ring-2 focus:ring-ring focus:border-transparent transition-all bg-background"
           />
         </div>
       </div>
@@ -245,10 +245,10 @@ export default function AdminCategoriesPage() {
         {filteredCategories.map((category) => (
           <li
             key={category._id}
-            className="bg-card rounded-xl shadow-sm border border-border/60 p-6 hover:shadow-lg transition-all duration-300 group"
+            className="bg-card rounded-xl shadow-xs border border-border/60 p-6 hover:shadow-lg transition-all duration-300 group"
           >
             <div className="flex items-start justify-between mb-4">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-success/80 to-success flex items-center justify-center">
+              <div className="w-12 h-12 rounded-xl bg-linear-to-br from-success/80 to-success flex items-center justify-center">
                 <Tag className="w-6 h-6 text-success-foreground" />
               </div>
               <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -307,7 +307,7 @@ export default function AdminCategoriesPage() {
       {modalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           <div
-            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/50 backdrop-blur-xs"
             onClick={closeModal}
           />
           <div className="relative bg-card border border-border rounded-2xl shadow-2xl w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in-95 duration-200">
@@ -335,7 +335,7 @@ export default function AdminCategoriesPage() {
                   type="text"
                   value={formData.name}
                   onChange={(e) => handleNameChange(e.target.value)}
-                  className={`w-full px-4 py-2.5 border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all bg-background ${
+                  className={`w-full px-4 py-2.5 border rounded-xl focus:outline-hidden focus:ring-2 focus:ring-ring focus:border-transparent transition-all bg-background ${
                     formErrors.name ? 'border-destructive' : 'border-border'
                   }`}
                   placeholder="Kategori adı girin"
@@ -366,7 +366,7 @@ export default function AdminCategoriesPage() {
                       setFormData((prev) => ({ ...prev, slug: e.target.value }))
                     }
                     readOnly={slugLocked}
-                    className="flex-1 bg-transparent border-none text-sm focus:ring-0 p-0 focus:outline-none"
+                    className="flex-1 bg-transparent border-none text-sm focus:ring-0 p-0 focus:outline-hidden"
                     placeholder="otomatik-olusturulur"
                   />
                   <button
@@ -400,7 +400,7 @@ export default function AdminCategoriesPage() {
                       description: e.target.value,
                     }))
                   }
-                  className="w-full px-4 py-2.5 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all bg-background resize-none"
+                  className="w-full px-4 py-2.5 border border-border rounded-xl focus:outline-hidden focus:ring-2 focus:ring-ring focus:border-transparent transition-all bg-background resize-none"
                   placeholder="Kategori açıklaması (isteğe bağlı)"
                 />
               </div>

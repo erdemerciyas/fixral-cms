@@ -154,16 +154,16 @@ export default function AdminAnalyticsPage() {
           }`}
         >
           {message.type === 'success' ? (
-            <Check className="w-5 h-5 flex-shrink-0" />
+            <Check className="w-5 h-5 shrink-0" />
           ) : (
-            <AlertCircle className="w-5 h-5 flex-shrink-0" />
+            <AlertCircle className="w-5 h-5 shrink-0" />
           )}
           {message.text}
         </div>
       )}
 
       {/* Google Analytics */}
-      <div className="bg-card rounded-xl shadow-sm border border-border/60 p-6">
+      <div className="bg-card rounded-xl shadow-xs border border-border/60 p-6">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 rounded-lg bg-info/15 flex items-center justify-center">
             <BarChart3 className="w-5 h-5 text-info" />
@@ -183,7 +183,7 @@ export default function AdminAnalyticsPage() {
               type="text"
               value={config.googleAnalyticsId}
               onChange={(e) => updateField('googleAnalyticsId', e.target.value)}
-              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-ring outline-none"
+              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-ring outline-hidden"
               placeholder="G-XXXXXXXXXX"
             />
             <p className="text-xs text-muted-foreground mt-1">
@@ -199,7 +199,7 @@ export default function AdminAnalyticsPage() {
               type="text"
               value={config.googleTagManagerId}
               onChange={(e) => updateField('googleTagManagerId', e.target.value)}
-              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-ring outline-none"
+              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-ring outline-hidden"
               placeholder="GTM-XXXXXXX"
             />
             <p className="text-xs text-muted-foreground mt-1">
@@ -210,7 +210,7 @@ export default function AdminAnalyticsPage() {
       </div>
 
       {/* Site Verification */}
-      <div className="bg-card rounded-xl shadow-sm border border-border/60 p-6">
+      <div className="bg-card rounded-xl shadow-xs border border-border/60 p-6">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 rounded-lg bg-success/15 flex items-center justify-center">
             <Check className="w-5 h-5 text-success" />
@@ -229,7 +229,7 @@ export default function AdminAnalyticsPage() {
             type="text"
             value={config.googleSiteVerification}
             onChange={(e) => updateField('googleSiteVerification', e.target.value)}
-            className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-ring outline-none"
+            className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-ring outline-hidden"
             placeholder="Doğrulama meta tag içeriği"
           />
           <p className="text-xs text-muted-foreground mt-1">
@@ -239,7 +239,7 @@ export default function AdminAnalyticsPage() {
       </div>
 
       {/* Tracking Options */}
-      <div className="bg-card rounded-xl shadow-sm border border-border/60 p-6">
+      <div className="bg-card rounded-xl shadow-xs border border-border/60 p-6">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
             <BarChart3 className="w-5 h-5 text-primary" />
