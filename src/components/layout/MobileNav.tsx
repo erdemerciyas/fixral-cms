@@ -120,7 +120,7 @@ export default function MobileNav({
                             <form onSubmit={handleSearchSubmit} className="relative">
                                 <MagnifyingGlass
                                     size={16}
-                                    className="absolute left-4 top-1/2 -translate-y-1/2 text-white"
+                                    className="absolute left-4 top-1/2 -translate-y-1/2 text-primary-foreground"
                                 />
                                 <input
                                     ref={searchInputRef}
@@ -128,7 +128,7 @@ export default function MobileNav({
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                     placeholder="Ara..."
-                                    className="w-full pl-11 pr-4 py-3 rounded-full text-sm bg-primary text-white placeholder:text-white/80 focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background border border-transparent"
+                                    className="w-full pl-11 pr-4 py-3 rounded-full text-sm bg-primary text-primary-foreground placeholder:text-primary-foreground/80 focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background border border-transparent"
                                     style={{
                                         transition: 'all 300ms cubic-bezier(0.32, 0.72, 0, 1)',
                                     }}

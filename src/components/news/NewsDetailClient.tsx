@@ -342,7 +342,7 @@ export default function NewsDetailClient({ lang, locale = 'tr', news, translatio
                 >
                   <Link
                     href={`/${lang}/portfolio/${portfolio.slug}`}
-                    className="group relative block h-52 rounded-xl overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.06)] hover:shadow-tinted-md transition-all duration-700"
+                    className="group relative block h-52 rounded-xl overflow-hidden shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] transition-all duration-700"
                     style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
                   >
                     <Image
@@ -394,7 +394,7 @@ export default function NewsDetailClient({ lang, locale = 'tr', news, translatio
                 >
                   <Link
                     href={`/${lang}/${basePath}/${relatedNews.slug}`}
-                    className="group block rounded-xl overflow-hidden bg-card border border-border shadow-[0_1px_3px_rgba(0,0,0,0.04)] hover:shadow-tinted-md transition-all duration-700"
+                    className="group block rounded-xl overflow-hidden bg-card border border-border shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] transition-all duration-700"
                     style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
                   >
                     {relatedNews.featuredImage?.url && (

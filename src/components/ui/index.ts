@@ -16,7 +16,6 @@ export { default as UniversalEditor } from './UniversalEditor';
 
 // ── Motion & interaction primitives (taste-skill, Phase 0) ──
 export { RevealStagger } from './RevealStagger'
-export { SpotlightCard } from './SpotlightCard'
 export { MagneticButton } from './MagneticButton'
 
 // ── Layout & feedback primitives ──

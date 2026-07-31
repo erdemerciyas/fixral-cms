@@ -1,7 +1,9 @@
 /**
- * WCAG Contrast Test — taste-skill token doğrulaması
+ * WCAG Contrast Test — birleşik token/tema sistemi doğrulaması
  * globals.css içindeki :root, .dark, .public-theme ve .public-theme.public-dark
  * token'larını okur, kritik renk çiftlerinin WCAG AA kontrast oranlarını doğrular.
+ * Ayrıca @theme / @theme inline bloklarındaki var(--x) referanslarının tanımlı
+ * runtime token'lara çözümlendiğini denetler (kablolama testi).
  *
  * Kullanım: node scripts/contrast-test.js
  */
@@ -11,10 +13,14 @@ const path = require('path');
 const css = fs.readFileSync(path.join(__dirname, '../src/app/globals.css'), 'utf8');
 
 // ── CSS blok ayrıştırma ──
+// Selector'ı satır başında ve hemen ardından '{' gelecek şekilde arar; böylece
+// @custom-variant satırındaki `.dark` / `.public-dark` geçişleri yanlış eşleşmez.
 function extractBlock(source, selector) {
-  const start = source.indexOf(selector);
-  if (start === -1) throw new Error(`Selector not found: ${selector}`);
-  const open = source.indexOf('{', start);
+  const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const re = new RegExp(`(^|\\n)\\s*${escaped}\\s*\\{`);
+  const m = re.exec(source);
+  if (!m) throw new Error(`Selector not found: ${selector}`);
+  const open = source.indexOf('{', m.index);
   let depth = 1;
   let i = open + 1;
   while (depth > 0 && i < source.length) {
@@ -31,6 +37,25 @@ function parseTokens(block) {
   let m;
   while ((m = re.exec(block))) tokens[m[1]] = m[2].trim();
   return tokens;
+}
+
+// ── @theme bloklarını topla (v4: @theme ve @theme inline) ──
+function extractThemeBlocks(source) {
+  const blocks = [];
+  const re = /@theme[^{]*\{/g;
+  let m;
+  while ((m = re.exec(source))) {
+    const open = source.indexOf('{', m.index);
+    let depth = 1;
+    let i = open + 1;
+    while (depth > 0 && i < source.length) {
+      if (source[i] === '{') depth++;
+      if (source[i] === '}') depth--;
+      i++;
+    }
+    blocks.push(source.slice(open + 1, i - 1));
+  }
+  return blocks;
 }
 
 // ── Renk dönüşümleri ──
@@ -97,13 +122,36 @@ function rgb(tokens, name) {
   return c;
 }
 
-// hex token'ı (--color-*) → rgb
+// hex token'ı (--*-soft / --*-strong vb.) → rgb
 function hex(tokens, name) {
   const v = tokens[name];
   if (!v) throw new Error(`Token missing: --${name}`);
   const c = hexToRgb(v);
   if (!c) throw new Error(`Not a hex color: --${name}: ${v}`);
   return c;
+}
+
+// ── @theme kablolama testi ──
+// @theme bloklarındaki her var(--x) referansı en az bir runtime scope'ta tanımlı
+// olmalı (aksi halde utility, geçersiz değere çözünür ve sessizce kırılır).
+function checkThemeWiring() {
+  const scopes = [adminLight, adminDark, publicLight, publicDark];
+  const problems = [];
+  const blocks = extractThemeBlocks(css);
+  if (blocks.length === 0) {
+    problems.push('@theme bloğu bulunamadı — token sistemi globals.css içinde olmalı.');
+    return problems;
+  }
+  for (const block of blocks) {
+    const re = /var\(--([\w-]+)\)/g;
+    let m;
+    while ((m = re.exec(block))) {
+      const name = m[1];
+      const defined = scopes.some((s) => s[name] !== undefined);
+      if (!defined) problems.push(`@theme referansı çözümlenemedi: var(--${name})`);
+    }
+  }
+  return problems;
 }
 
 // ── Admin test tanımları (sidebar dahil, badge zemini kart üzerine tint) ──
@@ -141,6 +189,12 @@ function buildAdminCases(t) {
     ['destructive / destructive-15% tint on card', rgb(t, 'destructive'), composite(rgb(t, 'destructive'), card, 0.15), 4.5],
     ['primary / primary-10% tint on card (badge primary)', rgb(t, 'primary'), composite(rgb(t, 'primary'), card, 0.10), 4.5],
 
+    // Admin badge: soft zemin üzerinde strong vurgu (AA: 4.5)
+    ['success-strong / success-soft (badge)', hex(t, 'success-strong'), hex(t, 'success-soft'), 4.5],
+    ['warning-strong / warning-soft (badge)', hex(t, 'warning-strong'), hex(t, 'warning-soft'), 4.5],
+    ['danger-strong / danger-soft (badge)', hex(t, 'danger-strong'), hex(t, 'danger-soft'), 4.5],
+    ['info-strong / info-soft (badge)', hex(t, 'info-strong'), hex(t, 'info-soft'), 4.5],
+
     // UI bileşenleri — metin dışı (AA: 3.0)
     ['ring / background (focus ring)', rgb(t, 'ring'), bg, 3.0],
     ['primary / background (link text ≥ 4.5)', rgb(t, 'primary'), bg, 4.5],
@@ -150,9 +204,9 @@ function buildAdminCases(t) {
 // ── Public test tanımları ──
 // Public scope'ta --primary marka turuncusudur (#FA6831): SADECE dolgu rengi olarak
 // kullanılır, metin rengi olarak değil. Etiket kontrastı primary-foreground üzerinden,
-// satır içi/link metni ise accent-foreground (brand 700/800 ink) üzerinden doğrulanır.
-// Badge zeminleri public scope'ta açıkça tanımlı --color-*-light token'larıdır,
-// bu yüzden kompozit tint yerine gerçek token çiftleri test edilir.
+// satır içi/link metni ise accent-foreground (brand ink) üzerinden doğrulanır.
+// Badge zeminleri public scope'ta açıkça tanımlı --*-soft token'larıdır; vurgu metni
+// --*-strong ile eşleşir (kompozit tint yerine gerçek token çiftleri test edilir).
 function buildPublicCases(t) {
   const bg = rgb(t, 'background');
   const card = rgb(t, 'card');
@@ -185,11 +239,11 @@ function buildPublicCases(t) {
     ['info / background', rgb(t, 'info'), bg, 4.5],
     ['destructive / background (text-destructive)', rgb(t, 'destructive'), bg, 4.5],
 
-    // Badge: semantic *-light zemin üzerinde semantic metin (AA: 4.5)
-    ['color-success / color-success-light (badge)', hex(t, 'color-success'), hex(t, 'color-success-light'), 4.5],
-    ['color-warning / color-warning-light (badge)', hex(t, 'color-warning'), hex(t, 'color-warning-light'), 4.5],
-    ['color-danger / color-danger-light (badge)', hex(t, 'color-danger'), hex(t, 'color-danger-light'), 4.5],
-    ['color-info / color-info-light (badge)', hex(t, 'color-info'), hex(t, 'color-info-light'), 4.5],
+    // Badge: soft zemin üzerinde strong vurgu (AA: 4.5)
+    ['success-strong / success-soft (badge)', hex(t, 'success-strong'), hex(t, 'success-soft'), 4.5],
+    ['warning-strong / warning-soft (badge)', hex(t, 'warning-strong'), hex(t, 'warning-soft'), 4.5],
+    ['danger-strong / danger-soft (badge)', hex(t, 'danger-strong'), hex(t, 'danger-soft'), 4.5],
+    ['info-strong / info-soft (badge)', hex(t, 'info-strong'), hex(t, 'info-soft'), 4.5],
 
     // UI bileşenleri — metin dışı (AA: 3.0)
     ['ring / background (focus ring)', rgb(t, 'ring'), bg, 3.0],
@@ -197,6 +251,19 @@ function buildPublicCases(t) {
 }
 
 // ── Çalıştır ──
+let failures = 0;
+
+console.log('━━ @THEME KABLOLAMA ━━');
+const wiringProblems = checkThemeWiring();
+if (wiringProblems.length === 0) {
+  console.log('  PASS  Tüm @theme var() referansları runtime token\'lara çözümlendi.');
+} else {
+  for (const p of wiringProblems) {
+    failures++;
+    console.log(`✗ FAIL  ${p}`);
+  }
+}
+
 const suites = [
   ['ADMIN LIGHT (:root)', adminLight, buildAdminCases],
   ['ADMIN DARK (.dark)', adminDark, buildAdminCases],
@@ -204,7 +271,6 @@ const suites = [
   ['PUBLIC DARK (.public-theme.public-dark)', publicDark, buildPublicCases],
 ];
 
-let failures = 0;
 for (const [mode, tokens, build] of suites) {
   console.log(`\n━━ ${mode} ━━`);
   for (const [name, fg, bgc, min] of build(tokens)) {

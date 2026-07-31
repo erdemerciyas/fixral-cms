@@ -25,9 +25,9 @@ const RESUME_DELAY = 4000 // ms — etkileşim sonrası autoplay'e dönüş
 /* ─── Swipe eşiği ─── */
 const SWIPE_COMMIT = 60 // px — slide değişimi için gereken mesafe
 
-/* ─── Görsel üzeri koyu scrim — metin okunabilirliği (Printables banner) ─── */
+/* ─── Görsel üzeri koyu scrim — metin okunabilirliği (--scrim token'ı) ─── */
 const SCRIM_GRADIENT =
-  'linear-gradient(90deg, rgba(0,0,0,0.74) 0%, rgba(0,0,0,0.62) 45%, rgba(0,0,0,0.32) 100%)'
+  'linear-gradient(90deg, hsl(var(--scrim) / 0.74) 0%, hsl(var(--scrim) / 0.62) 45%, hsl(var(--scrim) / 0.32) 100%)'
 
 /* ─── Ok butonu: token tabanlı chip, hover'da turuncu dolgu ─── */
 const ARROW_BUTTON = cn(

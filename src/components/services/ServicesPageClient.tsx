@@ -165,7 +165,7 @@ function ServiceDetail({ service, index, lang }: { service: Service; index: numb
         <Link
           href={`/${lang}/contact?service=${encodeURIComponent(service.title)}`}
           className="group inline-flex items-center gap-2.5 bg-primary text-primary-foreground px-7 py-3.5 rounded-lg text-sm font-medium
-            transition-colors duration-200 hover:bg-[hsl(var(--primary)/0.85)] active:scale-[0.98] shadow-tinted-sm"
+            transition-colors duration-200 hover:bg-[hsl(var(--primary)/0.85)] active:scale-[0.98] shadow-[var(--shadow-sm)]"
           style={{
             transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)',
           }}
@@ -316,7 +316,7 @@ export default function ServicesPageClient() {
                         onClick={() => handleNavClick(index)}
                         className={`w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 whitespace-nowrap lg:whitespace-normal ${
                           isActive
-                            ? 'bg-primary text-primary-foreground shadow-tinted-sm'
+                            ? 'bg-primary text-primary-foreground shadow-[var(--shadow-sm)]'
                             : 'bg-surface-primary border border-border text-muted-foreground hover:bg-accent hover:border-primary/30 hover:text-foreground'
                         }`}
                         style={{

@@ -145,10 +145,7 @@ export default function DesktopNav({ navLinks, pathname }: DesktopNavProps) {
                                 animate={{ opacity: 1, y: 0, scale: 1 }}
                                 exit={{ opacity: 0, y: 8, scale: 0.96 }}
                                 transition={{ duration: 0.15, ease: [0.4, 0, 0.2, 1] }}
-                                className="absolute right-0 top-full mt-2 w-56 bg-popover rounded-xl overflow-hidden z-60 border border-border"
-                                style={{
-                                    boxShadow: '0 2px 20px rgba(0,0,0,0.15)',
-                                }}
+                                className="absolute right-0 top-full mt-2 w-56 bg-popover rounded-xl overflow-hidden z-60 border border-border shadow-[var(--shadow-lg)]"
                             >
                                 {session?.user ? (
                                     <>

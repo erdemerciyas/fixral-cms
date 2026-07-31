@@ -3,11 +3,118 @@
 /* TipTap Editor Styles */
 @import '../styles/editor.css' layer(utilities);
 
-@config '../../tailwind.config.js';
+/* Eski tailwind.config.js eritildi: plugin'ler @plugin ile, token'lar @theme ile
+   buradan yönetilir. Tek doğruluk kaynağı bu dosyadır. */
+@plugin 'tailwindcss-animate';
+@plugin '@tailwindcss/typography';
+@plugin '@tailwindcss/forms';
 
-/* v4 dark mode: v3 `darkMode: 'class'` davranışının birebir karşılığı.
-   Faz 2'de public-dark scope'u buraya eklenecek. */
-@custom-variant dark (&:where(.dark, .dark *));
+/* Tek dark mekanizması: admin `.dark` (next-themes, fixral-admin-theme) ve
+   public `.public-dark` (fixral-public-theme) aynı `dark:` utility'lerini sürer.
+   Böylece public bileşenlerde paralel token override'larına gerek kalmaz. */
+@custom-variant dark (&:where(.dark, .dark *, .public-dark, .public-dark *));
+
+/* ── @theme — statik tasarım token'ları (temadan bağımsız) ── */
+@theme {
+  /* Tipografi: Barlow UI/display; Geist Mono birinci sınıf teknik aksan fontu
+     (ölçümler, etiketler, statlar, eyebrow'lar, nav meta). */
+  --font-sans:
+    var(--font-barlow), var(--font-geist-sans), system-ui, sans-serif;
+  --font-display:
+    var(--font-barlow), var(--font-geist-sans), system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
+}
+
+/* ── @theme inline — scope başına swap olan semantik token'lar.
+   Değerler :root / .dark / .public-theme / .public-theme.public-dark
+   bloklarındaki runtime değişkenlerden gelir. ── */
+@theme inline {
+  /* Marka skalası — #FA6831 çevresinde sabit (runtime :root'ta tanımlı) */
+  --color-brand-primary-50: var(--brand-primary-50);
+  --color-brand-primary-100: var(--brand-primary-100);
+  --color-brand-primary-200: var(--brand-primary-200);
+  --color-brand-primary-300: var(--brand-primary-300);
+  --color-brand-primary-400: var(--brand-primary-400);
+  --color-brand-primary-500: var(--brand-primary-500);
+  --color-brand-primary-600: var(--brand-primary-600);
+  --color-brand-primary-700: var(--brand-primary-700);
+  --color-brand-primary-800: var(--brand-primary-800);
+  --color-brand-primary-900: var(--brand-primary-900);
+  --color-brand-primary: var(--brand-primary-500);
+
+  /* shadcn/ui semantik renkler */
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+
+  /* Precision Engineering semantik seti — tema başına swap */
+  --color-surface: var(--surface-1);
+  --color-ink: hsl(var(--foreground));
+  --color-line: var(--line);
+  --color-page-bg: var(--page-bg);
+
+  /* Yüzey hiyerarşisi + hairline türevleri */
+  --color-surface-primary: var(--surface-1);
+  --color-surface-secondary: var(--surface-2);
+  --color-surface-tertiary: var(--surface-3);
+  --color-border: var(--line);
+  --color-border-strong: var(--line-strong);
+  --color-border-subtle: var(--line-subtle);
+
+  /* Durum renkleri: DEFAULT/foreground hsl üçlüsü, light/dark hex türevleri */
+  --color-success: hsl(var(--success));
+  --color-success-foreground: hsl(var(--success-foreground));
+  --color-success-light: var(--success-soft);
+  --color-success-dark: var(--success-strong);
+  --color-warning: hsl(var(--warning));
+  --color-warning-foreground: hsl(var(--warning-foreground));
+  --color-warning-light: var(--warning-soft);
+  --color-warning-dark: var(--warning-strong);
+  --color-danger: hsl(var(--destructive));
+  --color-danger-foreground: hsl(var(--destructive-foreground));
+  --color-danger-light: var(--danger-soft);
+  --color-danger-dark: var(--danger-strong);
+  --color-info: hsl(var(--info));
+  --color-info-foreground: hsl(var(--info-foreground));
+  --color-info-light: var(--info-soft);
+  --color-info-dark: var(--info-strong);
+
+  /* Grafikler + admin sidebar */
+  --color-chart-1: hsl(var(--chart-1));
+  --color-chart-2: hsl(var(--chart-2));
+  --color-chart-3: hsl(var(--chart-3));
+  --color-chart-4: hsl(var(--chart-4));
+  --color-chart-5: hsl(var(--chart-5));
+  --color-sidebar: hsl(var(--sidebar-background));
+  --color-sidebar-foreground: hsl(var(--sidebar-foreground));
+  --color-sidebar-primary: hsl(var(--sidebar-primary));
+  --color-sidebar-primary-foreground: hsl(var(--sidebar-primary-foreground));
+  --color-sidebar-accent: hsl(var(--sidebar-accent));
+  --color-sidebar-accent-foreground: hsl(var(--sidebar-accent-foreground));
+  --color-sidebar-border: hsl(var(--sidebar-border));
+  --color-sidebar-ring: hsl(var(--sidebar-ring));
+
+  /* Radius — shadcn uyumu: scope'taki --radius'u takip eder
+     (public: 8px overlay ölçeği, admin: 12px) */
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+}
 
 /*
   The default border color has changed to `currentcolor` in Tailwind CSS v4,
@@ -23,7 +130,7 @@
   ::before,
   ::backdrop,
   ::file-selector-button {
-    border-color: var(--color-border);
+    border-color: var(--line);
   }
 }
 
@@ -100,47 +207,15 @@
   }
 }
 
-@utility card-glass {
-  /* Glass kartlar — token tabanlı: kart/border token'ları sayesinde
-   * light ve dark scope'ta ayrı override gerektirmez. */
-  background: hsl(var(--card) / 0.8);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid hsl(var(--border) / 0.6);
-  border-radius: var(--radius-card);
-  box-shadow: var(--shadow-md);
-  transition: all 700ms cubic-bezier(0.32, 0.72, 0, 1);
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
-  }
-}
-
-@utility card-glass-premium {
-  background: hsl(var(--card) / 0.72);
-  backdrop-filter: blur(24px) saturate(1.4);
-  -webkit-backdrop-filter: blur(24px) saturate(1.4);
-  border: 1px solid hsl(var(--border) / 0.5);
-  border-radius: var(--radius-card);
-  box-shadow: var(--shadow-inner-premium), var(--shadow-md);
-  transition: all 700ms cubic-bezier(0.32, 0.72, 0, 1);
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-inner-premium), var(--shadow-xl);
-  }
-}
-
 @utility surface-elevated {
   /* Surface elevation tokens */
-  background: var(--color-surface-secondary);
+  background: var(--surface-2);
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-md);
 }
 
 @utility surface-sunken {
-  background: var(--color-surface-tertiary);
+  background: var(--surface-3);
   border-radius: var(--radius-card);
   box-shadow: inset 0 2px 4px hsl(var(--shadow-color) / 0.04);
 }
@@ -291,7 +366,7 @@
   font-size: 0.875rem;
   font-weight: 400;
   line-height: 1.5;
-  color: oklch(0.65 0.01 250);
+  color: hsl(var(--muted-foreground));
 }
 
 @utility text-gradient {
@@ -364,20 +439,6 @@
 
 @utility bg-gradient-subtle {
   @apply bg-linear-to-b from-zinc-50/80 via-white to-zinc-50/50 dark:from-zinc-900 dark:via-zinc-900 dark:to-zinc-900;
-}
-
-@utility bg-glass {
-  background: hsl(var(--card) / 0.7);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid hsl(var(--border) / 0.6);
-}
-
-@utility bg-glass-dark {
-  background: rgba(28, 30, 33, 0.8);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 @utility bg-mesh {
@@ -501,13 +562,15 @@
     opacity 0.6s ease-out,
     transform 0.6s ease-out;
 
-  &.visible {
+  &.is-visible {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
-@utility visible {
+/* Eski `@utility visible` — çekirdek `visible` (visibility) utility'siyle isim
+   çakışması riski nedeniyle `is-visible` olarak yeniden adlandırıldı. */
+@utility is-visible {
   &.fade-in-on-scroll {
     opacity: 1;
     transform: translateY(0);
@@ -531,7 +594,7 @@
     opacity 0.6s ease-out,
     transform 0.6s ease-out;
 
-  &.visible {
+  &.is-visible {
     opacity: 1;
     transform: translateX(0);
   }
@@ -544,7 +607,7 @@
     opacity 0.6s ease-out,
     transform 0.6s ease-out;
 
-  &.visible {
+  &.is-visible {
     opacity: 1;
     transform: translateX(0);
   }
@@ -652,29 +715,25 @@
     --sidebar-border: 30 14% 88%;
     --sidebar-ring: 24 91% 39%;
 
-    /* ── Design System: Semantic Status Colors ── */
-    --color-success-light: #f0fdf4;
-    --color-success: #15803d;
-    --color-success-dark: #166534;
-    --color-warning-light: #fffbeb;
-    --color-warning: #b45309;
-    --color-warning-dark: #92400e;
-    --color-danger-light: #fef2f2;
-    --color-danger: #c52020;
-    --color-danger-dark: #991b1b;
-    --color-info-light: #eff6ff;
-    --color-info: var(--brand-primary-600);
-    --color-info-dark: #1e40af;
+    /* ── Design System: Semantic Status Colors (soft zemin / strong vurgu) ── */
+    --success-soft: #f0fdf4;
+    --success-strong: #166534;
+    --warning-soft: #fffbeb;
+    --warning-strong: #92400e;
+    --danger-soft: #fef2f2;
+    --danger-strong: #991b1b;
+    --info-soft: #eff6ff;
+    --info-strong: #1e40af;
 
     /* ── Design System: Surface Colors (no pure white — off-white tones) ── */
-    --color-surface-primary: oklch(0.98 0.005 240);
-    --color-surface-secondary: oklch(0.96 0.008 240);
-    --color-surface-tertiary: oklch(0.94 0.01 240);
+    --surface-1: oklch(0.98 0.005 240);
+    --surface-2: oklch(0.96 0.008 240);
+    --surface-3: oklch(0.94 0.01 240);
 
-    /* ── Design System: Border Colors ── */
-    --color-border: oklch(0.91 0.01 240);
-    --color-border-strong: oklch(0.86 0.012 240);
-    --color-border-subtle: oklch(0.95 0.006 240);
+    /* ── Design System: Hairline Borders ── */
+    --line: oklch(0.91 0.01 240);
+    --line-strong: oklch(0.86 0.012 240);
+    --line-subtle: oklch(0.95 0.006 240);
 
     /* ── Design System: Gradient Palette — Printables turuncusu ── */
     --gradient-accent: linear-gradient(135deg, #fa6831 0%, #c24e1e 100%);
@@ -691,7 +750,8 @@
       #f5f5f5 100%
     );
 
-    /* ── Design System: Tinted Shadows (no pure black — hue-tinted) ── */
+    /* ── Design System: Near-flat Shadows — derinlik border + katmanlı yüzeyden
+     * gelir, blur'dan değil. Glass/tinted/premium gölge tokenları kaldırıldı. ── */
     --shadow-color: 235 30% 12%;
     --shadow-sm:
       0 1px 2px hsl(var(--shadow-color) / 0.04),
@@ -705,12 +765,9 @@
     --shadow-xl:
       0 16px 32px hsl(var(--shadow-color) / 0.08),
       0 32px 64px hsl(var(--shadow-color) / 0.08);
-    --shadow-inner-premium: inset 0 1px 0 hsl(240 20% 95% / 0.08);
-    --shadow-glass: 0 8px 32px rgba(122, 48, 17, 0.12);
-    --shadow-premium: 0 25px 50px -12px rgba(122, 48, 17, 0.25);
-    --shadow-tinted-sm: 0 2px 8px rgba(250, 104, 49, 0.15);
-    --shadow-tinted-md: 0 4px 16px rgba(250, 104, 49, 0.2);
-    --shadow-tinted-lg: 0 8px 32px rgba(250, 104, 49, 0.25);
+
+    /* Görsel üstü scrim'ler için tek kaynak (fotoğraf üzeri koyu gradyan) */
+    --scrim: 216 19% 5%;
 
     /* Spacing Scale */
     --spacing-xs: 0.25rem; /* 4px */
@@ -721,8 +778,8 @@
     --spacing-2xl: 3rem; /* 48px */
     --spacing-3xl: 4rem; /* 64px */
 
-    /* Z-Index Scale — systemic layers only; no arbitrary z-10/z-50 spam.
-   * grain overlay = fixed pointer-events-none, header = sticky layer. */
+    /* Z-Index Scale — tek sistemik skala; eski tailwind.config zIndex (1000–1080)
+   * ve keyfi z-* değerlerinin yerini alır. */
     --z-base: 0;
     --z-dropdown: 100;
     --z-sticky: 200;
@@ -750,77 +807,74 @@
     --ease-out: cubic-bezier(0, 0, 0.2, 1);
 
     /* Page background */
-    --color-page-bg: #f8f6f4;
+    --page-bg: #f8f6f4;
   }
 
-  /* ── Public Light Theme — Printables mantığı: beyaz zemin + turuncu marka ──
- * Sayfa/kart zemini #FFFFFF, batık alanlar #F5F5F5/#EEEEEE, 1px #E0E0E0 border,
- * dinlenimde gölge yok; derinlik border + zemin farkından gelir.
- * Radius dili: buton 8px, kart/input 4px.
+  /* ── Public Light Theme — Precision Engineering: sıcak kağıt beyazları ──
+ * Sayfa zemini sıcak kağıt (#F9F8F6), kart beyaz, hairline warm-gray border.
+ * Derinlik border + zemin farkından gelir; gölgeler near-flat.
+ * Radius: teknik skala — kontroller 2px, kartlar 4px, overlay'ler 8px.
  */
   .public-theme {
-    /* shadcn/ui tokens — Printables light paleti */
-    --background: 0 0% 100%; /* #FFFFFF — sayfa zemini */
-    --foreground: 0 0% 20%; /* #333333 — birincil metin (12.63:1) */
+    /* shadcn/ui tokens — precision light paleti */
+    --background: 40 20% 97%; /* #F9F8F6 — sıcak kağıt sayfa zemini */
+    --foreground: 24 10% 12%; /* #221F1C — sıcak ink (15.4:1) */
     --card: 0 0% 100%; /* #FFFFFF — kart katmanı */
-    --card-foreground: 0 0% 20%;
+    --card-foreground: 24 10% 12%;
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 20%;
+    --popover-foreground: 24 10% 12%;
     --primary: 16 95% 59%; /* #FA6831 — MAIN (dolgu rengi) */
     --primary-foreground: 0 0% 11%; /* #1C1C1C — turuncu üzeri koyu ink (5.75:1) */
-    --secondary: 0 0% 96%; /* #F5F5F5 */
-    --secondary-foreground: 0 0% 20%;
-    --muted: 0 0% 96%; /* #F5F5F5 */
-    --muted-foreground: 0 0% 43%; /* #6E6E6E — #808080'den AA için koyultuldu (5.13:1) */
+    --secondary: 40 14% 93%; /* #EFEDE9 — bölüm bandı */
+    --secondary-foreground: 24 10% 12%;
+    --muted: 40 14% 94%; /* #F1EFEB */
+    --muted-foreground: 24 6% 40%; /* #6C645F — ikincil metin (5.0:1+) */
     --accent: 16 100% 95%; /* #FFECE6 — brand subtle, hover/seçili dolgu */
-    --accent-foreground: 18 75% 35%; /* #9E3F17 — subtle üzeri metin + link ink (5.89:1) */
+    --accent-foreground: 18 75% 35%; /* #9E3F17 — subtle üzeri metin + link ink */
     --destructive: 0 64% 48%; /* #CB2C2C */
     --destructive-foreground: 0 0% 100%;
-    --success: 88 90% 23%; /* #3E6F06 — #4C9600'den AA için koyultuldu */
+    --success: 88 90% 23%; /* #3E6F06 */
     --success-foreground: 0 0% 100%;
     --warning: 40 90% 30%; /* #916308 */
     --warning-foreground: 0 0% 100%;
     --info: 217 80% 48%; /* #1863DC */
     --info-foreground: 0 0% 100%;
-    --border: 0 0% 88%; /* #E0E0E0 — hairline */
-    --input: 0 0% 88%; /* #E0E0E0 */
-    --ring: 16 92% 52%; /* #F55014 — focus ring (3.48:1 ≥ 3.0) */
+    --border: 40 12% 87%; /* #E2DFD9 — hairline */
+    --input: 40 12% 87%;
+    --ring: 16 92% 52%; /* #F55014 — focus ring (≥ 3.0) */
     --chart-1: 16 95% 59%;
     --chart-2: 191 79% 34%;
     --chart-3: 18 73% 44%;
     --chart-4: 40 90% 40%;
     --chart-5: 16 96% 68%;
 
-    /* Shape dili — Printables: buton 8px, kart 4px, input 4px */
-    --radius: 0.5rem; /* shadcn rounded-lg → 8px (public scope) */
-    --radius-button: 0.5rem;
-    --radius-card: 0.25rem;
-    --radius-input: 0.25rem;
+    /* Shape dili — teknik skala: kontrol 2px, kart 4px, overlay 8px */
+    --radius: 0.5rem; /* shadcn rounded-lg → 8px (overlay ölçeği) */
+    --radius-button: 2px;
+    --radius-input: 2px;
+    --radius-card: 4px;
+    --radius-overlay: 8px;
 
-    /* Yüzey hiyerarşisi: beyaz kart > #F5F5F5 bölüm > #EEEEEE batık */
-    --color-surface-primary: #ffffff;
-    --color-surface-secondary: #f5f5f5;
-    --color-surface-tertiary: #eeeeee;
-    --color-border: #e0e0e0;
-    --color-border-strong: #d0d0d0;
-    --color-border-subtle: #eeeeee;
+    /* Yüzey hiyerarşisi: beyaz kart > sıcak kağıt bölüm > batık */
+    --surface-1: #ffffff;
+    --surface-2: #f4f2ee;
+    --surface-3: #edeae5;
+    --line: #e2dfd9;
+    --line-strong: #d5d1c9;
+    --line-subtle: #edeae5;
 
-    /* Semantic renkler — *-light badge zemini, DEFAULT metin/kenar (AA), *-dark vurgu */
-    --color-success-light: #edf7e1;
-    --color-success: #3e6f06;
-    --color-success-dark: #2e5304;
-    --color-warning-light: #fbf2db;
-    --color-warning: #916308;
-    --color-warning-dark: #6d4a06;
-    --color-danger-light: #fcebeb;
-    --color-danger: #cb2c2c;
-    --color-danger-dark: #9d2222;
-    --color-info-light: #e9f1fd;
-    --color-info: #1863dc;
-    --color-info-dark: #124aa6;
+    /* Durum renkleri — soft badge zemini, strong vurgu (AA) */
+    --success-soft: #edf7e1;
+    --success-strong: #2e5304;
+    --warning-soft: #fbf2db;
+    --warning-strong: #6d4a06;
+    --danger-soft: #fcebeb;
+    --danger-strong: #9d2222;
+    --info-soft: #e9f1fd;
+    --info-strong: #124aa6;
 
-    /* Flat shadows — dinlenimde yok, hover'da tek yumuşak lift */
-    --shadow-color: 0 0% 8%;
+    /* Near-flat shadows — dinlenimde yok, hover'da tek yumuşak lift */
+    --shadow-color: 30 10% 8%;
     --shadow-sm: 0 1px 2px hsl(var(--shadow-color) / 0.05);
     --shadow-md:
       0 1px 3px hsl(var(--shadow-color) / 0.08),
@@ -829,21 +883,20 @@
     --shadow-xl:
       0 8px 32px hsl(var(--shadow-color) / 0.14),
       0 2px 8px hsl(var(--shadow-color) / 0.06);
-    --shadow-inner-premium: inset 0 1px 0 hsl(0 0% 100% / 0.5);
 
-    /* Gradient overrides — beyaz/nötr gri */
-    --gradient-surface: linear-gradient(180deg, #ffffff 0%, #f5f5f5 100%);
+    /* Gradient overrides — sıcak kağıt nötrleri */
+    --gradient-surface: linear-gradient(180deg, #ffffff 0%, #f4f2ee 100%);
     --gradient-hero: linear-gradient(
       135deg,
-      #ffffff 0%,
-      #f5f5f5 60%,
-      #eeeeee 100%
+      #f9f8f6 0%,
+      #f4f2ee 60%,
+      #edeae5 100%
     );
 
     color-scheme: light;
 
-    /* Page background — beyaz */
-    --color-page-bg: #ffffff;
+    /* Page background — sıcak kağıt */
+    --page-bg: #f9f8f6;
   }
 
   /* Dark Mode — katmanlı yüzey hiyerarşisi: background < card < popover */
@@ -889,26 +942,22 @@
     --sidebar-ring: 28 89% 52%;
 
     /* ── Design System: Dark Mode Overrides (no pure black — zinc-950 depth) ── */
-    --color-success-light: #052e16;
-    --color-success: #4ade80;
-    --color-success-dark: #86efac;
-    --color-warning-light: #451a03;
-    --color-warning: #fbbf24;
-    --color-warning-dark: #fcd34d;
-    --color-danger-light: #450a0a;
-    --color-danger: #f87171;
-    --color-danger-dark: #fca5a5;
-    --color-info-light: #172554;
-    --color-info: #60a5fa;
-    --color-info-dark: #93c5fd;
-    --color-surface-primary: oklch(0.13 0.01 240);
-    --color-surface-secondary: oklch(0.17 0.012 240);
-    --color-surface-tertiary: oklch(0.21 0.015 240);
-    --color-border: oklch(0.26 0.018 240);
-    --color-border-strong: oklch(0.32 0.02 240);
-    --color-border-subtle: oklch(0.2 0.014 240);
+    --success-soft: #052e16;
+    --success-strong: #86efac;
+    --warning-soft: #451a03;
+    --warning-strong: #fcd34d;
+    --danger-soft: #450a0a;
+    --danger-strong: #fca5a5;
+    --info-soft: #172554;
+    --info-strong: #93c5fd;
+    --surface-1: oklch(0.13 0.01 240);
+    --surface-2: oklch(0.17 0.012 240);
+    --surface-3: oklch(0.21 0.015 240);
+    --line: oklch(0.26 0.018 240);
+    --line-strong: oklch(0.32 0.02 240);
+    --line-subtle: oklch(0.2 0.014 240);
 
-    /* ── Dark Mode: Tinted Shadows ── */
+    /* ── Dark Mode: Near-flat Shadows ── */
     --shadow-color: 235 30% 4%;
     --shadow-sm:
       0 1px 2px hsl(var(--shadow-color) / 0.2),
@@ -922,77 +971,73 @@
     --shadow-xl:
       0 16px 32px hsl(var(--shadow-color) / 0.35),
       0 32px 64px hsl(var(--shadow-color) / 0.3);
-    --shadow-inner-premium: inset 0 1px 0 hsl(240 10% 80% / 0.05);
   }
 
-  /* ── Public Dark Theme — Printables dark paleti ──
+  /* ── Public Dark Theme — Precision Engineering: soğuk grafit ──
  * .public-theme ile birlikte kullanılır (html'de iki class); iki sınıflı selector
  * specificity'yi 0-2-0'a çıkarıp .public-theme (0-1-0) üzerinde kesin üstünlük sağlar.
- * .public-theme'in TÜM token anahtarlarını birebir karşılar.
+ * Dark-first nötrler: sayfa #0B0D10, yüzey #14171B, hairline #262B31.
  */
   .public-theme.public-dark {
-    /* shadcn/ui tokens — Printables dark paleti */
-    --background: 216 8% 12%; /* #1C1E21 — sayfa zemini */
-    --foreground: 0 0% 88%; /* #E0E0E0 — birincil metin (12.69:1) */
-    --card: 216 6% 16%; /* #26282B — kart katmanı */
-    --card-foreground: 0 0% 88%;
-    --popover: 216 7% 18%; /* #2B2D31 — en üst katman */
-    --popover-foreground: 0 0% 88%;
+    /* shadcn/ui tokens — precision dark paleti */
+    --background: 216 19% 5%; /* #0A0C0F ≈ #0B0D10 — sayfa zemini */
+    --foreground: 210 14% 91%; /* #E5E9EC — birincil metin (15.8:1) */
+    --card: 214 15% 9%; /* #14171B — kart/yüzey katmanı */
+    --card-foreground: 210 14% 91%;
+    --popover: 213 14% 12%; /* #1A1E23 — en üst katman */
+    --popover-foreground: 210 14% 91%;
     --primary: 16 95% 59%; /* #FA6831 — MAIN (dolgu rengi) */
     --primary-foreground: 0 0% 11%; /* #1C1C1C — turuncu üzeri koyu ink (5.75:1) */
-    --secondary: 216 7% 14%; /* #212428 — bölüm bandı; kart (#26282B) zemininden ayrışır */
-    --secondary-foreground: 0 0% 88%;
-    --muted: 210 4% 10%; /* #181A1B — batık bölüm zemini */
-    --muted-foreground: 0 0% 70%; /* #B3B3B3 — ikincil metin (7.91:1) */
+    --secondary: 214 16% 7%; /* #0F1215 — bölüm bandı */
+    --secondary-foreground: 210 14% 91%;
+    --muted: 214 18% 8%; /* #101317 — batık bölüm zemini */
+    --muted-foreground: 213 10% 65%; /* #9BA3AB — ikincil metin (7.3:1) */
     --accent: 16 45% 18%; /* #432419 — brand subtle, hover/seçili dolgu */
-    --accent-foreground: 16 96% 68%; /* #FC895F — subtle üzeri metin + link ink (5.89:1) */
-    --destructive: 0 80% 68%; /* #EF6C6C — #CB2C2C'nin koyu zemin için açılmışı */
-    --destructive-foreground: 216 8% 12%;
+    --accent-foreground: 16 96% 68%; /* #FC895F — subtle üzeri metin + link ink */
+    --destructive: 0 80% 68%; /* #EF6C6C */
+    --destructive-foreground: 216 19% 5%;
     --success: 90 88% 36%; /* #5CAD0B */
-    --success-foreground: 216 8% 12%;
+    --success-foreground: 216 19% 5%;
     --warning: 38 92% 55%; /* #F6A823 */
-    --warning-foreground: 216 8% 12%;
+    --warning-foreground: 216 19% 5%;
     --info: 191 79% 58%; /* #3FC9E9 */
-    --info-foreground: 216 8% 12%;
-    --border: 210 3% 25%; /* #3E4042 — hairline */
-    --input: 210 3% 25%; /* #3E4042 */
-    --ring: 16 95% 59%; /* #FA6831 — focus ring (5.63:1) */
+    --info-foreground: 216 19% 5%;
+    --border: 213 13% 17%; /* #262B31 — hairline */
+    --input: 213 13% 17%;
+    --ring: 16 95% 59%; /* #FA6831 — focus ring */
     --chart-1: 16 95% 59%;
     --chart-2: 191 79% 58%;
     --chart-3: 16 96% 68%;
     --chart-4: 38 92% 55%;
     --chart-5: 90 88% 36%;
 
-    /* Shape dili — light ile aynı: buton 8px, kart 4px, input 4px */
+    /* Shape dili — light ile aynı teknik skala */
     --radius: 0.5rem;
-    --radius-button: 0.5rem;
-    --radius-card: 0.25rem;
-    --radius-input: 0.25rem;
+    --radius-button: 2px;
+    --radius-input: 2px;
+    --radius-card: 4px;
+    --radius-overlay: 8px;
 
-    /* Yüzey hiyerarşisi: #1C1E21 sayfa > #18191A batık > #26282B yükseltilmiş */
-    --color-surface-primary: #1c1e21;
-    --color-surface-secondary: #18191a;
-    --color-surface-tertiary: #26282b;
-    --color-border: #3f4143;
-    --color-border-strong: #55585b;
-    --color-border-subtle: #26282b;
+    /* Yüzey hiyerarşisi: #0B0D10 sayfa > #101317 batık > #14171B yüzey > #191D22 yükseltilmiş */
+    --surface-1: #14171b;
+    --surface-2: #101317;
+    --surface-3: #191d22;
+    --line: #262b31;
+    --line-strong: #333a42;
+    --line-subtle: #1b2026;
 
-    /* Semantic renkler — *-light derin tint zemin, DEFAULT metin/kenar (AA), *-dark vurgu */
-    --color-success-light: #16250a;
-    --color-success: #5cad0b;
-    --color-success-dark: #8fd83f;
-    --color-warning-light: #2a1d06;
-    --color-warning: #f6a823;
-    --color-warning-dark: #fac55f;
-    --color-danger-light: #2e1414;
-    --color-danger: #ef6c6c;
-    --color-danger-dark: #f7a0a0;
-    --color-info-light: #0c2830;
-    --color-info: #3fc9e9;
-    --color-info-dark: #7fdcf0;
+    /* Durum renkleri — soft derin tint zemin, strong vurgu (AA) */
+    --success-soft: #16250a;
+    --success-strong: #8fd83f;
+    --warning-soft: #2a1d06;
+    --warning-strong: #fac55f;
+    --danger-soft: #2e1414;
+    --danger-strong: #f7a0a0;
+    --info-soft: #0c2830;
+    --info-strong: #7fdcf0;
 
-    /* Flat shadows — koyu zeminde derinlik başlıca border'dan gelir */
-    --shadow-color: 216 12% 3%;
+    /* Near-flat shadows — koyu zeminde derinlik başlıca border'dan gelir */
+    --shadow-color: 216 15% 2%;
     --shadow-sm: 0 1px 2px hsl(var(--shadow-color) / 0.3);
     --shadow-md:
       0 1px 3px hsl(var(--shadow-color) / 0.4),
@@ -1001,21 +1046,20 @@
     --shadow-xl:
       0 8px 32px hsl(var(--shadow-color) / 0.55),
       0 2px 8px hsl(var(--shadow-color) / 0.35);
-    --shadow-inner-premium: inset 0 1px 0 hsl(0 0% 100% / 0.05);
 
-    /* Gradient overrides — koyu nötr */
-    --gradient-surface: linear-gradient(180deg, #26282b 0%, #1c1e21 100%);
+    /* Gradient overrides — grafit nötrleri */
+    --gradient-surface: linear-gradient(180deg, #14171b 0%, #0b0d10 100%);
     --gradient-hero: linear-gradient(
       135deg,
-      #26282b 0%,
-      #1c1e21 60%,
-      #18191a 100%
+      #14171b 0%,
+      #0b0d10 60%,
+      #101317 100%
     );
 
     color-scheme: dark;
 
-    /* Page background — koyu nötr */
-    --color-page-bg: #1c1e21;
+    /* Page background — grafit */
+    --page-bg: #0b0d10;
   }
 
   /* ── Admin: Shimmer Skeleton ── */
@@ -1269,30 +1313,6 @@ select::-webkit-scrollbar-thumb:hover {
   animation: slideInFromRight 0.6s ease-out forwards;
   opacity: 0;
   will-change: transform, opacity;
-}
-
-/* Glassmorphism -- taste-skill: Liquid Glass Refraction (token tabanlı) */
-.glass {
-  background: hsl(var(--card) / 0.6);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid hsl(var(--border) / 0.6);
-  box-shadow: var(--shadow-inner-premium);
-}
-
-.glass-dark {
-  background: rgba(28, 30, 33, 0.6);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
-}
-
-.text-gradient-blue {
-  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
 /* Loading states -- token-based, dark/light uyumlu */

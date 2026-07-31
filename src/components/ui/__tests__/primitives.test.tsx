@@ -3,13 +3,12 @@
  * Covers: render with content, eyebrow opt-in behavior, alert role,
  * pointer-event safety on motion primitives.
  */
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import { LazyMotion, domAnimation } from 'framer-motion'
 import { EmptyState } from '../EmptyState'
 import { ErrorState } from '../ErrorState'
 import { SectionHeader } from '../SectionHeader'
 import { RevealStagger } from '../RevealStagger'
-import { SpotlightCard } from '../SpotlightCard'
 
 beforeAll(() => {
   if (!window.matchMedia) {
@@ -90,22 +89,5 @@ describe('RevealStagger', () => {
     )
     expect(screen.getByText('Item A')).toBeTruthy()
     expect(screen.getByText('Item B')).toBeTruthy()
-  })
-})
-
-describe('SpotlightCard', () => {
-  it('renders children and survives pointer events', () => {
-    const { container } = render(
-      <LazyMotion features={domAnimation}>
-        <SpotlightCard>
-          <p>Card body</p>
-        </SpotlightCard>
-      </LazyMotion>,
-    )
-    expect(screen.getByText('Card body')).toBeTruthy()
-    const card = container.firstElementChild
-    expect(card).toBeTruthy()
-    fireEvent.mouseMove(card as Element, { clientX: 10, clientY: 10 })
-    fireEvent.mouseLeave(card as Element)
   })
 })

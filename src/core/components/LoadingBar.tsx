@@ -43,15 +43,15 @@ export default function LoadingBar() {
     return (
         <div className="fixed top-0 left-0 right-0 z-[9999] pointer-events-none">
             <div
-                className="h-1.5 bg-gradient-to-r from-primary via-primary/80 to-blue-500 shadow-lg transition-all duration-500 ease-out"
+                className="h-1.5 bg-gradient-to-r from-primary via-primary/80 to-brand-primary-400 shadow-lg transition-all duration-500 ease-out"
                 style={{
                     width: `${progress}%`,
-                    boxShadow: progress > 0 ? '0 0 20px rgba(6, 132, 199, 0.6)' : 'none'
+                    boxShadow: progress > 0 ? '0 0 20px hsl(var(--primary) / 0.5)' : 'none'
                 }}
             />
             {/* Shimmer effect on progress bar */}
             {loading && progress < 100 && (
-                <div className="absolute top-0 right-0 w-32 h-1.5 bg-gradient-to-l from-white/40 via-white/20 to-transparent animate-pulse" />
+                <div className="absolute top-0 right-0 w-32 h-1.5 bg-gradient-to-l from-primary-foreground/40 via-primary-foreground/20 to-transparent animate-pulse" />
             )}
         </div>
     );

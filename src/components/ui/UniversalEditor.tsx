@@ -59,13 +59,13 @@ const UniversalEditor: React.FC<UniversalEditorProps> = ({
       <div className="space-y-4">
         {/* Preview Header */}
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold text-slate-900">Önizleme</h3>
+          <h3 className="text-lg font-semibold text-foreground">Önizleme</h3>
           <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={copyToClipboard}
               title="HTML Kopyala"
-              className="p-2 rounded-lg transition-colors text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+              className="p-2 rounded-lg transition-colors text-muted-foreground hover:text-foreground hover:bg-muted"
             >
               {copied ? (
                 <CheckIcon className="w-4 h-4 text-green-600" />
@@ -85,7 +85,7 @@ const UniversalEditor: React.FC<UniversalEditorProps> = ({
         </div>
 
         {/* Preview Content */}
-        <div className="border border-slate-300 rounded-xl overflow-hidden bg-white">
+        <div className="border border-border rounded-xl overflow-hidden bg-card">
           <SafeHtmlRenderer 
             html={value}
             className={`p-6 ${className}`}
@@ -100,11 +100,11 @@ const UniversalEditor: React.FC<UniversalEditorProps> = ({
       {/* Editor Header */}
       {showPreview && (
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold text-slate-900">İçerik Editörü</h3>
+          <h3 className="text-lg font-semibold text-foreground">İçerik Editörü</h3>
           <button
             type="button"
             onClick={() => setIsPreview(true)}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors text-muted-foreground hover:text-foreground hover:bg-muted"
           >
             <EyeIcon className="w-4 h-4" />
             Önizle

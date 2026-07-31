@@ -244,12 +244,12 @@ const Header: React.FC = () => {
             {/* Arama hapı — Printables paradigması: turuncu dolgulu, tam yuvarlak pill, hover/focus'ta genişler */}
             <button
               onClick={() => setIsSearchOpen(true)}
-              className="hidden lg:flex items-center gap-2 h-9 w-48 hover:w-64 focus-visible:w-64 px-4 rounded-full bg-primary text-sm text-white hover:bg-primary/90 transition-all duration-200 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              className="hidden lg:flex items-center gap-2 h-9 w-48 hover:w-64 focus-visible:w-64 px-4 rounded-full bg-primary text-sm text-primary-foreground hover:bg-primary/90 transition-all duration-200 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               aria-label={`${tHeader('search')} (Ctrl+K)`}
             >
-              <MagnifyingGlass size={15} className="shrink-0 text-white" aria-hidden="true" />
-              <span className="flex-1 text-left truncate text-white/90">{tHeader('searchPlaceholder')}</span>
-              <kbd className="hidden xl:inline-flex items-center px-1.5 py-0.5 rounded-md bg-white/15 text-[10px] font-medium text-white/85">
+              <MagnifyingGlass size={15} className="shrink-0 text-primary-foreground" aria-hidden="true" />
+              <span className="flex-1 text-left truncate text-primary-foreground/90">{tHeader('searchPlaceholder')}</span>
+              <kbd className="hidden xl:inline-flex items-center px-1.5 py-0.5 rounded-md bg-primary-foreground/15 text-[10px] font-medium text-primary-foreground/85">
                 Ctrl K
               </kbd>
             </button>

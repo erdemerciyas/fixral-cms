@@ -17,8 +17,8 @@ import HTMLContent from '../HTMLContent';
 const EASING = [0.32, 0.72, 0, 1] as const;
 const DURATION = 0.7;
 
-/* Görsel üzeri metadata scrim'i — koyu karartma (Printables banner dili) */
-const OVERLAY_SCRIM = 'linear-gradient(0deg, rgba(0,0,0,0.74) 0%, rgba(0,0,0,0.35) 55%, rgba(0,0,0,0) 100%)';
+/* Görsel üzeri metadata scrim'i — koyu karartma (--scrim token'ı) */
+const OVERLAY_SCRIM = 'linear-gradient(0deg, hsl(var(--scrim) / 0.74) 0%, hsl(var(--scrim) / 0.35) 55%, hsl(var(--scrim) / 0) 100%)';
 
 interface ModernProjectCardProps {
   project: ProjectSummary & {

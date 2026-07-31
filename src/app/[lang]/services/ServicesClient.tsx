@@ -184,7 +184,7 @@ function ServiceSection({ service, index }: { service: Service; index: number })
               <Link
                 href={`/${lang}/contact?service=${encodeURIComponent(service.title)}`}
                 className="group inline-flex items-center gap-2.5 bg-primary text-primary-foreground px-6 py-3 rounded-xl text-sm font-medium
-                  transition-all duration-150 hover:bg-primary active:scale-[0.98] shadow-tinted-sm"
+                  transition-all duration-150 hover:bg-primary active:scale-[0.98] shadow-[var(--shadow-sm)]"
                 style={{
                   transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)',
                 }}

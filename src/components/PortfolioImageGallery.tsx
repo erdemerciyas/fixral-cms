@@ -273,7 +273,7 @@ const PortfolioImageGallery: React.FC<PortfolioImageGalleryProps> = ({
         <div className="flex flex-col md:flex-row items-center justify-center gap-4 mb-6">
           <button
             type="button"
-            className="flex items-center gap-2 px-4 py-2 rounded-lg border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 rounded-lg border border-border bg-card hover:bg-muted text-foreground transition-colors"
             onClick={() => fileInputRef.current?.click()}
             disabled={disabled || uploading}
           >
@@ -303,10 +303,10 @@ const PortfolioImageGallery: React.FC<PortfolioImageGalleryProps> = ({
       {images.length > 0 && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h4 className="text-lg font-semibold text-slate-900">
+            <h4 className="text-lg font-semibold text-foreground">
               Proje Görselleri ({images.length})
             </h4>
-            <p className="text-sm text-slate-600">
+            <p className="text-sm text-muted-foreground">
               ⭐ işaretli görsel kapak görseli olarak kullanılır
             </p>
           </div>
@@ -323,7 +323,7 @@ const PortfolioImageGallery: React.FC<PortfolioImageGalleryProps> = ({
                 className={`relative group rounded-xl overflow-hidden border-2 transition-all h-32 ${
                   imageUrl === coverImage 
                     ? 'border-primary shadow-lg' 
-                    : 'border-slate-200 hover:border-slate-300'
+                    : 'border-border hover:border-border-strong'
                 } ${draggedIndex === index ? 'opacity-50 scale-95' : ''} ${
                   !disabled ? 'cursor-move' : ''
                 }`}
@@ -340,7 +340,7 @@ const PortfolioImageGallery: React.FC<PortfolioImageGalleryProps> = ({
                 {/* Cover Image Badge */}
                 {imageUrl === coverImage && (
                   <div className="absolute top-2 right-2 z-10">
-                    <div className="bg-primary text-white px-2 py-1 rounded-full text-xs font-medium flex items-center space-x-1">
+                    <div className="bg-primary text-primary-foreground px-2 py-1 rounded-full text-xs font-medium flex items-center space-x-1">
                       <StarIconSolid className="w-3 h-3" />
                       <span>Kapak</span>
                     </div>

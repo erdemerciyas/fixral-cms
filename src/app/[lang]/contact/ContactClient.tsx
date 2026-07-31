@@ -242,7 +242,7 @@ function ContactPageContent() {
                     disabled={isSubmitting}
                     whileTap={{ scale: 0.98 }}
                     transition={{ duration: 0.15, ease }}
-                    className="group relative mt-2 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-primary text-sm font-medium text-primary-foreground shadow-tinted-md transition-all duration-150 hover:bg-primary disabled:opacity-60 disabled:cursor-not-allowed"
+                    className="group relative mt-2 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-primary text-sm font-medium text-primary-foreground shadow-[var(--shadow-md)] transition-all duration-150 hover:bg-primary disabled:opacity-60 disabled:cursor-not-allowed"
                     style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
                   >
                     {isSubmitting ? (
