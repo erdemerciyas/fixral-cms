@@ -11,7 +11,7 @@ function Skeleton({
   return (
     <div
       className={cn(
-        "skeleton-shimmer animate-pulse rounded-md bg-muted",
+        "skeleton-shimmer animate-pulse rounded-sm bg-muted",
         className
       )}
       {...props}

@@ -55,12 +55,21 @@ const Header: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const [navLinks, setNavLinks] = useState<Array<{ href: string; label: string; icon: any; isExternal?: boolean }>>([]);
   const [navLoaded, setNavLoaded] = useState(false);
   const [siteSettings, setSiteSettings] = useState<SiteSettings | null>(null);
   const { t: tHeader } = useAppTranslations('header');
 
   const pathname = usePathname() || '';
+
+  // Scroll durumu: ana sayfada hero üzerinde saydam → scroll sonrası token yüzey
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 8);
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -178,6 +187,13 @@ const Header: React.FC = () => {
   const firstSegment = pathname.split('/')[1];
   const currentLang = (locales as readonly string[]).includes(firstSegment) ? firstSegment : 'tr';
 
+  /* Semantik route tespiti: yalnızca ana sayfa hero'su always-dark scope'ta
+   * başlıyor; header tepedeyken hero'nun üzerine saydam biner ve kendi
+   * `public-theme public-dark` scope'u ile tüm token'ları grafit palete çevirir
+   * (açık metin/ikon). Scroll'da veya alt sayfalarda token yüzeye döner. */
+  const isHome = pathname === '/' || pathname === `/${currentLang}` || pathname === `/${currentLang}/`;
+  const overHero = isHome && !isScrolled;
+
   const ROUTE_SEGMENT_MAP: Record<string, Record<string, string>> = {
     tr: { noticias: 'haberler' },
     es: { haberler: 'noticias' },
@@ -204,14 +220,19 @@ const Header: React.FC = () => {
     <>
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-9999 focus:bg-background focus:text-primary focus:px-4 focus:py-2 focus:rounded-xl focus:shadow-lg focus:border focus:border-border"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-9999 focus:bg-background focus:text-primary focus:px-4 focus:py-2 focus:rounded-xs focus:shadow-[var(--shadow-lg)] focus:border focus:border-border"
       >
         {tHeader('skipToContent')}
       </a>
 
-      {/* Printables mantığı: token tabanlı zemin — light'ta beyaz + alt border, dark'ta koyu */}
+      {/* Precision chrome: flat, dark-capable bar. Ana sayfa tepesinde hero'nun
+          always-dark scope'uyla aynı teknikle saydamlaşır, sonrasında token zemin. */}
       <header
-        className="fixed top-0 left-0 right-0 z-50 bg-background border-b border-border"
+        className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-200 motion-reduce:transition-none ${
+          overHero
+            ? 'public-theme public-dark bg-transparent border-b border-transparent'
+            : 'bg-background border-b border-border'
+        }`}
         role="banner"
       >
         <div className="container-boxed">
@@ -219,11 +240,11 @@ const Header: React.FC = () => {
             {/* Logo — sol blok: token tabanlı kutu + foreground metin */}
             <Link
               href={`/${currentLang}`}
-              className="flex items-center gap-2.5 group shrink-0 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 rounded-xl"
+              className="flex items-center gap-2.5 group shrink-0 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 rounded-xs"
               aria-label={tHeader('goToHome')}
             >
               {siteSettings?.logo?.url && (
-                <div className="relative w-9 h-9 rounded-xl overflow-hidden bg-card border border-border shadow-xs transition-transform duration-150 group-hover:scale-[1.03]">
+                <div className="relative w-9 h-9 rounded-sm overflow-hidden bg-card border border-border transition-transform duration-150 group-hover:scale-[1.03]">
                   <Image
                     src={siteSettings.logo.url}
                     alt={siteSettings.logo.alt}
@@ -241,15 +262,16 @@ const Header: React.FC = () => {
               )}
             </Link>
 
-            {/* Arama hapı — Printables paradigması: turuncu dolgulu, tam yuvarlak pill, hover/focus'ta genişler */}
+            {/* Arama kontrolü — precision: turuncu dolgu, 2px radius, hover/focus'ta genişler.
+                Token tabanlı: primary/primary-foreground her iki temada da geçerli. */}
             <button
               onClick={() => setIsSearchOpen(true)}
-              className="hidden lg:flex items-center gap-2 h-9 w-48 hover:w-64 focus-visible:w-64 px-4 rounded-full bg-primary text-sm text-primary-foreground hover:bg-primary/90 transition-all duration-200 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              className="hidden lg:flex items-center gap-2 h-9 w-48 hover:w-64 focus-visible:w-64 px-4 rounded-xs bg-primary text-sm text-primary-foreground hover:bg-primary/90 transition-all duration-200 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               aria-label={`${tHeader('search')} (Ctrl+K)`}
             >
               <MagnifyingGlass size={15} className="shrink-0 text-primary-foreground" aria-hidden="true" />
               <span className="flex-1 text-left truncate text-primary-foreground/90">{tHeader('searchPlaceholder')}</span>
-              <kbd className="hidden xl:inline-flex items-center px-1.5 py-0.5 rounded-md bg-primary-foreground/15 text-[10px] font-medium text-primary-foreground/85">
+              <kbd className="hidden xl:inline-flex items-center px-1.5 py-0.5 rounded-xs bg-primary-foreground/15 font-mono text-[10px] font-medium tracking-wide text-primary-foreground/85">
                 Ctrl K
               </kbd>
             </button>
@@ -273,17 +295,17 @@ const Header: React.FC = () => {
               {/* Mobile search trigger */}
               <button
                 onClick={() => setIsSearchOpen(true)}
-                className="lg:hidden p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-accent transition-colors duration-150 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0"
+                className="lg:hidden p-2 rounded-xs text-muted-foreground hover:text-foreground hover:bg-accent transition-colors duration-150 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0"
                 aria-label={tHeader('search')}
               >
                 <MagnifyingGlass size={18} />
               </button>
 
-              {/* CTA — primary buton (Printables sağ blok) */}
+              {/* CTA — tek turuncu dolgu, 2px kontrol radius'u */}
               <div className="hidden lg:block">
                 <MagneticButton
                   onClick={openProjectModal}
-                  className="rounded-lg bg-primary text-primary-foreground text-sm px-4 py-2 font-semibold hover:bg-[hsl(var(--primary)/0.85)] transition-colors duration-200 shadow-xs active:scale-[0.98] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                  className="rounded-xs bg-primary text-primary-foreground text-sm px-4 py-2 font-semibold hover:bg-primary/90 transition-colors duration-200 active:scale-[0.98] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 >
                   <PaperPlaneTilt size={14} className="mr-1.5 inline-block" aria-hidden="true" />
                   Teklif Al
@@ -295,7 +317,7 @@ const Header: React.FC = () => {
                 onClick={toggleMobileMenu}
                 aria-label={tHeader('openMenu')}
                 aria-expanded={isMobileMenuOpen}
-                className="lg:hidden p-2 rounded-xl text-foreground hover:bg-accent transition-colors duration-150 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0"
+                className="lg:hidden p-2 rounded-xs text-foreground hover:bg-accent transition-colors duration-150 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0"
               >
                 <AnimatePresence mode="wait">
                   {isMobileMenuOpen ? (

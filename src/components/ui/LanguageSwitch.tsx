@@ -31,7 +31,7 @@ interface LanguageSwitchProps {
   className?: string;
   /** @deprecated Use variant="compact" instead */
   compact?: boolean;
-  /** Whether the parent has a dark background (subpage hero) */
+  /** @deprecated Scope tekniği (`public-theme public-dark`) token'ları zaten çevirir */
   isDarkBg?: boolean;
 }
 
@@ -40,7 +40,6 @@ export default function LanguageSwitch({
   variant = 'default',
   className = '',
   compact = false,
-  isDarkBg = false,
 }: LanguageSwitchProps) {
   const pathname = usePathname() ?? '/';
   const [isOpen, setIsOpen] = useState(false);
@@ -116,18 +115,18 @@ export default function LanguageSwitch({
       <div ref={dropdownRef} className={`relative ${className}`}>
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center gap-1.5 rounded-xl px-2.5 py-1.5 text-xs font-medium text-primary-foreground/85 hover:text-primary-foreground hover:bg-primary-foreground/15 transition-colors duration-150 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary-foreground/80"
+          className="flex items-center gap-1.5 rounded-xs px-2.5 py-1.5 text-xs font-medium text-primary-foreground/85 hover:text-primary-foreground hover:bg-primary-foreground/15 transition-colors duration-150 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary-foreground/80"
           aria-label="Dil seç"
           aria-expanded={isOpen}
         >
           <GlobeAltIcon className="w-3.5 h-3.5" />
           <span>{currentLanguage.flag}</span>
-          <span className="uppercase">{currentLang}</span>
+          <span className="font-mono uppercase tracking-[0.14em]">{currentLang}</span>
           <ChevronDownIcon className={`w-3 h-3 transition-transform duration-150 ${isOpen ? 'rotate-180' : ''}`} />
         </button>
 
         {isOpen && (
-          <div className="absolute right-0 top-full mt-1.5 w-40 rounded-xl bg-popover text-popover-foreground border border-border overflow-hidden z-60 animate-in fade-in slide-in-from-top-2 duration-150 shadow-[var(--shadow-lg)]">
+          <div className="absolute right-0 top-full mt-1.5 w-40 rounded-lg bg-popover text-popover-foreground border border-border overflow-hidden z-60 animate-in fade-in slide-in-from-top-2 duration-150 shadow-[var(--shadow-lg)]">
             {languages.map((lang) => (
               <Link
                 key={lang.code}
@@ -159,22 +158,18 @@ export default function LanguageSwitch({
       <div ref={dropdownRef} className={`relative ${className}`}>
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className={`flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium transition-colors ${
-            isDarkBg
-              ? 'text-white/80 hover:text-white hover:bg-white/10'
-              : 'text-muted-foreground hover:text-foreground hover:bg-muted'
-          }`}
+          className="flex items-center gap-1.5 rounded-xs px-2 py-1 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
           aria-label="Dil seç"
           aria-expanded={isOpen}
         >
           <GlobeAltIcon className="w-3.5 h-3.5" />
           <span>{currentLanguage.flag}</span>
-          <span className="uppercase">{currentLang}</span>
+          <span className="font-mono uppercase tracking-[0.14em]">{currentLang}</span>
           <ChevronDownIcon className={`w-3 h-3 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
         </button>
 
         {isOpen && (
-          <div className="absolute right-0 top-full mt-1.5 w-40 rounded-lg bg-popover text-popover-foreground shadow-xl border border-border overflow-hidden z-60 animate-in fade-in slide-in-from-top-2 duration-150">
+          <div className="absolute right-0 top-full mt-1.5 w-40 rounded-lg bg-popover text-popover-foreground shadow-[var(--shadow-lg)] border border-border overflow-hidden z-60 animate-in fade-in slide-in-from-top-2 duration-150">
             {languages.map((lang) => (
               <Link
                 key={lang.code}
@@ -206,17 +201,17 @@ export default function LanguageSwitch({
       <div ref={dropdownRef} className={`relative ${className}`}>
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+          className="flex h-9 items-center gap-1.5 rounded-xs border border-border bg-transparent px-2.5 text-xs font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors duration-150"
           aria-label="Dil seç"
           aria-expanded={isOpen}
         >
           <span>{currentLanguage.flag}</span>
-          <span className="uppercase">{currentLang}</span>
+          <span className="font-mono text-[11px] uppercase tracking-[0.14em]">{currentLang}</span>
           <ChevronDownIcon className={`w-3 h-3 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
         </button>
 
         {isOpen && (
-          <div className="absolute right-0 top-full mt-1.5 w-40 rounded-lg bg-popover text-popover-foreground shadow-xl border border-border overflow-hidden z-60">
+          <div className="absolute right-0 top-full mt-1.5 w-40 rounded-lg bg-popover text-popover-foreground shadow-[var(--shadow-lg)] border border-border overflow-hidden z-60 animate-in fade-in slide-in-from-top-2 duration-150">
             {languages.map((lang) => (
               <Link
                 key={lang.code}
@@ -248,7 +243,7 @@ export default function LanguageSwitch({
       <button
         onClick={() => setIsOpen(!isOpen)}
         type="button"
-        className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-muted transition-colors"
+        className="flex items-center gap-2 rounded-xs px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-muted transition-colors"
         aria-label="Dil seç"
         aria-expanded={isOpen}
       >
@@ -258,7 +253,7 @@ export default function LanguageSwitch({
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 top-full mt-1 w-44 rounded-lg border border-border bg-popover text-popover-foreground shadow-lg overflow-hidden z-60">
+        <div className="absolute right-0 top-full mt-1 w-44 rounded-lg border border-border bg-popover text-popover-foreground shadow-[var(--shadow-lg)] overflow-hidden z-60">
           {languages.map((lang) => (
             <Link
               key={lang.code}

@@ -31,10 +31,10 @@ export function SkeletonCard({
 }) {
   return (
     <div
-      className={cn('rounded-2xl border border-border bg-card p-6', className)}
+      className={cn('rounded-sm border border-border bg-card p-6', className)}
       aria-hidden="true"
     >
-      {withMedia && <Skeleton className="mb-5 h-40 w-full rounded-xl" />}
+      {withMedia && <Skeleton className="mb-5 h-40 w-full rounded-sm" />}
       <Skeleton className="mb-3 h-5 w-1/2" />
       <SkeletonText lines={2} />
     </div>
@@ -70,7 +70,7 @@ export function SkeletonHero({ className }: { className?: string }) {
       className={cn('flex min-h-[40dvh] flex-col justify-center gap-6', className)}
       aria-hidden="true"
     >
-      <Skeleton className="h-6 w-32 rounded-full" />
+      <Skeleton className="h-6 w-32 rounded-xs" />
       <Skeleton className="h-12 w-2/3 max-w-xl" />
       <SkeletonText lines={2} className="max-w-xl" />
     </div>

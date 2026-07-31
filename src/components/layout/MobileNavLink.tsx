@@ -25,7 +25,7 @@ export default function MobileNavLink({
     const classes = `
         flex items-center gap-4
         px-5 py-3.5
-        rounded-xl
+        rounded-xs
         text-base font-medium tracking-wide
         transition-all duration-200
         focus-visible:outline-hidden
@@ -41,13 +41,17 @@ export default function MobileNavLink({
 
     const content = (
         <>
-            <span className={`flex items-center justify-center w-9 h-9 rounded-lg ${isActive ? 'bg-primary/15' : 'bg-muted'} transition-colors duration-200`}>
+            <span className={`flex items-center justify-center w-9 h-9 rounded-xs ${isActive ? 'bg-primary/15' : 'bg-muted'} transition-colors duration-200`}>
                 <Icon className={`w-5 h-5 shrink-0 ${isActive ? 'text-primary' : 'text-muted-foreground'}`} aria-hidden="true" />
             </span>
             <span className="flex-1">{label}</span>
-            {isActive && (
-                <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-            )}
+            {/* Monospace nav meta — zero-padded index (precision kit dili) */}
+            <span
+                aria-hidden="true"
+                className={`font-mono text-[10px] tabular-nums tracking-tight ${isActive ? 'text-primary/80' : 'text-muted-foreground/60'}`}
+            >
+                {String(index + 1).padStart(2, '0')}
+            </span>
         </>
     );
 

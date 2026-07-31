@@ -80,7 +80,7 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items, className = '' }) => {
   return (
     <nav
       aria-label="Breadcrumb"
-      className={`rounded-2xl border border-primary/20 bg-surface-primary shadow-xs backdrop-blur-sm px-4 py-3 text-sm text-muted-foreground ${className}`}
+      className={`font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground ${className}`}
     >
       <ol className="flex flex-wrap items-center gap-x-2 gap-y-1">
         {breadcrumbs.map((crumb, index) => {
@@ -90,28 +90,28 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items, className = '' }) => {
               {index === 0 ? (
                 <Link
                   href={crumb.href}
-                  className="inline-flex items-center gap-1 text-primary hover:text-primary/80 hover:underline transition-colors"
+                  className="inline-flex items-center gap-1 text-muted-foreground hover:text-primary transition-colors"
                 >
-                  <HomeIcon className="h-4 w-4" aria-hidden="true" />
+                  <HomeIcon className="h-3.5 w-3.5" aria-hidden="true" />
                   <span className="sr-only">{crumb.label}</span>
                 </Link>
               ) : null}
               {index > 0 && (
                 <ChevronRightIcon
-                  className="h-4 w-4 mx-1.5 text-muted-foreground"
+                  className="h-3 w-3 mx-1.5 text-muted-foreground/60"
                   aria-hidden="true"
                 />
               )}
               {index > 0 && !isLast ? (
                 <Link
                   href={crumb.href}
-                  className="text-primary hover:text-primary/80 hover:underline transition-colors"
+                  className="text-muted-foreground hover:text-primary transition-colors"
                 >
                   {crumb.label}
                 </Link>
               ) : null}
               {isLast && index > 0 ? (
-                <span className="font-medium text-foreground">
+                <span className="font-medium text-foreground" aria-current="page">
                   {crumb.label}
                 </span>
               ) : null}

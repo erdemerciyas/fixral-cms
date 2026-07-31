@@ -47,13 +47,13 @@ export default function Pagination({ currentPage, totalPages, createPageUrl }: P
             {currentPage > 1 ? (
                 <Link
                     href={createPageUrl(currentPage - 1)}
-                    className="p-2 rounded-lg border border-border bg-transparent text-muted-foreground transition-colors duration-200 ease-out hover:bg-accent hover:text-accent-foreground"
+                    className="p-2 rounded-xs border border-border bg-transparent text-muted-foreground transition-colors duration-200 ease-out hover:bg-accent hover:text-accent-foreground"
                     aria-label="Önceki Sayfa"
                 >
                     <ChevronLeftIcon className="w-5 h-5" />
                 </Link>
             ) : (
-                <span className="p-2 rounded-lg border border-border bg-muted text-muted-foreground/50 cursor-not-allowed">
+                <span className="p-2 rounded-xs border border-border bg-muted text-muted-foreground/50 cursor-not-allowed">
                     <ChevronLeftIcon className="w-5 h-5" />
                 </span>
             )}
@@ -76,9 +76,9 @@ export default function Pagination({ currentPage, totalPages, createPageUrl }: P
                         <Link
                             key={pageNum}
                             href={createPageUrl(pageNum)}
-                            className={`min-w-[40px] h-10 flex items-center justify-center rounded-lg border text-sm font-medium transition-colors duration-200 ease-out
+                            className={`min-w-[40px] h-10 flex items-center justify-center rounded-xs border font-mono text-sm tabular-nums font-medium transition-colors duration-200 ease-out
                 ${isActive
-                                    ? 'bg-secondary text-foreground border-border'
+                                    ? 'bg-accent text-accent-foreground border-primary/40'
                                     : 'bg-transparent text-muted-foreground border-transparent hover:bg-accent hover:text-accent-foreground'
                                 }`}
                         >
@@ -92,13 +92,13 @@ export default function Pagination({ currentPage, totalPages, createPageUrl }: P
             {currentPage < totalPages ? (
                 <Link
                     href={createPageUrl(currentPage + 1)}
-                    className="p-2 rounded-lg border border-border bg-transparent text-muted-foreground transition-colors duration-200 ease-out hover:bg-accent hover:text-accent-foreground"
+                    className="p-2 rounded-xs border border-border bg-transparent text-muted-foreground transition-colors duration-200 ease-out hover:bg-accent hover:text-accent-foreground"
                     aria-label="Sonraki Sayfa"
                 >
                     <ChevronRightIcon className="w-5 h-5" />
                 </Link>
             ) : (
-                <span className="p-2 rounded-lg border border-border bg-muted text-muted-foreground/50 cursor-not-allowed">
+                <span className="p-2 rounded-xs border border-border bg-muted text-muted-foreground/50 cursor-not-allowed">
                     <ChevronRightIcon className="w-5 h-5" />
                 </span>
             )}

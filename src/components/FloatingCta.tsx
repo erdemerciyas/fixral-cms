@@ -55,11 +55,11 @@ export default function FloatingCta() {
         aria-label="Proje başvurusu formunu aç"
         aria-haspopup="dialog"
         aria-expanded={isOpen}
-        className={`group relative isolate overflow-hidden flex items-center h-16 ${isOpen ? 'w-56' : 'w-14'} hover:w-56 motion-safe:transition-all motion-safe:duration-300 motion-safe:ease-out ${isOpen ? 'translate-x-0' : 'translate-x-3'} hover:translate-x-0 rounded-l-lg bg-primary text-primary-foreground shadow-lg focus:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background`}
+        className={`group relative isolate overflow-hidden flex items-center h-16 ${isOpen ? 'w-56' : 'w-14'} hover:w-56 motion-safe:transition-all motion-safe:duration-300 motion-safe:ease-out ${isOpen ? 'translate-x-0' : 'translate-x-3'} hover:translate-x-0 rounded-l-xs bg-primary text-primary-foreground shadow-[var(--shadow-lg)] focus:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background`}
       >
         {/* İnce iç hat */}
         <span aria-hidden className="pointer-events-none absolute inset-0">
-          <span className="absolute inset-0 rounded-l-lg ring-1 ring-primary-foreground/10" />
+          <span className="absolute inset-0 rounded-l-xs ring-1 ring-primary-foreground/10" />
         </span>
 
         {/* Kulak gövdesi – dar başlangıç, hover’da yazı belirir */}

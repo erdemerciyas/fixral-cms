@@ -8,6 +8,7 @@ import dynamic from 'next/dynamic';
 import { useAppTranslations } from '@/hooks/useAppTranslations';
 import { Mail as Envelope, Phone, MapPin, ArrowUp } from 'lucide-react';
 import { m, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { MeasureRule } from '@/components/ui';
 import {
   LinkedinLogo,
   TwitterLogo,
@@ -250,7 +251,7 @@ const ConditionalFooter: React.FC = () => {
           : `/${locale}${link.url.startsWith('/') ? link.url : `/${link.url}`}`;
 
     const sharedClasses =
-      'text-sm text-zinc-300 hover:text-primary transition-colors duration-200 inline-block py-0.5 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary rounded';
+      'text-sm text-muted-foreground hover:text-primary transition-colors duration-200 inline-block py-0.5 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary rounded-xs';
 
     return (
       <li key={index}>
@@ -274,13 +275,18 @@ const ConditionalFooter: React.FC = () => {
 
   return (
     <>
-      {/* Printables paradigması: footer her iki temada da koyu zemin */}
+      {/* Always-dark footer: public-theme public-dark scope'u ile her iki temada grafit zemin */}
       <footer
-        className="relative overflow-hidden bg-zinc-950 border-t border-zinc-800"
+        className="public-theme public-dark relative overflow-hidden bg-background text-foreground border-t border-border"
         role="contentinfo"
       >
+        {/* Hairline üst bandı — precision ruler */}
+        <div className="container-boxed pt-8">
+          <MeasureRule ticks="sparse" />
+        </div>
+
         {/* ── Main grid: 4 columns ── */}
-        <div className="container-boxed pt-16 pb-8">
+        <div className="container-boxed pt-10 pb-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {/* Column 1: Logo + Description + Social */}
             <section aria-labelledby="footer-about" className="lg:col-span-1">
@@ -291,7 +297,7 @@ const ConditionalFooter: React.FC = () => {
               {/* Logo & site name */}
               <div className="mb-4 flex items-center gap-3">
                 {site?.logo?.url && (
-                  <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-lg bg-white/6">
+                  <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-sm bg-card border border-border">
                     <Image
                       src={site.logo.url}
                       alt={site.logo.alt}
@@ -303,14 +309,14 @@ const ConditionalFooter: React.FC = () => {
                   </div>
                 )}
                 {site?.siteName && (
-                  <span className="text-lg font-semibold tracking-tight text-zinc-100">
+                  <span className="font-display text-lg font-semibold tracking-tight text-foreground">
                     {site.siteName}
                   </span>
                 )}
               </div>
 
               {/* Description */}
-              <p className="max-w-xs text-sm leading-relaxed text-zinc-300">
+              <p className="max-w-xs text-sm leading-relaxed text-muted-foreground">
                 {settings.mainDescription}
               </p>
 
@@ -326,7 +332,7 @@ const ConditionalFooter: React.FC = () => {
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label={item.label}
-                        className="text-zinc-300 hover:text-primary transition-colors duration-150 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary rounded"
+                        className="text-muted-foreground hover:text-primary transition-colors duration-150 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary rounded-xs"
                       >
                         {IconComp && <IconComp className="h-5 w-5" />}
                       </a>
@@ -339,7 +345,7 @@ const ConditionalFooter: React.FC = () => {
             {/* Column 2: Quick Links (first half) */}
             {settings.visibility.showQuickLinks && quickLinksHalf.length > 0 && (
               <nav aria-label="Footer navigation">
-                <h3 className="mb-5 text-sm font-semibold text-zinc-100">
+                <h3 className="mb-5 font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
                   {t('quickLinks')}
                 </h3>
                 <ul className="flex flex-col gap-2.5">
@@ -351,7 +357,7 @@ const ConditionalFooter: React.FC = () => {
             {/* Column 3: Quick Links (second half) or Services */}
             {settings.visibility.showQuickLinks && quickLinksSecondHalf.length > 0 && (
               <nav aria-label="Footer services">
-                <h3 className="mb-5 text-sm font-semibold text-zinc-100">
+                <h3 className="mb-5 font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
                   {t('services', { defaultValue: 'Hizmetler' })}
                 </h3>
                 <ul className="flex flex-col gap-2.5">
@@ -365,7 +371,7 @@ const ConditionalFooter: React.FC = () => {
               <section aria-labelledby="footer-contact">
                 <h3
                   id="footer-contact"
-                  className="mb-5 text-sm font-semibold text-zinc-100"
+                  className="mb-5 font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
                 >
                   {t('contactTitle', { defaultValue: 'İletişim' })}
                 </h3>
@@ -373,24 +379,24 @@ const ConditionalFooter: React.FC = () => {
                   {settings.contactInfo.email && (
                     <a
                       href={`mailto:${settings.contactInfo.email}`}
-                      className="group inline-flex items-start gap-2.5 text-sm text-zinc-300 hover:text-primary transition-colors duration-200"
+                      className="group inline-flex items-start gap-2.5 text-sm text-muted-foreground hover:text-primary transition-colors duration-200"
                     >
-                      <Envelope className="mt-0.5 h-4 w-4 shrink-0 text-zinc-400" />
+                      <Envelope className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground/70" />
                       <span>{settings.contactInfo.email}</span>
                     </a>
                   )}
                   {settings.contactInfo.phone && (
                     <a
                       href={`tel:${settings.contactInfo.phone.replace(/\s/g, '')}`}
-                      className="group inline-flex items-start gap-2.5 text-sm text-zinc-300 hover:text-primary transition-colors duration-200"
+                      className="group inline-flex items-start gap-2.5 text-sm text-muted-foreground hover:text-primary transition-colors duration-200"
                     >
-                      <Phone className="mt-0.5 h-4 w-4 shrink-0 text-zinc-400" />
+                      <Phone className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground/70" />
                       <span>{settings.contactInfo.phone}</span>
                     </a>
                   )}
                   {settings.contactInfo.address && (
-                    <div className="inline-flex items-start gap-2.5 text-sm text-zinc-300">
-                      <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-zinc-400" />
+                    <div className="inline-flex items-start gap-2.5 text-sm text-muted-foreground">
+                      <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground/70" />
                       <span>{settings.contactInfo.address}</span>
                     </div>
                   )}
@@ -402,24 +408,24 @@ const ConditionalFooter: React.FC = () => {
 
         {/* ── Bottom section ── */}
         <div className="container-boxed">
-          <div className="border-t border-zinc-800 mt-8 pt-8 pb-8">
+          <div className="border-t border-border mt-8 pt-8 pb-8">
             <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
               {/* Left: Copyright + Version */}
               <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
-                <p className="font-mono text-xs text-zinc-400">
+                <p className="font-mono text-xs text-muted-foreground">
                   &copy; {settings.copyrightInfo.year}{' '}
                   {settings.copyrightInfo.companyName}.{' '}
                   {settings.copyrightInfo.additionalText}
                 </p>
                 <Version variant="badge" />
                 {settings.visibility.showDeveloperInfo && (
-                  <span className="font-mono text-xs text-zinc-400">
+                  <span className="font-mono text-xs text-muted-foreground">
                     {t('developer')}{' '}
                     <a
                       href={settings.developerInfo.website}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-zinc-300 hover:text-primary underline decoration-zinc-700 underline-offset-2 transition-colors duration-200"
+                      className="text-foreground hover:text-primary underline decoration-border-strong underline-offset-2 transition-colors duration-200"
                     >
                       {settings.developerInfo.name}
                     </a>
@@ -445,7 +451,7 @@ const ConditionalFooter: React.FC = () => {
               duration: prefersReducedMotion ? 0 : 0.3,
               ease: [0.32, 0.72, 0, 1],
             }}
-            className="fixed bottom-6 right-6 z-40 inline-flex h-11 w-11 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-[var(--shadow-md)] hover:bg-primary/90 transition-colors duration-150 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            className="fixed bottom-6 right-6 z-40 inline-flex h-11 w-11 items-center justify-center rounded-xs bg-primary text-primary-foreground shadow-[var(--shadow-md)] hover:bg-primary/90 transition-colors duration-150 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
             <ArrowUp className="h-5 w-5" />
           </m.button>

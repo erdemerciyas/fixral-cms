@@ -1,10 +1,19 @@
 'use client';
 
-import { m, useReducedMotion } from 'framer-motion';
+/**
+ * PageHero — paylaşılan teknik sayfa başlığı (precision chrome).
+ * TechLabel index/badge satırı + BlueprintGrid bandı + Barlow display başlık +
+ * monospace mikro-etiketler. Mevcut prop API'si korunur (alt sayfalar kırılmaz);
+ * `index` yeni opsiyonel prop'tur (örn. "01" bölüm numarası).
+ * Animasyonlar precision motion preset'leri üzerinden yürür ve
+ * prefers-reduced-motion'da opacity-only'ye düşer.
+ */
+import { m } from 'framer-motion';
 import Link from 'next/link';
 import { ArrowRight as ArrowRightIcon } from 'lucide-react';
 import { useAppTranslations } from '@/hooks/useAppTranslations';
 import { TextReveal } from '@/components/ui/TextReveal';
+import { BlueprintGrid, MeasureRule, TechLabel, useMotionPresets } from '@/components/ui';
 import Breadcrumbs from '@/components/Breadcrumbs';
 
 interface PageHeroProps {
@@ -22,9 +31,9 @@ interface PageHeroProps {
   showSecondaryButton?: boolean;
   variant?: 'default' | 'compact';
   showBreadcrumbs?: boolean;
+  /** TechLabel index numarası ("01 / BADGE"); sayı zero-padded yazılır */
+  index?: number | string;
 }
-
-const EASE = [0.22, 1, 0.36, 1] as const;
 
 export default function PageHero({
   title,
@@ -41,10 +50,11 @@ export default function PageHero({
   showSecondaryButton = false,
   variant = 'default',
   showBreadcrumbs = false,
+  index,
 }: PageHeroProps) {
   const { t } = useAppTranslations('common');
   const resolvedButtonText = buttonText || t('explore');
-  const reducedMotion = useReducedMotion();
+  const { staggerContainer, staggerItem } = useMotionPresets();
 
   // Background Logic — Priority: Prop > Default (token tabanlı düz yüzey)
   const finalBg = backgroundGradient || 'bg-secondary';
@@ -56,17 +66,13 @@ export default function PageHero({
 
   const sizeClasses =
     variant === 'compact'
-      ? 'min-h-[30dvh] flex flex-col justify-center pt-24 pb-12 md:pt-28 md:pb-14'
-      : 'min-h-[40dvh] flex flex-col justify-center pt-28 pb-16 md:pt-32 md:pb-20';
+      ? 'min-h-[30dvh] flex flex-col justify-center pt-24 pb-10 md:pt-28 md:pb-12'
+      : 'min-h-[40dvh] flex flex-col justify-center pt-28 pb-14 md:pt-32 md:pb-16';
 
-  const reveal = (delay: number) =>
-    reducedMotion
-      ? {}
-      : {
-          initial: { opacity: 0, y: 20 },
-          animate: { opacity: 1, y: 0 },
-          transition: { duration: 0.7, delay, ease: EASE },
-        };
+  /* Badge yoksa index tek başına mono etiket olarak yazılır ("01") */
+  const formattedIndex =
+    typeof index === 'number' ? String(index).padStart(2, '0') : index;
+  const hasLabelRow = Boolean(badge) || formattedIndex !== undefined;
 
   return (
     <section
@@ -75,34 +81,39 @@ export default function PageHero({
       aria-label={title}
       role="banner"
     >
-      {/* Static blueprint grid (decorative) */}
-      <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-        <div className="absolute inset-0 blueprint-grid opacity-40" />
-      </div>
+      {/* Blueprint grid bandı (dekoratif, temaya token'lardan uyarlanır) */}
+      <BlueprintGrid density="normal" opacity="subtle" />
 
       <div className="container-content relative z-10 grow flex flex-col justify-center">
-        <div className="flex flex-col items-start text-left w-full">
+        <m.div
+          variants={staggerContainer}
+          initial="hidden"
+          animate="visible"
+          className="flex flex-col items-start text-left w-full"
+        >
           {/* Integrated breadcrumbs */}
           {showBreadcrumbs && (
-            <m.div {...reveal(0)} className="mb-6 w-full">
+            <m.div variants={staggerItem} className="mb-6 w-full">
               <Breadcrumbs />
             </m.div>
           )}
 
-          {/* Badge */}
-          {badge && (
-            <m.div {...reveal(0.05)} className="mb-5 inline-block">
-              <span className="px-3 py-1.5 rounded-sm bg-accent border border-border text-[11px] font-medium uppercase tracking-[0.15em] text-accent-foreground">
-                {badge}
-              </span>
+          {/* TechLabel — index + badge (monospace teknik etiket) */}
+          {hasLabelRow && (
+            <m.div variants={staggerItem} className="mb-5">
+              <TechLabel as="p" marker="tick" index={badge ? index : undefined}>
+                {badge ?? formattedIndex}
+              </TechLabel>
             </m.div>
           )}
 
-          {/* Kinetic title */}
-          <m.div {...reveal(0.1)} className="mb-5">
+          {/* Barlow display başlık */}
+          <m.div variants={staggerItem} className="mb-5">
             <h1
-              className={`text-display tracking-tighter font-semibold text-foreground ${
-                variant === 'compact' ? 'text-3xl md:text-5xl' : 'text-4xl md:text-6xl'
+              className={`font-display font-bold leading-[1.05] tracking-[-0.03em] text-foreground ${
+                variant === 'compact'
+                  ? 'text-3xl md:text-4xl lg:text-5xl'
+                  : 'text-4xl md:text-5xl lg:text-6xl'
               }`}
             >
               <TextReveal mode="word" mask stagger={0.04} delay={0.1}>
@@ -114,8 +125,8 @@ export default function PageHero({
           {/* Subtitle */}
           {subtitle && (
             <m.p
-              {...reveal(0.18)}
-              className="text-xl sm:text-2xl font-semibold text-accent-foreground mb-6"
+              variants={staggerItem}
+              className="text-lg sm:text-xl font-semibold text-accent-foreground mb-5"
             >
               {subtitle}
             </m.p>
@@ -124,51 +135,61 @@ export default function PageHero({
           {/* Description */}
           {description && (
             <m.p
-              {...reveal(0.22)}
-              className="text-lg sm:text-xl leading-relaxed text-muted-foreground max-w-3xl mb-10"
+              variants={staggerItem}
+              className="text-base sm:text-lg leading-relaxed text-muted-foreground max-w-[65ch] mb-8"
             >
               {description}
             </m.p>
           )}
 
-          {/* Featured Badge */}
+          {/* Featured Badge — monospace mikro-etiket */}
           {featuredBadge && (
-            <m.div {...reveal(0.26)} className="flex items-center mb-8 justify-start">
-              <div className="flex items-center gap-2 px-3 py-1.5 bg-accent border border-border rounded-sm">
-                <span className="w-1.5 h-1.5 rounded-full bg-primary" aria-hidden="true" />
-                <span className="text-accent-foreground font-semibold text-sm">{featuredBadge}</span>
+            <m.div variants={staggerItem} className="flex items-center mb-8 justify-start">
+              <div className="flex items-center gap-2 px-3 py-1.5 bg-card border border-border rounded-xs">
+                <span className="w-1.5 h-1.5 bg-primary" aria-hidden="true" />
+                <span className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-accent-foreground">
+                  {featuredBadge}
+                </span>
               </div>
             </m.div>
           )}
 
-          {/* CTA Buttons */}
+          {/* CTA Buttons — 2px kontrol radius'u, tek turuncu dolgu + hairline outline */}
           {(showButton || showSecondaryButton) && (
             <m.div
-              {...reveal(0.3)}
-              className="flex flex-col sm:flex-row gap-4 sm:gap-5 justify-start items-start"
+              variants={staggerItem}
+              className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-start items-start"
             >
               {showButton && (
                 <Link
                   href={buttonLink}
-                  className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary/90 transition-colors duration-200 motion-reduce:transition-none focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                  className="group inline-flex items-center gap-2 rounded-xs bg-primary px-6 py-3 text-sm font-medium text-primary-foreground hover:bg-primary/90 active:scale-[0.98] transition-[background-color,transform] duration-200 motion-reduce:transition-none focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 >
                   {resolvedButtonText}
-                  <ArrowRightIcon className="w-5 h-5" aria-hidden="true" />
+                  <ArrowRightIcon
+                    className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none"
+                    aria-hidden="true"
+                  />
                 </Link>
               )}
 
               {showSecondaryButton && secondaryButtonLink && (
                 <Link
                   href={secondaryButtonLink}
-                  className="inline-flex items-center gap-2 px-8 py-4 bg-card border border-border text-foreground font-semibold rounded-lg hover:bg-accent hover:text-accent-foreground transition-colors duration-200 motion-reduce:transition-none focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                  className="inline-flex items-center gap-2 rounded-xs border border-border-strong px-6 py-3 text-sm font-medium text-foreground hover:border-primary/50 hover:text-primary active:scale-[0.98] transition-[color,border-color,transform] duration-200 motion-reduce:transition-none focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 >
                   {secondaryButtonText}
-                  <ArrowRightIcon className="w-5 h-5" aria-hidden="true" />
+                  <ArrowRightIcon className="w-4 h-4" aria-hidden="true" />
                 </Link>
               )}
             </m.div>
           )}
-        </div>
+
+          {/* Ruler bandı — precision imzası (dekoratif) */}
+          <m.div variants={staggerItem} className="mt-10 w-full" aria-hidden="true">
+            <MeasureRule ticks="sparse" />
+          </m.div>
+        </m.div>
       </div>
     </section>
   );

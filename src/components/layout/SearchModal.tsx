@@ -139,8 +139,8 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                     className="fixed inset-0 z-100 flex items-start justify-center pt-[12vh]"
                     onClick={onClose}
                 >
-                    {/* Backdrop */}
-                    <div className="absolute inset-0 bg-black/60 backdrop-blur-xs" />
+                    {/* Backdrop — token tabanlı scrim */}
+                    <div className="absolute inset-0 bg-[hsl(var(--scrim)/0.65)] backdrop-blur-xs" />
 
                     {/* Modal */}
                     <m.div
@@ -151,7 +151,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                         className="relative w-full max-w-2xl mx-4"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        <div className="bg-card rounded-2xl shadow-2xl border border-border overflow-hidden">
+                        <div className="bg-card rounded-lg shadow-[var(--shadow-xl)] border border-border overflow-hidden">
                             {/* Search Input */}
                             <form onSubmit={handleSubmit} className="relative">
                                 <MagnifyingGlassIcon className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none" />
@@ -165,13 +165,13 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                                     autoComplete="off"
                                 />
                                 <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
-                                    <kbd className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 text-[11px] font-medium text-muted-foreground bg-muted rounded border border-border">
+                                    <kbd className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 font-mono text-[11px] font-medium text-muted-foreground bg-muted rounded-xs border border-border">
                                         ESC
                                     </kbd>
                                     <button
                                         type="button"
                                         onClick={onClose}
-                                        className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                                        className="p-1.5 rounded-xs text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
                                         aria-label="Aramayı kapat"
                                     >
                                         <XMarkIcon className="w-5 h-5" />
@@ -194,7 +194,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                                                 return (
                                                     <div key={category} className="px-2 mb-1 last:mb-0">
                                                         <div className="flex items-center gap-2 px-3 py-2">
-                                                            <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-medium ${colorClass}`}>
+                                                            <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-xs font-mono text-[10px] font-medium uppercase tracking-[0.14em] ${colorClass}`}>
                                                                 <Icon className="w-3 h-3" />
                                                                 {category}
                                                             </span>
@@ -205,7 +205,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                                                                 key={i}
                                                                 href={item.href}
                                                                 onClick={onClose}
-                                                                className="flex items-center gap-3 px-3 py-2.5 mx-1 rounded-xl hover:bg-accent transition-colors group"
+                                                                className="flex items-center gap-3 px-3 py-2.5 mx-1 rounded-xs hover:bg-accent transition-colors group"
                                                             >
                                                                 <div className="flex-1 min-w-0">
                                                                     <p className="text-sm font-medium text-foreground truncate group-hover:text-primary transition-colors">
@@ -256,7 +256,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                             {/* Quick links when empty */}
                             {!query && (
                                 <div className="border-t border-border px-5 py-4">
-                                    <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider mb-2.5">Hızlı Erişim</p>
+                                    <p className="font-mono text-[10px] font-medium text-muted-foreground uppercase tracking-[0.18em] mb-2.5">Hızlı Erişim</p>
                                     <div className="flex flex-wrap gap-2">
                                         {[
                                             { label: 'Haberler', href: `/${currentLang}/${currentLang === 'es' ? 'noticias' : 'haberler'}` },
@@ -267,7 +267,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                                                 key={link.label}
                                                 href={link.href}
                                                 onClick={onClose}
-                                                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-muted-foreground bg-muted rounded-full hover:bg-accent hover:text-foreground transition-colors"
+                                                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-muted-foreground bg-muted rounded-xs border border-border hover:bg-accent hover:text-foreground transition-colors"
                                             >
                                                 {link.label}
                                                 <ArrowRightIcon className="w-3 h-3" />

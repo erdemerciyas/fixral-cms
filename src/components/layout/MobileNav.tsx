@@ -105,7 +105,7 @@ export default function MobileNav({
                             </DialogPrimitive.Title>
                             <button
                                 onClick={onClose}
-                                className="p-2.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-accent focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0"
+                                className="p-2.5 rounded-xs text-muted-foreground hover:text-foreground hover:bg-accent focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0"
                                 style={{ transition: 'all 300ms cubic-bezier(0.32, 0.72, 0, 1)' }}
                                 aria-label="Menüyü kapat"
                             >
@@ -115,7 +115,7 @@ export default function MobileNav({
 
                         <div className="mx-6 h-px bg-border shrink-0" />
 
-                        {/* Search — Printables stili: turuncu dolgulu, tam yuvarlak, beyaz metin/ikon */}
+                        {/* Search — precision: turuncu dolgu, 2px kontrol radius'u, token metin/ikon */}
                         <div className="px-6 pt-5 pb-2 shrink-0">
                             <form onSubmit={handleSearchSubmit} className="relative">
                                 <MagnifyingGlass
@@ -128,7 +128,7 @@ export default function MobileNav({
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                     placeholder="Ara..."
-                                    className="w-full pl-11 pr-4 py-3 rounded-full text-sm bg-primary text-primary-foreground placeholder:text-primary-foreground/80 focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background border border-transparent"
+                                    className="w-full pl-11 pr-4 py-3 rounded-xs text-sm bg-primary text-primary-foreground placeholder:text-primary-foreground/80 focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background border border-transparent"
                                     style={{
                                         transition: 'all 300ms cubic-bezier(0.32, 0.72, 0, 1)',
                                     }}
@@ -174,8 +174,8 @@ export default function MobileNav({
                                 <div className="h-px bg-border mb-4" />
 
                                 {session?.user && (
-                                    <div className="flex items-center gap-3 px-4 py-3 rounded-xl mb-2 bg-muted border border-border">
-                                        <div className="w-9 h-9 rounded-full bg-linear-to-br from-primary to-primary/70 flex items-center justify-center text-primary-foreground text-sm font-bold ring-1 ring-border">
+                                    <div className="flex items-center gap-3 px-4 py-3 rounded-sm mb-2 bg-muted border border-border">
+                                        <div className="w-9 h-9 rounded-xs bg-primary flex items-center justify-center text-primary-foreground text-sm font-bold ring-1 ring-border">
                                             {(session.user.name?.[0] || session.user.email?.[0] || 'U').toUpperCase()}
                                         </div>
                                         <div className="flex-1 min-w-0">
@@ -190,7 +190,7 @@ export default function MobileNav({
                                         <Link
                                             href={`/${currentLang}/account`}
                                             onClick={onClose}
-                                            className="flex-1 flex items-center justify-center gap-2.5 px-4 py-3 rounded-xl text-sm font-medium text-muted-foreground hover:text-foreground bg-secondary border border-border focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0"
+                                            className="flex-1 flex items-center justify-center gap-2.5 px-4 py-3 rounded-xs text-sm font-medium text-muted-foreground hover:text-foreground bg-secondary border border-border focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0"
                                             style={{
                                                 transition: 'all 300ms cubic-bezier(0.32, 0.72, 0, 1)',
                                             }}
@@ -203,7 +203,7 @@ export default function MobileNav({
                                         <Link
                                             href={`/${currentLang}/login`}
                                             onClick={onClose}
-                                            className="flex-1 flex items-center justify-center gap-2.5 px-4 py-3 rounded-xl text-sm font-medium text-muted-foreground hover:text-foreground bg-secondary border border-border focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0"
+                                            className="flex-1 flex items-center justify-center gap-2.5 px-4 py-3 rounded-xs text-sm font-medium text-muted-foreground hover:text-foreground bg-secondary border border-border focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0"
                                             style={{
                                                 transition: 'all 300ms cubic-bezier(0.32, 0.72, 0, 1)',
                                             }}
@@ -216,7 +216,7 @@ export default function MobileNav({
 
                                 <button
                                     onClick={handleProjectModalClick}
-                                    className="group relative w-full flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-lg font-semibold text-sm active:scale-[0.98] overflow-hidden bg-primary text-primary-foreground hover:bg-[hsl(var(--primary)/0.85)] shadow-xs focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                                    className="group relative w-full flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xs font-semibold text-sm active:scale-[0.98] overflow-hidden bg-primary text-primary-foreground hover:bg-primary/90 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                                     style={{
                                         transition: 'all 300ms cubic-bezier(0.32, 0.72, 0, 1)',
                                     }}

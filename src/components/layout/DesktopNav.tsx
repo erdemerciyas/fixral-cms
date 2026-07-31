@@ -20,8 +20,9 @@ interface DesktopNavProps {
 }
 
 /**
- * DesktopNav — Printables mantığı: token tabanlı zemin üzerinde sade metin linkler.
- * Metin rengi text-foreground, hover'da turuncu (hover:text-primary),
+ * DesktopNav — precision chrome: token tabanlı zemin üzerinde sade metin linkler,
+ * her linkin önünde monospace index mikro-etiketi (TechLabel dili).
+ * Metin rengi text-muted-foreground, hover'da turuncu (hover:text-primary),
  * aktif linkte turuncu bottom-border + font-semibold.
  */
 export default function DesktopNav({ navLinks, pathname }: DesktopNavProps) {
@@ -58,15 +59,26 @@ export default function DesktopNav({ navLinks, pathname }: DesktopNavProps) {
                                 {hoveredIndex === index && !isActive && (
                                     <m.span
                                         layoutId="desktop-nav-hover"
-                                        className="absolute inset-0 rounded-xl bg-accent"
+                                        className="absolute inset-0 rounded-xs bg-accent"
                                         transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                                     />
                                 )}
-                                <span className="relative z-10">{link.label}</span>
+                                <span className="relative z-10 inline-flex items-baseline gap-1.5">
+                                    {/* Monospace nav meta — zero-padded index (precision kit dili) */}
+                                    <span
+                                        aria-hidden="true"
+                                        className={`font-mono text-[10px] tabular-nums tracking-tight ${
+                                            isActive ? 'text-primary/80' : 'text-muted-foreground/60'
+                                        }`}
+                                    >
+                                        {String(index + 1).padStart(2, '0')}
+                                    </span>
+                                    {link.label}
+                                </span>
                                 {isActive && (
                                     <m.span
                                         layoutId="desktop-nav-active"
-                                        className="absolute bottom-0 left-3.5 right-3.5 h-[2px] rounded-full bg-primary"
+                                        className="absolute bottom-0 left-3.5 right-3.5 h-[2px] bg-primary"
                                         transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                                         aria-hidden="true"
                                     />
@@ -79,7 +91,7 @@ export default function DesktopNav({ navLinks, pathname }: DesktopNavProps) {
                             tracking-wide whitespace-nowrap
                             focus-visible:outline-hidden focus-visible:ring-2
                             focus-visible:ring-ring focus-visible:ring-offset-0
-                            rounded-xl transition-colors duration-150
+                            rounded-xs transition-colors duration-150
                             ${isActive
                                 ? 'text-primary font-semibold'
                                 : 'text-muted-foreground font-medium hover:text-primary'
@@ -126,12 +138,12 @@ export default function DesktopNav({ navLinks, pathname }: DesktopNavProps) {
                 <div ref={accountRef} className="relative" onMouseEnter={handleAccountEnter} onMouseLeave={handleAccountLeave}>
                     <button
                         onClick={() => setIsAccountOpen(!isAccountOpen)}
-                        className="p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-accent transition-colors duration-150 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0"
+                        className="p-2 rounded-xs text-muted-foreground hover:text-foreground hover:bg-accent transition-colors duration-150 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0"
                         aria-label="Hesabım"
                         aria-expanded={isAccountOpen}
                     >
                         {session?.user ? (
-                            <div className="w-5 h-5 rounded-full bg-linear-to-br from-primary to-primary/70 flex items-center justify-center text-primary-foreground text-[10px] font-bold ring-1 ring-border">
+                            <div className="w-5 h-5 rounded-xs bg-primary flex items-center justify-center text-primary-foreground text-[10px] font-bold ring-1 ring-border">
                                 {(session.user.name?.[0] || session.user.email?.[0] || 'U').toUpperCase()}
                             </div>
                         ) : (
@@ -145,13 +157,13 @@ export default function DesktopNav({ navLinks, pathname }: DesktopNavProps) {
                                 animate={{ opacity: 1, y: 0, scale: 1 }}
                                 exit={{ opacity: 0, y: 8, scale: 0.96 }}
                                 transition={{ duration: 0.15, ease: [0.4, 0, 0.2, 1] }}
-                                className="absolute right-0 top-full mt-2 w-56 bg-popover rounded-xl overflow-hidden z-60 border border-border shadow-[var(--shadow-lg)]"
+                                className="absolute right-0 top-full mt-2 w-56 bg-popover rounded-lg overflow-hidden z-60 border border-border shadow-[var(--shadow-lg)]"
                             >
                                 {session?.user ? (
                                     <>
                                         <div className="px-4 py-3 border-b border-border">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-9 h-9 rounded-full bg-linear-to-br from-primary to-primary/70 flex items-center justify-center text-primary-foreground text-sm font-bold shrink-0">
+                                                <div className="w-9 h-9 rounded-xs bg-primary flex items-center justify-center text-primary-foreground text-sm font-bold shrink-0">
                                                     {(session.user.name?.[0] || session.user.email?.[0] || 'U').toUpperCase()}
                                                 </div>
                                                 <div className="min-w-0">
@@ -200,14 +212,14 @@ export default function DesktopNav({ navLinks, pathname }: DesktopNavProps) {
                                     <div className="p-3 space-y-2">
                                         <Link
                                             href={`/${currentLang}/login`}
-                                            className="flex items-center justify-center w-full px-3 py-2.5 rounded-lg text-sm font-medium bg-primary text-primary-foreground hover:bg-[hsl(var(--primary)/0.85)] transition-colors duration-200 active:scale-[0.98] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring"
+                                            className="flex items-center justify-center w-full px-3 py-2.5 rounded-xs text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors duration-200 active:scale-[0.98] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring"
                                             onClick={() => setIsAccountOpen(false)}
                                         >
                                             Giriş Yap
                                         </Link>
                                         <Link
                                             href={`/${currentLang}/register`}
-                                            className="flex items-center justify-center w-full px-3 py-2.5 rounded-lg text-sm font-medium text-primary border border-primary hover:bg-primary/10 transition-colors duration-200 active:scale-[0.98] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring"
+                                            className="flex items-center justify-center w-full px-3 py-2.5 rounded-xs text-sm font-medium text-primary border border-primary hover:bg-primary/10 transition-colors duration-200 active:scale-[0.98] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring"
                                             onClick={() => setIsAccountOpen(false)}
                                         >
                                             Kayıt Ol

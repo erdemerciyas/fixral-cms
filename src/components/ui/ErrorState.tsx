@@ -28,11 +28,11 @@ export function ErrorState({
     <div
       role="alert"
       className={cn(
-        'flex flex-col items-center justify-center rounded-2xl border border-destructive/25 bg-destructive/10 px-8 py-16 text-center',
+        'flex flex-col items-center justify-center rounded-sm border border-destructive/25 bg-destructive/10 px-8 py-16 text-center',
         className,
       )}
     >
-      <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-full border border-destructive/30 bg-destructive/10 text-destructive">
+      <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-sm border border-destructive/30 bg-destructive/10 text-destructive">
         {icon ?? <TriangleAlert size={24} aria-hidden="true" />}
       </div>
       <h3 className="text-lg font-semibold text-foreground">{title}</h3>
