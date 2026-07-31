@@ -101,3 +101,6 @@ build_output*.txt
 # Lint output artifacts
 lint_output_current.txt
 lint_results.txt
+
+# QA baseline artifacts
+.qa-baseline/
