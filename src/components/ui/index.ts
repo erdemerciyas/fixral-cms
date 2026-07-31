@@ -24,3 +24,19 @@ export { EmptyState } from './EmptyState'
 export { ErrorState } from './ErrorState'
 export { Skeleton } from './skeleton'
 export { SkeletonText, SkeletonCard, SkeletonGrid, SkeletonHero } from './skeletons'
+
+// ── Precision kit primitives (Phase 3) ──
+export { BlueprintGrid } from './BlueprintGrid'
+export { TechLabel, Eyebrow } from './TechLabel'
+export { MeasureRule } from './MeasureRule'
+export { DataStat } from './DataStat'
+export {
+  MOTION_DURATION,
+  MOTION_EASE,
+  MOTION_STAGGER,
+  fadeUp,
+  clipReveal,
+  staggerContainer,
+  staggerItem,
+  useMotionPresets,
+} from './motion'
