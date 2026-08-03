@@ -68,7 +68,7 @@ const UniversalEditor: React.FC<UniversalEditorProps> = ({
               className="p-2 rounded-lg transition-colors text-muted-foreground hover:text-foreground hover:bg-muted"
             >
               {copied ? (
-                <CheckIcon className="w-4 h-4 text-green-600" />
+                <CheckIcon className="w-4 h-4 text-success" />
               ) : (
                 <DocumentDuplicateIcon className="w-4 h-4" />
               )}

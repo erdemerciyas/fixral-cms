@@ -15,7 +15,7 @@
 
 Mühendislik portföyleri, 3D baskı hizmetleri ve ajans web siteleri için tasarlanmış olup; shadcn/ui ile güçlendirilmiş modern admin paneli, çoklu dil desteği, zengin içerik düzenleme deneyimi, 112+ API endpoint ve 34 admin sayfası sunar.
 
-> **Canlı:** [fixral.com](https://www.fixral.com) &nbsp;|&nbsp; **Kaynak:** [github.com/erdemerciyas/fixral-cms](https://github.com/erdemerciyas/fixral-cms)
+> **Canlı:** [fixral-cms.vercel.app](https://fixral-cms.vercel.app) &nbsp;|&nbsp; **Kaynak:** [github.com/erdemerciyas/fixral-cms](https://github.com/erdemerciyas/fixral-cms)
 
 ---
 
@@ -104,7 +104,7 @@ Mühendislik portföyleri, 3D baskı hizmetleri ve ajans web siteleri için tasa
 
 ## Ekran Görüntüleri
 
-> Admin paneli ve herkese açık sayfalardan ekran görüntüleri için [fixral.com](https://www.fixral.com) adresini ziyaret edin.
+> Admin paneli ve herkese açık sayfalardan ekran görüntüleri için [fixral-cms.vercel.app](https://fixral-cms.vercel.app) adresini ziyaret edin.
 
 ---
 
@@ -555,6 +555,7 @@ DIRECT_URL=postgresql://user:password@ep-xxxx.eu-central-1.aws.neon.tech/neondb?
 # ─── Kimlik Doğrulama (ZORUNLU) ────────────────────────
 NEXTAUTH_SECRET=your-nextauth-secret        # openssl rand -hex 32 ile üretilebilir
 NEXTAUTH_URL=http://localhost:3000
+NEXT_PUBLIC_APP_URL=https://fixral-cms.vercel.app  # Üretim site URL'si (SEO/canonical)
 JWT_SECRET=your-jwt-secret
 
 # ─── Cloudinary (Görsel Yükleme) ───────────────────────
@@ -648,6 +649,7 @@ NODE_ENV=development
 |-------|----------|
 | `npm run deploy` | Vercel'e üretim deploy'u yap |
 | `npm run deploy:preview` | Vercel'e önizleme deploy'u yap |
+| `node scripts/sync-vercel-env.mjs` | `.env.local` içeriğini Vercel ortam değişkenlerine senkronize et |
 | `npm run sync-videos` | YouTube videolarını senkronize et |
 
 ---
@@ -708,7 +710,7 @@ npm run deploy
 npm run deploy:preview
 ```
 
-Vercel dashboard'unda tüm ortam değişkenlerinin yapılandırıldığından emin olun. PostgreSQL veritabanının (Neon) Vercel ağından erişilebilir olması gerekir.
+Vercel dashboard'unda tüm ortam değişkenlerinin yapılandırıldığından emin olun (veya `node scripts/sync-vercel-env.mjs` ile `.env.local` içeriğini tek komutla senkronize edin). PostgreSQL veritabanının (Neon) Vercel ağından erişilebilir olması gerekir.
 
 #### Vercel Yapılandırma Notları
 - `vercel-build` scripti otomatik olarak `prisma generate && next build` çalıştırır
@@ -854,11 +856,11 @@ Fixral CMS, Progressive Web App (PWA) olarak çalışabilir:
 
 ### URL Yapısı
 ```
-fixral.com/tr/           → Türkçe anasayfa
-fixral.com/es/           → İspanyolca anasayfa
-fixral.com/tr/haberler   → Türkçe haberler
-fixral.com/es/noticias   → İspanyolca haberler
-fixral.com/tr/portfolio  → Portföy (her iki dilde aynı)
+fixral-cms.vercel.app/tr/           → Türkçe anasayfa
+fixral-cms.vercel.app/es/           → İspanyolca anasayfa
+fixral-cms.vercel.app/tr/haberler   → Türkçe haberler
+fixral-cms.vercel.app/es/noticias   → İspanyolca haberler
+fixral-cms.vercel.app/tr/portfolio  → Portföy (her iki dilde aynı)
 ```
 
 ### Yerelleştirilmiş Rotalar
@@ -907,6 +909,11 @@ npm run test:coverage
 ---
 
 ## Değişiklik Günlüğü
+
+### v5.1.2 — Vercel Domain Geçişi ve Ortam Değişkeni Senkronizasyonu
+- **Domain Geçişi:** Production adresi `fixral-cms.vercel.app` olarak güncellendi; `vercel.json`'dan eski özel domain alias'ları kaldırıldı
+- **Ortam Değişkenleri:** `NEXT_PUBLIC_APP_URL` tanıtıldı (SEO/canonical URL'ler bu değişkenden beslenir); `scripts/sync-vercel-env.mjs` ile `.env.local` → Vercel tek komut senkronizasyonu eklendi
+- **Tema Token'ları:** Kalan sabit renk sınıfları (`bg-gray-900`, `to-blue-100` vb.) semantik token'lara (`bg-card`, `to-muted` vb.) taşındı
 
 ### v5.1.1 — Next.js 16 Yükseltmesi, Precision Tasarım Dili ve Kod Kalitesi Denetimi
 - **Platform Yükseltmesi:** Next.js 16.2 + React 19.2 geçişi (Turbopack varsayılan derleyici); `middleware.ts` yeni `src/proxy.ts` konumuna taşındı
@@ -1013,4 +1020,4 @@ Bu proje özel yazılımdır. Tüm hakları saklıdır. İzinsiz kopyalama, dağ
 
 **Geliştirici:** Erdem Erciyas
 **Depo:** [github.com/erdemerciyas/fixral-cms](https://github.com/erdemerciyas/fixral-cms)
-**Web Sitesi:** [fixral.com](https://www.fixral.com)
+**Web Sitesi:** [fixral-cms.vercel.app](https://fixral-cms.vercel.app)

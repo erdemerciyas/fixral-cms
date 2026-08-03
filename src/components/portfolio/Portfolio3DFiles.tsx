@@ -23,9 +23,11 @@ export default function Portfolio3DFiles({ models3D }: Portfolio3DFilesProps) {
   const getFileTypeColor = (format: string) => {
     switch (format.toLowerCase()) {
       case 'stl':
-        return 'bg-purple-500/10 text-purple-700 border border-purple-500/25';
+        // Marka skalası: STL = brand primary tonu
+        return 'bg-brand-primary-500/10 text-brand-primary-700 dark:text-brand-primary-400 border border-brand-primary-500/25';
       case 'obj':
-        return 'bg-emerald-500/10 text-emerald-700 border border-emerald-500/25';
+        // Nötr ikincil yüzey: OBJ
+        return 'bg-secondary text-secondary-foreground border border-border';
       case 'gltf':
       case 'glb':
         return 'bg-accent text-accent-foreground border border-border';

@@ -17,7 +17,7 @@ export default function ApiDocsPage() {
           </p>
         </div>
 
-        <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
+        <div className="bg-card border border-border rounded-lg shadow-lg p-6 mb-8">
           <h2 className="text-2xl font-semibold mb-4">Available API Endpoints</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <div className="border rounded-lg p-4">
@@ -31,7 +31,7 @@ export default function ApiDocsPage() {
               </ul>
             </div>
             <div className="border rounded-lg p-4">
-              <h3 className="font-semibold text-purple-600 mb-2">Admin API</h3>
+              <h3 className="font-semibold text-primary mb-2">Admin API</h3>
               <ul className="text-sm space-y-1 text-muted-foreground">
                 <li>GET /api/admin/dashboard-stats - Dashboard stats</li>
                 <li>POST /api/admin/upload - Upload files</li>
@@ -41,7 +41,7 @@ export default function ApiDocsPage() {
               </ul>
             </div>
             <div className="border rounded-lg p-4">
-              <h3 className="font-semibold text-red-600 mb-2">Auth API</h3>
+              <h3 className="font-semibold text-warning-foreground mb-2">Auth API</h3>
               <ul className="text-sm space-y-1 text-muted-foreground">
                 <li>POST /api/auth/register - Register</li>
                 <li>POST /api/auth/login - Login</li>
@@ -51,7 +51,7 @@ export default function ApiDocsPage() {
               </ul>
             </div>
             <div className="border rounded-lg p-4">
-              <h3 className="font-semibold text-yellow-600 mb-2">Contact API</h3>
+              <h3 className="font-semibold text-success-foreground mb-2">Contact API</h3>
               <ul className="text-sm space-y-1 text-muted-foreground">
                 <li>POST /api/contact - Send message</li>
                 <li>GET /api/messages - List messages</li>
@@ -73,7 +73,7 @@ export default function ApiDocsPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white rounded-lg shadow-sm p-6">
+          <div className="bg-card border border-border rounded-lg shadow-sm p-6">
             <h3 className="text-lg font-semibold mb-2">📚 Resources</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>• Portfolio Management</li>
@@ -82,7 +82,7 @@ export default function ApiDocsPage() {
             </ul>
           </div>
 
-          <div className="bg-white rounded-lg shadow-sm p-6">
+          <div className="bg-card border border-border rounded-lg shadow-sm p-6">
             <h3 className="text-lg font-semibold mb-2">🔐 Authentication</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>• Bearer Token (JWT)</li>
@@ -92,7 +92,7 @@ export default function ApiDocsPage() {
             </ul>
           </div>
 
-          <div className="bg-white rounded-lg shadow-sm p-6">
+          <div className="bg-card border border-border rounded-lg shadow-sm p-6">
             <h3 className="text-lg font-semibold mb-2">⚡ Features</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>• Rate Limiting</li>
@@ -114,9 +114,9 @@ export default function ApiDocsPage() {
           </ol>
         </div>
 
-        <div className="mt-8 bg-yellow-50 border-l-4 border-yellow-500 p-6 rounded">
-          <h3 className="text-lg font-semibold text-yellow-900 mb-2">⚠️ Rate Limits</h3>
-          <div className="space-y-2 text-sm text-yellow-800">
+        <div className="mt-8 bg-warning/10 border-l-4 border-warning p-6 rounded">
+          <h3 className="text-lg font-semibold text-warning-foreground mb-2">⚠️ Rate Limits</h3>
+          <div className="space-y-2 text-sm text-foreground">
             <p><strong>Login:</strong> 3 attempts per 15 minutes</p>
             <p><strong>Register:</strong> 2 attempts per hour</p>
             <p><strong>Contact:</strong> 3 messages per hour</p>
@@ -125,9 +125,9 @@ export default function ApiDocsPage() {
           </div>
         </div>
 
-        <div className="mt-8 bg-green-50 border-l-4 border-green-500 p-6 rounded">
-          <h3 className="text-lg font-semibold text-green-900 mb-2">📖 Example Usage</h3>
-          <pre className="text-sm text-green-800 bg-white p-4 rounded overflow-x-auto">
+        <div className="mt-8 bg-success/10 border-l-4 border-success p-6 rounded">
+          <h3 className="text-lg font-semibold text-success-foreground mb-2">📖 Example Usage</h3>
+          <pre className="text-sm text-foreground bg-card border border-border p-4 rounded overflow-x-auto">
 {`// Get all portfolios
 fetch('/api/public/portfolio')
   .then(res => res.json())

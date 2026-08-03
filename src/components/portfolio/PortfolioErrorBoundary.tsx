@@ -53,8 +53,8 @@ class PortfolioErrorBoundary extends React.Component<
       return (
         <div className="min-h-screen bg-background flex items-center justify-center p-4">
           <div className="text-center max-w-md mx-auto">
-            <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <ExclamationTriangleIcon className="w-10 h-10 text-red-600" />
+            <div className="w-20 h-20 bg-destructive/10 rounded-full flex items-center justify-center mx-auto mb-6">
+              <ExclamationTriangleIcon className="w-10 h-10 text-destructive" />
             </div>
             
             <h2 className="text-2xl font-bold text-foreground mb-4">
@@ -84,7 +84,7 @@ class PortfolioErrorBoundary extends React.Component<
                 <summary className="cursor-pointer text-sm text-muted-foreground hover:text-foreground">
                   Hata Detayları (Geliştirici)
                 </summary>
-                <pre className="mt-2 p-4 bg-red-50 border border-red-200 rounded-lg text-xs text-red-800 overflow-auto">
+                <pre className="mt-2 p-4 bg-destructive/10 border border-destructive/20 rounded-lg text-xs text-destructive overflow-auto">
                   {this.state.error.toString()}
                   {this.state.errorInfo?.componentStack}
                 </pre>

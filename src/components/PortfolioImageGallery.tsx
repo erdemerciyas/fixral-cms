@@ -226,10 +226,10 @@ const PortfolioImageGallery: React.FC<PortfolioImageGalleryProps> = ({
     <div className="space-y-4">
       {/* Messages */}
       {error && (
-        <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+        <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
           <div className="flex items-center space-x-2">
-            <ExclamationTriangleIcon className="w-4 h-4 text-red-500 shrink-0" />
-            <span className="text-sm text-red-700">{error}</span>
+            <ExclamationTriangleIcon className="w-4 h-4 text-destructive shrink-0" />
+            <span className="text-sm text-destructive">{error}</span>
           </div>
         </div>
       )}
@@ -245,17 +245,17 @@ const PortfolioImageGallery: React.FC<PortfolioImageGalleryProps> = ({
 
       {/* Upload Progress */}
       {uploading && (
-        <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+        <div className="p-4 bg-accent border border-border rounded-lg">
           <div className="flex items-center space-x-3">
-            <ArrowUpTrayIcon className="w-5 h-5 text-blue-500 animate-pulse shrink-0" />
+            <ArrowUpTrayIcon className="w-5 h-5 text-primary animate-pulse shrink-0" />
             <div className="flex-1">
-              <div className="flex justify-between text-sm text-blue-700 mb-1">
+              <div className="flex justify-between text-sm text-accent-foreground mb-1">
                 <span>Görseller yükleniyor...</span>
                 <span>{Math.round(uploadProgress)}%</span>
               </div>
-              <div className="w-full bg-blue-200 rounded-full h-2">
+              <div className="w-full bg-primary/20 rounded-full h-2">
                 <div
-                  className="bg-blue-500 h-2 rounded-full transition-all duration-300"
+                  className="bg-primary h-2 rounded-full transition-all duration-300"
                   style={{ width: `${uploadProgress}%` }}
                 />
               </div>
@@ -379,7 +379,7 @@ const PortfolioImageGallery: React.FC<PortfolioImageGalleryProps> = ({
                     <button
                       type="button"
                       onClick={() => removeImage(index)}
-                      className="bg-red-600 hover:bg-red-700 text-white p-2 rounded-lg transition-colors"
+                      className="bg-destructive hover:bg-destructive/90 text-destructive-foreground p-2 rounded-lg transition-colors"
                       title="Görseli sil"
                     >
                       <TrashIcon className="w-4 h-4" />
@@ -388,7 +388,7 @@ const PortfolioImageGallery: React.FC<PortfolioImageGalleryProps> = ({
                 </div>
 
                 {/* Order Badge */}
-                <div className="absolute bottom-2 left-2 bg-black bg-opacity-50 text-white px-2 py-1 rounded text-xs font-medium">
+                <div className="absolute bottom-2 left-2 bg-black/50 text-white px-2 py-1 rounded text-xs font-medium">
                   {index + 1}
                 </div>
               </div>
@@ -396,12 +396,12 @@ const PortfolioImageGallery: React.FC<PortfolioImageGalleryProps> = ({
           </div>
 
           {/* Gallery Info */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <div className="bg-muted border border-border rounded-lg p-4">
             <div className="flex items-start space-x-3">
-              <PhotoIcon className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
-              <div className="text-sm text-blue-800">
+              <PhotoIcon className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+              <div className="text-sm text-foreground">
                 <p className="font-medium mb-1">Galeri Yönetimi:</p>
-                <ul className="space-y-1 text-blue-700">
+                <ul className="space-y-1 text-muted-foreground">
                   <li>• Görselleri sürükleyerek sıralayabilirsiniz</li>
                   <li>• ⭐ butonuna tıklayarak kapak görseli seçebilirsiniz</li>
                   <li>• 🗑️ butonuna tıklayarak görseli silebilirsiniz</li>

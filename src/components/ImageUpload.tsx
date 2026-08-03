@@ -226,13 +226,13 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
       {/* Toast notifications are handled by sonner */}
 
       {/* Main Upload Area */}
-      <div className="border border-zinc-400/25 rounded-lg overflow-hidden bg-white">
+      <div className="border border-border rounded-lg overflow-hidden bg-card">
         
         {/* Current Image Display - Kompakt Görünüm */}
         {hasImage && !uploading && (
-          <div className="p-4 border-b border-zinc-400/15">
+          <div className="p-4 border-b border-border">
             <div className="flex items-center space-x-4">
-              <div className="relative w-24 h-24 bg-zinc-500/20 rounded-lg overflow-hidden shrink-0">
+              <div className="relative w-24 h-24 bg-muted rounded-lg overflow-hidden shrink-0">
                 <Image
                   src={currentImageString!}
                   alt="Uploaded image"
@@ -242,10 +242,10 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
                 />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-900 truncate">
+                <p className="text-sm font-medium text-foreground truncate">
                   Görsel yüklendi
                 </p>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-muted-foreground">
                   Yeni görsel yüklemek için aşağıdaki butonları kullanın
                 </p>
               </div>
@@ -255,17 +255,17 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
 
         {/* Upload Progress */}
         {uploading && (
-          <div className="p-4 border-b border-zinc-400/15">
+          <div className="p-4 border-b border-border">
             <div className="flex items-center space-x-3">
-              <ArrowUpTrayIcon className="w-5 h-5 text-blue-500 animate-pulse shrink-0" />
+              <ArrowUpTrayIcon className="w-5 h-5 text-primary animate-pulse shrink-0" />
               <div className="flex-1">
-                <div className="flex justify-between text-sm text-gray-600 mb-1">
+                <div className="flex justify-between text-sm text-muted-foreground mb-1">
                   <span>Yükleniyor...</span>
                   <span>{uploadProgress}%</span>
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
+                <div className="w-full bg-muted rounded-full h-2">
                   <div 
-                    className="bg-blue-500 h-2 rounded-full transition-all duration-300"
+                    className="bg-primary h-2 rounded-full transition-all duration-300"
                     style={{ width: `${uploadProgress}%` }}
                   />
                 </div>
@@ -282,7 +282,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
               type="button"
               onClick={handleBrowseMedia}
               disabled={disabled || uploading}
-              className="flex items-center space-x-2 px-4 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="flex items-center space-x-2 px-4 py-2 bg-secondary text-secondary-foreground rounded-lg hover:bg-secondary/80 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               <FolderOpenIcon className="w-4 h-4" />
               <span>Medya Kütüphanesi</span>
@@ -305,7 +305,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
                 type="button"
                 onClick={() => setShowUrlModal(true)}
                 disabled={disabled || uploading}
-                className="flex items-center space-x-2 px-4 py-2 bg-purple-50 text-purple-600 rounded-lg hover:bg-purple-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="flex items-center space-x-2 px-4 py-2 bg-accent text-accent-foreground rounded-lg hover:bg-accent/80 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 <LinkIcon className="w-4 h-4" />
                 <span>URL ile Ekle</span>
@@ -318,7 +318,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
                 type="button"
                 onClick={removeImage}
                 disabled={disabled || uploading}
-                className="flex items-center space-x-2 px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="flex items-center space-x-2 px-4 py-2 bg-danger-light text-danger-dark rounded-lg hover:bg-danger-light/80 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 <TrashIcon className="w-4 h-4" />
                 <span>Kaldır</span>
@@ -355,13 +355,13 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
       {/* URL Input Modal */}
       {showUrlModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-md w-full">
-            <div className="flex items-center justify-between p-4 border-b border-gray-200">
-              <h3 className="text-lg font-medium text-gray-900">URL ile Görsel Ekle</h3>
+          <div className="bg-card border border-border rounded-lg max-w-md w-full">
+            <div className="flex items-center justify-between p-4 border-b border-border">
+              <h3 className="text-lg font-medium text-foreground">URL ile Görsel Ekle</h3>
               <button
                 type="button"
                 onClick={() => setShowUrlModal(false)}
-                className="p-1 text-gray-400 hover:text-gray-500 rounded-md"
+                className="p-1 text-muted-foreground hover:text-foreground rounded-md"
               >
                 <XMarkIcon className="w-5 h-5" />
               </button>
@@ -369,7 +369,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
             
             <div className="p-4 space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-foreground mb-2">
                   Görsel URL&apos;si
                 </label>
                 <input
@@ -377,7 +377,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
                   value={urlInput}
                   onChange={(e) => setUrlInput(e.target.value)}
                   placeholder="https://example.com/image.jpg"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="input-field"
                 />
               </div>
               
@@ -385,7 +385,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
                 <button
                   type="button"
                   onClick={() => setShowUrlModal(false)}
-                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+                  className="px-4 py-2 text-sm font-medium text-foreground bg-card border border-border rounded-md hover:bg-muted"
                 >
                   İptal
                 </button>
@@ -393,7 +393,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
                   type="button"
                   onClick={handleUrlSubmit}
                   disabled={!urlInput.trim()}
-                  className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-4 py-2 text-sm font-medium text-primary-foreground bg-primary rounded-md hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Ekle
                 </button>

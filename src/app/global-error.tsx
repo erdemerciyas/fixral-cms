@@ -9,16 +9,18 @@ export default function GlobalError({
   return (
     <html lang="tr">
       <body>
-        <div className="min-h-screen bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center px-4">
+        {/* global-error kök layout'u değiştirdiği için CSS token'ları yüklenmez;
+            Precision Dark paletinin sabit hex değerleri kullanılır (public-dark scope). */}
+        <div className="min-h-screen bg-linear-to-br from-[#14171B] via-[#0B0D10] to-[#0B0D10] flex items-center justify-center px-4">
           <div className="text-center">
             <div className="mb-8">
-              <h1 className="text-6xl font-bold text-transparent bg-clip-text bg-linear-to-r from-red-400 to-orange-500">
+              <h1 className="text-6xl font-bold text-transparent bg-clip-text bg-linear-to-r from-[#FA6831] to-[#C24E1E]">
                 Hata
               </h1>
-              <h2 className="text-2xl font-bold text-white mt-4">
+              <h2 className="text-2xl font-bold text-[#E5E9EC] mt-4">
                 Bir şeyler ters gitti
               </h2>
-              <p className="text-slate-300 mt-4 text-lg">
+              <p className="text-[#9BA3AB] mt-4 text-lg">
                 Beklenmeyen bir hata oluştu. Lütfen tekrar deneyin.
               </p>
             </div>
@@ -26,7 +28,7 @@ export default function GlobalError({
             <div className="space-y-4">
               <button
                 onClick={reset}
-                className="inline-block px-8 py-3 bg-linear-to-r from-red-600 to-orange-600 text-white font-medium rounded-lg hover:from-red-700 hover:to-orange-700 transition-all duration-200 transform hover:scale-105"
+                className="inline-block px-8 py-3 bg-linear-to-r from-[#EB6F40] to-[#C24E1E] text-[#1C1C1C] font-medium rounded-lg hover:from-[#FA6831] hover:to-[#EB6F40] transition-all duration-200 transform hover:scale-105"
               >
                 Tekrar Dene
               </button>
@@ -37,7 +39,7 @@ export default function GlobalError({
                 {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
                 <a
                   href="/"
-                  className="text-orange-400 hover:text-orange-300 transition-colors duration-200"
+                  className="text-[#FC895F] hover:text-[#FDA686] transition-colors duration-200"
                 >
                   Ana Sayfaya Dön
                 </a>

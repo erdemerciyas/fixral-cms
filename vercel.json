@@ -1,7 +1,6 @@
 {
   "version": 2,
   "name": "fixral",
-  "alias": ["fixral.com", "www.fixral.com"],
   "regions": ["fra1"],
   "functions": {
     "src/app/api/**/*.ts": {

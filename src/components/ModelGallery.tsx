@@ -79,7 +79,7 @@ export default function ModelGallery({ models, className = '' }: ModelGalleryPro
     <>
       <div className={`space-y-4 ${className}`}>
         <div className="flex items-center space-x-2 mb-4">
-          <CubeIcon className="w-6 h-6 text-blue-600" />
+          <CubeIcon className="w-6 h-6 text-primary" />
           <h3 className="text-lg font-semibold text-foreground">3D Modeller</h3>
           <span className="text-sm text-muted-foreground">({models.length})</span>
         </div>
@@ -105,13 +105,13 @@ export default function ModelGallery({ models, className = '' }: ModelGalleryPro
         >
           {models.map((model, index) => (
             <SwiperSlide key={index}>
-              <div className="bg-muted/60 rounded-lg shadow-md border border-zinc-400/25 overflow-hidden">
+              <div className="bg-muted/60 rounded-lg shadow-md border border-border overflow-hidden">
                 {/* Model Önizleme Alanı */}
-                <div className="aspect-square bg-linear-to-br from-blue-50 to-indigo-100 flex items-center justify-center relative group">
-                  <CubeIcon className="w-16 h-16 text-blue-400" />
+                <div className="aspect-square bg-linear-to-br from-accent to-muted flex items-center justify-center relative group">
+                  <CubeIcon className="w-16 h-16 text-primary/60" />
                   
                   {/* Hover Overlay */}
-                  <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center space-x-2">
+                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center space-x-2">
                     <button
                       onClick={() => handleModelClick(model)}
                       className="bg-muted/60 text-foreground p-2 rounded-full hover:bg-muted/80 transition-colors"
@@ -149,7 +149,7 @@ export default function ModelGallery({ models, className = '' }: ModelGalleryPro
                     {model.downloadable && (
                       <div className="flex justify-between">
                         <span>İndirilebilir:</span>
-                        <span className="text-green-600 font-medium">✓</span>
+                        <span className="text-success font-medium">✓</span>
                       </div>
                     )}
                   </div>
@@ -162,10 +162,10 @@ export default function ModelGallery({ models, className = '' }: ModelGalleryPro
 
       {/* 3D Model Viewer Modal */}
       {isViewerOpen && selectedModel && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75">
           <div className="bg-muted/60 rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-hidden">
             {/* Modal Header */}
-            <div className="flex items-center justify-between p-4 border-b border-zinc-400/25">
+            <div className="flex items-center justify-between p-4 border-b border-border">
               <div>
                 <h3 className="text-lg font-semibold text-foreground">{selectedModel.name}</h3>
                 <p className="text-sm text-muted-foreground">
@@ -176,7 +176,7 @@ export default function ModelGallery({ models, className = '' }: ModelGalleryPro
                 {selectedModel.downloadable && (
                   <button
                     onClick={() => handleDownload(selectedModel)}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-2"
+                    className="btn-primary space-x-2"
                   >
                     <ArrowDownTrayIcon className="w-4 h-4" />
                     <span>İndir</span>
@@ -219,7 +219,7 @@ export default function ModelGallery({ models, className = '' }: ModelGalleryPro
                 </div>
                 <div>
                   <span className="text-muted-foreground">İndirilebilir:</span>
-                  <p className={`font-medium ${selectedModel.downloadable ? 'text-green-600' : 'text-red-600'}`}>
+                  <p className={`font-medium ${selectedModel.downloadable ? 'text-success' : 'text-destructive'}`}>
                     {selectedModel.downloadable ? 'Evet' : 'Hayır'}
                   </p>
                 </div>

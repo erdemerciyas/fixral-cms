@@ -94,7 +94,8 @@ function STLModel({ url }: { url: string }) {
   if (!processedGeometry) {
     return (
       <Html center>
-        <div className="text-blue-500 text-center p-4 bg-white rounded-lg shadow-lg">
+        <div className="text-primary text-center p-4 bg-card rounded-lg shadow-lg">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2"></div>
           <p>STL işleniyor...</p>
         </div>
       </Html>
@@ -107,7 +108,8 @@ function STLModel({ url }: { url: string }) {
       geometry={processedGeometry} 
       scale={scale}
     >
-      <meshStandardMaterial color="#8B5CF6" />
+      {/* Marka paletiyle tutarlı: STL = brand primary (#FA6831) */}
+      <meshStandardMaterial color="#FA6831" />
     </mesh>
   );
 }
@@ -151,7 +153,8 @@ function OBJModel({ url }: { url: string }) {
       // OBJ dosyasına material ekle
       clonedObj.traverse((child) => {
         if (child instanceof Mesh) {
-          child.material = new MeshStandardMaterial({ color: '#10B981' });
+          // Marka paletiyle tutarlı: OBJ = brand derin ton (#C24E1E)
+          child.material = new MeshStandardMaterial({ color: '#C24E1E' });
         }
       });
       
@@ -176,7 +179,8 @@ function OBJModel({ url }: { url: string }) {
   if (!processedObj) {
     return (
       <Html center>
-        <div className="text-blue-500 text-center p-4 bg-white rounded-lg shadow-lg">
+        <div className="text-primary text-center p-4 bg-card rounded-lg shadow-lg">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2"></div>
           <p>OBJ işleniyor...</p>
         </div>
       </Html>
@@ -197,8 +201,8 @@ function ModelErrorBoundary({ children, format }: { children: React.ReactNode; f
   return (
     <Suspense fallback={
       <Html center>
-        <div className="text-blue-500 text-center p-4 bg-white rounded-lg shadow-lg">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-2"></div>
+        <div className="text-primary text-center p-4 bg-card rounded-lg shadow-lg">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2"></div>
           <p>{format.toUpperCase()} Model Yükleniyor...</p>
         </div>
       </Html>
@@ -227,9 +231,9 @@ function Model({ url, format }: ModelProps) {
       default:
         return (
           <Html center>
-            <div className="text-yellow-600 text-center p-4 bg-white rounded-lg shadow-lg">
+            <div className="text-warning-dark text-center p-4 bg-card rounded-lg shadow-lg">
               <p>{format.toUpperCase()} Önizleme</p>
-              <p className="text-sm text-gray-500 mt-2">
+              <p className="text-sm text-muted-foreground mt-2">
                 Bu format için önizleme henüz desteklenmiyor
               </p>
             </div>
@@ -262,7 +266,7 @@ export default function ModelViewer({ modelUrl, format, className = '', transpar
         className={
           transparent
             ? `h-full w-full overflow-hidden ${className}`
-            : `w-full h-96 bg-gray-100 rounded-lg overflow-hidden ${className}`
+            : `w-full h-96 bg-card rounded-lg overflow-hidden ${className}`
         }
         role="img"
         aria-label={`3D ${format.toUpperCase()} Model Görüntüleyici`}
@@ -270,7 +274,7 @@ export default function ModelViewer({ modelUrl, format, className = '', transpar
         <Canvas
         camera={{ position: [3, 3, 3], fov: 60 }}
         gl={transparent ? { alpha: true } : undefined}
-        style={transparent ? { background: 'transparent' } : { background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}
+        style={transparent ? { background: 'transparent' } : { background: 'var(--gradient-surface)' }}
         onCreated={(_state) => {
           // Kamerayı modele odakla
           _state.camera.lookAt(0, 0, 0);
@@ -283,8 +287,8 @@ export default function ModelViewer({ modelUrl, format, className = '', transpar
         
         <Suspense fallback={
           <Html center>
-            <div className="text-white text-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto mb-2"></div>
+            <div className="text-primary text-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2"></div>
               <p>3D Model Yükleniyor...</p>
             </div>
           </Html>

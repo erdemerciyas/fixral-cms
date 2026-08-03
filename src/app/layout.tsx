@@ -302,7 +302,7 @@ export default async function RootLayout({
 
         {config.isDevelopment && (
           <div id="dev-tools" className="hidden md:block fixed bottom-4 right-4 z-50 opacity-50 hover:opacity-100 transition-opacity pointer-events-none">
-            <div className="bg-gray-900 text-white p-2 rounded text-xs">
+            <div className="bg-card text-foreground border border-border p-2 rounded text-xs">
               <div>ENV: {config.nodeEnv}</div>
               <div>Cloudinary: {config.cloudinary.isConfigured ? '✅' : '❌'}</div>
               <div>OpenAI: {config.openai.isConfigured ? '✅' : '❌'}</div>

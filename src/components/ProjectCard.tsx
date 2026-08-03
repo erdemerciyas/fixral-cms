@@ -18,7 +18,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
     e.currentTarget.style.display = 'none';
     const parent = e.currentTarget.parentElement;
     if (parent) {
-      parent.classList.add('bg-linear-to-br', 'from-accent', 'to-blue-100');
+      parent.classList.add('bg-linear-to-br', 'from-accent', 'to-muted');
       const fallback = document.createElement('div');
       fallback.className = 'flex flex-col items-center justify-center h-full text-accent-foreground';
       fallback.innerHTML = `
