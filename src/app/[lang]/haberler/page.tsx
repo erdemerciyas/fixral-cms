@@ -36,6 +36,25 @@ const ITEMS_PER_PAGE = 12;
 export default async function NewsListPage({ params: paramsPromise, searchParams: searchParamsPromise }: PageProps) {
     const { lang } = await paramsPromise;
     const searchParams = await searchParamsPromise;
+    let view: {
+        page: number;
+        search: string;
+        tag: string;
+        total: number;
+        totalPages: number;
+        allTags: string[];
+        newsT: Record<string, string>;
+        commonT: Record<string, string>;
+        serializedArticles: Array<{
+            _id: string;
+            slug: string;
+            tags: string[];
+            publishedAt?: string;
+            createdAt: string;
+            featuredImage?: { url: string; altText?: string };
+            translations: { tr: { title: string; excerpt: string; content: string; keywords: string[] } };
+        }>;
+    };
     try {
         const page = Math.max(1, parseInt(searchParams.page || '1'));
         const search = searchParams.search || '';
@@ -83,34 +102,36 @@ export default async function NewsListPage({ params: paramsPromise, searchParams
             },
         }));
 
-        return (
-            <div className="min-h-dvh bg-background">
-                <PageHero
-                    title={newsT.pageTitle || 'Haberler & Duyurular'}
-                    description={newsT.pageDescription || ''}
-                    showButton={false}
-                    showBreadcrumbs={true}
-                    index={3}
-                />
-
-                <div className="container-content py-8">
-                    <NewsListClient
-                        articles={serializedArticles}
-                        lang={lang}
-                        search={search}
-                        tag={tag}
-                        total={total}
-                        page={page}
-                        totalPages={totalPages}
-                        allTags={allTags}
-                        newsT={newsT}
-                        commonT={commonT}
-                    />
-                </div>
-            </div>
-        );
+        view = { page, search, tag, total, totalPages, allTags, newsT, commonT, serializedArticles };
     } catch (error) {
         logger.error('Error rendering news list page', 'NEWS_LIST', { error });
         throw error;
     }
+
+    return (
+        <div className="min-h-dvh bg-background">
+            <PageHero
+                title={view.newsT.pageTitle || 'Haberler & Duyurular'}
+                description={view.newsT.pageDescription || ''}
+                showButton={false}
+                showBreadcrumbs={true}
+                index={3}
+            />
+
+            <div className="container-content py-8">
+                <NewsListClient
+                    articles={view.serializedArticles}
+                    lang={lang}
+                    search={view.search}
+                    tag={view.tag}
+                    total={view.total}
+                    page={view.page}
+                    totalPages={view.totalPages}
+                    allTags={view.allTags}
+                    newsT={view.newsT}
+                    commonT={view.commonT}
+                />
+            </div>
+        </div>
+    );
 }

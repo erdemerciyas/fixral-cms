@@ -1,23 +1,7 @@
-// Sentry is optional - only import if available
-let Sentry: any = null;
-
-function loadSentry() {
-  try {
-    const moduleName = '@sentry/nextjs';
-    return eval('require')(moduleName);
-  } catch {
-    return null;
-  }
-}
-
-if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
-  Sentry = loadSentry();
-  if (!Sentry) {
-    console.warn('Sentry not installed, skipping server instrumentation');
-  }
-} else {
-  console.warn('Sentry not installed, skipping Sentry configuration');
-}
+/**
+ * Server instrumentation — SiteSettings bootstrap + optional Sentry.
+ * Avoid eval/require of @sentry/nextjs (not installed; breaks Turbopack).
+ */
 
 /**
  * Ensure SiteSettings has default values on startup
@@ -38,54 +22,9 @@ export function register() {
     console.error('Failed to initialize site settings:', error);
   });
 
-  if (process.env.NEXT_RUNTIME === 'nodejs' && Sentry) {
-    const SENTRY_DSN = process.env.NEXT_PUBLIC_SENTRY_DSN;
-    const SENTRY_ENVIRONMENT = process.env.NODE_ENV || 'development';
-    const SENTRY_RELEASE = process.env.NEXT_PUBLIC_SENTRY_RELEASE || 'unknown';
-
-    Sentry.init({
-      dsn: SENTRY_DSN,
-      environment: SENTRY_ENVIRONMENT,
-      release: SENTRY_RELEASE,
-      
-      tracesSampleRate: SENTRY_ENVIRONMENT === 'production' ? 0.1 : 1.0,
-      
-      beforeSend(event: any, hint: any) {
-        const error = hint.originalException;
-        
-        if (error && typeof error === 'object' && 'message' in error) {
-          const message = String(error.message).toLowerCase();
-          
-          if (
-            SENTRY_ENVIRONMENT === 'development' &&
-            (message.includes('db_disabled') || message.includes('mongodb'))
-          ) {
-            return null;
-          }
-          
-          if (
-            message.includes('validation failed') ||
-            message.includes('cast to objectid failed') ||
-            message.includes('duplicate key error')
-          ) {
-            return null;
-          }
-        }
-        
-        return event;
-      },
-      
-      integrations: [
-        Sentry.httpIntegration(),
-      ],
-      
-      debug: SENTRY_ENVIRONMENT === 'development',
-      
-      initialScope: {
-        tags: {
-          component: 'server'
-        }
-      }
-    });
+  if (process.env.NEXT_RUNTIME === 'nodejs' && process.env.NEXT_PUBLIC_SENTRY_DSN) {
+    console.warn(
+      'Sentry DSN is set but @sentry/nextjs is not wired for server/Turbopack; skipping server instrumentation',
+    );
   }
 }

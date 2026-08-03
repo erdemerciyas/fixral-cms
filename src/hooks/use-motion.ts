@@ -34,7 +34,8 @@ export function useInViewOnce<T extends HTMLElement = HTMLDivElement>(
     const element = ref.current
     if (!element) return
     if (typeof IntersectionObserver === 'undefined') {
-      setInView(true)
+      // Senkron setState yerine mikro-görevde güncelle (efekt gövdesi kuralı)
+      queueMicrotask(() => setInView(true))
       return
     }
     const observer = new IntersectionObserver(

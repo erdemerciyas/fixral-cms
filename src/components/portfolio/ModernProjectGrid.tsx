@@ -1,10 +1,13 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useSyncExternalStore } from 'react';
 import { m, AnimatePresence } from 'framer-motion';
 import { LayoutGrid as Squares2X2Icon, Columns3 as ViewColumnsIcon, List as QueueListIcon } from 'lucide-react';
 import { ProjectSummary } from '@/types/portfolio';
 import ModernProjectCard from './ModernProjectCard';
+
+// Mount bilgisini efekt olmadan türet (server'da false, client'ta true)
+const subscribeNoop = () => () => {};
 
 interface ModernProjectGridProps {
   projects: (ProjectSummary & {
@@ -24,16 +27,15 @@ export default function ModernProjectGrid({
   layout = 'grid',
   onLayoutChange
 }: ModernProjectGridProps) {
-  const [mounted, setMounted] = useState(false);
+  const mounted = useSyncExternalStore(subscribeNoop, () => true, () => false);
   const [currentLayout, setCurrentLayout] = useState<'grid' | 'masonry' | 'list'>(layout);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
+  // Prop değişimini render sırasında ayarla (efekt içi setState yerine)
+  const [prevLayout, setPrevLayout] = useState(layout);
+  if (prevLayout !== layout) {
+    setPrevLayout(layout);
     setCurrentLayout(layout);
-  }, [layout]);
+  }
 
   const handleLayoutChange = (newLayout: 'grid' | 'masonry' | 'list') => {
     setCurrentLayout(newLayout);

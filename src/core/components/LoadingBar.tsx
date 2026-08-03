@@ -9,9 +9,12 @@ export default function LoadingBar() {
     const pathname = usePathname();
 
     useEffect(() => {
-        // Start loading on route change
-        setLoading(true);
-        setProgress(15);
+        // Start loading on route change (ertelenmiş başlatma: efekt gövdesinde
+        // senkron setState yerine bir sonraki tick'te tetiklenir)
+        const startTimer = setTimeout(() => {
+            setLoading(true);
+            setProgress(15);
+        }, 0);
 
         // Simulate realistic loading progress with easing
         const progressSteps = [
@@ -35,6 +38,7 @@ export default function LoadingBar() {
         }, 1200);
 
         return () => {
+            clearTimeout(startTimer);
             timers.forEach(timer => clearTimeout(timer));
             clearTimeout(completeTimer);
         };

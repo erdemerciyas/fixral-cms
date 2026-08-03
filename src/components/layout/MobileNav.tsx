@@ -88,15 +88,12 @@ export default function MobileNav({
             <DialogPrimitive.Portal>
                 {/* Printables mobil paradigma: token tabanlı zemin + foreground metin */}
                 <DialogPrimitive.Overlay
-                    className="fixed inset-0 z-50 lg:hidden bg-background/95 backdrop-blur-[32px] duration-500 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=closed]:animate-out data-[state=closed]:fade-out-0"
-                    style={{
-                        WebkitBackdropFilter: 'blur(32px)',
-                    }}
+                    className="fixed inset-0 z-[300] lg:hidden bg-background duration-300 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=closed]:animate-out data-[state=closed]:fade-out-0"
                 />
 
                 <DialogPrimitive.Content
                     aria-describedby={undefined}
-                    className="fixed inset-0 z-50 flex flex-col h-dvh lg:hidden focus:outline-hidden duration-500 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=closed]:animate-out data-[state=closed]:fade-out-0"
+                    className="fixed inset-0 z-[300] flex flex-col h-dvh lg:hidden focus:outline-hidden duration-500 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=closed]:animate-out data-[state=closed]:fade-out-0"
                 >
                         {/* Header */}
                         <div className="flex items-center justify-between px-6 pt-6 pb-4 shrink-0">

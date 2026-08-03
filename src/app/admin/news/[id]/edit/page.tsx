@@ -30,19 +30,21 @@ export default async function EditNewsPage(props: PageProps) {
     redirect('/admin/login');
   }
 
+  let news: NewsItem | null = null;
   try {
-    const news = (await News.findById(params.id).lean()) as unknown as NewsItem;
-
-    if (!news) {
-      notFound();
-    }
-
-    return (
-      <div className="space-y-6">
-          <NewsForm initialData={news} />
-        </div>);
+    news = (await News.findById(params.id).lean()) as unknown as NewsItem;
   } catch (error) {
     logger.error('Error loading news article for editing', 'EDIT_NEWS', { error });
     notFound();
   }
+
+  if (!news) {
+    notFound();
+  }
+
+  return (
+    <div className="space-y-6">
+      <NewsForm initialData={news} />
+    </div>
+  );
 }

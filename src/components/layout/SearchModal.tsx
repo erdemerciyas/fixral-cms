@@ -45,12 +45,17 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
 
     useEffect(() => {
         if (isOpen) {
-            setTimeout(() => inputRef.current?.focus(), 100);
-        } else {
+            const focusTimer = setTimeout(() => inputRef.current?.focus(), 100);
+            return () => clearTimeout(focusTimer);
+        }
+        // Kapanışta sıfırlama: efekt gövdesinde senkron setState yerine
+        // bir sonraki tick'te uygulanır (modal zaten kapanmış olur)
+        const resetTimer = setTimeout(() => {
             setQuery('');
             setResults([]);
             setHasSearched(false);
-        }
+        }, 0);
+        return () => clearTimeout(resetTimer);
     }, [isOpen]);
 
     const doSearch = useCallback(async (q: string) => {
@@ -136,11 +141,11 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.2 }}
-                    className="fixed inset-0 z-100 flex items-start justify-center pt-[12vh]"
+                    className="fixed inset-0 z-[400] flex items-start justify-center pt-[12vh]"
                     onClick={onClose}
                 >
                     {/* Backdrop — token tabanlı scrim */}
-                    <div className="absolute inset-0 bg-[hsl(var(--scrim)/0.65)] backdrop-blur-xs" />
+                    <div className="absolute inset-0 bg-[hsl(var(--scrim)/0.72)]" />
 
                     {/* Modal */}
                     <m.div
@@ -151,7 +156,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                         className="relative w-full max-w-2xl mx-4"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        <div className="bg-card rounded-lg shadow-[var(--shadow-xl)] border border-border overflow-hidden">
+                        <div className="bg-card rounded-sm border border-border overflow-hidden">
                             {/* Search Input */}
                             <form onSubmit={handleSubmit} className="relative">
                                 <MagnifyingGlassIcon className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none" />

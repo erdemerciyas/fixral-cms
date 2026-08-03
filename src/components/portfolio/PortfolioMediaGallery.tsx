@@ -1,18 +1,28 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useSyncExternalStore } from 'react';
 import { createPortal } from 'react-dom';
 import Image from 'next/image';
 import { m } from 'framer-motion';
-import { Search as MagnifyingGlassIcon, X as XMarkIcon, ChevronLeft as ChevronLeftIcon, ChevronRight as ChevronRightIcon, Image as PhotoIcon, Box as CubeIcon, Download as ArrowDownTrayIcon } from 'lucide-react';
+import {
+  Search as MagnifyingGlassIcon,
+  X as XMarkIcon,
+  ChevronLeft as ChevronLeftIcon,
+  ChevronRight as ChevronRightIcon,
+  Image as PhotoIcon,
+  Box as CubeIcon,
+  Download as ArrowDownTrayIcon,
+} from 'lucide-react';
 import dynamic from 'next/dynamic';
 import { Model3D } from '../../types/portfolio';
 
-// three/fiber/drei senkron bundle'a girmesin diye 3D görüntüleyici lazy yüklenir
 const ModelViewer = dynamic(() => import('../3DModelViewer'), {
   ssr: false,
   loading: () => (
-    <div className="w-full h-96 bg-surface-tertiary rounded-lg animate-pulse" aria-label="3D model yükleniyor" />
+    <div
+      className="w-full h-96 bg-surface-tertiary rounded-sm animate-pulse border border-border"
+      aria-label="3D model yükleniyor"
+    />
   ),
 });
 
@@ -33,35 +43,37 @@ interface PortfolioMediaGalleryProps {
   coverImage?: string;
 }
 
+const subscribeNoop = () => () => {};
+
 export default function PortfolioMediaGallery({
   images,
   models3D = [],
   title,
-  coverImage
+  coverImage,
 }: PortfolioMediaGalleryProps) {
-  const [selectedItem, setSelectedItem] = useState<MediaItem | null>(null);
+  const [userSelectedItem, setUserSelectedItem] = useState<MediaItem | null>(null);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxItemIndex, setLightboxItemIndex] = useState(0);
-  const [mounted, setMounted] = useState(false);
+  // Mount bilgisini efekt olmadan türet (server'da false, client'ta true)
+  const mounted = useSyncExternalStore(subscribeNoop, () => true, () => false);
 
-  // Combine images and 3D models into a unified media array
   const allMediaItems = useMemo(() => {
     const mediaItems: MediaItem[] = [];
 
-    // Add images
-    const imageList = coverImage && !images.includes(coverImage)
-      ? [coverImage, ...images]
-      : images.length > 0 ? images : (coverImage ? [coverImage] : []);
+    const imageList =
+      coverImage && !images.includes(coverImage)
+        ? [coverImage, ...images]
+        : images.length > 0
+          ? images
+          : coverImage
+            ? [coverImage]
+            : [];
 
-    imageList.forEach(image => {
-      mediaItems.push({
-        type: 'image',
-        url: image
-      });
+    imageList.forEach((image) => {
+      mediaItems.push({ type: 'image', url: image });
     });
 
-    // Add 3D models
-    models3D.forEach(model => {
+    models3D.forEach((model) => {
       mediaItems.push({
         type: '3d-model',
         url: model.url,
@@ -69,21 +81,16 @@ export default function PortfolioMediaGallery({
         format: model.format,
         size: model.size,
         downloadable: model.downloadable,
-        publicId: model.publicId
+        publicId: model.publicId,
       });
     });
 
     return mediaItems;
   }, [coverImage, images, models3D]);
 
-  useEffect(() => {
-    setMounted(true);
-    if (allMediaItems.length > 0 && !selectedItem) {
-      setSelectedItem(allMediaItems[0]);
-    }
-  }, [allMediaItems, selectedItem]);
+  // Seçili öğe türetilmiş değerdir: kullanıcı seçimi yoksa ilk öğe
+  const selectedItem = userSelectedItem ?? allMediaItems[0] ?? null;
 
-  // Keyboard navigation for lightbox and body scroll lock
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
       if (!lightboxOpen) return;
@@ -133,7 +140,9 @@ export default function PortfolioMediaGallery({
     }
 
     try {
-      const response = await fetch(`/api/public/3dmodels/download?url=${encodeURIComponent(model.url)}&filename=${encodeURIComponent(model.name)}`);
+      const response = await fetch(
+        `/api/public/3dmodels/download?url=${encodeURIComponent(model.url)}&filename=${encodeURIComponent(model.name)}`,
+      );
 
       if (!response.ok) {
         throw new Error('İndirme başarısız');
@@ -164,11 +173,13 @@ export default function PortfolioMediaGallery({
 
   if (!allMediaItems.length) {
     return (
-      <div className="bg-surface-primary rounded-3xl border border-border p-8">
-        <div className="aspect-16/10 bg-linear-to-br from-surface-secondary to-surface-tertiary rounded-2xl flex items-center justify-center">
+      <div className="bg-surface-primary rounded-sm border border-border p-8">
+        <div className="aspect-16/10 bg-surface-secondary rounded-xs flex items-center justify-center border border-border">
           <div className="text-center">
-            <PhotoIcon className="w-16 h-16 text-primary/60 mx-auto mb-4" />
-            <p className="text-muted-foreground text-lg">Medya bulunamadı</p>
+            <PhotoIcon className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
+            <p className="font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground">
+              Medya bulunamadı
+            </p>
           </div>
         </div>
       </div>
@@ -177,18 +188,18 @@ export default function PortfolioMediaGallery({
 
   return (
     <div>
-      <div className="space-y-6">
+      <div className="space-y-4">
         {/* Main Media Display */}
         <m.div
           key={`main-media-${selectedItem?.url || 'loading'}`}
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6 }}
-          className="relative aspect-16/10 rounded-3xl overflow-hidden shadow-2xl border border-border bg-surface-tertiary group cursor-pointer"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.35 }}
+          className="relative aspect-16/10 rounded-sm overflow-hidden border border-border bg-surface-tertiary group cursor-pointer"
           onClick={(e) => {
             e.preventDefault();
             if (selectedItem) {
-              const currentIndex = allMediaItems.findIndex(item => item.url === selectedItem.url);
+              const currentIndex = allMediaItems.findIndex((item) => item.url === selectedItem.url);
               openLightbox(currentIndex >= 0 ? currentIndex : 0);
             }
           }}
@@ -202,57 +213,40 @@ export default function PortfolioMediaGallery({
                     src={selectedItem.url}
                     alt={`${title} - Seçili Görsel`}
                     fill
-                    className="object-cover transition-all duration-500 ease-in-out group-hover:scale-105"
+                    className="object-cover transition-opacity duration-300"
                     priority
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
                   />
-                  {/* Hover overlay for images */}
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center">
-                    <m.div
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      whileHover={{ opacity: 1, scale: 1 }}
-                      className="opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                    >
-                      <div className="bg-primary/90 backdrop-blur-xs rounded-full p-4 shadow-xl">
-                        <MagnifyingGlassIcon className="w-8 h-8 text-white" />
-                      </div>
-                    </m.div>
+                  <div className="absolute inset-0 bg-[hsl(var(--scrim)/0)] group-hover:bg-[hsl(var(--scrim)/0.35)] transition-colors duration-200 flex items-center justify-center">
+                    <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 inline-flex h-10 w-10 items-center justify-center rounded-xs border border-border bg-background text-foreground">
+                      <MagnifyingGlassIcon className="w-5 h-5" />
+                    </div>
                   </div>
                 </div>
               ) : (
                 <>
-                  {/* 3D Model Preview - Mini viewer */}
                   <div className="w-full h-full relative">
-                    <div className="w-full h-full bg-linear-to-br from-surface-secondary to-surface-tertiary">
+                    <div className="w-full h-full bg-surface-secondary">
                       <ModelViewer
                         modelUrl={selectedItem.url}
                         format={selectedItem.format || 'gltf'}
                         className="w-full h-full"
                       />
                     </div>
-                    <div className="absolute bottom-4 left-4 bg-black/70 text-white px-3 py-2 rounded-lg">
-                      <div className="flex items-center space-x-2">
-                        <CubeIcon className="w-4 h-4" />
-                        <span className="text-sm font-medium">{selectedItem.format?.toUpperCase()}</span>
-                      </div>
+                    <div className="absolute bottom-3 left-3 font-mono text-[10px] uppercase tracking-[0.14em] bg-background/90 text-foreground border border-border px-2 py-1 rounded-xs flex items-center gap-1.5">
+                      <CubeIcon className="w-3.5 h-3.5 text-primary" />
+                      <span>{selectedItem.format?.toUpperCase()}</span>
                     </div>
                     {selectedItem.downloadable && (
-                      <div className="absolute bottom-4 right-4 bg-black/70 text-white px-3 py-2 rounded-lg">
-                        <ArrowDownTrayIcon className="w-4 h-4" />
+                      <div className="absolute bottom-3 right-3 font-mono text-[10px] uppercase tracking-[0.14em] bg-background/90 text-foreground border border-border px-2 py-1 rounded-xs">
+                        <ArrowDownTrayIcon className="w-3.5 h-3.5" />
                       </div>
                     )}
                   </div>
-                  {/* Hover overlay for 3D models */}
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center">
-                    <m.div
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      whileHover={{ opacity: 1, scale: 1 }}
-                      className="opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                    >
-                      <div className="bg-primary/90 backdrop-blur-xs rounded-full p-4 shadow-xl">
-                        <CubeIcon className="w-8 h-8 text-white" />
-                      </div>
-                    </m.div>
+                  <div className="absolute inset-0 bg-[hsl(var(--scrim)/0)] group-hover:bg-[hsl(var(--scrim)/0.35)] transition-colors duration-200 flex items-center justify-center pointer-events-none">
+                    <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 inline-flex h-10 w-10 items-center justify-center rounded-xs border border-border bg-background text-foreground">
+                      <CubeIcon className="w-5 h-5" />
+                    </div>
                   </div>
                 </>
               )}
@@ -260,8 +254,10 @@ export default function PortfolioMediaGallery({
           ) : (
             <div className="bg-surface-tertiary flex items-center justify-center h-full">
               <div className="text-center">
-                <PhotoIcon className="h-16 w-16 text-primary/60 mx-auto mb-2" />
-                <p className="text-muted-foreground text-sm">Medya yükleniyor...</p>
+                <PhotoIcon className="h-10 w-10 text-muted-foreground mx-auto mb-2" />
+                <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+                  Medya yükleniyor...
+                </p>
               </div>
             </div>
           )}
@@ -270,36 +266,40 @@ export default function PortfolioMediaGallery({
         {/* Media Thumbnail Gallery */}
         {allMediaItems.length > 1 && (
           <m.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="bg-surface-primary rounded-3xl p-6 border border-border"
+            transition={{ duration: 0.35, delay: 0.1 }}
+            className="bg-surface-primary rounded-sm p-4 sm:p-5 border border-border"
           >
-            <h3 className="text-xl font-semibold text-foreground tracking-tight mb-6 flex items-center">
-              <PhotoIcon className="w-6 h-6 mr-3 text-primary" />
-              Proje Medyaları ({allMediaItems.length})
+            <div className="mb-4 flex flex-wrap items-center gap-3">
+              <h3 className="text-sm font-semibold text-foreground tracking-tight flex items-center gap-2">
+                <PhotoIcon className="w-4 h-4 text-primary" />
+                Proje Medyaları
+              </h3>
+              <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground border border-border px-2 py-0.5 rounded-xs">
+                {String(allMediaItems.length).padStart(2, '0')}
+              </span>
               {models3D.length > 0 && (
-                <span className="ml-2 text-sm text-primary bg-accent border border-border px-2 py-1 rounded-full">
-                  {models3D.length} 3D Model
+                <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-primary border border-primary/30 bg-accent px-2 py-0.5 rounded-xs">
+                  {models3D.length} 3D
                 </span>
               )}
-            </h3>
+            </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2">
               {allMediaItems.map((item, index) => (
-                <m.button
+                <button
                   key={`thumb-${index}-${item.url}`}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    setSelectedItem(item);
+                    setUserSelectedItem(item);
                   }}
-                  className={`relative aspect-square w-full h-20 sm:h-24 md:h-28 lg:h-32 xl:h-36 rounded-xl overflow-hidden border-2 transition-all duration-300 focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background ${selectedItem?.url === item.url
-                      ? 'border-primary shadow-lg ring-4 ring-ring/25 scale-105'
-                      : 'border-border hover:border-primary/40 hover:shadow-md'
-                    }`}
+                  className={`relative aspect-square w-full rounded-xs overflow-hidden border transition-colors duration-200 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
+                    selectedItem?.url === item.url
+                      ? 'border-primary'
+                      : 'border-border hover:border-primary/50'
+                  }`}
                   type="button"
                 >
                   {item.type === 'image' ? (
@@ -311,31 +311,27 @@ export default function PortfolioMediaGallery({
                       sizes="(max-width: 640px) 25vw, (max-width: 768px) 16vw, (max-width: 1024px) 12vw, 10vw"
                     />
                   ) : (
-                    <div className="w-full h-full bg-linear-to-br from-primary/15 to-primary/10 flex items-center justify-center">
-                      <CubeIcon className="w-8 h-8 text-primary" />
+                    <div className="w-full h-full bg-surface-secondary flex items-center justify-center">
+                      <CubeIcon className="w-6 h-6 text-primary" />
                     </div>
                   )}
 
                   {selectedItem?.url === item.url && (
-                    <div className="absolute inset-0 bg-accent flex items-center justify-center pointer-events-none">
-                      <div className="w-4 h-4 bg-white rounded-full shadow-lg"></div>
-                    </div>
+                    <div className="absolute inset-0 bg-primary/15 pointer-events-none border border-primary" />
                   )}
 
-                  {/* Media type indicator */}
-                  <div className="absolute top-1 left-1 bg-black/50 text-white text-xs px-2 py-1 rounded-full pointer-events-none flex items-center space-x-1">
+                  <div className="absolute top-1 left-1 font-mono text-[9px] uppercase tracking-[0.12em] bg-background/90 text-foreground border border-border px-1.5 py-0.5 rounded-xs pointer-events-none flex items-center gap-1">
                     {item.type === 'image' ? (
-                      <PhotoIcon className="w-3 h-3" />
+                      <PhotoIcon className="w-2.5 h-2.5" />
                     ) : (
-                      <CubeIcon className="w-3 h-3" />
+                      <CubeIcon className="w-2.5 h-2.5" />
                     )}
                   </div>
 
-                  {/* Media number overlay */}
-                  <div className="absolute top-1 right-1 bg-black/50 text-white text-xs px-2 py-1 rounded-full pointer-events-none">
-                    {index + 1}
+                  <div className="absolute top-1 right-1 font-mono text-[9px] tabular-nums bg-background/90 text-foreground border border-border px-1.5 py-0.5 rounded-xs pointer-events-none">
+                    {String(index + 1).padStart(2, '0')}
                   </div>
-                </m.button>
+                </button>
               ))}
             </div>
           </m.div>
@@ -343,161 +339,138 @@ export default function PortfolioMediaGallery({
       </div>
 
       {/* Lightbox Modal */}
-      {mounted && lightboxOpen && createPortal(
-        <m.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black/95 backdrop-blur-xs flex items-center justify-center"
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            zIndex: 99999,
-            width: '100vw',
-            height: '100vh'
-          }}
-        >
-          <div className="relative w-screen h-screen flex items-center justify-center p-4" style={{ width: '100vw', height: '100vh' }}>
-
-            {/* Close Button */}
-            <m.button
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2 }}
-              onClick={() => setLightboxOpen(false)}
-              className="absolute top-6 right-6 z-10 bg-black/50 hover:bg-black/70 text-white rounded-full p-4 transition-all duration-200 hover:scale-110"
-              title="Kapat (ESC)"
-            >
-              <XMarkIcon className="w-6 h-6" />
-            </m.button>
-
-            {/* Media Counter */}
-            <m.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="absolute top-6 left-6 z-10 bg-black/50 text-white px-6 py-3 rounded-full text-lg font-medium flex items-center space-x-2"
-            >
-              {allMediaItems[lightboxItemIndex]?.type === '3d-model' ? (
-                <CubeIcon className="w-5 h-5" />
-              ) : (
-                <PhotoIcon className="w-5 h-5" />
-              )}
-              <span>{lightboxItemIndex + 1} / {allMediaItems.length}</span>
-            </m.div>
-
-            {/* Download Button for 3D Models */}
-            {allMediaItems[lightboxItemIndex]?.type === '3d-model' && allMediaItems[lightboxItemIndex]?.downloadable && (
-              <m.button
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-                onClick={() => handleDownload(allMediaItems[lightboxItemIndex])}
-                className="absolute top-6 right-20 z-10 bg-primary hover:bg-[hsl(var(--primary)/0.85)] text-primary-foreground px-4 py-3 rounded-lg font-medium transition-colors duration-200 active:scale-[0.98] flex items-center space-x-2"
-                title="3D Modeli İndir"
-              >
-                <ArrowDownTrayIcon className="w-5 h-5" />
-                <span>İndir</span>
-              </m.button>
-            )}
-
-            {/* Previous Button */}
-            {allMediaItems.length > 1 && (
-              <m.button
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.4 }}
-                onClick={() => navigateLightbox('prev')}
-                className="absolute left-6 top-1/2 transform -translate-y-1/2 z-10 bg-black/50 hover:bg-black/70 text-white rounded-full p-4 transition-all duration-200 hover:scale-110"
-                title="Önceki (←)"
-              >
-                <ChevronLeftIcon className="w-8 h-8" />
-              </m.button>
-            )}
-
-            {/* Main Media Container */}
-            <m.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5 }}
-              className="relative w-full h-full max-w-7xl max-h-full"
-            >
-              {allMediaItems[lightboxItemIndex]?.type === 'image' ? (
-                <Image
-                  src={allMediaItems[lightboxItemIndex].url}
-                  alt={`${title} - Görsel ${lightboxItemIndex + 1}`}
-                  fill
-                  className="object-contain"
-                  quality={100}
-                  sizes="100vw"
-                  priority
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center">
-                  <div className="w-full max-w-4xl h-96 bg-surface-tertiary rounded-lg overflow-hidden">
-                    <ModelViewer
-                      modelUrl={allMediaItems[lightboxItemIndex].url}
-                      format={allMediaItems[lightboxItemIndex].format || 'gltf'}
-                      className="w-full h-full"
-                    />
-                  </div>
-                </div>
-              )}
-            </m.div>
-
-            {/* Next Button */}
-            {allMediaItems.length > 1 && (
-              <m.button
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.4 }}
-                onClick={() => navigateLightbox('next')}
-                className="absolute right-6 top-1/2 transform -translate-y-1/2 z-10 bg-black/50 hover:bg-black/70 text-white rounded-full p-4 transition-all duration-200 hover:scale-110"
-                title="Sonraki (→)"
-              >
-                <ChevronRightIcon className="w-8 h-8" />
-              </m.button>
-            )}
-
-            {/* Media Title and Info */}
-            <m.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-              className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-10 bg-black/50 text-white px-8 py-4 rounded-2xl text-center max-w-2xl"
-            >
-              <h3 className="font-bold text-xl mb-2 text-white">{title}</h3>
-              <div className="flex items-center justify-center space-x-4 text-sm text-zinc-300">
-                <span>
-                  {allMediaItems[lightboxItemIndex]?.type === '3d-model' ? '3D Model' : 'Görsel'} {lightboxItemIndex + 1} / {allMediaItems.length}
-                </span>
-                {allMediaItems[lightboxItemIndex]?.type === '3d-model' && (
-                  <>
-                    <span>•</span>
-                    <span>{allMediaItems[lightboxItemIndex]?.format?.toUpperCase()}</span>
-                    {allMediaItems[lightboxItemIndex]?.size && (
-                      <>
-                        <span>•</span>
-                        <span>{formatFileSize(allMediaItems[lightboxItemIndex].size!)}</span>
-                      </>
-                    )}
-                  </>
-                )}
-              </div>
-            </m.div>
-
-            {/* Click outside to close */}
+      {mounted &&
+        lightboxOpen &&
+        createPortal(
+          <m.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-[hsl(var(--scrim)/0.94)] flex items-center justify-center"
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              zIndex: 99999,
+              width: '100vw',
+              height: '100vh',
+            }}
+          >
             <div
-              className="absolute inset-0 -z-10"
-              onClick={() => setLightboxOpen(false)}
-            />
-          </div>
-        </m.div>,
-        document.body
-      )}
+              className="relative w-screen h-screen flex items-center justify-center p-4"
+              style={{ width: '100vw', height: '100vh' }}
+            >
+              <button
+                onClick={() => setLightboxOpen(false)}
+                className="absolute top-5 right-5 z-10 inline-flex h-10 w-10 items-center justify-center rounded-xs border border-border bg-background/90 text-foreground hover:border-primary hover:text-primary transition-colors"
+                title="Kapat (ESC)"
+              >
+                <XMarkIcon className="w-5 h-5" />
+              </button>
+
+              <div className="absolute top-5 left-5 z-10 font-mono text-xs uppercase tracking-[0.14em] bg-background/90 text-foreground border border-border px-3 py-2 rounded-xs flex items-center gap-2">
+                {allMediaItems[lightboxItemIndex]?.type === '3d-model' ? (
+                  <CubeIcon className="w-4 h-4 text-primary" />
+                ) : (
+                  <PhotoIcon className="w-4 h-4 text-primary" />
+                )}
+                <span>
+                  {String(lightboxItemIndex + 1).padStart(2, '0')} /{' '}
+                  {String(allMediaItems.length).padStart(2, '0')}
+                </span>
+              </div>
+
+              {allMediaItems[lightboxItemIndex]?.type === '3d-model' &&
+                allMediaItems[lightboxItemIndex]?.downloadable && (
+                  <button
+                    onClick={() => handleDownload(allMediaItems[lightboxItemIndex])}
+                    className="absolute top-5 right-20 z-10 inline-flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground px-3 py-2 rounded-xs font-mono text-xs uppercase tracking-[0.14em] transition-colors"
+                    title="3D Modeli İndir"
+                  >
+                    <ArrowDownTrayIcon className="w-4 h-4" />
+                    <span>İndir</span>
+                  </button>
+                )}
+
+              {allMediaItems.length > 1 && (
+                <button
+                  onClick={() => navigateLightbox('prev')}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 z-10 inline-flex h-10 w-10 items-center justify-center rounded-xs border border-border bg-background/90 text-foreground hover:border-primary hover:text-primary transition-colors"
+                  title="Önceki (←)"
+                >
+                  <ChevronLeftIcon className="w-6 h-6" />
+                </button>
+              )}
+
+              <m.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.3 }}
+                className="relative w-full h-full max-w-7xl max-h-full"
+              >
+                {allMediaItems[lightboxItemIndex]?.type === 'image' ? (
+                  <Image
+                    src={allMediaItems[lightboxItemIndex].url}
+                    alt={`${title} - Görsel ${lightboxItemIndex + 1}`}
+                    fill
+                    className="object-contain"
+                    quality={100}
+                    sizes="100vw"
+                    priority
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <div className="w-full max-w-4xl h-96 bg-surface-tertiary rounded-sm overflow-hidden border border-border">
+                      <ModelViewer
+                        modelUrl={allMediaItems[lightboxItemIndex].url}
+                        format={allMediaItems[lightboxItemIndex].format || 'gltf'}
+                        className="w-full h-full"
+                      />
+                    </div>
+                  </div>
+                )}
+              </m.div>
+
+              {allMediaItems.length > 1 && (
+                <button
+                  onClick={() => navigateLightbox('next')}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 z-10 inline-flex h-10 w-10 items-center justify-center rounded-xs border border-border bg-background/90 text-foreground hover:border-primary hover:text-primary transition-colors"
+                  title="Sonraki (→)"
+                >
+                  <ChevronRightIcon className="w-6 h-6" />
+                </button>
+              )}
+
+              <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-10 bg-background/90 text-foreground border border-border px-5 py-3 rounded-sm text-center max-w-2xl">
+                <h3 className="font-semibold text-base mb-1">{title}</h3>
+                <div className="flex items-center justify-center gap-3 font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+                  <span>
+                    {allMediaItems[lightboxItemIndex]?.type === '3d-model' ? '3D Model' : 'Görsel'}{' '}
+                    {String(lightboxItemIndex + 1).padStart(2, '0')} /{' '}
+                    {String(allMediaItems.length).padStart(2, '0')}
+                  </span>
+                  {allMediaItems[lightboxItemIndex]?.type === '3d-model' && (
+                    <>
+                      <span aria-hidden>·</span>
+                      <span>{allMediaItems[lightboxItemIndex]?.format?.toUpperCase()}</span>
+                      {allMediaItems[lightboxItemIndex]?.size && (
+                        <>
+                          <span aria-hidden>·</span>
+                          <span>{formatFileSize(allMediaItems[lightboxItemIndex].size!)}</span>
+                        </>
+                      )}
+                    </>
+                  )}
+                </div>
+              </div>
+
+              <div className="absolute inset-0 -z-10" onClick={() => setLightboxOpen(false)} />
+            </div>
+          </m.div>,
+          document.body,
+        )}
     </div>
   );
 }

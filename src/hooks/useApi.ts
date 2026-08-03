@@ -82,9 +82,13 @@ export function useApi<T>(
   }, [url, cacheKey, cacheTTL, onSuccess, onError]);
 
   useEffect(() => {
-    if (immediate) {
-      fetchData();
-    }
+    if (!immediate) return;
+    // Ertelenmiş başlatma: efekt gövdesinde senkron setState yerine
+    // bir sonraki tick'te fetch tetiklenir
+    const timer = setTimeout(() => {
+      void fetchData();
+    }, 0);
+    return () => clearTimeout(timer);
   }, [fetchData, immediate]);
 
   return {

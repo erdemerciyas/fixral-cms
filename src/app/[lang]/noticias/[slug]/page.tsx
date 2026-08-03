@@ -169,8 +169,7 @@ async function findNewsWithRetry(slug: string): Promise<any | null> {
   return null;
 }
 
-export default async function NewsDetailPage({ params: paramsPromise }: PageProps) {
-  const { lang, slug } = await paramsPromise;
+async function prepareNewsView(slug: string, lang: string) {
   try {
     const news = await findNewsWithRetry(slug);
 
@@ -179,12 +178,12 @@ export default async function NewsDetailPage({ params: paramsPromise }: PageProp
         slug,
         decodedSlug: decodeURIComponent(slug)
       });
-      notFound();
+      return null;
     }
 
     if (news.status !== 'published') {
       logger.warn('News article not published (ES)', 'NEWS_DETAIL', { slug, status: news.status });
-      notFound();
+      return null;
     }
 
     const translation = news.translations?.es || { title: '', metaDescription: '', content: '', excerpt: '', keywords: [] };
@@ -249,25 +248,36 @@ export default async function NewsDetailPage({ params: paramsPromise }: PageProp
       keywords: translation.keywords || [],
     };
 
-    return (
-      <div className="min-h-dvh bg-background">
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
-
-        <NewsDetailClient
-          lang={lang}
-          locale="es"
-          news={serializedNews}
-          translation={serializedTranslation}
-        />
-      </div>
-    );
+    return { jsonLd, serializedNews, serializedTranslation };
   } catch (error) {
     const errMsg = error instanceof Error ? error.message : String(error);
     const errStack = error instanceof Error ? error.stack : undefined;
     logger.error('Error rendering news detail page (ES)', 'NEWS_DETAIL', { error: errMsg, stack: errStack });
+    return null;
+  }
+}
+
+export default async function NewsDetailPage({ params: paramsPromise }: PageProps) {
+  const { lang, slug } = await paramsPromise;
+  const view = await prepareNewsView(slug, lang);
+  if (!view) {
     notFound();
   }
+  const { jsonLd, serializedNews, serializedTranslation } = view;
+
+  return (
+    <div className="min-h-dvh bg-background">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
+      <NewsDetailClient
+        lang={lang}
+        locale="es"
+        news={serializedNews}
+        translation={serializedTranslation}
+      />
+    </div>
+  );
 }

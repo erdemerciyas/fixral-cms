@@ -1,12 +1,14 @@
 'use client';
 
 import { Send as PaperAirplaneIcon } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useSyncExternalStore } from 'react';
+
+// Mount bilgisini efekt olmadan türet (server'da false, client'ta true)
+const subscribeNoop = () => () => {};
 
 export default function FloatingCta() {
-  const [isMounted, setIsMounted] = useState(false);
+  const isMounted = useSyncExternalStore(subscribeNoop, () => true, () => false);
   const [isOpen, setIsOpen] = useState(false);
-  useEffect(() => setIsMounted(true), []);
 
   // İlk yüklemede kulakçığı otomatik aç-kapa (reduced motion değilse)
   useEffect(() => {

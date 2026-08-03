@@ -10,8 +10,8 @@ import { useConfirm } from '@/hooks/use-confirm';
 function Modal({ isOpen, onClose, title, children }: { isOpen: boolean; onClose: () => void; title: string; children: React.ReactNode }) {
     if (!isOpen) return null;
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[hsl(var(--scrim)/0.5)] backdrop-blur-xs">
-            <div className="bg-card rounded-lg shadow-[var(--shadow-lg)] w-full max-w-md overflow-hidden border border-border">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[hsl(var(--scrim)/0.72)]">
+            <div className="bg-card rounded-sm w-full max-w-md overflow-hidden border border-border">
                 <div className="px-6 py-4 border-b border-border flex justify-between items-center">
                     <h3 className="font-bold text-lg text-foreground">{title}</h3>
                     <button onClick={onClose} className="text-muted-foreground hover:text-foreground transition-colors">
@@ -59,13 +59,6 @@ export default function AccountPage() {
 
     useEffect(() => {
         if (status === 'authenticated') {
-            if (activeTab === 'addresses') fetchAddresses();
-            if (activeTab === 'messages') fetchMessages();
-        }
-    }, [activeTab, status]);
-
-    useEffect(() => {
-        if (status === 'authenticated') {
             fetch('/api/public/user/messages?page=1&limit=1').then(res => res.json()).then(data => {
                 if (data.success && data.unreadCount !== undefined) setUnreadCount(data.unreadCount);
             });
@@ -101,6 +94,18 @@ export default function AccountPage() {
             setLoadingMessages(false);
         }
     };
+
+    useEffect(() => {
+        if (status !== 'authenticated') return;
+        // Ertelenmiş çağrı: fetch fonksiyonlarının senkron kısmı (setState)
+        // efekt gövdesinde değil, bir sonraki tick'te çalışsın
+        const timer = setTimeout(() => {
+            if (activeTab === 'addresses') fetchAddresses();
+            if (activeTab === 'messages') fetchMessages();
+        }, 0);
+        return () => clearTimeout(timer);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [activeTab, status]);
 
     const handleMessageSelect = (id: string) => {
         const newSelected = new Set(selectedMessages);

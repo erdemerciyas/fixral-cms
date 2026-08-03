@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useSyncExternalStore } from 'react';
 import { m } from 'framer-motion';
 import { Star as StarIconSolid } from 'lucide-react';
 import type { PortfolioItem } from '../../types/portfolio';
@@ -9,12 +9,11 @@ interface PortfolioDetailHeroProps {
   project: PortfolioItem;
 }
 
-export default function PortfolioDetailHero({ project }: PortfolioDetailHeroProps) {
-  const [mounted, setMounted] = useState(false);
+// Mount bilgisini efekt olmadan türet (server'da false, client'ta true)
+const subscribeNoop = () => () => {};
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+export default function PortfolioDetailHero({ project }: PortfolioDetailHeroProps) {
+  const mounted = useSyncExternalStore(subscribeNoop, () => true, () => false);
 
   if (!mounted) {
     return (

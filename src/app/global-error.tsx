@@ -32,6 +32,9 @@ export default function GlobalError({
               </button>
               
               <div className="mt-6">
+                {/* global-error kök layout'u değiştirdiği için next/link yerine
+                    düz <a> kullanılır (rule bilerek devre dışı) */}
+                {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
                 <a
                   href="/"
                   className="text-orange-400 hover:text-orange-300 transition-colors duration-200"

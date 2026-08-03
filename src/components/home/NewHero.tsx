@@ -10,7 +10,7 @@
  * prefers-reduced-motion'da autoplay hiç çalışmaz.
  * Named export: `export const NewHero`
  */
-import { useCallback, useEffect, useState, useRef } from 'react'
+import { useCallback, useEffect, useState, useRef, useSyncExternalStore } from 'react'
 import Image from 'next/image'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import HeroContent, { type HeroSlideData } from './HeroContent'
@@ -34,7 +34,7 @@ const SCRIM_GRADIENT =
 /* ─── Ok butonu: hairline chip, hover'da turuncu dolgu (kontrol radius 2px) ─── */
 const ARROW_BUTTON = cn(
   'inline-flex h-10 w-10 items-center justify-center rounded-xs',
-  'border border-border bg-background/85 text-foreground backdrop-blur-xs',
+  'border border-border bg-background/90 text-foreground',
   'hover:bg-primary hover:text-primary-foreground hover:border-primary',
   'transition-[background-color,color,border-color] duration-200 motion-reduce:transition-none',
   'focus:outline-hidden focus-visible:ring-2 focus-visible:ring-ring',
@@ -71,6 +71,9 @@ function mapApiToSlide(item: SliderApiResponse): HeroSlide {
   }
 }
 
+// Mount bilgisini efekt olmadan türet (server'da false, client'ta true)
+const subscribeNoop = () => () => {}
+
 export const NewHero = () => {
   const reducedMotion = useReducedMotionGuard()
   const { t } = useAppTranslations('home')
@@ -80,11 +83,8 @@ export const NewHero = () => {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [isHovered, setIsHovered] = useState(false)
   const [interactionPaused, setInteractionPaused] = useState(false)
-  const [isMounted, setIsMounted] = useState(false)
-
-  useEffect(() => {
-    setIsMounted(true)
-  }, [])
+  // Mount bilgisini efekt olmadan türet (server'da false, client'ta true)
+  const isMounted = useSyncExternalStore(subscribeNoop, () => true, () => false)
 
   /* Fetch slider data — veri akışı korunur: /api/public/slider */
   useEffect(() => {

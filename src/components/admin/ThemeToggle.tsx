@@ -1,18 +1,17 @@
 'use client'
 
 import { useTheme } from 'next-themes'
-import { useEffect, useState } from 'react'
+import { useSyncExternalStore } from 'react'
 import { Moon, Sun } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 
-export default function ThemeToggle() {
-  const [mounted, setMounted] = useState(false)
-  const { resolvedTheme, setTheme } = useTheme()
+// Mount bilgisini efekt olmadan türet (server'da false, client'ta true)
+const subscribeNoop = () => () => {}
 
-  useEffect(() => {
-    setMounted(true)
-  }, [])
+export default function ThemeToggle() {
+  const mounted = useSyncExternalStore(subscribeNoop, () => true, () => false)
+  const { resolvedTheme, setTheme } = useTheme()
 
   if (!mounted) {
     return <Skeleton className="h-9 w-9 rounded-md" />

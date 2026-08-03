@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useSyncExternalStore } from 'react';
 import { createPortal } from 'react-dom';
 import { X as XMarkIcon, Send as PaperAirplaneIcon, Mail as EnvelopeIcon } from 'lucide-react';
 import { toast } from 'sonner';
@@ -10,8 +10,11 @@ interface ProjectModalProps {
     onClose: () => void;
 }
 
+// Mount bilgisini efekt olmadan türet (server'da false, client'ta true)
+const subscribeNoop = () => () => {};
+
 export default function ProjectModal({ isOpen, onClose }: ProjectModalProps) {
-    const [mounted, setMounted] = useState(false);
+    const mounted = useSyncExternalStore(subscribeNoop, () => true, () => false);
     const [projectForm, setProjectForm] = useState({
         name: '',
         email: '',
@@ -23,10 +26,6 @@ export default function ProjectModal({ isOpen, onClose }: ProjectModalProps) {
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
-
-    useEffect(() => {
-        setMounted(true);
-    }, []);
 
     const handleProjectFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -100,8 +99,8 @@ E-posta: ${projectForm.email}
     if (!mounted || !isOpen) return null;
 
     return createPortal(
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-xs z-9999 flex items-center justify-center p-4">
-            <div className="bg-card border border-border rounded-sm shadow-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-[hsl(var(--scrim)/0.72)] z-9999 flex items-center justify-center p-4">
+            <div className="bg-card border border-border rounded-sm w-full max-w-2xl max-h-[90vh] overflow-y-auto">
                 <div className="p-6 border-b border-border flex items-center justify-between">
                     <h2 className="text-xl font-semibold text-foreground flex items-center space-x-2">
                         <PaperAirplaneIcon className="w-6 h-6 text-accent-foreground" />
@@ -110,7 +109,7 @@ E-posta: ${projectForm.email}
                     <button
                         onClick={onClose}
                         aria-label="Diyaloğu kapat"
-                        className="p-2 rounded-full hover:bg-accent transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring"
+                        className="p-2 rounded-xs hover:bg-accent transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring"
                     >
                         <XMarkIcon className="w-6 h-6 text-muted-foreground" />
                     </button>

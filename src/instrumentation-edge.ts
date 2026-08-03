@@ -1,51 +1,13 @@
-// Sentry is optional - only import if available
-let Sentry: any = null;
-
-function loadSentry() {
-  try {
-    // Use completely dynamic require to avoid webpack bundling
-    const moduleName = '@sentry/nextjs';
-    return eval('require')(moduleName);
-  } catch {
-    return null;
-  }
-}
-
-if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
-  Sentry = loadSentry();
-  if (!Sentry) {
-    console.warn('Sentry not installed, skipping edge instrumentation');
-  }
-} else {
-  console.warn('Sentry not installed, skipping Sentry configuration');
-}
-
+/**
+ * Edge instrumentation — optional Sentry.
+ * Turbopack Edge Runtime forbids eval/dynamic require, so we never load
+ * @sentry/nextjs here unless it is an explicit static dependency.
+ * Package is currently not installed; this remains a safe no-op.
+ */
 export function register() {
-  if (process.env.NEXT_RUNTIME === 'edge' && Sentry) {
-    const SENTRY_DSN = process.env.NEXT_PUBLIC_SENTRY_DSN;
-    const SENTRY_ENVIRONMENT = process.env.NODE_ENV || 'development';
-    const SENTRY_RELEASE = process.env.NEXT_PUBLIC_SENTRY_RELEASE || 'unknown';
-
-    Sentry.init({
-      dsn: SENTRY_DSN,
-      environment: SENTRY_ENVIRONMENT,
-      release: SENTRY_RELEASE,
-      
-      // Edge runtime has different capabilities
-      tracesSampleRate: SENTRY_ENVIRONMENT === 'production' ? 0.05 : 0.5,
-      
-      // Minimal configuration for edge runtime
-      debug: false, // Edge runtime doesn't support debug mode well
-      
-      // No additional integrations for edge runtime
-      integrations: [],
-      
-      // Custom tags
-      initialScope: {
-        tags: {
-          component: 'edge'
-        }
-      }
-    });
+  if (process.env.NEXT_RUNTIME === 'edge' && process.env.NEXT_PUBLIC_SENTRY_DSN) {
+    console.warn(
+      'Sentry DSN is set but @sentry/nextjs is not wired for Edge/Turbopack; skipping edge instrumentation',
+    );
   }
 }

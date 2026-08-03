@@ -1,23 +1,11 @@
 import { NextRequest } from 'next/server';
 
-// Sentry is optional - mock it if not available
-let Sentry: any = null;
-
-function getSentry() {
-  if (Sentry) return Sentry;
-  
-  if (typeof window !== 'undefined') {
-    return null; // No Sentry in browser
-  }
-  
-  try {
-    // eslint-disable-next-line global-require, @typescript-eslint/no-var-requires
-    Sentry = require('@sentry/nextjs');
-  } catch {
-    Sentry = null;
-  }
-  
-  return Sentry;
+/**
+ * Optional Sentry handle. Package is not installed; avoid require() so
+ * Turbopack does not fail module resolution. Wire @sentry/nextjs here when added.
+ */
+function getSentry(): any {
+  return null;
 }
 
 // Performance monitoring utilities

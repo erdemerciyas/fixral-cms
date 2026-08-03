@@ -1,12 +1,12 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useSyncExternalStore } from 'react'
 import { Moon, Sun } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import {
+  DEFAULT_PUBLIC_THEME,
   PUBLIC_THEME_CHANGE_EVENT,
   PUBLIC_THEME_STORAGE_KEY,
-  normalizePublicTheme,
   readPublicTheme,
   setPublicTheme,
   type PublicTheme,
@@ -14,6 +14,22 @@ import {
 
 const TOGGLE_CLASS =
   'inline-flex h-9 w-9 items-center justify-center rounded-xs border border-border bg-transparent text-muted-foreground transition-colors duration-150 hover:bg-accent hover:text-accent-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background'
+
+// Mount bilgisini efekt olmadan türet (server'da false, client'ta true)
+const subscribeNoop = () => () => {}
+
+function subscribePublicTheme(callback: () => void) {
+  const handleStorage = (event: StorageEvent) => {
+    if (event.key && event.key !== PUBLIC_THEME_STORAGE_KEY) return
+    callback()
+  }
+  window.addEventListener(PUBLIC_THEME_CHANGE_EVENT, callback)
+  window.addEventListener('storage', handleStorage)
+  return () => {
+    window.removeEventListener(PUBLIC_THEME_CHANGE_EVENT, callback)
+    window.removeEventListener('storage', handleStorage)
+  }
+}
 
 interface ThemeToggleProps {
   className?: string
@@ -26,31 +42,12 @@ interface ThemeToggleProps {
  * olana dek aynı boyutta nötr placeholder render eder.
  */
 export function ThemeToggle({ className }: ThemeToggleProps) {
-  const [mounted, setMounted] = useState(false)
-  const [theme, setTheme] = useState<PublicTheme>('light')
-
-  useEffect(() => {
-    setTheme(readPublicTheme())
-    setMounted(true)
-
-    const handleThemeChange = (event: Event) => {
-      const detail = (event as CustomEvent<unknown>).detail
-      setTheme(detail == null ? readPublicTheme() : normalizePublicTheme(detail))
-    }
-
-    const handleStorage = (event: StorageEvent) => {
-      if (event.key && event.key !== PUBLIC_THEME_STORAGE_KEY) return
-      setTheme(readPublicTheme())
-    }
-
-    window.addEventListener(PUBLIC_THEME_CHANGE_EVENT, handleThemeChange)
-    window.addEventListener('storage', handleStorage)
-
-    return () => {
-      window.removeEventListener(PUBLIC_THEME_CHANGE_EVENT, handleThemeChange)
-      window.removeEventListener('storage', handleStorage)
-    }
-  }, [])
+  const mounted = useSyncExternalStore(subscribeNoop, () => true, () => false)
+  const theme = useSyncExternalStore(
+    subscribePublicTheme,
+    readPublicTheme,
+    () => DEFAULT_PUBLIC_THEME as PublicTheme
+  )
 
   if (!mounted) {
     return <div className={cn(TOGGLE_CLASS, className)} aria-hidden="true" />

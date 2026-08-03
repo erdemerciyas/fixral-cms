@@ -106,7 +106,7 @@ export default function ModernProjectCard({
               style={{ background: OVERLAY_SCRIM }}
             >
               <div className="relative z-10">
-                <h3 className="mb-2 line-clamp-2 text-sm font-medium leading-snug text-white md:text-base">
+                <h3 className="mb-2 line-clamp-2 text-sm font-medium leading-snug text-primary-foreground md:text-base">
                   {project.title}
                 </h3>
 
@@ -115,13 +115,13 @@ export default function ModernProjectCard({
                     {project.technologies.slice(0, 3).map((tech) => (
                       <span
                         key={tech}
-                        className="rounded-sm border border-white/20 bg-white/10 px-2 py-0.5 text-[10px] tracking-wide text-white/90 md:text-[11px]"
+                        className="rounded-xs border border-primary-foreground/25 bg-primary-foreground/10 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wide text-primary-foreground/90 md:text-[11px]"
                       >
                         {tech}
                       </span>
                     ))}
                     {project.technologies.length > 3 && (
-                      <span className="self-center text-[10px] text-white/70 md:text-[11px]">
+                      <span className="self-center font-mono text-[10px] text-primary-foreground/70 md:text-[11px]">
                         +{project.technologies.length - 3}
                       </span>
                     )}

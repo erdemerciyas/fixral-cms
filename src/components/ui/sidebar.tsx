@@ -635,9 +635,14 @@ const SidebarMenuSkeleton = React.forwardRef<
     showIcon?: boolean
   }
 >(({ className, showIcon = false, ...props }, ref) => {
+  // Math.random render sırasında saf değil; useId'den deterministik genişlik türet
+  const id = React.useId()
   const width = React.useMemo(() => {
-    return `${Math.floor(Math.random() * 40) + 50}%`
-  }, [])
+    const hash = id
+      .split("")
+      .reduce((acc, ch) => (acc * 31 + ch.charCodeAt(0)) % 40, 0)
+    return `${hash + 50}%`
+  }, [id])
 
   return (
     <div

@@ -26,6 +26,13 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
 }
 
 export default async function PortfolioPage() {
+  let data: {
+    portfolioItems: Awaited<ReturnType<typeof getPortfolioItems>>;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    categories: any;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    heroData: any;
+  } | null = null;
   try {
     const portfolioItems = await getPortfolioItems(100);
 
@@ -35,16 +42,12 @@ export default async function PortfolioPage() {
     const pageSettingsRecord = await PageSetting.findOne({ pageId: 'portfolio' }).lean();
     const heroData = pageSettingsRecord ? JSON.parse(JSON.stringify(pageSettingsRecord)) : null;
 
-    return (
-      <PortfolioTemplate
-        title="Portfolyo"
-        items={portfolioItems}
-        categories={categories}
-        heroData={heroData}
-      />
-    );
+    data = { portfolioItems, categories, heroData };
   } catch (error) {
     console.error('Portfolio fetch error:', error);
+  }
+
+  if (!data) {
     return (
       <div className="min-h-dvh bg-background flex items-center justify-center">
         <div className="text-center max-w-md mx-auto px-4 py-8">
@@ -58,4 +61,13 @@ export default async function PortfolioPage() {
       </div>
     );
   }
+
+  return (
+    <PortfolioTemplate
+      title="Portfolyo"
+      items={data.portfolioItems}
+      categories={data.categories}
+      heroData={data.heroData}
+    />
+  );
 }

@@ -169,7 +169,12 @@ const Header: React.FC = () => {
     fetchNavigation();
   }, []);
 
-  useEffect(() => { setIsMobileMenuOpen(false); }, [pathname]);
+  // Route değişiminde mobil menüyü kapat (render sırasında ayarlama; efekt gerekmez)
+  const [prevPathname, setPrevPathname] = useState(pathname);
+  if (prevPathname !== pathname) {
+    setPrevPathname(pathname);
+    setIsMobileMenuOpen(false);
+  }
 
   useEffect(() => {
     const handleOpen: EventListener = () => openProjectModal();
@@ -228,7 +233,7 @@ const Header: React.FC = () => {
       {/* Precision chrome: flat, dark-capable bar. Ana sayfa tepesinde hero'nun
           always-dark scope'uyla aynı teknikle saydamlaşır, sonrasında token zemin. */}
       <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-200 motion-reduce:transition-none ${
+        className={`fixed top-0 left-0 right-0 z-[200] transition-colors duration-200 motion-reduce:transition-none ${
           overHero
             ? 'public-theme public-dark bg-transparent border-b border-transparent'
             : 'bg-background border-b border-border'

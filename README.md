@@ -1,16 +1,17 @@
 # Fixral CMS
 
-[![Next.js](https://img.shields.io/badge/Next.js-14.2-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-16-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19.2-61DAFB?style=for-the-badge&logo=react)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.6-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Neon-336791?style=for-the-badge&logo=postgresql)](https://neon.tech/)
 [![Prisma](https://img.shields.io/badge/Prisma-5.22-2D3748?style=for-the-badge&logo=prisma)](https://www.prisma.io/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-v4-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
 [![shadcn/ui](https://img.shields.io/badge/shadcn/ui-Radix-000?style=for-the-badge)](https://ui.shadcn.com/)
 [![Vercel](https://img.shields.io/badge/Vercel-Deploy-black?style=for-the-badge&logo=vercel)](https://vercel.com/)
 [![Sürüm](https://img.shields.io/badge/Sürüm-5.1.0-blue?style=for-the-badge)]()
 [![Lisans](https://img.shields.io/badge/Lisans-Özel-red?style=for-the-badge)]()
 
-**Fixral CMS**, Next.js 14 (App Router), Prisma ORM ve PostgreSQL üzerine inşa edilmiş, üretime hazır, tam kapsamlı bir İçerik Yönetim Sistemidir.
+**Fixral CMS**, Next.js 16 (App Router, Turbopack), React 19.2, Prisma ORM ve PostgreSQL üzerine inşa edilmiş, üretime hazır, tam kapsamlı bir İçerik Yönetim Sistemidir.
 
 Mühendislik portföyleri, 3D baskı hizmetleri ve ajans web siteleri için tasarlanmış olup; shadcn/ui ile güçlendirilmiş modern admin paneli, çoklu dil desteği, zengin içerik düzenleme deneyimi, 112+ API endpoint ve 34 admin sayfası sunar.
 
@@ -40,7 +41,7 @@ Mühendislik portföyleri, 3D baskı hizmetleri ve ajans web siteleri için tasa
 - [Performans ve SEO](#performans-ve-seo)
 - [PWA Desteği](#pwa-desteği)
 - [Çoklu Dil (i18n)](#çoklu-dil-i18n)
-- [Middleware Katmanı](#middleware-katmanı)
+- [Proxy Katmanı](#proxy-katmanı)
 - [Test](#test)
 - [Değişiklik Günlüğü](#değişiklik-günlüğü)
 - [Katkıda Bulunma](#katkıda-bulunma)
@@ -110,11 +111,11 @@ Mühendislik portföyleri, 3D baskı hizmetleri ve ajans web siteleri için tasa
 ## Mimari
 
 ```
-Next.js 14 App Router
+Next.js 16 App Router (Turbopack)
 ├── Server Components (SSR veri çekme)
 ├── Client Components (shadcn/ui ile etkileşimli arayüz)
 ├── API Routes (112+ endpoint — public/ + admin/ ayrımı)
-├── Middleware (kimlik doğrulama, i18n, rate limiting, güvenlik başlıkları)
+├── Proxy (src/proxy.ts — kimlik doğrulama, i18n, rate limiting, güvenlik başlıkları)
 ├── Prisma ORM (PostgreSQL / Neon)
 ├── Prisma Model Adapter (Mongoose-uyumlu API katmanı)
 ├── Instrumentation (Sentry entegrasyonu — server, edge, client)
@@ -126,7 +127,7 @@ Next.js 14 App Router
 - **API Ayrımı:** `api/public/` kimlik doğrulaması gerektirmeyen uç noktalar, `api/admin/` korumalı uç noktalar için — her iki grupta da kapsamlı CRUD endpoint'leri
 - **Admin Arayüzü:** shadcn/ui bileşenleri (Radix + Tailwind) ile katlanabilir kenar çubuğu düzeni ve şablon tabanlı sayfa yapısı
 - **Bileşen Stratejisi:** shadcn/ui temel bileşenleri + özel Fixral bileşenleri (`GlassCard`, `MagneticButton`, `ScrollReveal` vb.)
-- **Güvenlik Katmanları:** Middleware seviyesinde JWT doğrulama, rate limiting, CSP başlıkları ve kötü amaçlı istek engelleme (`src/middleware.ts`)
+- **Güvenlik Katmanları:** Proxy seviyesinde JWT doğrulama, rate limiting, CSP başlıkları ve kötü amaçlı istek engelleme (`src/proxy.ts` — Next.js 16'da middleware'ın yeni konumu)
 - **Instrumentation:** Opsiyonel Sentry entegrasyonu — sunucu, edge ve istemci tarafı hata izleme
 
 ---
@@ -163,13 +164,13 @@ Prisma ORM ile yönetilen **19 model** — PostgreSQL (Neon) üzerinde:
 
 | Kategori | Teknoloji |
 |----------|-----------|
-| **Framework** | Next.js 14.2 (React 18 + App Router) |
+| **Framework** | Next.js 16.2 (React 19.2 + App Router + Turbopack) |
 | **Dil** | TypeScript 5.6 |
 | **Veritabanı** | PostgreSQL (Neon) — Prisma ORM 5.22 ile |
-| **Stillendirme** | Tailwind CSS 3.4, CVA, tailwind-merge, tailwindcss-animate |
+| **Stillendirme** | Tailwind CSS v4 (CSS-first yapılandırma), CVA, tailwind-merge, tailwindcss-animate |
 | **UI Kütüphanesi** | shadcn/ui (Radix UI primitives — 20+ bileşen) |
 | **Zengin Metin** | Tiptap 3.6 (kod blokları, tablolar, görseller, link, renk, hizalama) |
-| **Animasyon** | Framer Motion 10.x |
+| **Animasyon** | Framer Motion 11.x |
 | **İkonlar** | Lucide React, Heroicons, Phosphor Icons |
 | **3D Grafik** | Three.js 0.160, React Three Fiber, Drei |
 | **Kimlik Doğrulama** | NextAuth.js 4.23 + JWT |
@@ -181,8 +182,8 @@ Prisma ORM ile yönetilen **19 model** — PostgreSQL (Neon) üzerinde:
 | **Doğrulama** | Zod (API), Validator.js (form) |
 | **XSS Koruması** | DOMPurify, sanitize-html |
 | **2FA** | OTPLib (TOTP) + QRCode |
-| **Test** | Jest 30, Testing Library |
-| **Lint / Format** | ESLint 8, Prettier 3, prettier-plugin-tailwindcss |
+| **Test** | Jest 30, Testing Library, Playwright (QA ekran görüntüleri) |
+| **Lint / Format** | ESLint 9 (flat config — React Compiler danışmanlık kuralları dahil), Prettier 3, prettier-plugin-tailwindcss |
 | **CI/CD** | GitHub Actions (CI + Security Scan), Vercel |
 | **Bildirimler** | Sonner (toast), SweetAlert2, react-hot-toast |
 | **Slider** | Swiper.js 11 |
@@ -190,7 +191,7 @@ Prisma ORM ile yönetilen **19 model** — PostgreSQL (Neon) üzerinde:
 | **Tablo** | TanStack React Table 8.21 |
 | **Tema** | next-themes (dark/light mode) |
 | **Monitöring** | Sentry (opsiyonel — server, edge, client) |
-| **Font** | Geist (heading + body) |
+| **Font** | Barlow (display + body), Geist Mono (teknik aksan) |
 
 ---
 
@@ -365,13 +366,15 @@ fixral-cms/
 │   ├── instrumentation-server.ts  # Sunucu tarafı instrumentation
 │   ├── instrumentation-client.ts  # İstemci tarafı instrumentation
 │   ├── instrumentation-edge.ts    # Edge runtime instrumentation
-│   └── middleware.ts              # Ana middleware (auth, i18n, güvenlik, rate limit)
+│   └── proxy.ts                   # Proxy katmanı (Next.js 16 middleware — auth, i18n, güvenlik, rate limit)
 ├── next.config.js                 # Next.js yapılandırması
-├── tailwind.config.js             # Tailwind CSS yapılandırması (dark mode, özel token'lar)
+├── eslint.config.mjs              # ESLint 9 flat config (React Compiler danışmanlık kuralları dahil)
 ├── tsconfig.json                  # TypeScript yapılandırması (strict mode)
 ├── site.config.js                 # Site geneli yapılandırma sabitleri
-└── scripts/                       # Yardımcı scriptler (cleanup, video sync)
+└── scripts/                       # Yardımcı scriptler (cleanup, video sync, QA ekran görüntüleri)
 ```
+
+> **Not:** Tailwind CSS v4 CSS-first yapılandırma kullanır — ayrı bir `tailwind.config.js` yoktur; tema token'ları ve stiller `src/app/globals.css` içinde tanımlıdır.
 
 ---
 
@@ -609,6 +612,8 @@ NODE_ENV=development
 | `npm run lint:fix` | Lint sorunlarını otomatik düzelt |
 | `npm run type-check` | TypeScript tip kontrolü yap |
 | `npm run format` | Prettier ile kodu formatla |
+| `npm run contrast` | WCAG kontrast testini çalıştır |
+| `npm run qa:after` | Playwright ile QA ekran görüntüleri al |
 
 ### Test
 
@@ -785,7 +790,7 @@ Haberler, Portföyler, Hizmetler, Slider'lar, Kategoriler, Videolar, 3D Modeller
 | **Kimlik Doğrulama** | NextAuth.js — JWT stratejisi ve rol tabanlı erişim kontrolü |
 | **2FA Desteği** | Admin hesapları için TOTP tabanlı iki faktörlü doğrulama (OTPLib + QRCode) |
 | **JWT Güçlendirme** | Yedek gizli anahtar yok; açıkça `NEXTAUTH_SECRET` yapılandırması gerekli |
-| **Middleware Güvenliği** | IP engelleme, rate limiting, CSP başlıkları ve kötü amaçlı URL/UA engelleme |
+| **Middleware Güvenliği** | IP engelleme, rate limiting, CSP başlıkları ve kötü amaçlı URL/UA engelleme (`src/proxy.ts`) |
 | **CSRF Koruması** | CSRF token üretimi ve doğrulaması |
 | **API Ayrımı** | Herkese açık ve admin API rotaları bağımsız auth guard'larla |
 | **Content Security Policy** | Sayfa tipine göre dinamik CSP başlıkları |
@@ -810,8 +815,8 @@ Haberler, Portföyler, Hizmetler, Slider'lar, Kategoriler, Videolar, 3D Modeller
 - **SWC Minification:** Üretimde SWC ile hızlı JavaScript minification
 - **Sıkıştırma:** Sunucu tarafında gzip sıkıştırma aktif
 - **Önbellek Stratejisi:** Çok katmanlı önbellek — bellek içi (1 dakika), HTTP cache başlıkları
-- **Bundle Analizi:** `ANALYZE=true npm run build` ile webpack bundle görselleştirme
-- **Geist Font:** Optimum web performansı için özel font yüklemesi
+- **Bundle Analizi:** `ANALYZE=true npm run build` ile bundle görselleştirme
+- **Barlow + Geist Mono:** Optimum web performansı için özel font yüklemesi
 
 ### SEO Özellikleri
 - **Dinamik Sitemap:** `/sitemap.xml` — veritabanından tüm sayfalar, haberler ve portföy projeleri
@@ -857,15 +862,15 @@ fixral.com/tr/portfolio  → Portföy (her iki dilde aynı)
 ```
 
 ### Yerelleştirilmiş Rotalar
-Middleware, dile özel URL takma adlarını otomatik yönlendirir:
+Proxy katmanı, dile özel URL takma adlarını otomatik yönlendirir:
 - `tr`: `/noticias` → `/haberler` (301 redirect)
 - `es`: `/haberler` → `/noticias` (301 redirect)
 
 ---
 
-## Middleware Katmanı
+## Proxy Katmanı
 
-`middleware.ts` dosyası aşağıdaki işlevleri yerine getirir:
+`src/proxy.ts` dosyası (Next.js 16'da `middleware.ts`'nin yeni konumu) aşağıdaki işlevleri yerine getirir:
 
 1. **Dil Yönlendirme:** Dil ön eki olmayan URL'leri varsayılan dile yönlendirir
 2. **Yerelleştirilmiş Rota Takma Adları:** Dile özel URL çevirmesi
@@ -902,6 +907,14 @@ npm run test:coverage
 ---
 
 ## Değişiklik Günlüğü
+
+### v5.1.1 — Next.js 16 Yükseltmesi, Precision Tasarım Dili ve Kod Kalitesi Denetimi
+- **Platform Yükseltmesi:** Next.js 16.2 + React 19.2 geçişi (Turbopack varsayılan derleyici); `middleware.ts` yeni `src/proxy.ts` konumuna taşındı
+- **Tailwind v4:** CSS-first yapılandırmaya geçiş — `tailwind.config.js` kaldırıldı, token'lar `globals.css`'e taşındı
+- **Precision Engineering Tasarım Dili:** Birleşik token/tema sistemi, blueprint grid, teknik etiketler ve ölçü çizgileri primitifleri; anasayfa, header/footer ve public alt sayfaların yeniden tasarımı
+- **Kod Kalitesi Denetimi:** ESLint hataları 133 → 0; React Compiler uyumluluğu için ~30 dosyada modernizasyon (`useSyncExternalStore`, türetilmiş durum, render-time adjustment kalıpları)
+- **ESLint Yapılandırması:** ESLint 9 flat config; React Compiler danışmanlık kuralları uyarı seviyesinde, CommonJS script/config dosyaları için override blokları
+- **Doğrulama:** `tsc --noEmit` temiz, `next build` 105/105 sayfa başarılı
 
 ### v5.1.0 — Premium UI/UX Yenilemesi ve Mimari Temizlik
 - **Tasarım Sistemi:** Token tabanlı tema mimarisi güncellendi; public ve admin tarafında tutarlı tasarım dili

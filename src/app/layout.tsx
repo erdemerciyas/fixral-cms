@@ -26,7 +26,9 @@ const geistMono = GeistMono
 /* Public tema (light/dark) blocking init — ThemeScope hydrate olmadan önce
  * <html>'e `public-theme` (+ dark ise `public-dark`) yazar. Admin route'ları
  * next-themes'e bırakılır. Anahtar: localStorage['fixral-public-theme'] */
-const PUBLIC_THEME_INIT_SCRIPT = `try{if(!location.pathname.startsWith('/admin')){var t=localStorage.getItem('fixral-public-theme');var d=document.documentElement;d.classList.add('public-theme');if(t==='dark'){d.classList.add('public-dark');d.style.colorScheme='dark'}else{d.classList.remove('public-dark');d.style.colorScheme='light'}}}catch(e){}`
+/* FOUC + hydrate-sonrası yeniden uygulama. React <html> hydrate'i classList'i
+   temizleyebilir; bu yüzden load/DOMContentLoaded'da tekrar yazarız. */
+const PUBLIC_THEME_INIT_SCRIPT = `try{if(!location.pathname.startsWith('/admin')){(function(){function a(){var t=localStorage.getItem('fixral-public-theme');var d=document.documentElement;d.classList.add('public-theme');if(t==='dark'){d.classList.add('public-dark');d.style.colorScheme='dark'}else{d.classList.remove('public-dark');d.style.colorScheme='light'}}a();document.addEventListener('DOMContentLoaded',a);window.addEventListener('load',a);setTimeout(a,0);setTimeout(a,50);setTimeout(a,200)})()}}catch(e){}`
 
 /* Kurumsal ana yazı tipi — Thingiverse mantığı: tek sans (Barlow) her yerde */
 const barlow = Barlow({
@@ -171,7 +173,9 @@ export default async function RootLayout({
   const locale = headersList.get('x-locale') || 'tr';
 
   return (
-    <html lang={locale} className="scroll-smooth" suppressHydrationWarning>
+    // html className yok: React hydrate FOUC/ThemeScope public-theme sınıflarını ezerdi.
+    // scroll-smooth body'de.
+    <html lang={locale} suppressHydrationWarning>
       <head>
         {/* FOUC önleme: public tema sınıfları CSS'ten önce, senkron yazılır */}
         <script dangerouslySetInnerHTML={{ __html: PUBLIC_THEME_INIT_SCRIPT }} />
@@ -259,7 +263,7 @@ export default async function RootLayout({
           </>
         )}
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} ${barlow.variable} font-sans min-h-screen bg-page-bg flex flex-col text-foreground antialiased`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} ${barlow.variable} font-sans min-h-screen bg-page-bg flex flex-col text-foreground antialiased scroll-smooth`}>
         {gtmId && (
           <noscript>
             <iframe
@@ -283,7 +287,7 @@ export default async function RootLayout({
               <GlobalBreadcrumbsJsonLd />
               <PageTransitionWrapper>
                 <div className="relative grow">
-                  <main id="main-content" className="relative z-100">
+                  <main id="main-content" className="relative">
                     <div>{children}</div>
                   </main>
                 </div>

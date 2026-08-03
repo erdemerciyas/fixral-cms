@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import {
   Check,
   Globe,
@@ -260,12 +261,12 @@ export default function AdminSiteSettingsPage() {
             <h2 className="text-lg font-bold text-foreground mb-2">İletişim & Sosyal Medya</h2>
             <p className="text-sm text-muted-foreground mb-4">Bu ayarlar ayrı sayfalardan yönetilmektedir.</p>
             <div className="flex flex-wrap gap-2">
-              <a href="/admin/contact" className="inline-flex items-center px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">
+              <Link href="/admin/contact" className="inline-flex items-center px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">
                 İletişim Ayarları
-              </a>
-              <a href="/admin/social-media" className="inline-flex items-center px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">
+              </Link>
+              <Link href="/admin/social-media" className="inline-flex items-center px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">
                 Sosyal Medya
-              </a>
+              </Link>
             </div>
           </div>
         </div>
@@ -318,18 +319,18 @@ export default function AdminSiteSettingsPage() {
             <h3 className="font-semibold text-foreground mb-2">Ek Ayarlar</h3>
             <p className="text-sm text-primary mb-4">Aşağıdaki ayarlar ayrı sayfalardan yönetilmektedir.</p>
             <div className="flex flex-wrap gap-2">
-              <a href="/admin/seo" className="inline-flex items-center px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">
+              <Link href="/admin/seo" className="inline-flex items-center px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">
                 SEO Ayarları
-              </a>
-              <a href="/admin/analytics" className="inline-flex items-center px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">
+              </Link>
+              <Link href="/admin/analytics" className="inline-flex items-center px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">
                 Analitik
-              </a>
-              <a href="/admin/social-media" className="inline-flex items-center px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">
+              </Link>
+              <Link href="/admin/social-media" className="inline-flex items-center px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">
                 Sosyal Medya
-              </a>
-              <a href="/admin/contact" className="inline-flex items-center px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">
+              </Link>
+              <Link href="/admin/contact" className="inline-flex items-center px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">
                 İletişim
-              </a>
+              </Link>
             </div>
           </div>
 

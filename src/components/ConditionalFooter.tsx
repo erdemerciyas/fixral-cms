@@ -172,9 +172,8 @@ const ConditionalFooter: React.FC = () => {
 
     if (!isAdminPage) {
       fetchFooterSettings();
-    } else {
-      setLoading(false);
     }
+    // Admin sayfalarında footer zaten render edilmez; setLoading'e gerek yok
   }, [isAdminPage]);
 
   useEffect(() => {

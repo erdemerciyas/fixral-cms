@@ -46,11 +46,6 @@ export default function NewsCarousel({
     return () => mq.removeEventListener('change', sync);
   }, []);
 
-  useEffect(() => {
-    fetchNews();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [language, limit]);
-
   const fetchNews = async () => {
     try {
       setLoading(true);
@@ -79,6 +74,14 @@ export default function NewsCarousel({
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    // Ertelenmiş çağrı: fetch fonksiyonunun senkron kısmı (setState)
+    // efekt gövdesinde değil, bir sonraki tick'te çalışsın
+    const timer = setTimeout(() => { void fetchNews(); }, 0);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [language, limit]);
 
   if (loading) {
     return (

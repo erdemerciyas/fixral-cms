@@ -32,8 +32,9 @@ export class SecurityHeaders {
 
   private static readonly PRODUCTION_CSP = [
     "default-src 'self'",
-    // Avoid unsafe-eval/inline in production; allow minimal inline styles if necessary
-    "script-src 'self'",
+    // Next.js App Router hydration + FOUC theme init rely on inline scripts.
+    // Strict nonce CSP is a follow-up; without unsafe-inline, client JS never boots.
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://vercel.live https://va.vercel-scripts.com",
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com",
     "img-src 'self' data: blob: https:",
@@ -175,17 +176,9 @@ export class SecurityHeaders {
           "frame-ancestors 'none'"
         ];
 
-        // Build script-src with optional analytics
-        let adminScriptSrc = isDevelopment
-          ? "script-src 'self' 'unsafe-inline' 'unsafe-eval'"
-          : "script-src 'self'";
-
-        if (process.env.NEXT_PUBLIC_GA_ID) {
-          adminScriptSrc += " https://www.googletagmanager.com https://www.google-analytics.com";
-        }
-        if (isDevelopment) {
-          adminScriptSrc += " https://vercel.live https://va.vercel-scripts.com";
-        }
+        // Next.js hydration requires unsafe-inline in production until nonce CSP lands
+        const adminScriptSrc =
+          "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://vercel.live https://va.vercel-scripts.com";
         adminCSP.push(adminScriptSrc);
 
         // Build connect-src with optional analytics endpoints
@@ -211,16 +204,9 @@ export class SecurityHeaders {
           "frame-ancestors 'none'"
         ];
 
-        // Build script-src (optionally extend with analytics)
-        let publicScriptSrc = isDevelopment
-          ? "script-src 'self' 'unsafe-inline' 'unsafe-eval'"
-          : "script-src 'self'";
-        if (process.env.NEXT_PUBLIC_GA_ID) {
-          publicScriptSrc += " https://www.googletagmanager.com https://www.google-analytics.com";
-        }
-        if (isDevelopment) {
-          publicScriptSrc += " https://vercel.live https://va.vercel-scripts.com";
-        }
+        // Next.js hydration + FOUC theme script require unsafe-inline until nonce CSP lands
+        const publicScriptSrc =
+          "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://vercel.live https://va.vercel-scripts.com";
         publicCSP.push(publicScriptSrc);
 
         // Build connect-src (optionally extend with analytics)

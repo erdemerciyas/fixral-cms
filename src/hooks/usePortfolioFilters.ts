@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useCallback, useEffect } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import type { PortfolioItem, Category } from '../types/portfolio';
 import { useLocale } from '@/hooks/useLocale';
@@ -15,6 +15,42 @@ interface FilterState {
   };
   sortBy: 'newest' | 'oldest' | 'title' | 'category';
   sortOrder: 'asc' | 'desc';
+}
+
+// URL parametrelerinden filtre durumunu çözer
+function parseFiltersFromSearchParams(searchParams: URLSearchParams | null): FilterState {
+  const categoriesParam = searchParams?.get('categories');
+  const categoryParam = searchParams?.get('category'); // Backward compatibility
+  const searchParam = searchParams?.get('search') || '';
+  const technologiesParam = searchParams?.get('technologies');
+  const sortParam = searchParams?.get('sort') || 'newest-desc';
+  const startDateParam = searchParams?.get('startDate') || '';
+  const endDateParam = searchParams?.get('endDate') || '';
+
+  let selectedCategories: string[] = [];
+  if (categoriesParam) {
+    selectedCategories = categoriesParam.split(',').map(slug => slug.trim()).filter(Boolean);
+  } else if (categoryParam) {
+    selectedCategories = [categoryParam];
+  }
+
+  const selectedTechnologies = technologiesParam
+    ? technologiesParam.split(',').map(tech => tech.trim()).filter(Boolean)
+    : [];
+
+  const [sortBy, sortOrder] = sortParam.split('-') as [FilterState['sortBy'], FilterState['sortOrder']];
+
+  return {
+    search: searchParam,
+    categories: selectedCategories,
+    technologies: selectedTechnologies,
+    dateRange: {
+      start: startDateParam,
+      end: endDateParam
+    },
+    sortBy: sortBy || 'newest',
+    sortOrder: sortOrder || 'desc'
+  };
 }
 
 interface UsePortfolioFiltersReturn {
@@ -36,40 +72,9 @@ export function usePortfolioFilters(
   const lang = useLocale();
 
   // Initialize filters from URL params
-  const [filters, setFiltersState] = useState<FilterState>(() => {
-    const categoriesParam = searchParams?.get('categories');
-    const categoryParam = searchParams?.get('category'); // Backward compatibility
-    const searchParam = searchParams?.get('search') || '';
-    const technologiesParam = searchParams?.get('technologies');
-    const sortParam = searchParams?.get('sort') || 'newest-desc';
-    const startDateParam = searchParams?.get('startDate') || '';
-    const endDateParam = searchParams?.get('endDate') || '';
-
-    let selectedCategories: string[] = [];
-    if (categoriesParam) {
-      selectedCategories = categoriesParam.split(',').map(slug => slug.trim()).filter(Boolean);
-    } else if (categoryParam) {
-      selectedCategories = [categoryParam];
-    }
-
-    const selectedTechnologies = technologiesParam 
-      ? technologiesParam.split(',').map(tech => tech.trim()).filter(Boolean)
-      : [];
-
-    const [sortBy, sortOrder] = sortParam.split('-') as [FilterState['sortBy'], FilterState['sortOrder']];
-
-    return {
-      search: searchParam,
-      categories: selectedCategories,
-      technologies: selectedTechnologies,
-      dateRange: {
-        start: startDateParam,
-        end: endDateParam
-      },
-      sortBy: sortBy || 'newest',
-      sortOrder: sortOrder || 'desc'
-    };
-  });
+  const [filters, setFiltersState] = useState<FilterState>(() =>
+    parseFiltersFromSearchParams(searchParams)
+  );
 
   // Update URL when filters change
   const updateURL = useCallback((newFilters: FilterState) => {
@@ -108,43 +113,18 @@ export function usePortfolioFilters(
     updateURL(newFilters);
   }, [updateURL]);
 
-  // Keep filters in sync if URL changes (e.g., back/forward navigation)
-  useEffect(() => {
-    if (!searchParams) return;
-    const categoriesParam = searchParams.get('categories');
-    const categoryParam = searchParams.get('category');
-    const searchParam = searchParams.get('search') || '';
-    const technologiesParam = searchParams.get('technologies');
-    const sortParam = searchParams.get('sort') || 'newest-desc';
-    const startDateParam = searchParams.get('startDate') || '';
-    const endDateParam = searchParams.get('endDate') || '';
-
-    let selectedCategories: string[] = [];
-    if (categoriesParam) {
-      selectedCategories = categoriesParam.split(',').map(slug => slug.trim()).filter(Boolean);
-    } else if (categoryParam) {
-      selectedCategories = [categoryParam];
-    }
-
-    const selectedTechnologies = technologiesParam 
-      ? technologiesParam.split(',').map(tech => tech.trim()).filter(Boolean)
-      : [];
-
-    const [sortBy, sortOrder] = (sortParam.split('-') as [FilterState['sortBy'], FilterState['sortOrder']]);
-
-    const nextFilters: FilterState = {
-      search: searchParam,
-      categories: selectedCategories,
-      technologies: selectedTechnologies,
-      dateRange: { start: startDateParam, end: endDateParam },
-      sortBy: sortBy || 'newest',
-      sortOrder: sortOrder || 'desc'
-    };
-
-    setFiltersState(prev => {
-      return JSON.stringify(prev) === JSON.stringify(nextFilters) ? prev : nextFilters;
-    });
-  }, [searchParams]);
+  // Keep filters in sync if URL changes (e.g., back/forward navigation).
+  // Render sırasında ayarlama deseni: efekt içi setState yerine, searchParams
+  // değiştiğinde aynı render turunda state güncellenir (React'in önerdiği yol).
+  const searchParamsKey = searchParams?.toString() ?? '';
+  const [prevSearchParamsKey, setPrevSearchParamsKey] = useState(searchParamsKey);
+  if (prevSearchParamsKey !== searchParamsKey) {
+    setPrevSearchParamsKey(searchParamsKey);
+    const nextFilters = parseFiltersFromSearchParams(searchParams);
+    setFiltersState(prev =>
+      JSON.stringify(prev) === JSON.stringify(nextFilters) ? prev : nextFilters
+    );
+  }
 
   // Extract available technologies from all projects
   const availableTechnologies = useMemo(() => {

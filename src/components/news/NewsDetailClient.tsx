@@ -351,7 +351,7 @@ export default function NewsDetailClient({ lang, locale = 'tr', news, translatio
                     />
                     <div className="absolute inset-0 bg-linear-to-t from-[hsl(var(--scrim)/0.75)] via-[hsl(var(--scrim)/0.25)] to-transparent" />
                     <div className="absolute bottom-0 left-0 p-5">
-                      <h3 className="text-white font-semibold text-lg line-clamp-1 group-hover:text-white/90 transition-colors duration-700">
+                      <h3 className="text-primary-foreground font-semibold text-lg line-clamp-1 group-hover:text-primary-foreground/90 transition-colors duration-700">
                         {portfolio.title}
                       </h3>
                     </div>

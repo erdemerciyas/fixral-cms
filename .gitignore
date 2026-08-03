@@ -102,5 +102,6 @@ build_output*.txt
 lint_output_current.txt
 lint_results.txt
 
-# QA baseline artifacts
+# QA screenshot artifacts (before/after redesign)
 .qa-baseline/
+.qa-after/

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo, useSyncExternalStore } from 'react';
 import { Spinner } from './ui/spinner';
 import {
   X as XMarkIcon,
@@ -20,6 +20,9 @@ import MediaFolderTree, { MediaBreadcrumb } from './admin/MediaFolderTree';
 import { buildFolderTree, filterItemsByFolder, MediaLibraryItem } from '@/lib/media-folders';
 
 type MediaItem = MediaLibraryItem;
+
+// useSyncExternalStore için abone olmayan sabit abone fonksiyonu
+const subscribeNoop = () => () => {};
 
 interface MediaBrowserProps {
   isOpen: boolean;
@@ -65,16 +68,12 @@ const MediaBrowser: React.FC<MediaBrowserProps> = ({
   const [filter, setFilter] = useState('all');
   const [selectedFolder, setSelectedFolder] = useState<string | null>(null);
   const [showSidebar, setShowSidebar] = useState(true);
-  const [isMounted, setIsMounted] = useState(false);
+  // Mount bilgisini efekt olmadan türet (server'da false, client'ta true)
+  const isMounted = useSyncExternalStore(subscribeNoop, () => true, () => false);
   const [previewItem, setPreviewItem] = useState<MediaItem | null>(null);
   const initialFolderApplied = useRef(false);
   const modalRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  // Mount flag
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
 
   // Modal dışı tıklama ile kapatma
   useEffect(() => {
@@ -99,6 +98,10 @@ const MediaBrowser: React.FC<MediaBrowserProps> = ({
   }, [isOpen, onClose, previewItem]);
 
   // Seçim işlemi
+  const isValidUrl = (url: string): boolean => {
+    return Boolean(url && (url.startsWith('/') || url.startsWith('http://') || url.startsWith('https://')));
+  };
+
   const handleConfirmSelection = useCallback(() => {
     if (allowMultipleSelect && selectedItems.length > 0) {
       const urls = selectedItems
@@ -134,10 +137,6 @@ const MediaBrowser: React.FC<MediaBrowserProps> = ({
     return () => document.removeEventListener('keydown', handleKey);
   }, [isOpen, handleConfirmSelection, onClose, previewItem]);
 
-  const isValidUrl = (url: string): boolean => {
-    return Boolean(url && (url.startsWith('/') || url.startsWith('http://') || url.startsWith('https://')));
-  };
-
   const fetchMediaItems = useCallback(async () => {
     setLoading(true);
     try {
@@ -158,11 +157,14 @@ const MediaBrowser: React.FC<MediaBrowserProps> = ({
   }, []);
 
   useEffect(() => {
-    if (isOpen) {
-      fetchMediaItems();
-    } else {
+    if (!isOpen) {
       initialFolderApplied.current = false;
+      return;
     }
+    // Ertelenmiş çağrı: fetch fonksiyonunun senkron kısmı (setState)
+    // efekt gövdesinde değil, bir sonraki tick'te çalışsın
+    const timer = setTimeout(() => { void fetchMediaItems(); }, 0);
+    return () => clearTimeout(timer);
   }, [isOpen, fetchMediaItems]);
 
   const folderTree = useMemo(() => buildFolderTree(mediaItems), [mediaItems]);
@@ -182,7 +184,10 @@ const MediaBrowser: React.FC<MediaBrowserProps> = ({
         return last !== undefined && candidates.includes(last);
       });
 
-    if (match) setSelectedFolder(match);
+    if (match) {
+      // Senkron setState yerine mikro-görevde uygula
+      queueMicrotask(() => setSelectedFolder(match));
+    }
   }, [isOpen, mediaItems, pageContext]);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {

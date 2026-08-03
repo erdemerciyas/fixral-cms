@@ -1,6 +1,6 @@
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useMemo } from 'react';
 
 interface User {
   id: string;
@@ -12,32 +12,19 @@ interface User {
 export function useAuth() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (status === 'loading') {
-      setLoading(true);
-      return;
-    }
+  // Durum session'dan türetilir; efekt içi setState gerekmez
+  const loading = status === 'loading';
 
-    if (status === 'unauthenticated') {
-      setUser(null);
-      setLoading(false);
-      return;
-    }
-
-    if (session?.user) {
-      setUser({
-        id: session.user.id || '',
-        email: session.user.email || '',
-        name: session.user.name || '',
-        role: (session.user as any).role || 'user',
-      });
-    }
-
-    setLoading(false);
-  }, [session, status]);
+  const user = useMemo<User | null>(() => {
+    if (!session?.user) return null;
+    return {
+      id: session.user.id || '',
+      email: session.user.email || '',
+      name: session.user.name || '',
+      role: (session.user as { role?: string }).role || 'user',
+    };
+  }, [session]);
 
   const login = () => {
     router.push('/admin/login');

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { m, AnimatePresence } from 'framer-motion';
 import {
@@ -62,7 +62,6 @@ function SkeletonGrid() {
 /* ================================================================== */
 export default function VideosClient() {
   const [videos, setVideos] = useState<Video[]>([]);
-  const [filteredVideos, setFilteredVideos] = useState<Video[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
@@ -111,12 +110,17 @@ export default function VideosClient() {
   }, [typeFilter, channelFilter]);
 
   useEffect(() => {
-    setLoading(true);
-    loadVideos().finally(() => setLoading(false));
+    // Ertelenmiş başlatma: efekt gövdesinde senkron setState yerine
+    // bir sonraki tick'te yükleme tetiklenir
+    const timer = setTimeout(() => {
+      setLoading(true);
+      loadVideos().finally(() => setLoading(false));
+    }, 0);
+    return () => clearTimeout(timer);
   }, [loadVideos]);
 
-  /* ---- Client-side filtering ---- */
-  useEffect(() => {
+  /* ---- Client-side filtering (türetilmiş değer; efekt gerekmez) ---- */
+  const filteredVideos = useMemo(() => {
     let result = videos;
 
     if (searchTerm) {
@@ -132,7 +136,7 @@ export default function VideosClient() {
       result = result.filter((video) => selectedTags.every((tag) => video.tags.includes(tag)));
     }
 
-    setFilteredVideos(result);
+    return result;
   }, [videos, searchTerm, selectedTags]);
 
   /* ---- Load more (infinite scroll) ---- */

@@ -44,7 +44,9 @@ function STLModel({ url }: { url: string }) {
 
   // Geometry yüklendiğinde merkez ve boyut hesapla
   useEffect(() => {
-    if (geometry) {
+    if (!geometry) return;
+    // Efekt gövdesinde senkron setState yerine mikro-görevde uygula
+    queueMicrotask(() => {
       // Geometry'yi klonla (orijinalini değiştirmemek için)
       const clonedGeometry = geometry.clone();
       
@@ -79,7 +81,7 @@ function STLModel({ url }: { url: string }) {
           calculatedScale
         });
       }
-    }
+    });
   }, [geometry]);
 
   // Basit rotasyon animasyonu
@@ -119,7 +121,9 @@ function OBJModel({ url }: { url: string }) {
 
   // OBJ yüklendiğinde merkez ve boyut hesapla
   useEffect(() => {
-    if (obj) {
+    if (!obj) return;
+    // Efekt gövdesinde senkron setState yerine mikro-görevde uygula
+    queueMicrotask(() => {
       // Objeyi klonla
       const clonedObj = obj.clone();
       
@@ -159,7 +163,7 @@ function OBJModel({ url }: { url: string }) {
         maxDimension,
         calculatedScale
       });
-    }
+    });
   }, [obj]);
 
   // Basit rotasyon animasyonu

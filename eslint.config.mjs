@@ -39,6 +39,15 @@ export default defineConfig([{
             selector: "JSXAttribute[name.name='style']",
             message: "Inline style kullanma. Tailwind class veya CSS variable kullan.",
         }],
+
+        // React Compiler danışmanlık kuralları: proje şu an React Compiler
+        // kullanmıyor; admin panelindeki kademeli geçiş için uyarı seviyesinde tutulur
+        "react-hooks/immutability": "warn",
+        "react-hooks/refs": "warn",
+        "react-hooks/static-components": "warn",
+        "react-hooks/preserve-manual-memoization": "warn",
+        "react-hooks/set-state-in-effect": "warn",
+        "react-hooks/error-boundaries": "warn",
     },
 }, {
     files: ["**/*.test.ts", "**/*.test.tsx"],
@@ -53,6 +62,19 @@ export default defineConfig([{
     rules: {
         "@typescript-eslint/no-require-imports": "off",
         "@typescript-eslint/no-unused-vars": "off",
+    },
+}, {
+    files: ["*.config.js", "scripts/**/*.js"],
+
+    languageOptions: {
+        globals: {
+            ...globals.node,
+        },
+    },
+
+    rules: {
+        // Kök config dosyaları ve Node scriptleri CommonJS çalışır
+        "@typescript-eslint/no-require-imports": "off",
     },
 }, {
     files: ["src/app/api/**/*.{ts,tsx}"],

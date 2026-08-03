@@ -50,7 +50,7 @@ export default function LanguageSwitch({
 
   useEffect(() => {
     if (cachedLanguages && Date.now() - cacheTimestamp < CACHE_TTL) {
-      setLanguages(cachedLanguages);
+      // state zaten cache'ten başlatıldı; senkron setState'e gerek yok
       return;
     }
 
