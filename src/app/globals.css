@@ -9,7 +9,7 @@
 @plugin '@tailwindcss/typography';
 @plugin '@tailwindcss/forms';
 
-/* Tek dark mekanizması: admin `.dark` (next-themes, fixral-admin-theme) ve
+/* Tek dark mekanizması: admin `.dark` (AdminThemeProvider, fixral-admin-theme) ve
    public `.public-dark` (fixral-public-theme) aynı `dark:` utility'lerini sürer.
    Böylece public bileşenlerde paralel token override'larına gerek kalmaz. */
 @custom-variant dark (&:where(.dark, .dark *, .public-dark, .public-dark *));

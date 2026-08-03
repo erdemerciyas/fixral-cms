@@ -63,7 +63,7 @@ export default function AdminVideosPage() {
   };
 
   const handleDelete = async (videoId: string) => {
-    const confirmed = await confirm({ title: 'Are you sure?', description: 'Are you sure you want to delete this video?' });
+    const confirmed = await confirm({ title: 'Emin misiniz?', description: 'Bu videoyu silmek istediğinizden emin misiniz?' });
     if (!confirmed) return;
 
     try {
@@ -73,13 +73,13 @@ export default function AdminVideosPage() {
 
       if (response.ok) {
         setVideos(videos.filter(video => video._id !== videoId));
-        toast.success('Video deleted successfully');
+        toast.success('Video başarıyla silindi');
       } else {
-        toast.error('Failed to delete video');
+        toast.error('Video silinemedi');
       }
     } catch (error) {
       console.error('Error deleting video:', error);
-      toast.error('Error deleting video');
+      toast.error('Video silinirken hata oluştu');
     }
   };
 
@@ -97,7 +97,7 @@ export default function AdminVideosPage() {
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
+    return new Date(dateString).toLocaleDateString('tr-TR', {
       month: 'short',
       day: 'numeric',
       year: 'numeric'
@@ -136,15 +136,15 @@ export default function AdminVideosPage() {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Videos</h1>
-          <p className="text-muted-foreground mt-1">Manage your video content</p>
+          <h1 className="text-2xl font-bold text-foreground">Videolar</h1>
+          <p className="text-muted-foreground mt-1">Video içeriklerinizi yönetin</p>
         </div>
         <button
           onClick={() => router.push('/admin/content')}
           className="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground font-semibold rounded-xl hover:shadow-lg hover:shadow-primary/25 transition-all duration-200"
         >
           <Plus className="w-5 h-5 mr-2" />
-          Add Video
+          Video Ekle
         </button>
       </div>
 
@@ -157,7 +157,7 @@ export default function AdminVideosPage() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search videos..."
+              placeholder="Video ara..."
               className="w-full pl-12 pr-4 py-3 border border-border rounded-xl focus:outline-hidden focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
             />
           </div>
@@ -169,7 +169,7 @@ export default function AdminVideosPage() {
                 : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
-              All ({videos.length})
+              Tümü ({videos.length})
             </button>
             <button
               onClick={() => setStatusFilter('published')}
@@ -178,7 +178,7 @@ export default function AdminVideosPage() {
                 : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
-              Published ({videos.filter(v => v.status === 'published').length})
+              Yayında ({videos.filter(v => v.status === 'published').length})
             </button>
             <button
               onClick={() => setStatusFilter('draft')}
@@ -187,7 +187,7 @@ export default function AdminVideosPage() {
                 : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
-              Draft ({videos.filter(v => v.status === 'draft').length})
+              Taslak ({videos.filter(v => v.status === 'draft').length})
             </button>
           </div>
         </div>
@@ -218,7 +218,7 @@ export default function AdminVideosPage() {
                   ? 'bg-success text-success-foreground'
                   : 'bg-warning text-warning-foreground'
                   }`}>
-                  {video.status}
+                  {video.status === 'published' ? 'Yayında' : 'Taslak'}
                 </span>
               </div>
             </div>
@@ -239,7 +239,7 @@ export default function AdminVideosPage() {
                   </span>
                   <span className="flex items-center">
                     <Play className="w-3 h-3 mr-1" />
-                    {formatViews(video.views)} views
+                    {formatViews(video.views)} izlenme
                   </span>
                 </div>
                 <span className="text-xs text-muted-foreground">
@@ -263,11 +263,11 @@ export default function AdminVideosPage() {
       {filteredVideos.length === 0 && (
         <div className="text-center py-16 bg-card rounded-xl border border-border/60">
           <VideoIcon className="w-16 h-16 text-muted-foreground/50 mx-auto mb-4" />
-          <h3 className="text-xl font-semibold text-foreground mb-2">No videos found</h3>
+          <h3 className="text-xl font-semibold text-foreground mb-2">Video bulunamadı</h3>
           <p className="text-muted-foreground mb-6">
             {searchQuery || statusFilter !== 'all'
-              ? 'Try adjusting your search or filter'
-              : 'Add your first video to get started'
+              ? 'Arama veya filtrelemenizi değiştirmeyi deneyin'
+              : 'Başlamak için ilk videonuzu ekleyin'
             }
           </p>
           {!searchQuery && statusFilter === 'all' && (
@@ -276,7 +276,7 @@ export default function AdminVideosPage() {
               className="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground font-semibold rounded-xl hover:shadow-lg hover:shadow-primary/25 transition-all duration-200"
             >
               <Plus className="w-5 h-5 mr-2" />
-              Add Video
+              Video Ekle
             </button>
           )}
         </div>

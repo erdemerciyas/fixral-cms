@@ -14,11 +14,11 @@ const suspiciousIPs = new Set<string>();
 
 // Different limits for different endpoints
 const PRODUCTION_LIMITS = {
-  // Authentication endpoints - very strict
-  AUTH: { limit: 5, windowMs: 15 * 60 * 1000 }, // 5 attempts per 15 minutes
-  LOGIN: { limit: 3, windowMs: 15 * 60 * 1000 }, // 3 attempts per 15 minutes
-  REGISTER: { limit: 2, windowMs: 60 * 60 * 1000 }, // 2 attempts per hour
-  PASSWORD_RESET: { limit: 3, windowMs: 60 * 60 * 1000 }, // 3 attempts per hour
+  // Authentication endpoints - strict, but usable (2FA flow needs multiple attempts)
+  AUTH: { limit: 10, windowMs: 15 * 60 * 1000 }, // 10 attempts per 15 minutes
+  LOGIN: { limit: 10, windowMs: 15 * 60 * 1000 }, // 10 attempts per 15 minutes
+  REGISTER: { limit: 3, windowMs: 60 * 60 * 1000 }, // 3 attempts per hour
+  PASSWORD_RESET: { limit: 5, windowMs: 60 * 60 * 1000 }, // 5 attempts per hour
 
   // API endpoints - çok gevşek
   API_STRICT: { limit: 1000, windowMs: 15 * 60 * 1000 }, // 1000 requests per 15 minutes
@@ -62,6 +62,8 @@ export function rateLimit(
   type: keyof typeof RATE_LIMITS = 'GENERAL',
   customLimit?: { limit: number; windowMs: number }
 ): { allowed: boolean; remaining: number; resetTime: number } {
+  // Key per IP + type so that login/contact/upload buckets don't collide
+  const key = `${ip}:${type}`;
   const now = Date.now();
   const config = customLimit || RATE_LIMITS[type];
   const { limit, windowMs } = config;
@@ -73,7 +75,7 @@ export function rateLimit(
   }
 
   // Check if IP is temporarily blocked
-  const current = requestCounts.get(ip);
+  const current = requestCounts.get(key);
   if (current?.blocked && current.blockUntil && now < current.blockUntil) {
     logger.warn('Blocked IP attempted access', 'SECURITY', {
       ip,
@@ -89,7 +91,7 @@ export function rateLimit(
 
   // Initialize or reset if window expired
   if (!current || current.resetTime < windowStart) {
-    requestCounts.set(ip, {
+    requestCounts.set(key, {
       count: 1,
       resetTime: now + windowMs,
       blocked: false
@@ -168,7 +170,10 @@ function getBlockDuration(ip: string, type: string): number {
 function cleanupOldEntries(windowStart: number): void {
   const keysToDelete: string[] = [];
   requestCounts.forEach((value, key) => {
-    if (value.resetTime < windowStart && !value.blocked) {
+    // Remove expired windows, and stale blocks whose window has long passed
+    const expired = value.resetTime < windowStart && !value.blocked;
+    const blockOver = value.blocked && value.blockUntil !== undefined && value.blockUntil < Date.now() - 60 * 60 * 1000;
+    if (expired || blockOver) {
       keysToDelete.push(key);
     }
   });

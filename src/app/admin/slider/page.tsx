@@ -68,7 +68,7 @@ export default function AdminSliderPage() {
   };
 
   const handleDelete = async (sliderId: string) => {
-    const confirmed = await confirm({ title: 'Are you sure?', description: 'Are you sure you want to delete this slider?' });
+    const confirmed = await confirm({ title: 'Emin misiniz?', description: 'Bu slider\'ı silmek istediğinizden emin misiniz?' });
     if (!confirmed) return;
 
     try {
@@ -78,13 +78,13 @@ export default function AdminSliderPage() {
 
       if (response.ok) {
         setSliders(sliders.filter(slider => slider._id !== sliderId));
-        toast.success('Slider deleted successfully');
+        toast.success('Slider başarıyla silindi');
       } else {
-        toast.error('Failed to delete slider');
+        toast.error('Slider silinemedi');
       }
     } catch (error) {
       console.error('Error deleting slider:', error);
-      toast.error('Error deleting slider');
+      toast.error('Slider silinirken hata oluştu');
     }
   };
 
@@ -163,14 +163,14 @@ export default function AdminSliderPage() {
   return (
     <AdminPageLayout
       title="Slider"
-      description="Manage your homepage slider"
+      description="Ana sayfa slider'ınızı yönetin"
       actions={
         <button
           onClick={() => router.push('/admin/slider/new')}
           className="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground font-semibold rounded-xl hover:shadow-lg hover:shadow-primary/25 transition-all duration-200"
         >
           <Plus className="w-5 h-5 mr-2" />
-          Add Slider
+          Slider Ekle
         </button>
       }
     >
@@ -183,7 +183,7 @@ export default function AdminSliderPage() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search sliders..."
+              placeholder="Slider ara..."
               className="w-full pl-12 pr-4 py-3 border border-border rounded-xl focus:outline-hidden focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
             />
           </div>
@@ -195,7 +195,7 @@ export default function AdminSliderPage() {
                 : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
-              All ({sliders.length})
+              Tümü ({sliders.length})
             </button>
             <button
               onClick={() => setStatusFilter('active')}
@@ -204,7 +204,7 @@ export default function AdminSliderPage() {
                 : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
-              Active ({sliders.filter(s => s.isActive).length})
+              Aktif ({sliders.filter(s => s.isActive).length})
             </button>
             <button
               onClick={() => setStatusFilter('inactive')}
@@ -213,7 +213,7 @@ export default function AdminSliderPage() {
                 : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
-              Inactive ({sliders.filter(s => !s.isActive).length})
+              Pasif ({sliders.filter(s => !s.isActive).length})
             </button>
           </div>
         </div>
@@ -259,14 +259,14 @@ export default function AdminSliderPage() {
               </p>
               <div className="flex items-center justify-between">
                 <span className="text-xs text-muted-foreground">
-                  Order: {slider.order + 1}
+                  Sıra: {slider.order + 1}
                 </span>
                 <div className="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
                   <button
                     onClick={() => handleReorder(slider._id, 'up')}
                     disabled={index === 0}
                     className="p-2 hover:bg-primary/15 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                    title="Move Up"
+                    title="Yukarı Taşı"
                   >
                     <ArrowUp className="w-4 h-4 text-muted-foreground" />
                   </button>
@@ -274,7 +274,7 @@ export default function AdminSliderPage() {
                     onClick={() => handleReorder(slider._id, 'down')}
                     disabled={index === filteredSliders.length - 1}
                     className="p-2 hover:bg-primary/15 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                    title="Move Down"
+                    title="Aşağı Taşı"
                   >
                     <ArrowDown className="w-4 h-4 text-muted-foreground" />
                   </button>
@@ -291,14 +291,14 @@ export default function AdminSliderPage() {
                   <button
                     onClick={() => router.push(`/admin/slider/${slider._id}/edit`)}
                     className="p-2 hover:bg-primary/15 rounded-lg transition-colors"
-                    title="Edit"
+                    title="Düzenle"
                   >
                     <Pencil className="w-4 h-4 text-muted-foreground" />
                   </button>
                   <button
                     onClick={() => handleDelete(slider._id)}
                     className="p-2 hover:bg-destructive/20 rounded-lg transition-colors"
-                    title="Delete"
+                    title="Sil"
                   >
                     <Trash2 className="w-4 h-4 text-muted-foreground" />
                   </button>
@@ -313,11 +313,11 @@ export default function AdminSliderPage() {
       {filteredSliders.length === 0 && (
         <div className="text-center py-16 bg-card rounded-xl border border-border/60">
           <ImageIcon className="w-16 h-16 text-muted-foreground/50 mx-auto mb-4" />
-          <h3 className="text-xl font-semibold text-foreground mb-2">No sliders found</h3>
+          <h3 className="text-xl font-semibold text-foreground mb-2">Slider bulunamadı</h3>
           <p className="text-muted-foreground">
             {searchQuery || statusFilter !== 'all'
-              ? 'Try adjusting your search or filter'
-              : 'Add your first slider to showcase on homepage'
+              ? 'Arama veya filtrelemenizi değiştirmeyi deneyin'
+              : 'Ana sayfada göstermek için ilk slider\'ınızı ekleyin'
             }
           </p>
         </div>

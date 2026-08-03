@@ -193,7 +193,7 @@ export default function SliderForm({ initialData, isEditing = false }: SliderFor
                                     <div className="relative aspect-16/7 w-full rounded-lg overflow-hidden bg-muted border border-border group">
                                         <Image
                                             src={formData.imageUrl}
-                                            alt={formData.title || 'Slider preview'}
+                                            alt={formData.title || 'Slider önizleme'}
                                             fill
                                             className="object-cover"
                                             onError={() => {}}

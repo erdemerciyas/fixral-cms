@@ -547,7 +547,7 @@ export default function PortfolioForm({
           <Card className="rounded-xl overflow-hidden p-0">
             <CardHeader className="p-4 border-b border-border-subtle bg-surface-secondary/50 flex flex-row items-center justify-between space-y-0">
               <CardTitle className="font-semibold text-foreground flex items-center gap-2">
-                <ImageIcon className="w-5 h-5 text-brand-500" />
+                <ImageIcon className="w-5 h-5 text-primary" />
                 Medya Galeri
               </CardTitle>
               <Badge variant="outline" className="text-xs font-medium">
@@ -679,7 +679,7 @@ export default function PortfolioForm({
                     }
                   }}
                   onBlur={() => validateField('title')}
-                  className={`w-full h-11 px-3.5 text-sm border rounded-lg bg-card placeholder:text-muted-foreground focus:outline-hidden focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all ${fieldErrors.title ? 'border-destructive/40 focus:ring-destructive focus:border-destructive' : 'border-border'}`}
+                  className={`w-full h-11 px-3.5 text-sm border rounded-lg bg-card placeholder:text-muted-foreground focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all ${fieldErrors.title ? 'border-destructive/40 focus:ring-destructive focus:border-destructive' : 'border-border'}`}
                   placeholder="Projenize bir isim verin"
                 />
                 {fieldErrors.title && <p className="mt-1.5 text-xs text-destructive">{fieldErrors.title}</p>}
@@ -689,7 +689,7 @@ export default function PortfolioForm({
                 {/* URL Slug */}
                 <div>
                   <label className="block text-sm font-semibold text-foreground mb-1.5">URL Slug</label>
-                  <div className={`flex items-center h-11 border rounded-lg bg-card px-3.5 transition-all ${fieldErrors.slug ? 'border-destructive/40 focus-within:ring-destructive focus-within:border-destructive' : 'border-border focus-within:ring-2 focus-within:ring-brand-500/20 focus-within:border-brand-500'}`}>
+                  <div className={`flex items-center h-11 border rounded-lg bg-card px-3.5 transition-all ${fieldErrors.slug ? 'border-destructive/40 focus-within:ring-destructive focus-within:border-destructive' : 'border-border focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary'}`}>
                     <span className="text-muted-foreground text-sm mr-1 shrink-0">/portfolio/</span>
                     <input
                       type="text"
@@ -704,7 +704,7 @@ export default function PortfolioForm({
                     <button
                       type="button"
                       onClick={() => setSlugLocked(!slugLocked)}
-                      className="ml-2 shrink-0 text-muted-foreground hover:text-brand-600 transition-colors"
+                      className="ml-2 shrink-0 text-muted-foreground hover:text-primary transition-colors"
                       title={slugLocked ? 'Slug düzenlemeyi aç' : 'Slug otomatik moduna dön'}
                     >
                       {slugLocked ? <Pencil className="w-4 h-4" /> : <Check className="w-4 h-4" />}
@@ -728,7 +728,7 @@ export default function PortfolioForm({
                         setFormData(prev => ({ ...prev, client: e.target.value }));
                       }}
                       onBlur={() => validateField('client')}
-                      className={`w-full h-11 pl-10 pr-3.5 text-sm border rounded-lg bg-card placeholder:text-muted-foreground focus:outline-hidden focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all ${fieldErrors.client ? 'border-destructive/40 focus:ring-destructive focus:border-destructive' : 'border-border'}`}
+                      className={`w-full h-11 pl-10 pr-3.5 text-sm border rounded-lg bg-card placeholder:text-muted-foreground focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all ${fieldErrors.client ? 'border-destructive/40 focus:ring-destructive focus:border-destructive' : 'border-border'}`}
                       placeholder="Şirket veya Kişi Adı"
                     />
                   </div>
@@ -768,7 +768,7 @@ export default function PortfolioForm({
                       [activeLanguage]: { ...prev[activeLanguage], excerpt: e.target.value }
                     }));
                   }}
-                  className="w-full px-3.5 py-2.5 text-sm border border-border rounded-lg bg-card placeholder:text-muted-foreground focus:outline-hidden focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all resize-y"
+                  className="w-full px-3.5 py-2.5 text-sm border border-border rounded-lg bg-card placeholder:text-muted-foreground focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-y"
                   placeholder="Proje için kısa açıklama..."
                 />
               </div>
@@ -787,7 +787,7 @@ export default function PortfolioForm({
                       [activeLanguage]: { ...prev[activeLanguage], metaDescription: e.target.value }
                     }));
                   }}
-                  className="w-full px-3.5 py-2.5 text-sm border border-border rounded-lg bg-card placeholder:text-muted-foreground focus:outline-hidden focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all resize-y"
+                  className="w-full px-3.5 py-2.5 text-sm border border-border rounded-lg bg-card placeholder:text-muted-foreground focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-y"
                   placeholder="SEO meta açıklaması..."
                 />
                 <p className="text-xs text-muted-foreground mt-1.5">{currentTranslation.metaDescription.length}/160 karakter</p>
@@ -849,7 +849,7 @@ export default function PortfolioForm({
                       setFormData(prev => ({ ...prev, completionDate: e.target.value }));
                     }}
                     onBlur={() => validateField('completionDate')}
-                    className={`w-full h-11 px-3.5 text-sm border rounded-lg bg-card focus:outline-hidden focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all ${fieldErrors.completionDate ? 'border-destructive/40 focus:ring-destructive focus:border-destructive' : 'border-border'}`}
+                    className={`w-full h-11 px-3.5 text-sm border rounded-lg bg-card focus:outline-hidden focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all ${fieldErrors.completionDate ? 'border-destructive/40 focus:ring-destructive focus:border-destructive' : 'border-border'}`}
                   />
                   {fieldErrors.completionDate && <p className="mt-1.5 text-xs text-destructive">{fieldErrors.completionDate}</p>}
                 </div>
@@ -861,7 +861,7 @@ export default function PortfolioForm({
                   <Hash className="w-4 h-4 text-primary" />
                   Teknolojiler
                 </label>
-                <div className={`flex flex-wrap items-center gap-2 px-3.5 py-2.5 border rounded-lg bg-card transition-all min-h-[44px] focus-within:ring-2 focus-within:ring-brand-500/20 focus-within:border-brand-500 ${formData.technologies.length === 0 ? 'border-border' : 'border-border'}`}>
+                <div className={`flex flex-wrap items-center gap-2 px-3.5 py-2.5 border rounded-lg bg-card transition-all min-h-[44px] focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary ${formData.technologies.length === 0 ? 'border-border' : 'border-border'}`}>
                   {formData.technologies.map((tech, index) => (
                     <span
                       key={`${tech}-${index}`}

@@ -145,14 +145,14 @@ export default function AdminUsersPage() {
             : user
         ));
         setEditingUser(null);
-        toast.success('User updated successfully');
+        toast.success('Kullanıcı başarıyla güncellendi');
       } else {
         const data = await response.json();
-        toast.error(data.error || 'Failed to update user');
+        toast.error(data.error || 'Kullanıcı güncellenemedi');
       }
     } catch (error) {
       console.error('Error updating user:', error);
-      toast.error('Error updating user');
+      toast.error('Kullanıcı güncellenirken hata oluştu');
     }
   };
 
@@ -176,10 +176,10 @@ export default function AdminUsersPage() {
           role: newUser.data.role as 'admin' | 'editor' | 'user'
         }, ...users]);
         setIsAddUserOpen(false);
-        toast.success('User created successfully');
+        toast.success('Kullanıcı başarıyla oluşturuldu');
       } else {
         const error = await response.json();
-        toast.error(error.error || 'Failed to create user');
+        toast.error(error.error || 'Kullanıcı oluşturulamadı');
       }
     } catch (error) {
       console.error('Error creating user:', error);
@@ -197,14 +197,14 @@ export default function AdminUsersPage() {
       });
 
       if (response.ok) {
-        toast.success('Verification code sent to user email');
+        toast.success('Doğrulama kodu kullanıcının e-postasına gönderildi');
       } else {
         const error = await response.json();
-        toast.error(error.error || 'Failed to send verification code');
+        toast.error(error.error || 'Doğrulama kodu gönderilemedi');
       }
     } catch (error) {
       console.error('Error sending verification code:', error);
-      toast.error('Failed to send verification code');
+      toast.error('Doğrulama kodu gönderilemedi');
     }
   };
 
@@ -213,12 +213,12 @@ export default function AdminUsersPage() {
     if (!passwordModalUser) return;
 
     if (passwordData.newPassword !== passwordData.confirmPassword) {
-      toast.error('Passwords do not match');
+      toast.error('Şifreler eşleşmiyor');
       return;
     }
 
     if (!passwordData.verificationCode) {
-      toast.error('Please enter the verification code sent to the user');
+      toast.error('Lütfen kullanıcıya gönderilen doğrulama kodunu girin');
       return;
     }
 
@@ -237,10 +237,10 @@ export default function AdminUsersPage() {
       if (response.ok) {
         setPasswordModalUser(null);
         setPasswordData({ newPassword: '', confirmPassword: '', verificationCode: '' });
-        toast.success('Password updated successfully');
+        toast.success('Şifre başarıyla güncellendi');
       } else {
         const error = await response.json();
-        toast.error(error.error || 'Failed to update password');
+        toast.error(error.error || 'Şifre güncellenemedi');
       }
     } catch (error) {
       console.error('Error updating password:', error);
@@ -249,8 +249,8 @@ export default function AdminUsersPage() {
 
   const handleDelete = async (userId: string) => {
     const confirmed = await confirm({
-      title: 'Are you sure?',
-      description: "You won't be able to revert this!",
+      title: 'Emin misiniz?',
+      description: 'Bu işlemi geri alamazsınız!',
     });
 
     if (!confirmed) return;
@@ -262,10 +262,10 @@ export default function AdminUsersPage() {
 
       if (response.ok) {
         setUsers(users.filter(user => user._id !== userId));
-        toast.success('User deleted successfully');
+        toast.success('Kullanıcı başarıyla silindi');
       } else {
         const data = await response.json();
-        toast.error(data.message || 'Error deleting user');
+        toast.error(data.message || 'Kullanıcı silinirken hata oluştu');
       }
     } catch (error) {
       console.error('Error deleting user:', error);
@@ -278,6 +278,17 @@ export default function AdminUsersPage() {
     const matchesRole = roleFilter === 'all' || user.role === roleFilter;
     return matchesSearch && matchesRole;
   });
+
+  const roleLabels: Record<User['role'], string> = {
+    admin: 'Admin',
+    editor: 'Editör',
+    user: 'Kullanıcı'
+  };
+
+  const statusLabels: Record<User['status'], string> = {
+    active: 'Aktif',
+    inactive: 'Pasif'
+  };
 
 
 
@@ -306,8 +317,8 @@ export default function AdminUsersPage() {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Users</h1>
-          <p className="text-muted-foreground mt-1">Manage user accounts</p>
+          <h1 className="text-2xl font-bold text-foreground">Kullanıcılar</h1>
+          <p className="text-muted-foreground mt-1">Kullanıcı hesaplarını yönetin</p>
         </div>
         <Button
           onClick={() => {
@@ -317,7 +328,7 @@ export default function AdminUsersPage() {
           className="flex items-center justify-center space-x-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
         >
           <Plus className="w-5 h-5" />
-          <span>New User</span>
+          <span>Yeni Kullanıcı</span>
         </Button>
       </div>
 
@@ -330,7 +341,7 @@ export default function AdminUsersPage() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search users..."
+              placeholder="Kullanıcı ara..."
               className="w-full pl-12 pr-4 py-3 border border-border rounded-xl focus:outline-hidden focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
             />
           </div>
@@ -342,7 +353,7 @@ export default function AdminUsersPage() {
                 : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
-              All ({users.length})
+              Tümü ({users.length})
             </button>
             <button
               onClick={() => setRoleFilter('admin')}
@@ -360,7 +371,7 @@ export default function AdminUsersPage() {
                 : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
-              Editor ({users.filter(u => u.role === 'editor').length})
+              Editör ({users.filter(u => u.role === 'editor').length})
             </button>
             <button
               onClick={() => setRoleFilter('user')}
@@ -369,7 +380,7 @@ export default function AdminUsersPage() {
                 : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
-              User ({users.filter(u => u.role === 'user').length})
+              Kullanıcı ({users.filter(u => u.role === 'user').length})
             </button>
           </div>
         </div>
@@ -406,13 +417,13 @@ export default function AdminUsersPage() {
                         ? 'bg-success/15 text-success'
                         : 'bg-muted text-foreground'
                       }`}>
-                      {user.role}
+                      {roleLabels[user.role]}
                     </span>
                     <span className={`px-2 py-1 text-xs font-medium rounded-full ${user.status === 'active'
                       ? 'bg-success/15 text-success'
                       : 'bg-destructive/10 text-destructive'
                       }`}>
-                      {user.status}
+                      {statusLabels[user.status]}
                     </span>
                   </div>
                   <div className="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -440,11 +451,11 @@ export default function AdminUsersPage() {
         ) : (
           <div className="text-center py-16">
             <Users className="w-16 h-16 text-muted-foreground/50 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-foreground mb-2">No users found</h3>
+            <h3 className="text-xl font-semibold text-foreground mb-2">Kullanıcı bulunamadı</h3>
             <p className="text-muted-foreground">
               {searchQuery || roleFilter !== 'all'
-                ? 'Try adjusting your search or filter'
-                : 'No users registered yet'
+                ? 'Arama veya filtrelemenizi değiştirmeyi deneyin'
+                : 'Henüz kayıtlı kullanıcı yok'
               }
             </p>
           </div>
@@ -460,12 +471,12 @@ export default function AdminUsersPage() {
       >
         <DialogContent className="max-w-md rounded-xl bg-card p-6 shadow-xl sm:rounded-xl">
           <DialogHeader>
-            <DialogTitle className="text-lg font-bold text-foreground">Edit User</DialogTitle>
+            <DialogTitle className="text-lg font-bold text-foreground">Kullanıcıyı Düzenle</DialogTitle>
           </DialogHeader>
           {editingUser && (
             <form onSubmit={handleUpdate} className="space-y-4">
               <div>
-                <Label className="block text-sm font-medium text-foreground mb-1">Name</Label>
+                <Label className="block text-sm font-medium text-foreground mb-1">Ad Soyad</Label>
                 <Input
                   type="text"
                   value={formData.name}
@@ -475,7 +486,7 @@ export default function AdminUsersPage() {
                 />
               </div>
               <div>
-                <Label className="block text-sm font-medium text-foreground mb-1">Email</Label>
+                <Label className="block text-sm font-medium text-foreground mb-1">E-posta</Label>
                 <Input
                   type="email"
                   value={formData.email}
@@ -485,26 +496,26 @@ export default function AdminUsersPage() {
                 />
               </div>
               <div>
-                <Label className="block text-sm font-medium text-foreground mb-1">Role</Label>
+                <Label className="block text-sm font-medium text-foreground mb-1">Rol</Label>
                 <select
                   value={formData.role}
                   onChange={(e) => setFormData({ ...formData, role: e.target.value as any })}
                   className="flex h-9 w-full rounded-md border border-border bg-card px-3 py-1 text-sm shadow-xs focus:outline-hidden focus:ring-1 focus:ring-ring"
                 >
-                  <option value="user">User</option>
-                  <option value="editor">Editor</option>
+                  <option value="user">Kullanıcı</option>
+                  <option value="editor">Editör</option>
                   <option value="admin">Admin</option>
                 </select>
               </div>
               <div>
-                <Label className="block text-sm font-medium text-foreground mb-1">Status</Label>
+                <Label className="block text-sm font-medium text-foreground mb-1">Durum</Label>
                 <select
                   value={formData.status}
                   onChange={(e) => setFormData({ ...formData, status: e.target.value })}
                   className="flex h-9 w-full rounded-md border border-border bg-card px-3 py-1 text-sm shadow-xs focus:outline-hidden focus:ring-1 focus:ring-ring"
                 >
-                  <option value="active">Active</option>
-                  <option value="inactive">Inactive</option>
+                  <option value="active">Aktif</option>
+                  <option value="inactive">Pasif</option>
                 </select>
               </div>
 
@@ -513,7 +524,7 @@ export default function AdminUsersPage() {
                 <div className="pt-4 border-t border-border">
                   <h4 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
                     <MapPin className="w-4 h-4 text-primary" />
-                    Saved Addresses ({editingUser.addresses.length})
+                    Kayıtlı Adresler ({editingUser.addresses.length})
                   </h4>
                   <div className="space-y-3 max-h-48 overflow-y-auto pr-1">
                     {editingUser.addresses.map((addr, idx) => (
@@ -521,7 +532,7 @@ export default function AdminUsersPage() {
                         <div className="flex items-center justify-between mb-1">
                           <span className="font-semibold text-foreground">{addr.title}</span>
                           {addr.isPrimary && (
-                            <span className="px-1.5 py-0.5 bg-primary/10 text-primary text-[10px] rounded-md font-medium">Primary</span>
+                            <span className="px-1.5 py-0.5 bg-primary/10 text-primary text-[10px] rounded-md font-medium">Birincil</span>
                           )}
                         </div>
                         <div className="text-muted-foreground text-xs space-y-0.5">
@@ -540,13 +551,13 @@ export default function AdminUsersPage() {
                   onClick={() => setEditingUser(null)}
                   className="px-4 py-2 text-sm font-medium text-foreground hover:bg-muted rounded-lg transition-colors"
                 >
-                  Cancel
+                  İptal
                 </Button>
                 <Button
                   type="submit"
                   className="px-4 py-2 text-sm font-medium text-primary-foreground bg-primary hover:bg-primary/90 rounded-lg transition-colors"
                 >
-                  Save Changes
+                  Değişiklikleri Kaydet
                 </Button>
               </DialogFooter>
             </form>
@@ -563,11 +574,11 @@ export default function AdminUsersPage() {
       >
         <DialogContent className="max-w-md rounded-xl bg-card p-6 shadow-xl sm:rounded-xl">
           <DialogHeader>
-            <DialogTitle className="text-lg font-bold text-foreground">Add New User</DialogTitle>
+            <DialogTitle className="text-lg font-bold text-foreground">Yeni Kullanıcı Ekle</DialogTitle>
           </DialogHeader>
           <form onSubmit={handleAddUser} className="space-y-4">
             <div>
-              <Label className="block text-sm font-medium text-foreground mb-1">Name</Label>
+              <Label className="block text-sm font-medium text-foreground mb-1">Ad Soyad</Label>
               <Input
                 type="text"
                 value={formData.name}
@@ -577,7 +588,7 @@ export default function AdminUsersPage() {
               />
             </div>
             <div>
-              <Label className="block text-sm font-medium text-foreground mb-1">Email</Label>
+              <Label className="block text-sm font-medium text-foreground mb-1">E-posta</Label>
               <Input
                 type="email"
                 value={formData.email}
@@ -587,7 +598,7 @@ export default function AdminUsersPage() {
               />
             </div>
             <div>
-              <Label className="block text-sm font-medium text-foreground mb-1">Password</Label>
+              <Label className="block text-sm font-medium text-foreground mb-1">Şifre</Label>
               <Input
                 type="password"
                 value={formData.password}
@@ -598,14 +609,14 @@ export default function AdminUsersPage() {
               />
             </div>
             <div>
-              <Label className="block text-sm font-medium text-foreground mb-1">Role</Label>
+              <Label className="block text-sm font-medium text-foreground mb-1">Rol</Label>
               <select
                 value={formData.role}
                 onChange={(e) => setFormData({ ...formData, role: e.target.value as any })}
                 className="flex h-9 w-full rounded-md border border-border bg-card px-3 py-1 text-sm shadow-xs focus:outline-hidden focus:ring-1 focus:ring-ring"
               >
-                <option value="user">User</option>
-                <option value="editor">Editor</option>
+                <option value="user">Kullanıcı</option>
+                <option value="editor">Editör</option>
                 <option value="admin">Admin</option>
               </select>
             </div>
@@ -615,13 +626,13 @@ export default function AdminUsersPage() {
                 onClick={() => setIsAddUserOpen(false)}
                 className="px-4 py-2 text-sm font-medium text-foreground hover:bg-muted rounded-lg transition-colors"
               >
-                Cancel
+                İptal
               </Button>
               <Button
                 type="submit"
                 className="px-4 py-2 text-sm font-medium text-primary-foreground bg-primary hover:bg-primary/90 rounded-lg transition-colors"
               >
-                Create User
+                Kullanıcı Oluştur
               </Button>
             </DialogFooter>
           </form>
@@ -637,40 +648,40 @@ export default function AdminUsersPage() {
       >
         <DialogContent className="max-w-md rounded-xl bg-card p-6 shadow-xl sm:rounded-xl">
           <DialogHeader>
-            <DialogTitle className="text-lg font-bold text-foreground">Change Password</DialogTitle>
+            <DialogTitle className="text-lg font-bold text-foreground">Şifre Değiştir</DialogTitle>
           </DialogHeader>
           {passwordModalUser && (
             <>
               <p className="text-sm text-muted-foreground mb-4">
-                Changing password for <span className="font-medium text-foreground">{passwordModalUser.name}</span>
+                Şifresi değiştirilecek kullanıcı: <span className="font-medium text-foreground">{passwordModalUser.name}</span>
               </p>
               <div className="mb-4 bg-info/10 p-3 rounded-lg border border-info/30">
                 <p className="text-sm text-info mb-2">
-                  This process requires email verification.
+                  Bu işlem e-posta doğrulaması gerektirir.
                 </p>
                 <Button
                   type="button"
                   onClick={handleSendVerificationCode}
                   className="h-auto p-0 text-sm font-medium text-info hover:text-info underline"
                 >
-                  Send Verification Code to {passwordModalUser.email}
+                  {passwordModalUser.email} adresine doğrulama kodu gönder
                 </Button>
               </div>
 
               <form onSubmit={handlePasswordChange} className="space-y-4">
                 <div>
-                  <Label className="block text-sm font-medium text-foreground mb-1">Verification Code</Label>
+                  <Label className="block text-sm font-medium text-foreground mb-1">Doğrulama Kodu</Label>
                   <Input
                     type="text"
                     value={passwordData.verificationCode}
                     onChange={(e) => setPasswordData({ ...passwordData, verificationCode: e.target.value })}
                     className="w-full px-3 py-2 border border-border rounded-lg focus:outline-hidden focus:ring-2 focus:ring-ring"
-                    placeholder="Enter 6-digit code"
+                    placeholder="6 haneli kodu girin"
                     required
                   />
                 </div>
                 <div>
-                  <Label className="block text-sm font-medium text-foreground mb-1">New Password</Label>
+                  <Label className="block text-sm font-medium text-foreground mb-1">Yeni Şifre</Label>
                   <Input
                     type="password"
                     value={passwordData.newPassword}
@@ -681,7 +692,7 @@ export default function AdminUsersPage() {
                   />
                 </div>
                 <div>
-                  <Label className="block text-sm font-medium text-foreground mb-1">Confirm Password</Label>
+                  <Label className="block text-sm font-medium text-foreground mb-1">Şifre Tekrar</Label>
                   <Input
                     type="password"
                     value={passwordData.confirmPassword}
@@ -697,13 +708,13 @@ export default function AdminUsersPage() {
                     onClick={() => setPasswordModalUser(null)}
                     className="px-4 py-2 text-sm font-medium text-foreground hover:bg-muted rounded-lg transition-colors"
                   >
-                    Cancel
+                    İptal
                   </Button>
                   <Button
                     type="submit"
                     className="px-4 py-2 text-sm font-medium text-primary-foreground bg-primary hover:bg-primary/90 rounded-lg transition-colors"
                   >
-                    Update Password
+                    Şifreyi Güncelle
                   </Button>
                 </DialogFooter>
               </form>

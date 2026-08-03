@@ -326,7 +326,7 @@ export default function NewsForm({ initialData, onSubmit, isLoading = false }: N
   const inputBase =
     'w-full px-4 py-2.5 border bg-transparent text-foreground rounded-xl focus:outline-hidden focus:ring-2 focus:ring-ring focus:border-transparent transition-all text-sm';
   const inputNormal = `${inputBase} border-border`;
-  const inputError = `${inputBase} border-destructive dark:border-destructive ring-1 ring-destructive`;
+  const inputError = `${inputBase} border-destructive ring-1 ring-destructive`;
 
   return (
     <form onSubmit={handleSubmit} className="relative">
@@ -501,7 +501,7 @@ export default function NewsForm({ initialData, onSubmit, isLoading = false }: N
                 onClick={() => setFormData((prev) => ({ ...prev, status: 'draft' }))}
                 className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                   formData.status === 'draft'
-                    ? 'bg-warning/15 text-warning ring-1 ring-warning/30 dark:ring-warning'
+                    ? 'bg-warning/15 text-warning ring-1 ring-warning/30'
                     : 'bg-muted/50 text-muted-foreground hover:bg-muted'
                 }`}
               >
@@ -512,7 +512,7 @@ export default function NewsForm({ initialData, onSubmit, isLoading = false }: N
                 onClick={() => setFormData((prev) => ({ ...prev, status: 'published' }))}
                 className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                   formData.status === 'published'
-                    ? 'bg-success/15 text-success ring-1 ring-success/30 dark:ring-success'
+                    ? 'bg-success/15 text-success ring-1 ring-success/30'
                     : 'bg-muted/50 text-muted-foreground hover:bg-muted'
                 }`}
               >

@@ -190,9 +190,12 @@ export async function proxy(request: NextRequest) {
   // --- Rate limiting (strict for auth endpoints) ---
   const rateLimitType = getRateLimitType(pathname);
   const isAuthEndpoint = ['LOGIN', 'REGISTER', 'PASSWORD_RESET', 'AUTH'].includes(rateLimitType);
+  // Only state-changing requests consume the auth buckets; otherwise a few
+  // page refreshes / redirects on /admin/login would lock the user out.
+  const consumesAuthBudget = isAuthEndpoint && request.method !== 'GET' && request.method !== 'HEAD';
   let rateLimitResult = { allowed: true, remaining: 1000, resetTime: Date.now() + 60000 };
 
-  if (isAuthEndpoint && process.env.NODE_ENV !== 'development') {
+  if (consumesAuthBudget && process.env.NODE_ENV !== 'development') {
     rateLimitResult = rateLimit(clientIP, rateLimitType);
     if (!rateLimitResult.allowed) {
       const resp = new NextResponse('Too Many Requests', { status: 429 });

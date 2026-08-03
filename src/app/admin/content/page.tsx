@@ -58,7 +58,7 @@ export default function AdminContentPage() {
   };
 
   const handleDelete = async (contentId: string) => {
-    const confirmed = await confirm({ title: 'Are you sure?', description: 'Are you sure you want to delete this content?' });
+    const confirmed = await confirm({ title: 'Emin misiniz?', description: 'Bu içeriği silmek istediğinizden emin misiniz?' });
     if (!confirmed) return;
 
     try {
@@ -68,13 +68,13 @@ export default function AdminContentPage() {
 
       if (response.ok) {
         setContent(content.filter(item => item._id !== contentId));
-        toast.success('Content deleted successfully');
+        toast.success('İçerik başarıyla silindi');
       } else {
-        toast.error('Failed to delete content');
+        toast.error('İçerik silinemedi');
       }
     } catch (error) {
       console.error('Error deleting content:', error);
-      toast.error('Error deleting content');
+      toast.error('İçerik silinirken hata oluştu');
     }
   };
 
@@ -85,7 +85,7 @@ export default function AdminContentPage() {
   });
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
+    return new Date(dateString).toLocaleDateString('tr-TR', {
       month: 'short',
       day: 'numeric',
       year: 'numeric'
@@ -121,6 +121,13 @@ export default function AdminContentPage() {
     }
   };
 
+  const typeLabels: Record<ContentItem['type'], string> = {
+    news: 'Haber',
+    page: 'Sayfa',
+    portfolio: 'Portfolyo',
+    service: 'Hizmet'
+  };
+
   if (status === 'loading' || loading) {
     return (
       <div className="space-y-6">
@@ -146,15 +153,15 @@ export default function AdminContentPage() {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">All Content</h1>
-          <p className="text-muted-foreground mt-1">Manage all your site content</p>
+          <h1 className="text-2xl font-bold text-foreground">Tüm İçerikler</h1>
+          <p className="text-muted-foreground mt-1">Tüm site içeriklerinizi yönetin</p>
         </div>
         <Link
           href="/admin/news/create"
           className="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground font-semibold rounded-xl hover:bg-primary/90 hover:shadow-lg transition-all duration-200"
         >
           <Plus className="w-5 h-5 mr-2" />
-          Create Content
+          İçerik Oluştur
         </Link>
       </div>
 
@@ -167,7 +174,7 @@ export default function AdminContentPage() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search content..."
+              placeholder="İçerik ara..."
               className="w-full pl-12 pr-4 py-3 border border-border rounded-xl focus:outline-hidden focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all"
             />
           </div>
@@ -179,7 +186,7 @@ export default function AdminContentPage() {
                 : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
-              All ({content.length})
+              Tümü ({content.length})
             </button>
             <button
               onClick={() => setTypeFilter('news')}
@@ -188,7 +195,7 @@ export default function AdminContentPage() {
                 : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
-              News ({content.filter(c => c.type === 'news').length})
+              Haberler ({content.filter(c => c.type === 'news').length})
             </button>
             <button
               onClick={() => setTypeFilter('page')}
@@ -197,7 +204,7 @@ export default function AdminContentPage() {
                 : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
-              Pages ({content.filter(c => c.type === 'page').length})
+              Sayfalar ({content.filter(c => c.type === 'page').length})
             </button>
             <button
               onClick={() => setTypeFilter('portfolio')}
@@ -206,7 +213,7 @@ export default function AdminContentPage() {
                 : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
-              Portfolio ({content.filter(c => c.type === 'portfolio').length})
+              Portfolyo ({content.filter(c => c.type === 'portfolio').length})
             </button>
             <button
               onClick={() => setTypeFilter('service')}
@@ -215,7 +222,7 @@ export default function AdminContentPage() {
                 : 'text-muted-foreground hover:text-foreground'
                 }`}
             >
-              Services ({content.filter(c => c.type === 'service').length})
+              Hizmetler ({content.filter(c => c.type === 'service').length})
             </button>
           </div>
         </div>
@@ -243,9 +250,9 @@ export default function AdminContentPage() {
                         ? 'bg-success/15 text-success'
                         : 'bg-warning/15 text-warning'
                         }`}>
-                        {item.status}
+                        {item.status === 'published' ? 'Yayında' : 'Taslak'}
                       </span>
-                      <span className="capitalize">{item.type}</span>
+                      <span>{typeLabels[item.type]}</span>
                       <span>• {formatDate(item.updatedAt)}</span>
                     </div>
                   </div>
@@ -254,14 +261,14 @@ export default function AdminContentPage() {
                   <Link
                     href={getEditUrl(item.type, item._id)}
                     className="p-2 hover:bg-primary/10 rounded-lg transition-colors"
-                    title="Edit"
+                    title="Düzenle"
                   >
                     <Pencil className="w-4 h-4 text-muted-foreground" />
                   </Link>
                   <button
                     onClick={() => handleDelete(item._id)}
                     className="p-2 hover:bg-destructive/10 rounded-lg transition-colors"
-                    title="Delete"
+                    title="Sil"
                   >
                     <Trash2 className="w-4 h-4 text-muted-foreground" />
                   </button>
@@ -272,11 +279,11 @@ export default function AdminContentPage() {
         ) : (
           <div className="text-center py-16">
             <FileText className="w-16 h-16 text-muted-foreground/50 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-foreground mb-2">No content found</h3>
+            <h3 className="text-xl font-semibold text-foreground mb-2">İçerik bulunamadı</h3>
             <p className="text-muted-foreground">
               {searchQuery || typeFilter !== 'all'
-                ? 'Try adjusting your search or filter'
-                : 'Create your first content to get started'
+                ? 'Arama veya filtrelemenizi değiştirmeyi deneyin'
+                : 'Başlamak için ilk içeriğinizi oluşturun'
               }
             </p>
           </div>

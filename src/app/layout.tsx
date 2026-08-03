@@ -25,10 +25,17 @@ const geistMono = GeistMono
 
 /* Public tema (light/dark) blocking init — ThemeScope hydrate olmadan önce
  * <html>'e `public-theme` (+ dark ise `public-dark`) yazar. Admin route'ları
- * next-themes'e bırakılır. Anahtar: localStorage['fixral-public-theme'] */
+ * aşağıdaki ADMIN_THEME_INIT_SCRIPT'e bırakılır. Anahtar: localStorage['fixral-public-theme'] */
 /* FOUC + hydrate-sonrası yeniden uygulama. React <html> hydrate'i classList'i
    temizleyebilir; bu yüzden load/DOMContentLoaded'da tekrar yazarız. */
 const PUBLIC_THEME_INIT_SCRIPT = `try{if(!location.pathname.startsWith('/admin')){(function(){function a(){var t=localStorage.getItem('fixral-public-theme');var d=document.documentElement;d.classList.add('public-theme');if(t==='dark'){d.classList.add('public-dark');d.style.colorScheme='dark'}else{d.classList.remove('public-dark');d.style.colorScheme='light'}}a();document.addEventListener('DOMContentLoaded',a);window.addEventListener('load',a);setTimeout(a,0);setTimeout(a,50);setTimeout(a,200)})()}}catch(e){}`
+
+/* Admin tema (light/dark/system) blocking init — AdminThemeProvider hydrate
+ * olmadan önce <html>'e `dark`/`light` sınıfını yazar (FOUC önleme).
+ * next-themes'in React ağacı içi script'i React 19'da console error
+ * ürettiği için script burada, server-render <head>'de tutulur.
+ * Anahtar: localStorage['fixral-admin-theme'] */
+const ADMIN_THEME_INIT_SCRIPT = `try{if(location.pathname.startsWith('/admin')){(function(){function a(){var d=document.documentElement,c=d.classList,t=localStorage.getItem('fixral-admin-theme');c.remove('light','dark');if(!t||t==='system'){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}c.add(t);d.style.colorScheme=t}a();document.addEventListener('DOMContentLoaded',a);window.addEventListener('load',a)})()}}catch(e){}`
 
 /* Kurumsal ana yazı tipi — Thingiverse mantığı: tek sans (Barlow) her yerde */
 const barlow = Barlow({
@@ -179,6 +186,8 @@ export default async function RootLayout({
       <head>
         {/* FOUC önleme: public tema sınıfları CSS'ten önce, senkron yazılır */}
         <script dangerouslySetInnerHTML={{ __html: PUBLIC_THEME_INIT_SCRIPT }} />
+        {/* Admin tema FOUC koruması (admin route'larında çalışır) */}
+        <script dangerouslySetInnerHTML={{ __html: ADMIN_THEME_INIT_SCRIPT }} />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="theme-color" content="#FA6831" />
         <meta name="mobile-web-app-capable" content="yes" />

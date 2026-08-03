@@ -20,7 +20,7 @@ export default function EditSliderPage(props: { params: Promise<{ id: string }> 
                     const data = await response.json();
                     setSlider(data);
                 } else {
-                    toast.error('Slider not found');
+                    toast.error('Slider bulunamadı');
                     router.push('/admin/slider');
                 }
             } catch (error) {

@@ -223,7 +223,7 @@ export default function AdminPortfolioPage() {
       <Card className="sticky top-24 z-10 p-3">
         <div className="flex flex-col lg:flex-row gap-3 items-center justify-between">
           <div className="flex-1 w-full lg:w-auto relative group">
-            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-brand-500 transition-colors">
+            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors">
               <Search className="w-5 h-5" />
             </div>
             <input
@@ -231,7 +231,7 @@ export default function AdminPortfolioPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Proje ara..."
-              className="w-full pl-10 pr-4 py-2.5 bg-surface-secondary border border-border rounded-xl focus:outline-hidden focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500 focus:bg-card transition-all"
+              className="w-full pl-10 pr-4 py-2.5 bg-surface-secondary border border-border rounded-xl focus:outline-hidden focus:ring-2 focus:ring-primary/50 focus:border-primary focus:bg-card transition-all"
             />
           </div>
 
@@ -256,14 +256,14 @@ export default function AdminPortfolioPage() {
             <div className="flex bg-surface-tertiary p-1 rounded-xl shrink-0">
               <button
                 onClick={() => setViewMode('grid')}
-                className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-card text-brand-600 shadow-xs' : 'text-muted-foreground hover:text-foreground'}`}
+                className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-card text-primary shadow-xs' : 'text-muted-foreground hover:text-foreground'}`}
                 title="Izgara Görünümü"
               >
                 <LayoutGrid className="w-5 h-5" />
               </button>
               <button
                 onClick={() => setViewMode('list')}
-                className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-card text-brand-600 shadow-xs' : 'text-muted-foreground hover:text-foreground'}`}
+                className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-card text-primary shadow-xs' : 'text-muted-foreground hover:text-foreground'}`}
                 title="Liste Görünümü"
               >
                 <List className="w-5 h-5" />
@@ -314,7 +314,7 @@ export default function AdminPortfolioPage() {
                 <li
                   key={item._id}
                   className={`group relative bg-card rounded-xl shadow-xs border transition-all duration-300 overflow-hidden hover:shadow-xl hover:-translate-y-1 ${selectedItems.has(item._id)
-                      ? 'ring-2 ring-brand-500 border-transparent'
+                      ? 'ring-2 ring-primary border-transparent'
                       : 'border-border'
                     }`}
                   onClick={() => handleSelectItem(item._id)}
@@ -325,7 +325,7 @@ export default function AdminPortfolioPage() {
                       type="checkbox"
                       checked={selectedItems.has(item._id)}
                       onChange={(e) => { e.stopPropagation(); handleSelectItem(item._id); }}
-                      className="w-5 h-5 text-brand-600 border-border rounded focus:ring-brand-500 cursor-pointer block"
+                      className="w-5 h-5 text-primary border-border rounded focus:ring-primary cursor-pointer block"
                     />
                   </div>
 
@@ -376,11 +376,11 @@ export default function AdminPortfolioPage() {
 
                   {/* Content */}
                   <div className="p-5">
-                    <div className="flex items-center gap-2 mb-2 text-xs font-medium text-brand-600">
+                    <div className="flex items-center gap-2 mb-2 text-xs font-medium text-primary">
                       <Tag className="w-3.5 h-3.5" />
                       <span className="uppercase tracking-wider truncate">{item.category}</span>
                     </div>
-                    <h3 className="text-lg font-bold text-foreground mb-2 line-clamp-1 group-hover:text-brand-600 transition-colors" title={item.title}>
+                    <h3 className="text-lg font-bold text-foreground mb-2 line-clamp-1 group-hover:text-primary transition-colors" title={item.title}>
                       {item.title}
                     </h3>
                     <p className="text-muted-foreground text-sm line-clamp-2 leading-relaxed mb-4 min-h-10">
@@ -411,7 +411,7 @@ export default function AdminPortfolioPage() {
                             if (selectedItems.size === filteredItems.length) setSelectedItems(new Set());
                             else setSelectedItems(new Set(filteredItems.map(i => i._id)));
                           }}
-                          className="w-4 h-4 text-brand-600 border-border rounded focus:ring-brand-500 rounded cursor-pointer"
+                          className="w-4 h-4 text-primary border-border rounded focus:ring-primary rounded cursor-pointer"
                         />
                       </th>
                       <th className="px-6 py-4">Proje Detayları</th>
@@ -425,7 +425,7 @@ export default function AdminPortfolioPage() {
                     {filteredItems.map(item => (
                       <tr
                         key={item._id}
-                        className={`group hover:bg-surface-secondary/80 transition-colors ${selectedItems.has(item._id) ? 'bg-brand-50/30' : ''}`}
+                        className={`group hover:bg-surface-secondary/80 transition-colors ${selectedItems.has(item._id) ? 'bg-primary/5' : ''}`}
                         onClick={() => handleSelectItem(item._id)}
                       >
                         <td className="px-6 py-4" onClick={e => e.stopPropagation()}>
@@ -433,7 +433,7 @@ export default function AdminPortfolioPage() {
                             type="checkbox"
                             checked={selectedItems.has(item._id)}
                             onChange={() => handleSelectItem(item._id)}
-                            className="w-4 h-4 text-brand-600 border-border rounded focus:ring-brand-500 cursor-pointer"
+                            className="w-4 h-4 text-primary border-border rounded focus:ring-primary cursor-pointer"
                           />
                         </td>
                         <td className="px-6 py-4">
@@ -452,7 +452,7 @@ export default function AdminPortfolioPage() {
                               )}
                             </div>
                             <div>
-                              <div className="font-bold text-foreground group-hover:text-brand-600 transition-colors">{item.title}</div>
+                              <div className="font-bold text-foreground group-hover:text-primary transition-colors">{item.title}</div>
                               <div className="text-xs text-muted-foreground mt-0.5 max-w-xs truncate">{item.slug}</div>
                             </div>
                           </div>
@@ -476,7 +476,7 @@ export default function AdminPortfolioPage() {
                             <Link
                               href={`/admin/portfolio/edit/${item._id}`}
                               onClick={e => e.stopPropagation()}
-                              className="p-1.5 text-muted-foreground hover:text-brand-600 hover:bg-brand-50 rounded-lg transition-colors"
+                              className="p-1.5 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
                               title="Düzenle"
                             >
                               <Pencil className="w-4 h-4" />

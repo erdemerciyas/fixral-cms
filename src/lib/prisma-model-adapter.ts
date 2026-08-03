@@ -76,18 +76,18 @@ function translateFilter(filter: PlainObject = {}): PlainObject {
         hasOperator = true;
       }
       if ('$ne' in value) {
-        condition.not = key === '_id' ? String(value.$ne) : value.$ne;
+        if (value.$ne === null) {
+          // "not null" — not expressible on required fields; `not: {}` covers nullable ones
+          condition.not = {};
+        } else {
+          condition.not = key === '_id' ? String(value.$ne) : value.$ne;
+        }
         hasOperator = true;
       }
       if ('$exists' in value) {
         if (value.$exists) {
-          // $exists: true  — field is not null
-          // But if combined with $ne: null, it means strictly not null
-          if ('$ne' in value && value.$ne === null) {
-            condition.not = null;
-          } else {
-            condition.not = null;
-          }
+          // $exists: true — field is not null (same translation as $ne: null)
+          condition.not = {};
         } else {
           // $exists: false — field is null
           condition.equals = null;

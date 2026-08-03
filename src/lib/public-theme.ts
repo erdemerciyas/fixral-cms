@@ -3,7 +3,7 @@
  *
  * Dark temanın devreye girmesi için <html> üzerinde HER İKİ class birlikte
  * bulunmalıdır: `public-theme public-dark` (globals.css specificity kuralı).
- * Admin tarafı next-themes ile yönetilir (storageKey: fixral-admin-theme) ve
+ * Admin tarafı AdminThemeProvider ile yönetilir (storageKey: fixral-admin-theme) ve
  * bu modül admin route'larında yalnızca temizlik yapar.
  */
 

@@ -8,7 +8,7 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-v4-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
 [![shadcn/ui](https://img.shields.io/badge/shadcn/ui-Radix-000?style=for-the-badge)](https://ui.shadcn.com/)
 [![Vercel](https://img.shields.io/badge/Vercel-Deploy-black?style=for-the-badge&logo=vercel)](https://vercel.com/)
-[![Sürüm](https://img.shields.io/badge/Sürüm-5.1.0-blue?style=for-the-badge)]()
+[![Sürüm](https://img.shields.io/badge/Sürüm-5.1.3-blue?style=for-the-badge)]()
 [![Lisans](https://img.shields.io/badge/Lisans-Özel-red?style=for-the-badge)]()
 
 **Fixral CMS**, Next.js 16 (App Router, Turbopack), React 19.2, Prisma ORM ve PostgreSQL üzerine inşa edilmiş, üretime hazır, tam kapsamlı bir İçerik Yönetim Sistemidir.
@@ -182,14 +182,14 @@ Prisma ORM ile yönetilen **19 model** — PostgreSQL (Neon) üzerinde:
 | **Doğrulama** | Zod (API), Validator.js (form) |
 | **XSS Koruması** | DOMPurify, sanitize-html |
 | **2FA** | OTPLib (TOTP) + QRCode |
-| **Test** | Jest 30, Testing Library, Playwright (QA ekran görüntüleri) |
+| **Test** | Jest 30, Testing Library |
 | **Lint / Format** | ESLint 9 (flat config — React Compiler danışmanlık kuralları dahil), Prettier 3, prettier-plugin-tailwindcss |
 | **CI/CD** | GitHub Actions (CI + Security Scan), Vercel |
 | **Bildirimler** | Sonner (toast), SweetAlert2, react-hot-toast |
 | **Slider** | Swiper.js 11 |
 | **Veri Çekme** | SWR 2.4 |
 | **Tablo** | TanStack React Table 8.21 |
-| **Tema** | next-themes (dark/light mode) |
+| **Tema** | Özel tema sistemi — public light/dark (`public-theme`) + admin dark/light (`AdminThemeProvider`) |
 | **Monitöring** | Sentry (opsiyonel — server, edge, client) |
 | **Font** | Barlow (display + body), Geist Mono (teknik aksan) |
 
@@ -371,7 +371,7 @@ fixral-cms/
 ├── eslint.config.mjs              # ESLint 9 flat config (React Compiler danışmanlık kuralları dahil)
 ├── tsconfig.json                  # TypeScript yapılandırması (strict mode)
 ├── site.config.js                 # Site geneli yapılandırma sabitleri
-└── scripts/                       # Yardımcı scriptler (cleanup, video sync, QA ekran görüntüleri)
+└── scripts/                       # Yardımcı scriptler (cleanup, contrast test, video sync, Vercel env sync)
 ```
 
 > **Not:** Tailwind CSS v4 CSS-first yapılandırma kullanır — ayrı bir `tailwind.config.js` yoktur; tema token'ları ve stiller `src/app/globals.css` içinde tanımlıdır.
@@ -614,7 +614,6 @@ NODE_ENV=development
 | `npm run type-check` | TypeScript tip kontrolü yap |
 | `npm run format` | Prettier ile kodu formatla |
 | `npm run contrast` | WCAG kontrast testini çalıştır |
-| `npm run qa:after` | Playwright ile QA ekran görüntüleri al |
 
 ### Test
 
@@ -909,6 +908,11 @@ npm run test:coverage
 ---
 
 ## Değişiklik Günlüğü
+
+### v5.1.3 — Depo Temizliği ve Tema Sistemi Bağımsızlaştırma
+- **Depo Temizliği:** QA ekran görüntüsü artıkları (`.qa-baseline/`, `.qa-after/`, `.qa-admin-tmp/`), kök dizindeki geçici/referans PNG dosyaları (`thingiverse-*.png`, `tmp-services-*.png`) ve `scripts/qa-after-screenshots.mjs` kaldırıldı
+- **Bağımlılıklar:** Artık kullanılmayan `playwright` devDependency'si ve `qa:after` npm script'i kaldırıldı
+- **Tema Sistemi:** `next-themes` bağımlılığı kaldırıldı; public taraf `public-theme` yardımcıları, admin tarafı `AdminThemeProvider` ile tamamen özel implementasyona geçti
 
 ### v5.1.2 — Vercel Domain Geçişi ve Ortam Değişkeni Senkronizasyonu
 - **Domain Geçişi:** Production adresi `fixral-cms.vercel.app` olarak güncellendi; `vercel.json`'dan eski özel domain alias'ları kaldırıldı
