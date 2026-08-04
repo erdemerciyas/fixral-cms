@@ -66,12 +66,14 @@ async function main() {
       await run(`npx vercel env rm ${key} ${e} --yes`);
     }
 
-    // Add new — one environment at a time
+    // Add new — one environment at a time.
+    // Değerin sonuna NEWLINE eklenmemeli: Vercel stdin'deki son satır sonunu
+    // değerin parçası olarak saklıyor; bu da Cloudinary imza doğrulamasını bozuyor.
     let allOk = true;
     for (const e of envs) {
       const { code, stderr } = await run(
         `npx vercel env add ${key} ${e}`,
-        finalValue + '\n'
+        finalValue
       );
       if (code !== 0) {
         console.log(`  ❌ ${key} [${e}] failed: ${stderr.trim()}`);
