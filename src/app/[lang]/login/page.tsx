@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { toast } from 'sonner';
 import { useLocale } from '@/hooks/useLocale';
+import AuthTemplate from '@/templates/AuthTemplate';
 
 export default function LoginPage() {
     const router = useRouter();
@@ -49,14 +50,8 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="min-h-dvh pt-32 pb-20 bg-background flex items-center justify-center">
-            <div className="container-main max-w-md w-full">
-                <div className="bg-card p-8 rounded-sm shadow-[var(--shadow-sm)] border border-border">
-                    <h1 className="text-2xl font-bold text-foreground mb-2 text-center">Giriş Yap</h1>
-                    <p className="text-muted-foreground mb-8 text-center">
-                        Hesabınıza giriş yapın.
-                    </p>
-
+        <AuthTemplate title="Giriş Yap" description="Hesabınıza giriş yapın.">
+            <div className="bg-card p-8 border border-border shadow-[var(--shadow-sm)]">
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div>
                             <label className="block text-sm font-medium text-foreground mb-1">E-posta</label>
@@ -102,7 +97,6 @@ export default function LoginPage() {
                         Hesabınız yok mu? <Link href={`/${lang}/register`} className="text-accent-foreground font-bold hover:underline">Kayıt Ol</Link>
                     </div>
                 </div>
-            </div>
-        </div>
+        </AuthTemplate>
     );
 }

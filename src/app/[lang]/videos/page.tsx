@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
-import PageHero from '@/components/common/PageHero';
 import BreadcrumbsJsonLd from '@/components/seo/BreadcrumbsJsonLd';
-import VideosClient from '@/components/videos/VideosClient';
+import VideosTemplate from '@/templates/VideosTemplate';
 
 export const revalidate = 3600;
 
@@ -60,24 +59,14 @@ export default async function VideosPage({ params }: { params: Promise<{ lang: s
   const hero = await getHeroData();
 
   return (
-    <div className="min-h-dvh bg-background">
-      <PageHero
-        title={hero.title}
-        description={hero.description}
-        buttonText={hero.buttonText}
-        buttonLink={hero.buttonLink}
-        showBreadcrumbs={true}
-        index={4}
-      />
-
+    <>
       <BreadcrumbsJsonLd
         items={[
           { name: 'Anasayfa', item: '/' },
           { name: 'Videolar', item: '/videos' },
         ]}
       />
-
-      <VideosClient />
-    </div>
+      <VideosTemplate title={hero.title} description={hero.description} />
+    </>
   );
 }

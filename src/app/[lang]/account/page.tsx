@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 import { MapPin as MapPinIcon, User as UserIcon, LogOut as ArrowRightOnRectangleIcon, XCircle as XCircleIcon, MessageSquare as ChatBubbleLeftIcon, Trash2 as TrashIcon, Mail as EnvelopeIcon, Megaphone as MegaphoneIcon } from 'lucide-react';
 import { toast } from 'sonner';
 import { useConfirm } from '@/hooks/use-confirm';
+import AccountTemplate from '@/templates/AccountTemplate';
 
 function Modal({ isOpen, onClose, title, children }: { isOpen: boolean; onClose: () => void; title: string; children: React.ReactNode }) {
     if (!isOpen) return null;
@@ -443,7 +444,8 @@ export default function AccountPage() {
     };
 
     return (
-        <main className="min-h-dvh pt-28 pb-20 bg-background">
+        <AccountTemplate>
+        <main className="pt-28 pb-20">
             <div className="bg-foreground pb-20 pt-10">
                 <div className="container-main">
                     <div className="flex flex-col md:flex-row items-center gap-6">
@@ -572,5 +574,6 @@ export default function AccountPage() {
                 </form>
             </Modal>
         </main>
+        </AccountTemplate>
     );
 }

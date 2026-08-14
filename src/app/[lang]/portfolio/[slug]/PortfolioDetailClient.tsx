@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { m } from 'framer-motion';
 import { Check as CheckIcon } from 'lucide-react';
 import { PortfolioItem } from '@/types/portfolio';
-import PageHero from '@/components/common/PageHero';
+import PortfolioDetailTemplate from '@/templates/PortfolioDetailTemplate';
 import { MeasureRule } from '@/components/ui';
 import PortfolioMediaGallery from '@/components/portfolio/PortfolioMediaGallery';
 import Portfolio3DFiles from '@/components/portfolio/Portfolio3DFiles';
@@ -41,16 +41,10 @@ export default function PortfolioDetailClient({ portfolioItem, relatedProjects, 
   })();
 
   return (
-    <div className="min-h-dvh bg-background">
-      <PageHero
-        title={portfolioItem.title}
-        showButton={false}
-        variant="compact"
-        showBreadcrumbs={true}
-        featuredBadge={portfolioItem.featured ? 'Öne Çıkan Proje' : undefined}
-        index={2}
-      />
-
+    <PortfolioDetailTemplate
+      title={portfolioItem.title}
+      eyebrow={portfolioItem.featured ? 'Öne Çıkan Proje' : undefined}
+    >
       <BreadcrumbsJsonLd
         items={[
           { name: 'Anasayfa', item: `/${lang}` },
@@ -232,6 +226,6 @@ export default function PortfolioDetailClient({ portfolioItem, relatedProjects, 
           )}
         </div>
       </section>
-    </div>
+    </PortfolioDetailTemplate>
   );
 }

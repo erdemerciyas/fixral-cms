@@ -2,10 +2,9 @@ import { Metadata } from 'next';
 import News from '@/models/News';
 import { NewsItem } from '@/types/news';
 import { logger } from '@/core/lib/logger';
-import PageHero from '@/components/common/PageHero';
+import NewsListTemplate from '@/templates/NewsListTemplate';
 import { SITE_URL, generateAlternates, generateOgImages } from '@/lib/seo-utils';
 import { getMessages } from '@/i18n';
-import NewsListClient from '@/components/news/NewsListClient';
 
 interface PageProps {
   params: Promise<{ lang: string }>;
@@ -109,30 +108,20 @@ export default async function NewsListPage({ params: paramsPromise, searchParams
   }
 
   return (
-    <div className="min-h-dvh bg-background">
-      <PageHero
-        title={view.newsT.pageTitle || 'Noticias y Anuncios'}
-        description={view.newsT.pageDescription || ''}
-        showButton={false}
-        showBreadcrumbs={true}
-        index={3}
-      />
-
-      <div className="container-content py-8">
-        <NewsListClient
-          articles={view.serializedArticles}
-          lang={lang}
-          locale="es"
-          search={view.search}
-          tag={view.tag}
-          total={view.total}
-          page={view.page}
-          totalPages={view.totalPages}
-          allTags={view.allTags}
-          newsT={view.newsT}
-          commonT={view.commonT}
-        />
-      </div>
-    </div>
+    <NewsListTemplate
+      title={view.newsT.pageTitle || 'Noticias y Anuncios'}
+      description={view.newsT.pageDescription || ''}
+      articles={view.serializedArticles}
+      lang={lang}
+      locale="es"
+      search={view.search}
+      tag={view.tag}
+      total={view.total}
+      page={view.page}
+      totalPages={view.totalPages}
+      allTags={view.allTags}
+      newsT={view.newsT}
+      commonT={view.commonT}
+    />
   );
 }

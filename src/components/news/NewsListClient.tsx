@@ -4,7 +4,6 @@ import { m, useReducedMotion } from 'framer-motion'
 import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowRight, Search as MagnifyingGlass, Newspaper } from 'lucide-react';
-import { TechLabel } from '@/components/ui'
 import { ScrollReveal } from '@/components/ui/ScrollReveal'
 import { cn } from '@/lib/utils'
 
@@ -81,7 +80,7 @@ function HeroCard({ article, lang, newsT, basePath, translationKey, dateLocale }
           <div className="max-w-2xl space-y-4">
             <div className="flex items-center gap-3">
               {article.tags?.[0] && (
-                <TechLabel as="span" marker="tick">{article.tags[0]}</TechLabel>
+                <span className="font-mono text-[11px] uppercase tracking-[0.12em] text-primary">{article.tags[0]}</span>
               )}
               <span className="font-mono text-[11px] text-muted-foreground tracking-wide">
                 {formatDate(article.publishedAt || article.createdAt, dateLocale)}
@@ -167,7 +166,7 @@ function ArticleCard({
         <div className={cn('flex flex-col grow', isLarge ? 'p-7' : 'p-5 md:p-6')}>
           <div className="flex items-center gap-3 mb-3">
             {article.tags?.[0] && (
-              <TechLabel as="span" marker="tick">{article.tags[0]}</TechLabel>
+              <span className="font-mono text-[11px] uppercase tracking-[0.12em] text-primary">{article.tags[0]}</span>
             )}
             <span className="font-mono text-[11px] text-muted-foreground tracking-wide">
               {formatDate(article.publishedAt || article.createdAt, dateLocale)}

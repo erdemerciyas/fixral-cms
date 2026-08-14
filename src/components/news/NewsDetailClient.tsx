@@ -4,7 +4,6 @@ import { m, useScroll, useSpring } from 'framer-motion'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Calendar as CalendarBlank, ArrowRight, Share2 as ShareNetwork, ArrowLeft, User as UserIcon, Tag } from 'lucide-react';
-import { TechLabel } from '@/components/ui'
 import Breadcrumbs from '@/components/Breadcrumbs'
 import { SITE_URL } from '@/lib/seo-utils'
 
@@ -101,8 +100,8 @@ export default function NewsDetailClient({ lang, locale = 'tr', news, translatio
                   transition={{ duration: 0.7, delay: 0.15, ease }}
                   className="flex flex-wrap items-center gap-3"
                 >
-                  {news.tags?.map((t) => (
-                    <TechLabel key={t} as="span" marker="tick">{t}</TechLabel>
+                  {news.tags?.map((tag) => (
+                    <span key={tag} className="font-mono text-[11px] uppercase tracking-[0.12em] text-primary">{tag}</span>
                   ))}
                 </m.div>
 

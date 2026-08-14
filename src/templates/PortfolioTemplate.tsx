@@ -4,8 +4,8 @@ import { useState, useMemo, useRef } from 'react';
 import { m, AnimatePresence, useInView, useReducedMotion } from 'framer-motion';
 import Link from 'next/link';
 import { Search as MagnifyingGlass, X, Sparkles as Sparkle, ArrowRight, Filter as FunnelSimple, ArrowUpNarrowWide as SortAscending, ChevronDown as CaretDown } from 'lucide-react';
-import PageHero from '@/components/common/PageHero';
-import { TechLabel } from '@/components/ui';
+import { PageShell } from '@/components/layout/PageShell';
+import { PageHeader } from '@/components/layout/PageHeader';
 import ModernProjectCard from '@/components/portfolio/ModernProjectCard';
 import { usePortfolioFilters } from '@/hooks/usePortfolioFilters';
 import { useLocale } from '@/hooks/useLocale';
@@ -255,25 +255,21 @@ export default function PortfolioTemplate(props: any) {
   }
 
   return (
-    <div className="min-h-[100dvh] bg-background">
-      {/* Hero */}
-      <PageHero
-        title={hero.title}
-        description={hero.description}
-        buttonText={hero.buttonText}
-        buttonLink={hero.buttonLink}
-        showButton={true}
-        showBreadcrumbs={true}
-        index={2}
-      />
+    <PageShell className="min-h-[100dvh]">
+      <div className="container-main">
+        <PageHeader
+          title={hero.title}
+          description={hero.description}
+          kinetic={false}
+        />
+      </div>
 
       {/* Projects section */}
       <section id="projects" className="py-8 md:py-12">
         <div className="container-content">
           {/* Section header */}
           <ScrollReveal className="mb-8 md:mb-10">
-            <TechLabel as="p" index={1} marker="crosshair">Projeler</TechLabel>
-            <h2 className="text-2xl md:text-3xl font-semibold text-foreground mt-4 tracking-tight">
+            <h2 className="text-2xl md:text-3xl font-semibold text-foreground tracking-tight">
               Çalışma Galerisi
             </h2>
             <p className="text-muted-foreground mt-2 max-w-xl text-sm md:text-base leading-relaxed">
@@ -513,7 +509,7 @@ export default function PortfolioTemplate(props: any) {
 
         <div className="container-content text-center relative z-10">
           <ScrollReveal>
-            <TechLabel as="p" marker="tick" className="justify-center text-primary-foreground/80 [&>span[aria-hidden]]:bg-primary-foreground">Birlikte Çalışalım</TechLabel>
+            <p className="font-mono text-xs uppercase tracking-[0.14em] text-primary-foreground/80">Birlikte Çalışalım</p>
             <h2 className="text-2xl md:text-4xl font-semibold text-primary-foreground mt-5 mb-4 tracking-tight">
               Projenizi Birlikte Gerçekleştirelim
             </h2>
@@ -542,6 +538,6 @@ export default function PortfolioTemplate(props: any) {
           </ScrollReveal>
         </div>
       </section>
-    </div>
+    </PageShell>
   );
 }

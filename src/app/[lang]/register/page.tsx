@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useLocale } from '@/hooks/useLocale';
+import AuthTemplate from '@/templates/AuthTemplate';
 
 export default function RegisterPage() {
     const router = useRouter();
@@ -65,14 +66,8 @@ export default function RegisterPage() {
     };
 
     return (
-        <div className="min-h-dvh pt-32 pb-20 bg-background flex items-center justify-center">
-            <div className="container-main max-w-md w-full">
-                <div className="bg-card p-8 rounded-sm shadow-[var(--shadow-sm)] border border-border">
-                    <h1 className="text-2xl font-bold text-foreground mb-2 text-center">Kayıt Ol</h1>
-                    <p className="text-muted-foreground mb-8 text-center">
-                        Yeni bir hesap oluşturun ve alışverişe başlayın.
-                    </p>
-
+        <AuthTemplate title="Kayıt Ol" description="Yeni bir hesap oluşturun ve alışverişe başlayın.">
+            <div className="bg-card p-8 border border-border shadow-[var(--shadow-sm)]">
                     {error && (
                         <div className="mb-6 p-4 bg-destructive/10 text-destructive text-sm rounded-sm border border-destructive/20 font-medium">
                             {error}
@@ -137,10 +132,9 @@ export default function RegisterPage() {
                     </form>
 
                     <div className="mt-6 pt-6 border-t border-border text-center text-sm text-muted-foreground">
-                        Zaten hesabınız var mı? <Link href="/api/auth/signin" className="text-accent-foreground font-bold hover:underline">Giriş Yap</Link>
+                        Zaten hesabınız var mı? <Link href={`/${lang}/login`} className="text-accent-foreground font-bold hover:underline">Giriş Yap</Link>
                     </div>
                 </div>
-            </div>
-        </div>
+        </AuthTemplate>
     );
 }

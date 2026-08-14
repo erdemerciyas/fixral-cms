@@ -4,8 +4,7 @@ import { useState, useEffect, Suspense } from 'react';
 import { m } from 'framer-motion';
 import { MapPin, Mail as EnvelopeSimple, Phone, Clock, ArrowRight, CheckCircle, AlertCircle as WarningCircle } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
-import PageHero from '@/components/common/PageHero';
-import { BlueprintGrid, TechLabel } from '@/components/ui';
+import { PageHeader } from '@/components/layout/PageHeader';
 import { ScrollReveal, ScrollRevealItem } from '@/components/ui/ScrollReveal';
 
 const ease = [0.32, 0.72, 0, 1] as const;
@@ -141,28 +140,19 @@ function ContactPageContent() {
   ];
 
   return (
-    <div className="min-h-dvh bg-background">
-      <PageHero
-        title={hero.title || 'İletişim'}
-        description={hero.description || 'Bizimle iletişime geçin ve projelerinizi konuşalım'}
-        buttonText="İletişim Formu"
-        buttonLink="#contact-form"
-        showButton={true}
-        showBreadcrumbs={true}
-        index={5}
-      />
+    <>
+      <div className="container-main">
+        <PageHeader
+          title={hero.title || 'İletişim'}
+          description={hero.description || 'Bizimle iletişime geçin ve projelerinizi konuşalım'}
+          kinetic={false}
+        />
+      </div>
 
       <section id="contact-form" className="relative py-16 lg:py-24">
-        {/* Blueprint band — bölüm başında aşağı doğru sönen teknik ızgara */}
-        <BlueprintGrid
-          density="coarse"
-          opacity="faint"
-          className="[mask-image:linear-gradient(to_bottom,black,transparent_45%)]"
-        />
         <div className="container-content relative">
           <ScrollReveal className="mb-12 lg:mb-16">
-            <TechLabel as="p" index={1} marker="crosshair">İletişim</TechLabel>
-            <h2 className="mt-4 text-3xl lg:text-4xl font-semibold tracking-tight text-foreground">
+            <h2 className="text-3xl lg:text-4xl font-semibold tracking-tight text-foreground">
               Size nasıl yardımcı olabiliriz?
             </h2>
             <p className="mt-3 max-w-xl text-base text-muted-foreground leading-relaxed">
@@ -468,7 +458,7 @@ function ContactPageContent() {
           </ScrollReveal>
         </div>
       </section>
-    </div>
+    </>
   );
 }
 

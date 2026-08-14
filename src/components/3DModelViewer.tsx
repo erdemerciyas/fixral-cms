@@ -108,8 +108,8 @@ function STLModel({ url }: { url: string }) {
       geometry={processedGeometry} 
       scale={scale}
     >
-      {/* Marka paletiyle tutarlı: STL = brand primary (#FA6831) */}
-      <meshStandardMaterial color="#FA6831" />
+      {/* Graphite + Lime token renkleri */}
+      <meshStandardMaterial color="hsl(72, 100%, 50%)" />
     </mesh>
   );
 }
@@ -153,8 +153,7 @@ function OBJModel({ url }: { url: string }) {
       // OBJ dosyasına material ekle
       clonedObj.traverse((child) => {
         if (child instanceof Mesh) {
-          // Marka paletiyle tutarlı: OBJ = brand derin ton (#C24E1E)
-          child.material = new MeshStandardMaterial({ color: '#C24E1E' });
+          child.material = new MeshStandardMaterial({ color: 'hsl(72, 100%, 35%)' });
         }
       });
       

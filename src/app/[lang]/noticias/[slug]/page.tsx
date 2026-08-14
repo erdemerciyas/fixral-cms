@@ -6,6 +6,7 @@ import { logger } from '@/core/lib/logger';
 
 import { SITE_URL, getBlogAlternates, generateOgImages } from '@/lib/seo-utils';
 import NewsDetailClient from '@/components/news/NewsDetailClient';
+import NewsDetailTemplate from '@/templates/NewsDetailTemplate';
 
 interface PageProps {
   params: Promise<{
@@ -266,7 +267,7 @@ export default async function NewsDetailPage({ params: paramsPromise }: PageProp
   const { jsonLd, serializedNews, serializedTranslation } = view;
 
   return (
-    <div className="min-h-dvh bg-background">
+    <NewsDetailTemplate>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -278,6 +279,6 @@ export default async function NewsDetailPage({ params: paramsPromise }: PageProp
         news={serializedNews}
         translation={serializedTranslation}
       />
-    </div>
+    </NewsDetailTemplate>
   );
 }
