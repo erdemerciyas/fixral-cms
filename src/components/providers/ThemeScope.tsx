@@ -1,7 +1,7 @@
 'use client'
 
 import { usePathname } from 'next/navigation'
-import { useEffect, useLayoutEffect } from 'react'
+import { useLayoutEffect } from 'react'
 import {
   PUBLIC_THEME_CHANGE_EVENT,
   PUBLIC_THEME_STORAGE_KEY,
@@ -10,9 +10,7 @@ import {
   normalizePublicTheme,
   readPublicTheme,
 } from '@/lib/public-theme'
-
-const useIsomorphicLayoutEffect =
-  typeof window !== 'undefined' ? useLayoutEffect : useEffect
+import { PUBLIC_THEME_CONFIG, readThemePreference } from '@/lib/theme/core'
 
 function isAdminPath(pathname: string | null | undefined): boolean {
   if (pathname?.startsWith('/admin')) return true
@@ -22,29 +20,19 @@ function isAdminPath(pathname: string | null | undefined): boolean {
   return false
 }
 
-/**
- * Tema kapsam bekçisi: public sayfalarda `.public-theme` (+ dark ise
- * `.public-dark`) sınıflarını <html> üzerine yazar.
- *
- * React hydrate bazen FOUC script sınıflarını temizler; bu yüzden
- * layout effect + rAF + storage/event dinleyicileri ile yeniden uygularız.
- */
 export default function ThemeScope() {
   const pathname = usePathname()
 
-  useIsomorphicLayoutEffect(() => {
+  useLayoutEffect(() => {
     const sync = () => {
       if (isAdminPath(pathname)) {
         clearPublicTheme()
         return
       }
-      applyPublicTheme(readPublicTheme())
+      applyPublicTheme(readThemePreference(PUBLIC_THEME_CONFIG))
     }
 
     sync()
-
-    // Hydrate sonrası React class wipe'ına karşı bir frame daha uygula
-    const raf = window.requestAnimationFrame(sync)
 
     const handleThemeChange = (event: Event) => {
       if (isAdminPath(pathname)) return
@@ -57,23 +45,20 @@ export default function ThemeScope() {
       sync()
     }
 
+    const mq = window.matchMedia('(prefers-color-scheme: dark)')
+    const handleSystem = () => {
+      if (readPublicTheme() === 'system') sync()
+    }
+
     window.addEventListener(PUBLIC_THEME_CHANGE_EVENT, handleThemeChange)
     window.addEventListener('storage', handleStorage)
+    mq.addEventListener('change', handleSystem)
 
     return () => {
-      window.cancelAnimationFrame(raf)
       window.removeEventListener(PUBLIC_THEME_CHANGE_EVENT, handleThemeChange)
       window.removeEventListener('storage', handleStorage)
+      mq.removeEventListener('change', handleSystem)
     }
-  }, [pathname])
-
-  // Fallback: client mount'ta useEffect ile de uygula (layout effect kaçarsa)
-  useEffect(() => {
-    if (isAdminPath(pathname)) {
-      clearPublicTheme()
-      return
-    }
-    applyPublicTheme(readPublicTheme())
   }, [pathname])
 
   return null

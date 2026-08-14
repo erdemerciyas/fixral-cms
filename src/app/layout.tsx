@@ -1,7 +1,5 @@
 import type { Metadata } from 'next'
-import { GeistSans } from 'geist/font/sans'
-import { GeistMono } from 'geist/font/mono'
-import { Barlow } from 'next/font/google'
+import { Archivo, JetBrains_Mono } from 'next/font/google'
 import './globals.css'
 import { config } from '../core/lib/config'
 import Header from '../components/Header'
@@ -20,30 +18,23 @@ const ENV_GOOGLE_VERIFICATION = process.env.GOOGLE_SITE_VERIFICATION
 const ENV_GA_ID = process.env.NEXT_PUBLIC_GA_ID
 const ENV_GTM_ID = process.env.NEXT_PUBLIC_GTM_ID
 
-const geistSans = GeistSans
-const geistMono = GeistMono
-
-/* Public tema (light/dark) blocking init — ThemeScope hydrate olmadan önce
- * <html>'e `public-theme` (+ dark ise `public-dark`) yazar. Admin route'ları
- * aşağıdaki ADMIN_THEME_INIT_SCRIPT'e bırakılır. Anahtar: localStorage['fixral-public-theme'] */
-/* FOUC + hydrate-sonrası yeniden uygulama. React <html> hydrate'i classList'i
-   temizleyebilir; bu yüzden load/DOMContentLoaded'da tekrar yazarız. */
-const PUBLIC_THEME_INIT_SCRIPT = `try{if(!location.pathname.startsWith('/admin')){(function(){function a(){var t=localStorage.getItem('fixral-public-theme');var d=document.documentElement;d.classList.add('public-theme');if(t==='dark'){d.classList.add('public-dark');d.style.colorScheme='dark'}else{d.classList.remove('public-dark');d.style.colorScheme='light'}}a();document.addEventListener('DOMContentLoaded',a);window.addEventListener('load',a);setTimeout(a,0);setTimeout(a,50);setTimeout(a,200)})()}}catch(e){}`
-
-/* Admin tema (light/dark/system) blocking init — AdminThemeProvider hydrate
- * olmadan önce <html>'e `dark`/`light` sınıfını yazar (FOUC önleme).
- * next-themes'in React ağacı içi script'i React 19'da console error
- * ürettiği için script burada, server-render <head>'de tutulur.
- * Anahtar: localStorage['fixral-admin-theme'] */
-const ADMIN_THEME_INIT_SCRIPT = `try{if(location.pathname.startsWith('/admin')){(function(){function a(){var d=document.documentElement,c=d.classList,t=localStorage.getItem('fixral-admin-theme');c.remove('light','dark');if(!t||t==='system'){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}c.add(t);d.style.colorScheme=t}a();document.addEventListener('DOMContentLoaded',a);window.addEventListener('load',a)})()}}catch(e){}`
-
-/* Kurumsal ana yazı tipi — Thingiverse mantığı: tek sans (Barlow) her yerde */
-const barlow = Barlow({
+const archivo = Archivo({
   subsets: ['latin', 'latin-ext'],
-  weight: ['300', '400', '500', '600', '700'],
-  variable: '--font-barlow',
+  variable: '--font-archivo',
   display: 'swap',
 })
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ['latin', 'latin-ext'],
+  variable: '--font-jetbrains-mono',
+  display: 'swap',
+})
+
+/* Public tema blocking init — ThemeScope hydrate olmadan önce <html>'e tema sınıflarını yazar. */
+const PUBLIC_THEME_INIT_SCRIPT = `try{if(!location.pathname.startsWith('/admin')){(function(){function a(){var t=localStorage.getItem('fixral-public-theme');var d=document.documentElement;var dark=t==='dark'||(t!=='light'&&t!=='dark'&&window.matchMedia('(prefers-color-scheme: dark)').matches);d.classList.remove('theme-light','theme-dark','public-theme','public-dark');if(dark){d.classList.add('theme-dark','public-dark');d.style.colorScheme='dark'}else{d.classList.add('theme-light','public-theme');d.style.colorScheme='light'}}a()})()}}catch(e){}`
+
+/* Admin tema blocking init */
+const ADMIN_THEME_INIT_SCRIPT = `try{if(location.pathname.startsWith('/admin')){(function(){function a(){var d=document.documentElement,c=d.classList,t=localStorage.getItem('fixral-admin-theme');c.remove('light','dark');if(!t||t==='system'){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}c.add(t);d.style.colorScheme=t}a()})()}}catch(e){}`
 
 export async function generateMetadata(): Promise<Metadata> {
   try {
@@ -272,7 +263,7 @@ export default async function RootLayout({
           </>
         )}
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} ${barlow.variable} font-sans min-h-screen bg-page-bg flex flex-col text-foreground antialiased scroll-smooth`}>
+      <body className={`${archivo.variable} ${jetbrainsMono.variable} font-sans min-h-screen bg-page-bg flex flex-col text-foreground antialiased scroll-smooth`}>
         {gtmId && (
           <noscript>
             <iframe

@@ -8,7 +8,7 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-v4-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
 [![shadcn/ui](https://img.shields.io/badge/shadcn/ui-Radix-000?style=for-the-badge)](https://ui.shadcn.com/)
 [![Vercel](https://img.shields.io/badge/Vercel-Deploy-black?style=for-the-badge&logo=vercel)](https://vercel.com/)
-[![Sürüm](https://img.shields.io/badge/Sürüm-5.1.3-blue?style=for-the-badge)]()
+[![Sürüm](https://img.shields.io/badge/Sürüm-6.0.0-blue?style=for-the-badge)]()
 [![Lisans](https://img.shields.io/badge/Lisans-Özel-red?style=for-the-badge)]()
 
 **Fixral CMS**, Next.js 16 (App Router, Turbopack), React 19.2, Prisma ORM ve PostgreSQL üzerine inşa edilmiş, üretime hazır, tam kapsamlı bir İçerik Yönetim Sistemidir.
@@ -908,6 +908,15 @@ npm run test:coverage
 ---
 
 ## Değişiklik Günlüğü
+
+### v6.0.0 — Graphite + Lime Public Redesign
+
+- Cold Graphite + Acid Lime token sistemi (Archivo + JetBrains Mono)
+- Page Theme Lock: light/dark/system senkron, zorla dark subtree kaldırıldı
+- GSAP ScrollTrigger: StickyStack, HorizontalPan, KineticHeadline, ShowcaseStage (R3F)
+- PageShell / Section / PageHeader template katmanı
+- Playwright e2e: smoke, theme lock, a11y (axe), motion, layout-rules, visual regression
+- `npm run design:lint` + CI entegrasyonu (jest, contrast, design-lint, e2e)
 
 ### v5.1.3 — Depo Temizliği ve Tema Sistemi Bağımsızlaştırma
 - **Depo Temizliği:** QA ekran görüntüsü artıkları (`.qa-baseline/`, `.qa-after/`, `.qa-admin-tmp/`), kök dizindeki geçici/referans PNG dosyaları (`thingiverse-*.png`, `tmp-services-*.png`) ve `scripts/qa-after-screenshots.mjs` kaldırıldı

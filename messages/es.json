@@ -159,7 +159,7 @@
     "offline": "Sin conexión"
   },
   "hero": {
-    "title": "Fixral — Soluciones y Servicios Digitales",
+    "title": "Fixral - Soluciones y Servicios Digitales",
     "subtitle": "Tecnologías web modernas, desarrollo de software y servicios de transformación digital.",
     "cta": "Descubre nuestros servicios",
     "ctaSecondary": "Contáctanos"
@@ -294,7 +294,7 @@
   },
   "meta": {
     "siteName": "Fixral",
-    "defaultTitle": "Fixral — Soluciones y Servicios Digitales",
+    "defaultTitle": "Fixral - Soluciones y Servicios Digitales",
     "defaultDescription": "Tecnologías web modernas, desarrollo de software y servicios de transformación digital."
   }
 }

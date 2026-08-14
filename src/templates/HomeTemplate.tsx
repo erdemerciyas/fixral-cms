@@ -1,20 +1,10 @@
 'use client'
 
 /**
- * HomeTemplate — anasayfa bileşim şablonu (precision engineering anlatısı).
- * 8 aktif bölüm; TechShowcase3D kaldırıldı (3D viewer hero'ya taşındı),
- * SectionTransition yerine bölüm içi hairline'lar kullanılıyor.
- *
- * Akış sırası:
- * 1. NewHero                     — full-bleed dark hero (BlueprintGrid + 3D öğe)
- * 2. ClientLogos                 — monospace yetkinlik ticker'ı (capabilities strip)
- * 3. ServicesBentoGrid           — numaralı teknik kart grid'i
- * 4. ProcessFlow                 — Tara → Modelle → Doğrula → Üret (MeasureRule)
- * 5. PortfolioHorizontalShowcase — scan-line hover + monospace metadata
- * 6. StatsCounter                — DataStat bandı (µm / mm / + birimleri)
- * 7. NewsEditorialGrid           — editorial haber grid'i
- * 8. FullWidthCTA                — BlueprintGrid'li dark panel, tek turuncu CTA
+ * HomeTemplate — Graphite + Lime showcase composition.
  */
+import { PageShell } from '@/components/layout/PageShell'
+import { Section } from '@/components/layout/Section'
 import { NewHero } from '@/components/home/NewHero'
 import ClientLogos from '@/components/home/ClientLogos'
 import ServicesBentoGrid from '@/components/home/ServicesBentoGrid'
@@ -30,36 +20,30 @@ interface HomeTemplateProps {
 
 export default function HomeTemplate({ lang: _lang }: HomeTemplateProps) {
   return (
-    <>
-      {/* 1. Hero — full-bleed dark panel; fixed header telafisi hero içinde (pt-14) */}
+    <PageShell>
       <NewHero />
 
-      <main className="relative isolate">
-        {/* 2. Capabilities strip — monospace ticker */}
-        <div className="relative border-b border-border bg-secondary">
-          <ClientLogos />
-        </div>
+      <Section variant="marquee" band className="!py-0">
+        <ClientLogos />
+      </Section>
 
-        {/* 3. Services — numaralı teknik kart grid'i */}
+      <Section variant="bento">
         <ServicesBentoGrid />
+      </Section>
 
-        {/* 4. Process — 4 adımlı süreç akışı */}
-        <ProcessFlow />
+      <ProcessFlow />
 
-        {/* 5. Portfolio — scan-line hover'lı showcase */}
-        <PortfolioHorizontalShowcase />
+      <PortfolioHorizontalShowcase />
 
-        {/* 6. Stats — DataStat bandı */}
-        <div className="relative border-y border-border bg-secondary">
-          <StatsCounter />
-        </div>
+      <Section variant="stats" band>
+        <StatsCounter />
+      </Section>
 
-        {/* 7. News — editorial grid */}
+      <Section variant="editorial">
         <NewsEditorialGrid />
+      </Section>
 
-        {/* 8. CTA — full width dark panel */}
-        <FullWidthCTA />
-      </main>
-    </>
+      <FullWidthCTA />
+    </PageShell>
   )
 }

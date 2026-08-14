@@ -17,7 +17,7 @@ import { useAppTranslations } from '@/hooks/useAppTranslations'
 import { SectionHeader } from '@/components/ui/SectionHeader'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { SkeletonGrid } from '@/components/ui/skeletons'
-import { TechLabel, useMotionPresets } from '@/components/ui'
+import { useMotionPresets } from '@/components/ui'
 import { cn } from '@/lib/utils'
 
 interface NewsTranslation {
@@ -116,9 +116,6 @@ export default function NewsEditorialGrid() {
       <div className="absolute inset-x-0 top-0 h-px bg-border" aria-hidden="true" />
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-16 max-w-3xl md:mb-20">
-          <TechLabel index={4} marker="crosshair" as="p" className="mb-5">
-            {t('news.eyebrow')}
-          </TechLabel>
           <h2 className="section-title">{t('news.title')}</h2>
         </div>
 
@@ -147,7 +144,7 @@ export default function NewsEditorialGrid() {
                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                       />
                     ) : (
-                      <div className="blueprint-grid absolute inset-0 bg-secondary" aria-hidden="true" />
+                      <div className="absolute inset-0 bg-secondary" aria-hidden="true" />
                     )}
                   </div>
 

@@ -9,20 +9,15 @@
 @plugin '@tailwindcss/typography';
 @plugin '@tailwindcss/forms';
 
-/* Tek dark mekanizması: admin `.dark` (AdminThemeProvider, fixral-admin-theme) ve
-   public `.public-dark` (fixral-public-theme) aynı `dark:` utility'lerini sürer.
-   Böylece public bileşenlerde paralel token override'larına gerek kalmaz. */
-@custom-variant dark (&:where(.dark, .dark *, .public-dark, .public-dark *));
+/* Tek dark mekanizması: admin `.dark` ve public `.theme-dark` aynı `dark:` utility'lerini sürer. */
+@custom-variant dark (&:where(.dark, .dark *, .theme-dark, .theme-dark *, .public-dark, .public-dark *));
 
 /* ── @theme — statik tasarım token'ları (temadan bağımsız) ── */
 @theme {
-  /* Tipografi: Barlow UI/display; Geist Mono birinci sınıf teknik aksan fontu
-     (ölçümler, etiketler, statlar, eyebrow'lar, nav meta). */
-  --font-sans:
-    var(--font-barlow), var(--font-geist-sans), system-ui, sans-serif;
-  --font-display:
-    var(--font-barlow), var(--font-geist-sans), system-ui, sans-serif;
-  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
+  /* Graphite + Lime: Archivo display/UI, JetBrains Mono technical */
+  --font-sans: var(--font-archivo), system-ui, sans-serif;
+  --font-display: var(--font-archivo), system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, monospace;
 }
 
 /* ── @theme inline — scope başına swap olan semantik token'lar.
@@ -220,19 +215,6 @@
   box-shadow: inset 0 2px 4px hsl(var(--shadow-color) / 0.04);
 }
 
-@utility hex-grid {
-  /* Industrial Textures — taste-skill: Subtle Background Patterns */
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='49' viewBox='0 0 28 49'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23FA6831' fill-opacity='0.05'%3E%3Cpath d='M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5zM3 17.9v12.7l10.99 6.34 11-6.35V17.9l-11-6.34L3 17.9zM0 15l12.98-7.5V0h-2v6.35L0 12.69v2.3zm0 18.5L12.98 41v8h-2v-6.85L0 35.81v-2.3zM15 0v7.5L27.99 15H28v-2.31h-.01L17 6.35V0h-2zm0 49v-8l12.99-7.5H28v2.31h-.01L17 42.15V49h-2z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-  opacity: 0.4;
-}
-
-@utility blueprint-grid {
-  background-image:
-    linear-gradient(hsl(var(--primary) / 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, hsl(var(--primary) / 0.04) 1px, transparent 1px);
-  background-size: 40px 40px;
-}
-
 @utility grain {
   position: relative;
 
@@ -369,20 +351,6 @@
   color: hsl(var(--muted-foreground));
 }
 
-@utility text-gradient {
-  @apply bg-linear-to-r from-brand-primary-800 to-brand-primary-600 bg-clip-text text-transparent;
-  line-height: 1.2;
-  padding: 0.1em 0;
-  text-rendering: optimizeLegibility;
-}
-
-@utility text-gradient-hero {
-  @apply bg-linear-to-r from-white via-zinc-100 to-zinc-300 bg-clip-text text-transparent;
-  line-height: 1.1;
-  padding: 0.1em 0;
-  text-rendering: optimizeLegibility;
-}
-
 @utility container-boxed {
   /* Containers — Boxed layout standardı (Printables paradigması).
      TEK kaynak: 1280px kutu; tüm container-* sınıfları aynı ölçüye hizalı. */
@@ -410,6 +378,10 @@
   @apply py-24 md:py-32 lg:py-40;
 }
 
+@utility section-lg {
+  @apply py-32 md:py-40;
+}
+
 @utility section-sm {
   @apply py-16 md:py-24 lg:py-28;
 }
@@ -433,59 +405,7 @@
 }
 
 @utility bg-gradient-primary {
-  /* Backgrounds -- koyu turuncu gradyan (CTA bantları) */
-  background: linear-gradient(135deg, #1e0c05 0%, #7a3011 50%, #2a1108 100%);
-}
-
-@utility bg-gradient-subtle {
-  @apply bg-linear-to-b from-zinc-50/80 via-white to-zinc-50/50 dark:from-zinc-900 dark:via-zinc-900 dark:to-zinc-900;
-}
-
-@utility bg-mesh {
-  /* Mesh gradient background for premium sections — turuncu tint */
-  background:
-    radial-gradient(
-      ellipse at 20% 50%,
-      rgba(250, 104, 49, 0.07) 0%,
-      transparent 50%
-    ),
-    radial-gradient(
-      ellipse at 80% 20%,
-      rgba(194, 78, 30, 0.05) 0%,
-      transparent 50%
-    ),
-    radial-gradient(
-      ellipse at 40% 80%,
-      rgba(250, 104, 49, 0.04) 0%,
-      transparent 50%
-    ),
-    #ffffff;
-}
-
-@utility bg-mesh-dark {
-  background:
-    radial-gradient(
-      ellipse at 20% 50%,
-      rgba(250, 104, 49, 0.15) 0%,
-      transparent 50%
-    ),
-    radial-gradient(
-      ellipse at 80% 20%,
-      rgba(122, 48, 17, 0.12) 0%,
-      transparent 50%
-    ),
-    radial-gradient(
-      ellipse at 40% 80%,
-      rgba(122, 48, 17, 0.08) 0%,
-      transparent 50%
-    ),
-    #1c1e21;
-}
-
-@utility eyebrow-tag {
-  /* Eyebrow tag -- taste-skill: Spatial Rhythm */
-  @apply inline-flex items-center rounded-full px-3 py-1 text-[11px] uppercase font-medium border border-primary/10 text-primary bg-primary/5;
-  letter-spacing: 0.15em;
+  background: linear-gradient(135deg, #0e1117 0%, #1a2030 50%, #0e1117 100%);
 }
 
 @utility section-heading {
@@ -636,36 +556,31 @@
  */
 
   :root {
-    /* Static brand theme colors — Printables mantığı: 10 kademeli ölçek, ana renk #FA6831 */
-    --theme-primary: #fa6831;
-    --theme-accent: #fa6831;
-    --theme-background: #ffffff;
+    /* Static brand theme — Cold Graphite + Acid Lime */
+    --theme-primary: #c4ff00;
+    --theme-accent: #c4ff00;
+    --theme-background: #f4f6f8;
 
-    /* Brand Color System — Printables turuncu ölçeği (hue 16–18 ailesi) */
-    --brand-primary-50: #fff0eb; /* faint — en açık tint */
-    --brand-primary-100: #ffe1d6; /* subtle — seçili chip bg, hover dolgu */
-    --brand-primary-200: #fec7b3;
-    --brand-primary-300: #fda686; /* muted — aktif açık bg */
-    --brand-primary-400: #fc895f;
-    --brand-primary-500: #fa6831; /* MAIN — buton, marka (Printables turuncusu) */
-    --brand-primary-600: #eb6f40; /* strong — hover (Printables hover turuncusu) */
-    --brand-primary-700: #c24e1e; /* bold — active, link metni (beyaz zeminde 4.77:1 AA) */
-    --brand-primary-800: #9e3f17; /* subtle tint üzeri metin (AA) */
-    --brand-primary-900: #7a3011;
+    /* Brand Color System — acid lime scale */
+    --brand-primary-50: #f4ffd6;
+    --brand-primary-100: #e8ffb3;
+    --brand-primary-200: #d4ff66;
+    --brand-primary-300: #c4ff00;
+    --brand-primary-400: #b8f000;
+    --brand-primary-500: #c4ff00;
+    --brand-primary-600: #a8d900;
+    --brand-primary-700: #7a9e00;
+    --brand-primary-800: #5c7700;
+    --brand-primary-900: #3d4f00;
     --brand-primary: var(--brand-primary-500);
 
-    /* HSL kanal tokenları — alpha ile kullanım için: hsl(var(--brand-primary-500-hsl) / 0.35) */
-    --brand-primary-400-hsl: 16 96% 68%; /* #FC895F */
-    --brand-primary-500-hsl: 16 95% 59%; /* #FA6831 */
+    --brand-primary-400-hsl: 72 100% 50%;
+    --brand-primary-500-hsl: 72 100% 50%;
 
     /* Font variables */
-    --font-geist-sans:
-      'Geist', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
-      sans-serif;
-    --font-geist-mono: 'Geist Mono', ui-monospace, SFMono-Regular, monospace;
-    /* Thingiverse mantığı: tek kurumsal sans (Barlow) tüm arayüzde */
-    --font-barlow: 'Barlow', var(--font-geist-sans);
-    --font-inter: var(--font-barlow);
+    --font-archivo: 'Archivo', system-ui, sans-serif;
+    --font-jetbrains-mono: 'JetBrains Mono', ui-monospace, monospace;
+    --font-inter: var(--font-archivo);
 
     /* Premium Motion */
     --ease-premium: cubic-bezier(0.32, 0.72, 0, 1);
@@ -807,96 +722,76 @@
     --ease-out: cubic-bezier(0, 0, 0.2, 1);
 
     /* Page background */
-    --page-bg: #f8f6f4;
+    --page-bg: #f4f6f8;
   }
 
-  /* ── Public Light Theme — Precision Engineering: sıcak kağıt beyazları ──
- * Sayfa zemini sıcak kağıt (#F9F8F6), kart beyaz, hairline warm-gray border.
- * Derinlik border + zemin farkından gelir; gölgeler near-flat.
- * Radius: teknik skala — kontroller 2px, kartlar 4px, overlay'ler 8px.
- */
-  .public-theme {
-    /* shadcn/ui tokens — precision light paleti */
-    --background: 40 20% 97%; /* #F9F8F6 — sıcak kağıt sayfa zemini */
-    --foreground: 24 10% 12%; /* #221F1C — sıcak ink (15.4:1) */
-    --card: 0 0% 100%; /* #FFFFFF — kart katmanı */
-    --card-foreground: 24 10% 12%;
+  /* ── Public Light Theme — Cold Graphite + Acid Lime ── */
+  .public-theme,
+  .theme-light {
+    --background: 220 14% 96%;
+    --foreground: 220 20% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 220 20% 10%;
     --popover: 0 0% 100%;
-    --popover-foreground: 24 10% 12%;
-    --primary: 16 95% 59%; /* #FA6831 — MAIN (dolgu rengi) */
-    --primary-foreground: 0 0% 11%; /* #1C1C1C — turuncu üzeri koyu ink (5.75:1) */
-    --secondary: 40 14% 93%; /* #EFEDE9 — bölüm bandı */
-    --secondary-foreground: 24 10% 12%;
-    --muted: 40 14% 94%; /* #F1EFEB */
-    --muted-foreground: 24 6% 40%; /* #6C645F — ikincil metin (5.0:1+) */
-    --accent: 16 100% 95%; /* #FFECE6 — brand subtle, hover/seçili dolgu */
-    --accent-foreground: 18 75% 35%; /* #9E3F17 — subtle üzeri metin + link ink */
-    --destructive: 0 64% 48%; /* #CB2C2C */
+    --popover-foreground: 220 20% 10%;
+    --primary: 72 100% 50%;
+    --primary-foreground: 220 20% 8%;
+    --secondary: 220 12% 92%;
+    --secondary-foreground: 220 20% 10%;
+    --muted: 220 10% 93%;
+    --muted-foreground: 220 8% 42%;
+    --accent: 72 60% 92%;
+    --accent-foreground: 72 80% 22%;
+    --destructive: 0 64% 48%;
     --destructive-foreground: 0 0% 100%;
-    --success: 88 90% 23%; /* #3E6F06 */
+    --success: 142 65% 28%;
     --success-foreground: 0 0% 100%;
-    --warning: 40 90% 30%; /* #916308 */
+    --warning: 40 90% 28%;
     --warning-foreground: 0 0% 100%;
-    --info: 217 80% 48%; /* #1863DC */
+    --info: 217 80% 42%;
     --info-foreground: 0 0% 100%;
-    --border: 40 12% 87%; /* #E2DFD9 — hairline */
-    --input: 40 12% 87%;
-    --ring: 16 92% 52%; /* #F55014 — focus ring (≥ 3.0) */
-    --chart-1: 16 95% 59%;
-    --chart-2: 191 79% 34%;
-    --chart-3: 18 73% 44%;
-    --chart-4: 40 90% 40%;
-    --chart-5: 16 96% 68%;
+    --border: 220 10% 86%;
+    --input: 220 10% 86%;
+    --ring: 72 80% 32%;
+    --chart-1: 72 100% 50%;
+    --chart-2: 220 20% 40%;
+    --chart-3: 72 80% 35%;
+    --chart-4: 220 12% 60%;
+    --chart-5: 72 90% 60%;
 
-    /* Shape dili — teknik skala: kontrol 2px, kart 4px, overlay 8px */
-    --radius: 0.5rem; /* shadcn rounded-lg → 8px (overlay ölçeği) */
-    --radius-button: 2px;
-    --radius-input: 2px;
-    --radius-card: 4px;
-    --radius-overlay: 8px;
+    --radius: 2px;
+    --radius-button: 0;
+    --radius-input: 0;
+    --radius-card: 0;
+    --radius-overlay: 2px;
 
-    /* Yüzey hiyerarşisi: beyaz kart > sıcak kağıt bölüm > batık */
     --surface-1: #ffffff;
-    --surface-2: #f4f2ee;
-    --surface-3: #edeae5;
-    --line: #e2dfd9;
-    --line-strong: #d5d1c9;
-    --line-subtle: #edeae5;
+    --surface-2: #eef1f5;
+    --surface-3: #e4e8ee;
+    --line: #d8dde5;
+    --line-strong: #c4cad4;
+    --line-subtle: #eef1f5;
 
-    /* Durum renkleri — soft badge zemini, strong vurgu (AA) */
-    --success-soft: #edf7e1;
-    --success-strong: #2e5304;
-    --warning-soft: #fbf2db;
+    --success-soft: #e8f5e9;
+    --success-strong: #1b5e20;
+    --warning-soft: #fff8e1;
     --warning-strong: #6d4a06;
     --danger-soft: #fcebeb;
     --danger-strong: #9d2222;
-    --info-soft: #e9f1fd;
+    --info-soft: #e3f2fd;
     --info-strong: #124aa6;
 
-    /* Near-flat shadows — dinlenimde yok, hover'da tek yumuşak lift */
-    --shadow-color: 30 10% 8%;
+    --shadow-color: 220 20% 8%;
     --shadow-sm: 0 1px 2px hsl(var(--shadow-color) / 0.05);
-    --shadow-md:
-      0 1px 3px hsl(var(--shadow-color) / 0.08),
-      0 0 1px hsl(var(--shadow-color) / 0.05);
+    --shadow-md: 0 1px 3px hsl(var(--shadow-color) / 0.08);
     --shadow-lg: 0 2px 20px hsl(var(--shadow-color) / 0.12);
-    --shadow-xl:
-      0 8px 32px hsl(var(--shadow-color) / 0.14),
-      0 2px 8px hsl(var(--shadow-color) / 0.06);
+    --shadow-xl: 0 8px 32px hsl(var(--shadow-color) / 0.14);
 
-    /* Gradient overrides — sıcak kağıt nötrleri */
-    --gradient-surface: linear-gradient(180deg, #ffffff 0%, #f4f2ee 100%);
-    --gradient-hero: linear-gradient(
-      135deg,
-      #f9f8f6 0%,
-      #f4f2ee 60%,
-      #edeae5 100%
-    );
+    --gradient-surface: linear-gradient(180deg, #ffffff 0%, #eef1f5 100%);
+    --gradient-hero: linear-gradient(135deg, #f4f6f8 0%, #eef1f5 60%, #e4e8ee 100%);
 
     color-scheme: light;
-
-    /* Page background — sıcak kağıt */
-    --page-bg: #f9f8f6;
+    --page-bg: #f4f6f8;
   }
 
   /* Dark Mode — katmanlı yüzey hiyerarşisi: background < card < popover */
@@ -973,62 +868,55 @@
       0 32px 64px hsl(var(--shadow-color) / 0.3);
   }
 
-  /* ── Public Dark Theme — Precision Engineering: soğuk grafit ──
- * .public-theme ile birlikte kullanılır (html'de iki class); iki sınıflı selector
- * specificity'yi 0-2-0'a çıkarıp .public-theme (0-1-0) üzerinde kesin üstünlük sağlar.
- * Dark-first nötrler: sayfa #0B0D10, yüzey #14171B, hairline #262B31.
- */
-  .public-theme.public-dark {
-    /* shadcn/ui tokens — precision dark paleti */
-    --background: 216 19% 5%; /* #0A0C0F ≈ #0B0D10 — sayfa zemini */
-    --foreground: 210 14% 91%; /* #E5E9EC — birincil metin (15.8:1) */
-    --card: 214 15% 9%; /* #14171B — kart/yüzey katmanı */
-    --card-foreground: 210 14% 91%;
-    --popover: 213 14% 12%; /* #1A1E23 — en üst katman */
-    --popover-foreground: 210 14% 91%;
-    --primary: 16 95% 59%; /* #FA6831 — MAIN (dolgu rengi) */
-    --primary-foreground: 0 0% 11%; /* #1C1C1C — turuncu üzeri koyu ink (5.75:1) */
-    --secondary: 214 16% 7%; /* #0F1215 — bölüm bandı */
-    --secondary-foreground: 210 14% 91%;
-    --muted: 214 18% 8%; /* #101317 — batık bölüm zemini */
-    --muted-foreground: 213 10% 65%; /* #9BA3AB — ikincil metin (7.3:1) */
-    --accent: 16 45% 18%; /* #432419 — brand subtle, hover/seçili dolgu */
-    --accent-foreground: 16 96% 68%; /* #FC895F — subtle üzeri metin + link ink */
-    --destructive: 0 80% 68%; /* #EF6C6C */
-    --destructive-foreground: 216 19% 5%;
-    --success: 90 88% 36%; /* #5CAD0B */
-    --success-foreground: 216 19% 5%;
-    --warning: 38 92% 55%; /* #F6A823 */
-    --warning-foreground: 216 19% 5%;
-    --info: 191 79% 58%; /* #3FC9E9 */
-    --info-foreground: 216 19% 5%;
-    --border: 213 13% 17%; /* #262B31 — hairline */
-    --input: 213 13% 17%;
-    --ring: 16 95% 59%; /* #FA6831 — focus ring */
-    --chart-1: 16 95% 59%;
-    --chart-2: 191 79% 58%;
-    --chart-3: 16 96% 68%;
-    --chart-4: 38 92% 55%;
-    --chart-5: 90 88% 36%;
+  /* ── Public Dark Theme — Graphite + Acid Lime ── */
+  .public-theme.public-dark,
+  .theme-dark {
+    --background: 220 18% 6%;
+    --foreground: 220 10% 92%;
+    --card: 220 16% 9%;
+    --card-foreground: 220 10% 92%;
+    --popover: 220 14% 11%;
+    --popover-foreground: 220 10% 92%;
+    --primary: 72 100% 50%;
+    --primary-foreground: 220 20% 8%;
+    --secondary: 220 14% 12%;
+    --secondary-foreground: 220 10% 92%;
+    --muted: 220 12% 14%;
+    --muted-foreground: 220 8% 62%;
+    --accent: 72 40% 14%;
+    --accent-foreground: 72 90% 65%;
+    --destructive: 0 80% 68%;
+    --destructive-foreground: 220 18% 6%;
+    --success: 142 69% 58%;
+    --success-foreground: 220 18% 6%;
+    --warning: 43 96% 56%;
+    --warning-foreground: 220 18% 6%;
+    --info: 217 80% 60%;
+    --info-foreground: 220 18% 6%;
+    --border: 220 12% 18%;
+    --input: 220 12% 18%;
+    --ring: 72 100% 50%;
+    --chart-1: 72 100% 50%;
+    --chart-2: 220 20% 50%;
+    --chart-3: 72 80% 40%;
+    --chart-4: 220 12% 55%;
+    --chart-5: 72 90% 60%;
 
-    /* Shape dili — light ile aynı teknik skala */
-    --radius: 0.5rem;
-    --radius-button: 2px;
-    --radius-input: 2px;
-    --radius-card: 4px;
-    --radius-overlay: 8px;
+    --radius: 2px;
+    --radius-button: 0;
+    --radius-input: 0;
+    --radius-card: 0;
+    --radius-overlay: 2px;
 
-    /* Yüzey hiyerarşisi: #0B0D10 sayfa > #101317 batık > #14171B yüzey > #191D22 yükseltilmiş */
-    --surface-1: #14171b;
-    --surface-2: #101317;
-    --surface-3: #191d22;
-    --line: #262b31;
-    --line-strong: #333a42;
-    --line-subtle: #1b2026;
+    --surface-1: #161a22;
+    --surface-2: #12161d;
+    --surface-3: #1c2129;
+    --line: #2a3039;
+    --line-strong: #363d48;
+    --line-subtle: #1c2129;
 
-    /* Durum renkleri — soft derin tint zemin, strong vurgu (AA) */
-    --success-soft: #16250a;
-    --success-strong: #8fd83f;
+    --success-soft: #0d2818;
+    --success-strong: #86efac;
     --warning-soft: #2a1d06;
     --warning-strong: #fac55f;
     --danger-soft: #2e1414;
@@ -1036,30 +924,17 @@
     --info-soft: #0c2830;
     --info-strong: #7fdcf0;
 
-    /* Near-flat shadows — koyu zeminde derinlik başlıca border'dan gelir */
-    --shadow-color: 216 15% 2%;
+    --shadow-color: 220 20% 2%;
     --shadow-sm: 0 1px 2px hsl(var(--shadow-color) / 0.3);
-    --shadow-md:
-      0 1px 3px hsl(var(--shadow-color) / 0.4),
-      0 0 1px hsl(var(--shadow-color) / 0.3);
+    --shadow-md: 0 1px 3px hsl(var(--shadow-color) / 0.4);
     --shadow-lg: 0 2px 20px hsl(var(--shadow-color) / 0.5);
-    --shadow-xl:
-      0 8px 32px hsl(var(--shadow-color) / 0.55),
-      0 2px 8px hsl(var(--shadow-color) / 0.35);
+    --shadow-xl: 0 8px 32px hsl(var(--shadow-color) / 0.55);
 
-    /* Gradient overrides — grafit nötrleri */
-    --gradient-surface: linear-gradient(180deg, #14171b 0%, #0b0d10 100%);
-    --gradient-hero: linear-gradient(
-      135deg,
-      #14171b 0%,
-      #0b0d10 60%,
-      #101317 100%
-    );
+    --gradient-surface: linear-gradient(180deg, #161a22 0%, #0e1117 100%);
+    --gradient-hero: linear-gradient(135deg, #161a22 0%, #0e1117 60%, #12161d 100%);
 
     color-scheme: dark;
-
-    /* Page background — grafit */
-    --page-bg: #0b0d10;
+    --page-bg: #0e1117;
   }
 
   /* ── Admin: Shimmer Skeleton ── */
@@ -1114,7 +989,7 @@
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    font-family: var(--font-barlow), var(--font-geist-sans);
+    font-family: var(--font-archivo), system-ui, sans-serif;
     line-height: 1.6;
     font-weight: 400;
     font-display: swap;
@@ -1145,7 +1020,7 @@
   h4,
   h5,
   h6 {
-    font-family: var(--font-barlow), var(--font-geist-sans);
+    font-family: var(--font-archivo), system-ui, sans-serif;
     color: inherit;
     font-weight: 600;
     line-height: 1.15;
@@ -1447,7 +1322,7 @@ select::-webkit-scrollbar-thumb:hover {
   h4,
   h5,
   h6 {
-    font-family: var(--font-barlow), var(--font-geist-sans);
+    font-family: var(--font-archivo), system-ui, sans-serif;
     line-height: 1.15;
     letter-spacing: -0.02em;
     padding: 0.1em 0;

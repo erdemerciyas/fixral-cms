@@ -84,7 +84,7 @@ export default function LoginPage() {
                         </div>
 
                         <div className="flex items-center justify-end">
-                            <Link href={`/${lang}/forgot-password`} className="text-sm text-accent-foreground hover:underline">
+                            <Link href={`/${lang}/contact`} className="text-sm text-accent-foreground hover:underline">
                                 Şifremi Unuttum
                             </Link>
                         </div>

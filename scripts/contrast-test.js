@@ -109,9 +109,9 @@ function composite(fg, bg, alpha) {
 const root = parseTokens(extractBlock(css, ':root'));
 const adminLight = root;
 const adminDark = { ...root, ...parseTokens(extractBlock(css, '.dark')) };
-const publicTheme = parseTokens(extractBlock(css, '.public-theme'));
+const publicTheme = parseTokens(extractBlock(css, '.theme-light'));
 const publicLight = { ...root, ...publicTheme };
-const publicDark = { ...publicLight, ...parseTokens(extractBlock(css, '.public-theme.public-dark')) };
+const publicDark = { ...publicLight, ...parseTokens(extractBlock(css, '.theme-dark')) };
 
 // HSL üçlüsü token'ı → rgb
 function rgb(tokens, name) {
@@ -267,8 +267,8 @@ if (wiringProblems.length === 0) {
 const suites = [
   ['ADMIN LIGHT (:root)', adminLight, buildAdminCases],
   ['ADMIN DARK (.dark)', adminDark, buildAdminCases],
-  ['PUBLIC LIGHT (.public-theme)', publicLight, buildPublicCases],
-  ['PUBLIC DARK (.public-theme.public-dark)', publicDark, buildPublicCases],
+  ['PUBLIC LIGHT (.theme-light)', publicLight, buildPublicCases],
+  ['PUBLIC DARK (.theme-dark)', publicDark, buildPublicCases],
 ];
 
 for (const [mode, tokens, build] of suites) {

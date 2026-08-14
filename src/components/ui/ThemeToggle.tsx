@@ -1,7 +1,7 @@
 'use client'
 
 import { useSyncExternalStore } from 'react'
-import { Moon, Sun } from 'lucide-react'
+import { Monitor, Moon, Sun } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import {
   DEFAULT_PUBLIC_THEME,
@@ -12,11 +12,8 @@ import {
   type PublicTheme,
 } from '@/lib/public-theme'
 
-const TOGGLE_CLASS =
-  'inline-flex h-9 w-9 items-center justify-center rounded-xs border border-border bg-transparent text-muted-foreground transition-colors duration-150 hover:bg-accent hover:text-accent-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background'
-
-// Mount bilgisini efekt olmadan türet (server'da false, client'ta true)
-const subscribeNoop = () => () => {}
+const BASE_CLASS =
+  'inline-flex h-9 items-center gap-0.5 rounded-xs border border-border bg-transparent p-0.5'
 
 function subscribePublicTheme(callback: () => void) {
   const handleStorage = (event: StorageEvent) => {
@@ -31,41 +28,51 @@ function subscribePublicTheme(callback: () => void) {
   }
 }
 
+const subscribeNoop = () => () => {}
+
+const MODES: { value: PublicTheme; icon: typeof Sun; label: string }[] = [
+  { value: 'light', icon: Sun, label: 'Açık tema' },
+  { value: 'dark', icon: Moon, label: 'Koyu tema' },
+  { value: 'system', icon: Monitor, label: 'Sistem teması' },
+]
+
 interface ThemeToggleProps {
   className?: string
 }
 
-/**
- * Public site light/dark anahtarı. Tercihi localStorage'a yazar, <html>
- * sınıflarını anında günceller ve `fixral-public-theme-change` event'i ile
- * ThemeScope'u haberdar eder. Hydration uyuşmazlığını önlemek için mount
- * olana dek aynı boyutta nötr placeholder render eder.
- */
 export function ThemeToggle({ className }: ThemeToggleProps) {
   const mounted = useSyncExternalStore(subscribeNoop, () => true, () => false)
   const theme = useSyncExternalStore(
     subscribePublicTheme,
     readPublicTheme,
-    () => DEFAULT_PUBLIC_THEME as PublicTheme
+    () => DEFAULT_PUBLIC_THEME
   )
 
   if (!mounted) {
-    return <div className={cn(TOGGLE_CLASS, className)} aria-hidden="true" />
+    return <div className={cn(BASE_CLASS, 'w-[108px]', className)} aria-hidden="true" />
   }
 
-  const isDark = theme === 'dark'
-
   return (
-    <button
-      type="button"
-      onClick={() => setPublicTheme(isDark ? 'light' : 'dark')}
-      className={cn(TOGGLE_CLASS, className)}
-      aria-label={isDark ? 'Açık temaya geç' : 'Koyu temaya geç'}
-      aria-pressed={isDark}
-      title={isDark ? 'Açık temaya geç' : 'Koyu temaya geç'}
-    >
-      {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-    </button>
+    <div className={cn(BASE_CLASS, className)} role="group" aria-label="Tema seçimi">
+      {MODES.map(({ value, icon: Icon, label }) => (
+        <button
+          key={value}
+          type="button"
+          onClick={() => setPublicTheme(value)}
+          className={cn(
+            'inline-flex h-7 w-8 items-center justify-center transition-colors',
+            theme === value
+              ? 'bg-primary text-primary-foreground'
+              : 'text-muted-foreground hover:text-foreground'
+          )}
+          aria-label={label}
+          aria-pressed={theme === value}
+          title={label}
+        >
+          <Icon className="h-3.5 w-3.5" />
+        </button>
+      ))}
+    </div>
   )
 }
 

@@ -1,8 +1,12 @@
 import type { Metadata } from 'next';
 import { SITE_URL, generateAlternates, generateOgImages } from '@/lib/seo-utils';
-import ContactClient from './ContactClient';
+import ContactTemplate from '@/templates/ContactTemplate';
 
 export const revalidate = 3600;
+
+export default function ContactPage() {
+  return <ContactTemplate />;
+}
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const { lang } = await params;
@@ -20,8 +24,4 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
       images: generateOgImages(undefined, 'İletişim | Fixral'),
     },
   };
-}
-
-export default function ContactPage() {
-  return <ContactClient />;
 }

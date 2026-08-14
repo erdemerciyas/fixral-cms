@@ -8,6 +8,7 @@ import dynamic from 'next/dynamic';
 import { useAppTranslations } from '@/hooks/useAppTranslations';
 import { Mail as Envelope, Phone, MapPin, ArrowUp } from 'lucide-react';
 import { m, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { useScrollThreshold } from '@/hooks/use-motion';
 import { MeasureRule } from '@/components/ui';
 import {
   LinkedinLogo,
@@ -86,18 +87,15 @@ const ConditionalFooter: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [site, setSite] = useState<SiteSettingsMinimal | null>(null);
   const [showBackToTop, setShowBackToTop] = useState(false);
+  const scrollPastThreshold = useScrollThreshold(300);
   const { t, locale } = useAppTranslations('footer');
   const prefersReducedMotion = useReducedMotion();
 
   const isAdminPage = pathname?.startsWith('/admin');
 
   useEffect(() => {
-    const handleScroll = () => {
-      setShowBackToTop(window.scrollY > 300);
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+    setShowBackToTop(scrollPastThreshold);
+  }, [scrollPastThreshold]);
 
   useEffect(() => {
     const fetchFooterSettings = async () => {
@@ -276,7 +274,7 @@ const ConditionalFooter: React.FC = () => {
     <>
       {/* Always-dark footer: public-theme public-dark scope'u ile her iki temada grafit zemin */}
       <footer
-        className="public-theme public-dark relative overflow-hidden bg-background text-foreground border-t border-border"
+        className="relative overflow-hidden bg-background text-foreground border-t border-border"
         role="contentinfo"
       >
         {/* Hairline üst bandı — precision ruler */}

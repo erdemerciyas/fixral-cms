@@ -38,6 +38,15 @@ jobs:
       - name: TypeScript check
         run: npm run type-check
 
+      - name: Unit tests
+        run: npm test
+
+      - name: Contrast check
+        run: npm run contrast
+
+      - name: Design lint
+        run: npm run design:lint
+
       - name: Security audit
         run: npm audit --audit-level=moderate
         continue-on-error: true
@@ -75,6 +84,45 @@ jobs:
           name: build-files
           path: .next/
           retention-days: 1
+
+  e2e:
+    name: E2E Tests
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-files
+          path: .next/
+
+      - name: Start server and run E2E
+        run: |
+          npm run start &
+          npx wait-on http://localhost:3000 -t 60000
+          npm run test:e2e -- --project=chromium-desktop
+        env:
+          PLAYWRIGHT_BASE_URL: http://localhost:3000
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET || env.NEXTAUTH_SECRET }}
+          NEXTAUTH_URL: http://localhost:3000
+          DATABASE_URL: ${{ secrets.DATABASE_URL || 'postgresql://ci:ci@localhost:5432/fixral-cms-ci' }}
+          SKIP_ENV_VALIDATION: "true"
 
   deploy:
     name: Deploy to Vercel

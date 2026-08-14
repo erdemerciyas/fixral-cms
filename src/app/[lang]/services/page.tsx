@@ -1,8 +1,7 @@
 import type { Metadata } from 'next';
 import Service from '@/models/Service';
 import PageSetting from '@/models/PageSetting';
-import ServicesPageClient from '@/components/services/ServicesPageClient';
-import PageHero from '@/components/common/PageHero';
+import ServicesTemplate from '@/templates/ServicesTemplate';
 import BreadcrumbsJsonLd from '@/components/seo/BreadcrumbsJsonLd';
 import ServicesListJsonLd from '@/components/seo/ServicesListJsonLd';
 
@@ -54,17 +53,6 @@ export default async function ServicesPage() {
 
   return (
     <div className="min-h-dvh bg-background">
-      <PageHero
-        title={hero.title}
-        description={hero.description}
-        badge="Hizmetler"
-        index={1}
-        buttonText="Hizmetleri İncele"
-        buttonLink="#services"
-        showButton={true}
-        showBreadcrumbs={true}
-      />
-
       <BreadcrumbsJsonLd
         items={[
           { name: 'Anasayfa', item: '/' },
@@ -73,7 +61,7 @@ export default async function ServicesPage() {
       />
 
       <ServicesListJsonLd
-        items={services.map((s: any) => {
+        items={services.map((s: { title: string; description?: string; image?: string }) => {
           const anchor = s.title.toLowerCase().replace(/\s+/g, '-').replace(/&/g, '');
           return {
             name: s.title,
@@ -84,7 +72,7 @@ export default async function ServicesPage() {
         })}
       />
 
-      <ServicesPageClient />
+      <ServicesTemplate title={hero.title} description={hero.description} />
     </div>
   );
 }

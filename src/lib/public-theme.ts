@@ -1,66 +1,47 @@
 /**
- * Public (site) tema yardımcıları — Printables mantığı light/dark.
- *
- * Dark temanın devreye girmesi için <html> üzerinde HER İKİ class birlikte
- * bulunmalıdır: `public-theme public-dark` (globals.css specificity kuralı).
- * Admin tarafı AdminThemeProvider ile yönetilir (storageKey: fixral-admin-theme) ve
- * bu modül admin route'larında yalnızca temizlik yapar.
+ * Public site theme — re-exports unified theme engine with public config.
  */
 
-export type PublicTheme = 'light' | 'dark'
+import {
+  PUBLIC_THEME_CONFIG,
+  applyThemeClasses,
+  clearPublicThemeClasses,
+  readResolvedTheme,
+  readThemePreference,
+  resolveTheme,
+  setThemePreference,
+  type ResolvedTheme,
+  type ThemePreference,
+} from '@/lib/theme/core'
 
-export const PUBLIC_THEME_STORAGE_KEY = 'fixral-public-theme'
-export const PUBLIC_THEME_CHANGE_EVENT = 'fixral-public-theme-change'
-export const DEFAULT_PUBLIC_THEME: PublicTheme = 'light'
+export type PublicTheme = ThemePreference
+export type PublicResolvedTheme = ResolvedTheme
 
-/** localStorage'daki tercihi okur; okunamazsa/geçersizse varsayılana düşer. */
-export function readPublicTheme(): PublicTheme {
-  if (typeof window === 'undefined') return DEFAULT_PUBLIC_THEME
-  try {
-    return window.localStorage.getItem(PUBLIC_THEME_STORAGE_KEY) === 'dark'
-      ? 'dark'
-      : DEFAULT_PUBLIC_THEME
-  } catch {
-    return DEFAULT_PUBLIC_THEME
-  }
+export const PUBLIC_THEME_STORAGE_KEY = PUBLIC_THEME_CONFIG.storageKey
+export const PUBLIC_THEME_CHANGE_EVENT = PUBLIC_THEME_CONFIG.changeEvent
+export const DEFAULT_PUBLIC_THEME: ThemePreference = 'system'
+
+export function readPublicTheme(): ThemePreference {
+  return readThemePreference(PUBLIC_THEME_CONFIG)
 }
 
-/** <html> üzerine public tema sınıflarını ve colorScheme'i yazar. */
-export function applyPublicTheme(theme: PublicTheme): void {
-  if (typeof document === 'undefined') return
-  const root = document.documentElement
-  root.classList.remove('dark')
-  root.classList.add('public-theme')
-  if (theme === 'dark') {
-    root.classList.add('public-dark')
-    root.style.colorScheme = 'dark'
-  } else {
-    root.classList.remove('public-dark')
-    root.style.colorScheme = 'light'
-  }
+export function readPublicResolvedTheme(): ResolvedTheme {
+  return readResolvedTheme(PUBLIC_THEME_CONFIG)
 }
 
-/** Admin'e geçişte public tema izlerini siler. */
+export function applyPublicTheme(preference: ThemePreference): void {
+  applyThemeClasses(resolveTheme(preference), PUBLIC_THEME_CONFIG)
+}
+
 export function clearPublicTheme(): void {
-  if (typeof document === 'undefined') return
-  const root = document.documentElement
-  root.classList.remove('public-theme', 'public-dark')
-  root.style.colorScheme = ''
+  clearPublicThemeClasses()
 }
 
-/** Tercihi kaydeder, DOM'a anında uygular ve dinleyicileri haberdar eder. */
-export function setPublicTheme(theme: PublicTheme): void {
-  if (typeof window === 'undefined') return
-  try {
-    window.localStorage.setItem(PUBLIC_THEME_STORAGE_KEY, theme)
-  } catch {
-    /* private mode / kota — DOM güncellemesi yine de uygulanır */
-  }
-  applyPublicTheme(theme)
-  window.dispatchEvent(new CustomEvent<PublicTheme>(PUBLIC_THEME_CHANGE_EVENT, { detail: theme }))
+export function setPublicTheme(preference: ThemePreference): void {
+  setThemePreference(PUBLIC_THEME_CONFIG, preference)
 }
 
-/** Custom event / storage event detayını güvenli PublicTheme değerine indirger. */
-export function normalizePublicTheme(value: unknown): PublicTheme {
-  return value === 'dark' ? 'dark' : DEFAULT_PUBLIC_THEME
+export function normalizePublicTheme(value: unknown): ThemePreference {
+  if (value === 'light' || value === 'dark' || value === 'system') return value
+  return DEFAULT_PUBLIC_THEME
 }

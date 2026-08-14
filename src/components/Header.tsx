@@ -14,6 +14,7 @@ import ProjectModal from './features/ProjectModal';
 import { MagneticButton } from './ui/MagneticButton';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { locales } from '@/i18n';
+import { useScrollThreshold } from '@/hooks/use-motion';
 import { useAppTranslations } from '@/hooks/useAppTranslations';
 import { m, AnimatePresence } from 'framer-motion';
 
@@ -55,21 +56,13 @@ const Header: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
+  const isScrolled = useScrollThreshold(8);
   const [navLinks, setNavLinks] = useState<Array<{ href: string; label: string; icon: any; isExternal?: boolean }>>([]);
   const [navLoaded, setNavLoaded] = useState(false);
   const [siteSettings, setSiteSettings] = useState<SiteSettings | null>(null);
   const { t: tHeader } = useAppTranslations('header');
 
   const pathname = usePathname() || '';
-
-  // Scroll durumu: ana sayfada hero üzerinde saydam → scroll sonrası token yüzey
-  useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 8);
-    handleScroll();
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -235,8 +228,8 @@ const Header: React.FC = () => {
       <header
         className={`fixed top-0 left-0 right-0 z-[200] transition-colors duration-200 motion-reduce:transition-none ${
           overHero
-            ? 'public-theme public-dark bg-transparent border-b border-transparent'
-            : 'bg-background border-b border-border'
+            ? 'bg-transparent border-b border-transparent'
+            : 'bg-background/95 backdrop-blur-sm border-b border-border'
         }`}
         role="banner"
       >

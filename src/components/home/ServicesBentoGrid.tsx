@@ -20,7 +20,7 @@ import { resolveIconForService } from '@/lib/icons'
 import { SectionHeader } from '@/components/ui/SectionHeader'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { SkeletonGrid } from '@/components/ui/skeletons'
-import { TechLabel, useMotionPresets } from '@/components/ui'
+import { useMotionPresets } from '@/components/ui'
 import HTMLContent from '@/components/HTMLContent'
 import { cn } from '@/lib/utils'
 
@@ -113,9 +113,6 @@ export default function ServicesBentoGrid() {
       <div className="absolute inset-x-0 top-0 h-px bg-border" aria-hidden="true" />
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-16 max-w-3xl md:mb-20">
-          <TechLabel index={1} marker="crosshair" as="p" className="mb-5">
-            {t('services.eyebrow')}
-          </TechLabel>
           <h2 className="section-title">{t('services.title')}</h2>
         </div>
 
@@ -148,7 +145,7 @@ export default function ServicesBentoGrid() {
                         sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
                       />
                     ) : (
-                      <div className="blueprint-grid absolute inset-0 flex items-center justify-center bg-secondary">
+                      <div className="absolute inset-0 flex items-center justify-center bg-secondary">
                         <div className="flex h-16 w-16 items-center justify-center rounded-sm border border-border bg-card">
                           {Icon && (
                             <Icon
@@ -164,9 +161,9 @@ export default function ServicesBentoGrid() {
                   {/* Metin bloğu */}
                   <div className="flex flex-1 flex-col gap-2 border-t border-border p-4">
                     {/* Numaralı teknik etiket */}
-                    <TechLabel index={index + 1} as="p">
-                      {t('services.eyebrow')}
-                    </TechLabel>
+                    <p className="font-mono text-xs text-muted-foreground">
+                      {String(index + 1).padStart(2, '0')}
+                    </p>
 
                     <h3 className="text-sm font-medium leading-snug text-foreground transition-colors duration-200 group-hover:text-primary motion-reduce:transition-none md:text-base">
                       {service.title}

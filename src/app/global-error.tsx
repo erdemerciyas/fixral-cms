@@ -1,53 +1,64 @@
-'use client';
+'use client'
 
 export default function GlobalError({
   reset,
 }: {
-  error: Error & { digest?: string };
-  reset: () => void;
+  error: Error & { digest?: string }
+  reset: () => void
 }) {
   return (
     <html lang="tr">
-      <body>
-        {/* global-error kök layout'u değiştirdiği için CSS token'ları yüklenmez;
-            Precision Dark paletinin sabit hex değerleri kullanılır (public-dark scope). */}
-        <div className="min-h-screen bg-linear-to-br from-[#14171B] via-[#0B0D10] to-[#0B0D10] flex items-center justify-center px-4">
-          <div className="text-center">
-            <div className="mb-8">
-              <h1 className="text-6xl font-bold text-transparent bg-clip-text bg-linear-to-r from-[#FA6831] to-[#C24E1E]">
-                Hata
-              </h1>
-              <h2 className="text-2xl font-bold text-[#E5E9EC] mt-4">
-                Bir şeyler ters gitti
-              </h2>
-              <p className="text-[#9BA3AB] mt-4 text-lg">
-                Beklenmeyen bir hata oluştu. Lütfen tekrar deneyin.
-              </p>
-            </div>
-            
-            <div className="space-y-4">
-              <button
-                onClick={reset}
-                className="inline-block px-8 py-3 bg-linear-to-r from-[#EB6F40] to-[#C24E1E] text-[#1C1C1C] font-medium rounded-lg hover:from-[#FA6831] hover:to-[#EB6F40] transition-all duration-200 transform hover:scale-105"
-              >
-                Tekrar Dene
-              </button>
-              
-              <div className="mt-6">
-                {/* global-error kök layout'u değiştirdiği için next/link yerine
-                    düz <a> kullanılır (rule bilerek devre dışı) */}
-                {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
-                <a
-                  href="/"
-                  className="text-[#FC895F] hover:text-[#FDA686] transition-colors duration-200"
-                >
-                  Ana Sayfaya Dön
-                </a>
-              </div>
+      <body style={{ margin: 0, fontFamily: 'system-ui, sans-serif' }}>
+        <div
+          style={{
+            minHeight: '100vh',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '1rem',
+            background: 'linear-gradient(135deg, #161a22 0%, #0e1117 100%)',
+          }}
+        >
+          <div style={{ textAlign: 'center' }}>
+            <h1
+              style={{
+                fontSize: '3.5rem',
+                fontWeight: 700,
+                color: '#c4ff00',
+                margin: 0,
+              }}
+            >
+              Hata
+            </h1>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#e8eaed', marginTop: '1rem' }}>
+              Bir şeyler ters gitti
+            </h2>
+            <p style={{ color: '#9aa3b0', marginTop: '1rem', fontSize: '1.125rem' }}>
+              Beklenmeyen bir hata oluştu. Lütfen tekrar deneyin.
+            </p>
+            <button
+              type="button"
+              onClick={reset}
+              style={{
+                marginTop: '2rem',
+                padding: '0.75rem 2rem',
+                background: '#c4ff00',
+                color: '#12141a',
+                border: 'none',
+                fontWeight: 600,
+                cursor: 'pointer',
+              }}
+            >
+              Tekrar Dene
+            </button>
+            <div style={{ marginTop: '1.5rem' }}>
+              <a href="/" style={{ color: '#c4ff00', textDecoration: 'none' }}>
+                Ana Sayfaya Dön
+              </a>
             </div>
           </div>
         </div>
       </body>
     </html>
-  );
-} 
+  )
+}
