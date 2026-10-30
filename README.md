@@ -8,7 +8,7 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-v4-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
 [![shadcn/ui](https://img.shields.io/badge/shadcn/ui-Radix-000?style=for-the-badge)](https://ui.shadcn.com/)
 [![Vercel](https://img.shields.io/badge/Vercel-Deploy-black?style=for-the-badge&logo=vercel)](https://vercel.com/)
-[![Sürüm](https://img.shields.io/badge/Sürüm-5.2.0-blue?style=for-the-badge)]()
+[![Sürüm](https://img.shields.io/badge/Sürüm-5.2.1-blue?style=for-the-badge)]()
 [![Lisans](https://img.shields.io/badge/Lisans-Özel-red?style=for-the-badge)]()
 
 **Fixral CMS**, Next.js 16 (App Router, Turbopack), React 19.2, Prisma ORM ve PostgreSQL üzerine inşa edilmiş, üretime hazır, tam kapsamlı bir İçerik Yönetim Sistemidir.
@@ -17,7 +17,7 @@ Mühendislik portföyleri, 3D baskı hizmetleri ve ajans web siteleri için tasa
 
 Herkese açık site, **FIXRAL web 2026** tasarım diliyle (teknik resim paftası estetiği, koyu varsayılan tema, Fixral Turuncu `#F97316`, Space Grotesk · Inter · JetBrains Mono) yeniden kurgulanmıştır: 8 hizmetlik katalog, yazılım vitrinleri, Cults3D entegrasyonlu FX 3D model galerisi, three.js ile kaydırmaya bağlı 3D süreç anlatımı ve 4 adımlı teklif formu.
 
-> **Canlı:** [fixral-cms.vercel.app](https://fixral-cms.vercel.app) &nbsp;|&nbsp; **Kaynak:** [github.com/erdemerciyas/fixral-cms](https://github.com/erdemerciyas/fixral-cms)
+> **Canlı:** [www.fixral.com](https://www.fixral.com) &nbsp;|&nbsp; **Kaynak:** [github.com/erdemerciyas/fixral-cms](https://github.com/erdemerciyas/fixral-cms)
 
 ---
 
@@ -110,7 +110,7 @@ Herkese açık site, **FIXRAL web 2026** tasarım diliyle (teknik resim paftası
 
 ## Ekran Görüntüleri
 
-> Admin paneli ve herkese açık sayfalardan ekran görüntüleri için [fixral-cms.vercel.app](https://fixral-cms.vercel.app) adresini ziyaret edin.
+> Admin paneli ve herkese açık sayfalardan ekran görüntüleri için [www.fixral.com](https://www.fixral.com) adresini ziyaret edin.
 
 ---
 
@@ -582,7 +582,7 @@ DIRECT_URL=postgresql://user:password@ep-xxxx.eu-central-1.aws.neon.tech/neondb?
 # ─── Kimlik Doğrulama (ZORUNLU) ────────────────────────
 NEXTAUTH_SECRET=your-nextauth-secret        # openssl rand -hex 32 ile üretilebilir
 NEXTAUTH_URL=http://localhost:3000
-NEXT_PUBLIC_APP_URL=https://fixral-cms.vercel.app  # Üretim site URL'si — canonical, sitemap, robots ve JSON-LD'nin tek kaynağı
+NEXT_PUBLIC_APP_URL=https://www.fixral.com       # Üretim site URL'si — canonical, sitemap, robots ve JSON-LD'nin tek kaynağı
 JWT_SECRET=your-jwt-secret
 
 # ─── Zamanlanmış Görevler (ZORUNLU — üretim) ───────────
@@ -752,7 +752,7 @@ Vercel dashboard'unda tüm ortam değişkenlerinin yapılandırıldığından em
 |----------|-------|
 | `DATABASE_URL`, `DIRECT_URL` | Prisma bağlantısı |
 | `NEXTAUTH_SECRET`, `NEXTAUTH_URL`, `JWT_SECRET` | Oturum ve token imzalama |
-| `NEXT_PUBLIC_APP_URL` | Canonical, sitemap, robots, JSON-LD mutlak URL'leri (ayarlanmazsa `https://www.fixral.com` varsayılır) |
+| `NEXT_PUBLIC_APP_URL` | Canonical, sitemap, robots, JSON-LD mutlak URL'leri — üretimde `https://www.fixral.com` (build sırasında gömülür; değişince yeniden deploy gerekir) |
 | `CRON_SECRET` | Cron uç noktalarının kimlik doğrulaması — yoksa günlük temizlik 401 ile başarısız olur |
 | `CLOUDINARY_*` | Medya yükleme ve kütüphane |
 | `GMAIL_USER`, `GMAIL_APP_PASSWORD` | İletişim / teklif formu e-postaları |
@@ -914,10 +914,10 @@ Fixral CMS, Progressive Web App (PWA) olarak çalışabilir:
 
 ### URL Yapısı
 ```
-fixral-cms.vercel.app/tr/           → Türkçe anasayfa
-fixral-cms.vercel.app/tr/haberler   → Türkçe haberler
-fixral-cms.vercel.app/tr/portfolio  → Portföy
-fixral-cms.vercel.app/es/...        → 301 → /tr/... (kaldırılan İspanyolca adresler)
+www.fixral.com/tr/           → Türkçe anasayfa
+www.fixral.com/tr/haberler   → Türkçe haberler
+www.fixral.com/tr/portfolio  → Portföy
+www.fixral.com/es/...        → 301 → /tr/... (kaldırılan İspanyolca adresler)
 ```
 
 ### Yerelleştirilmiş Rotalar
@@ -968,6 +968,11 @@ npm run test:coverage
 ---
 
 ## Değişiklik Günlüğü
+
+### v5.2.1 — Asıl Domain: www.fixral.com
+- **Sitemap / Search Console:** Üretimde `NEXT_PUBLIC_APP_URL` ve `NEXTAUTH_URL` `https://www.fixral.com` yapıldı; sitemap, robots, canonical ve JSON-LD artık `fixral-cms.vercel.app` yerine asıl domain'i gösterir ("Bu URL'ye, bu yerdeki bir Site Haritası için izin verilmiyor" hatası giderildi)
+- **Yinelenen İçerik:** `fixral-cms.vercel.app` üzerindeki sayfa istekleri proxy'de 308 ile `www.fixral.com`'a yönlenir (`/api` hariç)
+- **Env Sync:** `scripts/sync-vercel-env.mjs` `NEXTAUTH_URL` ve `NEXT_PUBLIC_APP_URL` değerlerini üretim domain'iyle ezer
 
 ### v5.2.0 — FIXRAL Web 2026 Yeniden Tasarımı, Güvenlik Sertleştirme, ISR ve SEO Denetimi
 
@@ -1120,4 +1125,4 @@ Bu proje özel yazılımdır. Tüm hakları saklıdır. İzinsiz kopyalama, dağ
 
 **Geliştirici:** Erdem Erciyas
 **Depo:** [github.com/erdemerciyas/fixral-cms](https://github.com/erdemerciyas/fixral-cms)
-**Web Sitesi:** [fixral-cms.vercel.app](https://fixral-cms.vercel.app)
+**Web Sitesi:** [www.fixral.com](https://www.fixral.com)

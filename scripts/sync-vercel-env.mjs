@@ -30,8 +30,8 @@ const SKIP = new Set(['NODE_ENV']);
 // Keys that should only be set in Production (not Preview/Development)
 const PROD_ONLY = new Set(['ADMIN_EMAIL', 'ADMIN_PASSWORD', 'SEED_DEMO_DATA']);
 
-// NEXTAUTH_URL override for production
-const PROD_URL = 'https://fixral-cms.vercel.app';
+// Production URL override (asıl domain; .env.local'daki localhost/eski değerleri ezer)
+const PROD_URL = 'https://www.fixral.com';
 
 async function run(cmd, input) {
   return new Promise((res) => {
@@ -51,7 +51,7 @@ async function main() {
 
   for (const [key, value] of entries) {
     let finalValue = value;
-    if (key === 'NEXTAUTH_URL') finalValue = PROD_URL;
+    if (key === 'NEXTAUTH_URL' || key === 'NEXT_PUBLIC_APP_URL') finalValue = PROD_URL;
 
     // Skip empty values (like YOUTUBE_API_KEY)
     if (!finalValue) {

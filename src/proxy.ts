@@ -152,6 +152,11 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // Vercel varsayılan domain'i asıl domain'e kalıcı yönlenir (yinelenen içerik / Search Console uyumu)
+  if (request.headers.get('host') === 'fixral-cms.vercel.app' && !pathname.startsWith('/api')) {
+    return NextResponse.redirect(`https://www.fixral.com${pathname}${request.nextUrl.search}`, 308);
+  }
+
   // Block suspicious activity (regex taraması yalnızca API rotalarında çalışır)
   if (pathname.startsWith('/api') && detectSuspiciousActivity(request)) {
     logger.error('Blocking suspicious request', 'SECURITY', { ip: clientIP, pathname });
