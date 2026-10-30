@@ -96,6 +96,10 @@ export function Fx3dIndexView({ lang, models, error, profileUrl }: { lang: strin
 
 /* ------------------------------------------------------------ /fx-3d/[slug] */
 
+/** Cults3D açıklamaları çoğu zaman İngilizce: Türkçe harf yoksa lang="en" — büyük harfli
+ *  tablo başlıklarında "SETTİNG" yerine "SETTING" çıkar. */
+const contentLang = (html: string) => (/[çğıöşüÇĞİÖŞÜ]/.test(html) ? undefined : 'en')
+
 interface DetailProps {
   lang: string
   model: Fx3dModelDetail
@@ -161,13 +165,13 @@ export function Fx3dDetailView({ lang, model: m, lede, descriptionHtml, detailsH
           {descriptionHtml && (
             <div className="fx-block">
               <h2>{t('description')}</h2>
-              <div className="fx-block__body"><HTMLContent content={descriptionHtml} className="fx-pf-prose fx-3d-prose" /></div>
+              <div className="fx-block__body" lang={contentLang(descriptionHtml)}><HTMLContent content={descriptionHtml} className="fx-pf-prose fx-3d-prose" /></div>
             </div>
           )}
           {detailsHtml && (
             <div className="fx-block">
               <h2>{t('details')}</h2>
-              <div className="fx-block__body"><HTMLContent content={detailsHtml} className="fx-pf-prose fx-3d-prose" /></div>
+              <div className="fx-block__body" lang={contentLang(detailsHtml)}><HTMLContent content={detailsHtml} className="fx-pf-prose fx-3d-prose" /></div>
             </div>
           )}
           {m.files.length > 0 && (

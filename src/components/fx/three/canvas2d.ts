@@ -11,11 +11,11 @@ const watch = (el: Element, st: { visible: boolean }) => {
   return io
 }
 
-/* Router Studio: FX işareti içinde tarama cebi + kontur takım yolu (üstten görünüm) */
-export function createToolpath(cv: HTMLCanvasElement, onHud?: (text: string) => void): SceneHandle {
-  const REDUCED = prefersReducedMotion()
+type Pt = [number, number]
+
+/** FX işareti için tarama cebi + kontur hareketleri (işaret uzayı 364 × 180). */
+export function markToolpath(): [Pt, Pt][] {
   const polys = [MARK_PATHS.body, MARK_PATHS.up, MARK_PATHS.dn].map(pathToPoints)
-  type Pt = [number, number]
   const moves: [Pt, Pt][] = []
   const step = 7
   polys.forEach((poly) => {
@@ -36,6 +36,13 @@ export function createToolpath(cv: HTMLCanvasElement, onHud?: (text: string) => 
     }
     for (let i = 0; i < poly.length; i++) moves.push([poly[i], poly[(i + 1) % poly.length]])
   })
+  return moves
+}
+
+/* Router Studio: FX işareti içinde tarama cebi + kontur takım yolu (üstten görünüm) */
+export function createToolpath(cv: HTMLCanvasElement, onHud?: (text: string) => void): SceneHandle {
+  const REDUCED = prefersReducedMotion()
+  const moves = markToolpath()
   const lens = moves.map(([a, b]) => Math.hypot(b[0] - a[0], b[1] - a[1]))
   const total = lens.reduce((a, b) => a + b, 0)
   const ctx = cv.getContext('2d')!

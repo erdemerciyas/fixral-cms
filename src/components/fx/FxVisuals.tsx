@@ -8,6 +8,7 @@
 import { useEffect, useRef, useState } from 'react'
 import type { PartName, SoftwareViz, VizMode } from '@/content/fixral'
 import type { PartSceneHandle, PartState } from './three/scenes'
+import type { LaunchDrive } from './three/launch'
 import { FxMark } from './FxLogo'
 
 type Handle = { dispose: () => void }
@@ -114,6 +115,27 @@ export function PartViewer({
           ))}
         </div>
       )}
+    </div>
+  )
+}
+
+/* ------------------------------------------------------------ Hızlı erişim */
+
+export function LaunchStage({ viz, drive, label, hud }: { viz: SoftwareViz; drive: { readonly current: LaunchDrive }; label: string; hud?: string }) {
+  const [read, setRead] = useState(viz === 'toolpath' ? 'X 000.00 Y 000.00 Z +5.00 F800' : hud)
+  const { ref, ready } = useMount(async (el) => {
+    if (!webglAvailable()) return null
+    const m = await import('./three/launch')
+    return viz === 'split' ? m.createSplitLaunch(el, drive) : m.createRouterLaunch(el, drive, setRead)
+  }, [viz])
+  return (
+    <div ref={ref} className="fx-launch__stage" role="img" aria-label={label}>
+      {!ready && (
+        <div className="fx-fallback-mark">
+          <FxMark tone="light" />
+        </div>
+      )}
+      {read && <span className="fx-sw-hud fx-mono">{read}</span>}
     </div>
   )
 }

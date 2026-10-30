@@ -340,7 +340,7 @@
       "eyebrow": "Hizmetler · 3 disiplin",
       "title": "Ölçmekten üretmeye, sekiz iş tek atölyede.",
       "lede": "Bir parça çoğu zaman birden fazla alandan geçer. Kırık bir dişli taranır, modellenir, basılır; bir ECU kutusu ölçülür, kartı yeniden çizilir.",
-      "pageEyebrow": "Engineering • Design • Manufacture",
+      "pageEyebrow": "ENGINEERING • DESIGN • MANUFACTURE",
       "pageTitle": "Sekiz hizmet, üç disiplin, tek atölye.",
       "pageLede": "Ölçme, tasarlama ve üretme işlerini ayrı ayrı alabilir ya da baştan sona bize bırakabilirsiniz. Her hizmetin sonunda standart, açılabilen bir dosya teslim ederiz.",
       "when": "Ne zaman gerekir",
@@ -405,6 +405,11 @@
       "gaugeLabel": "Yuvarlak ekranda devir göstergesi",
       "build": "YAZICI HACMİ 256 × 256 × 256 mm"
     },
+    "launch": {
+      "eyebrow": "Hızlı erişim · Ücretsiz araçlar",
+      "title": "Kurulum yok, hesap yok. Tarayıcıda açın, hemen kullanın.",
+      "details": "Ayrıntıları gör"
+    },
     "deliv": {
       "eyebrow": "Teslimat",
       "title": "Elinize geçen: açılabilen, üretilebilen dosya.",
@@ -440,7 +445,7 @@
     },
     "footer": {
       "about": "Var olan parçayı ölçer, modeller ve yeniden üretiriz. Bu işler için yazdığımız araçları da herkese açıyoruz.",
-      "slogan": "Engineering • Design • Manufacture",
+      "slogan": "ENGINEERING • DESIGN • MANUFACTURE",
       "services": "Hizmetler",
       "software": "Yazılımlar",
       "site": "Site",

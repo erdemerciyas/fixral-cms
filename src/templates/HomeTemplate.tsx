@@ -5,7 +5,8 @@
  *
  * Akış sırası:
  * 1. HeroSection          — 3D FX işareti (three.js) + tez + teknik resim anteti   [koyu ada]
- * 2. ServiceStrip         — sekiz hizmet, marka ikonlarıyla                          [koyu ada]
+ * 1b. ProductLaunch       — hızlı erişim: 3D Splitter + Router Studio (three.js)     [koyu ada]
+ * 2. ServiceStrip        — sekiz hizmet, marka ikonlarıyla                          [koyu ada]
  * 3. DisciplinesSection   — Mühendislik / Tasarım / Üretim altında 8 hizmet           [açık bant]
  * 4. ProcessSection       — Tara → Modelle → Doğrula → Üret, kaydırmaya bağlı 3D     [koyu ada]
  * 5. WorksSection         — seçili projeler (yönetim panelinden, 8/4/4/8 ızgara)    [açık bant]
@@ -18,6 +19,7 @@
  * Videolar); panelde kayıt yoksa `src/content/fixral.ts` + `messages/*.json` varsayılanları kullanılır.
  */
 import HeroSection from '@/components/fx/home/HeroSection'
+import ProductLaunch from '@/components/fx/home/ProductLaunch'
 import { DisciplinesSection, ServiceStrip } from '@/components/fx/home/ServicesSections'
 import ProcessSection from '@/components/fx/home/ProcessSection'
 import { DeliverablesSection, JournalSection, QuoteBand, SoftwareSection, WorksSection } from '@/components/fx/home/HomeSections'
@@ -36,6 +38,7 @@ export default function HomeTemplate({ lang }: HomeTemplateProps) {
   return (
     <>
       <HeroSection lang={L} onQuote={openQuote} />
+      <ProductLaunch lang={L} />
       {visible('strip') && <ServiceStrip lang={L} />}
       {visible('services') && <DisciplinesSection lang={L} />}
       {visible('process') && <ProcessSection lang={L} />}

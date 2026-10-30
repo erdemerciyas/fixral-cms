@@ -311,7 +311,7 @@ export const SOFTWARE: SoftwareDef[] = [
     services: ['gomulu', 'otomotiv'],
     text: {
       tr: {
-        kicker: 'Gömülü · otomotiv', status: 'Açık kaynak firmware', tagline: 'Aracın verisini yuvarlak bir ekranda canlı gösterir.',
+        kicker: 'Gömülü · otomotiv', status: 'Açık kaynak FIRMWARE', tagline: 'Aracın verisini yuvarlak bir ekranda canlı gösterir.',
         lede: 'ESP32-S3 tabanlı 2,1" yuvarlak dokunmatik ekran için firmware. Bluetooth LE ile ELM327 adaptörüne bağlanır, protokolü kendisi bulur, 17 PID\'i okuyup filtreler; devir, hız, su sıcaklığı ve akü gerilimini gösterge olarak çizer.',
         chips: ['ESP-IDF 5.3', 'LVGL 8.4', 'BLE · ELM327'],
         facts: [['Kart', 'Waveshare ESP32-S3-Touch-LCD-2.1'], ['Ekran', '480 × 480 yuvarlak · kapasitif dokunmatik'], ['Bağlantı', 'BLE (NimBLE) → ELM327 · ATSP0'], ['Veri', '17 PID · EMA filtre'], ['Sensör', 'QMI8658 6 eksen IMU']],
