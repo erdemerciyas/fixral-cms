@@ -85,6 +85,14 @@ const PUT__handler = withSecurity(SecurityConfigs.admin)(async (request: Request
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         mergeDeep(settings as any, updateData as any);
         console.log('✅ Settings merged successfully');
+
+        // findOne() dokümanının save() metodu no-op; alanları doğrudan yaz
+        const FIELDS = ['mainDescription', 'contactInfo', 'quickLinks', 'socialLinks', 'copyrightInfo', 'developerInfo', 'visibility', 'theme'] as const;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const data: Record<string, any> = {};
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        for (const f of FIELDS) if ((settings as any)[f] !== undefined) data[f] = (settings as any)[f];
+        settings = await FooterSettings.findOneAndUpdate({ _id: settings._id }, data, { new: true });
       } catch (mergeError) {
         console.error('❌ Error merging settings:', mergeError);
         throw mergeError;
