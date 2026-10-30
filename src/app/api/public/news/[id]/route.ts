@@ -44,7 +44,7 @@ export async function GET(request: NextRequest, props: { params: Promise<{ id: s
 
     // Check if user has permission to view draft articles
     const session = await getServerSession(authOptions);
-    if (news.status === 'draft' && !session) {
+    if (news.status === 'draft' && session?.user?.role !== 'admin') {
       return NextResponse.json(
         {
           success: false,
@@ -110,7 +110,7 @@ export async function PUT(request: NextRequest, props: { params: Promise<{ id: s
   try {
     // Check authentication
     const session = await getServerSession(authOptions);
-    if (!session || !session.user) {
+    if (!session || session.user?.role !== 'admin') {
       return NextResponse.json(
         {
           success: false,
@@ -254,7 +254,7 @@ export async function DELETE(request: NextRequest, props: { params: Promise<{ id
   try {
     // Check authentication
     const session = await getServerSession(authOptions);
-    if (!session || !session.user) {
+    if (!session || session.user?.role !== 'admin') {
       return NextResponse.json(
         {
           success: false,

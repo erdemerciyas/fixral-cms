@@ -12,7 +12,7 @@ import { NewsItem } from '@/types/news';
 import { logger } from '@/core/lib/logger';
 
 interface NewsCarouselProps {
-  language: 'tr' | 'es';
+  language: 'tr';
   limit?: number;
   autoplay?: boolean;
   className?: string;
@@ -110,7 +110,7 @@ export default function NewsCarousel({
   };
 
   const getNewsUrl = (slug: string) => {
-    return language === 'tr' ? `/tr/haberler/${slug}` : `/es/noticias/${slug}`;
+    return `/tr/haberler/${slug}`;
   };
 
   return (
@@ -191,7 +191,7 @@ export default function NewsCarousel({
                     <div className="flex items-center justify-between text-xs text-muted-foreground pt-3 border-t border-border">
                       <time dateTime={new Date(item.publishedAt || item.createdAt).toISOString()}>
                         {new Date(item.publishedAt || item.createdAt).toLocaleDateString(
-                          language === 'tr' ? 'tr-TR' : 'es-ES',
+                          'tr-TR',
                           {
                             year: 'numeric',
                             month: 'short',

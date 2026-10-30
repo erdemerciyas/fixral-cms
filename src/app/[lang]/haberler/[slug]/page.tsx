@@ -6,6 +6,22 @@ import { logger } from '@/core/lib/logger';
 
 import { SITE_URL, getBlogAlternates, generateOgImages } from '@/lib/seo-utils';
 import NewsDetailClient from '@/components/news/NewsDetailClient';
+import sanitizeHtml from 'sanitize-html';
+
+// Haber gövdesi istemcide dangerouslySetInnerHTML ile basılır; sunucuda temizlenir.
+const COLOR = [/^#[0-9a-f]{3,8}$/i, /^rgba?\([\d\s.,%]+\)$/i];
+const SANITIZE_OPTIONS = {
+    allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img', 'h1', 'h2', 'span', 'mark', 'u', 's']),
+    allowedAttributes: {
+        a: ['href', 'target', 'rel'],
+        img: ['src', 'alt', 'width', 'height', 'loading'],
+        '*': ['class', 'style', 'colspan', 'rowspan'],
+    },
+    allowedStyles: {
+        '*': { color: COLOR, 'background-color': COLOR, 'text-align': [/^(left|right|center|justify)$/] },
+    },
+    allowedSchemes: ['http', 'https', 'mailto', 'tel'],
+};
 
 interface PageProps {
     params: Promise<{
@@ -28,7 +44,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
         if (!newsDoc) {
             return {
-                title: 'Not Found',
+                title: 'Not Found', robots: { index: false, follow: false },
                 description: 'The requested news article was not found.',
             };
         }
@@ -36,7 +52,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         const news = newsDoc as any;
         if (news.status !== 'published') {
             return {
-                title: 'Not Found',
+                title: 'Not Found', robots: { index: false, follow: false },
                 description: 'The requested news article was not found.',
             };
         }
@@ -95,7 +111,7 @@ export async function generateStaticParams() {
     }
 }
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 3600; // admin kayıtları revalidateFx ile tüm layout'u tazeler
 
 function normalizeTranslations(translations: any): Record<string, any> {
     if (!translations) return {};
@@ -189,26 +205,24 @@ async function prepareNewsView(slug: string) {
             '@context': 'https://schema.org',
             '@type': 'NewsArticle',
             headline: translation.title || news.slug,
-            description: translation.metaDescription || '',
-            image: news.featuredImage?.url || '',
+            description: translation.metaDescription || translation.excerpt || undefined,
+            image: news.featuredImage?.url || undefined,
             datePublished: news.publishedAt ? new Date(news.publishedAt).toISOString() : new Date(news.createdAt).toISOString(),
             dateModified: new Date(news.updatedAt).toISOString(),
-            author: {
-                '@type': 'Person',
-                name: news.author?.name || '',
-                email: news.author?.email || '',
-            },
+            author: news.author?.name
+                ? { '@type': 'Person', name: news.author.name }
+                : { '@type': 'Organization', name: 'Fixral' },
             publisher: {
                 '@type': 'Organization',
                 name: 'Fixral',
                 logo: {
                     '@type': 'ImageObject',
-                    url: 'https://www.fixral.com/logo.png',
+                    url: `${SITE_URL}/logo.png`,
                 },
             },
             mainEntityOfPage: {
                 '@type': 'WebPage',
-                '@id': `https://www.fixral.com/tr/haberler/${news.slug}`,
+                '@id': `${SITE_URL}/tr/haberler/${news.slug}`,
             },
         };
 
@@ -238,7 +252,7 @@ async function prepareNewsView(slug: string) {
         const serializedTranslation = {
             title: translation.title || '',
             excerpt: translation.excerpt || '',
-            content: typeof translation.content === 'string' ? translation.content : (translation.content ? JSON.stringify(translation.content) : ''),
+            content: sanitizeHtml(typeof translation.content === 'string' ? translation.content : '', SANITIZE_OPTIONS),
             metaDescription: translation.metaDescription || '',
             keywords: translation.keywords || [],
         };
@@ -264,7 +278,7 @@ export default async function NewsDetailPage({ params: paramsPromise }: PageProp
         <div className="min-h-dvh bg-background">
             <script
                 type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
             />
 
             <NewsDetailClient

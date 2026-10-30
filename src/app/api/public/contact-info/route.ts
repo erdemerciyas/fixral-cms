@@ -42,7 +42,7 @@ export async function PUT(request: Request) {
   try {
     // Authentication check with better error handling
     const session = await getServerSession(authOptions);
-    if (!session?.user) {
+    if (!session?.user || session.user.role !== 'admin') {
       console.error('Unauthorized access attempt to contact-info PUT');
       return NextResponse.json(
         { error: 'Bu işlem için yetkiniz yok' },

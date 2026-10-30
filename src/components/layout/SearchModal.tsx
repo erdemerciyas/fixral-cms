@@ -1,288 +1,304 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
-import { usePathname } from 'next/navigation';
-import { m, AnimatePresence } from 'framer-motion';
-import { Search as MagnifyingGlassIcon, X as XMarkIcon, Newspaper as NewspaperIcon, FolderOpen as FolderOpenIcon, Wrench as WrenchScrewdriverIcon, ArrowRight as ArrowRightIcon } from 'lucide-react';
+/**
+ * Site içi arama (redesign 2026) — prototip `.search` modalı.
+ * Statik kaynaklar: paneldeki hizmetler + yazılımlar (useFx; panelde yoksa katalog).
+ * API kaynakları: haberler (/api/public/news) ve projeler (/api/public/portfolio);
+ * modal ilk açıldığında bir kez çekilir, sonra istemcide süzülür.
+ * Klavye: ↑/↓ seçim, Enter aç, Esc kapat; odak kapanı ve odağın geri verilmesi.
+ * Kök layout'ta (intl provider dışında) çalıştığı için `useAppTranslations` kullanır.
+ */
+import { useState, useEffect, useRef, useMemo, useCallback, useId } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { locales } from '@/i18n';
-
-interface SearchResult {
-    title: string;
-    description?: string;
-    href: string;
-    category: string;
-}
+import { m, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { useAppTranslations } from '@/hooks/useAppTranslations';
+import { serviceHref, softwareHref, newsBase, toFxLocale } from '@/content/fixral';
+import { useFx } from '@/components/fx/FxData';
+import { SearchIcon, CloseIcon, ArrowRight } from '@/components/fx/FxIcons';
+import { pickTranslation, stripHtml } from '@/components/fx/FxCards';
 
 interface SearchModalProps {
     isOpen: boolean;
     onClose: () => void;
 }
 
-const CATEGORY_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
-    'Haberler': NewspaperIcon,
-    'Portföy': FolderOpenIcon,
-    'Hizmetler': WrenchScrewdriverIcon,
-};
+type Group = 'service' | 'software' | 'project' | 'news';
 
-const CATEGORY_COLORS: Record<string, string> = {
-    'Haberler': 'bg-primary/10 text-primary',
-    'Portföy': 'bg-accent text-accent-foreground',
-    'Hizmetler': 'bg-muted text-muted-foreground',
-};
+interface Hit {
+    group: Group;
+    title: string;
+    description: string;
+    href: string;
+    /** Eşleştirme metni (normalize edilmiş) */
+    hay: string;
+}
+
+const GROUP_ORDER: Group[] = ['service', 'software', 'project', 'news'];
+const MAX_PER_REMOTE_GROUP = 5;
+const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+/** Büyük/küçük harf, Türkçe ı/İ ve aksan farklarını yok sayan normalizasyon */
+const norm = (s: string) =>
+    s
+        .toLocaleLowerCase('tr-TR')
+        .replace(/ı/g, 'i')
+        .normalize('NFD')
+        .replace(/[̀-ͯ]/g, '');
+
+type RemoteNews = { slug?: string; title?: string; excerpt?: string; translations?: Record<string, { title?: string; excerpt?: string } | undefined> };
+type RemotePortfolio = { slug?: string; title?: string; description?: string; summary?: string; translations?: unknown };
 
 export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
+    const { t, locale } = useAppTranslations('fx');
+    const L = toFxLocale(locale);
+    const fx = useFx(locale);
+    const router = useRouter();
+    const reduced = useReducedMotion();
+    const uid = useId();
+    const listId = `${uid}-list`;
+
     const [query, setQuery] = useState('');
-    const [results, setResults] = useState<SearchResult[]>([]);
-    const [isLoading, setIsLoading] = useState(false);
-    const [hasSearched, setHasSearched] = useState(false);
+    const [active, setActive] = useState(0);
+    const [remote, setRemote] = useState<{ news: RemoteNews[]; projects: RemotePortfolio[] } | null>(null);
+    const [loadingRemote, setLoadingRemote] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
-    const debounceRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+    const boxRef = useRef<HTMLDivElement>(null);
+    const listRef = useRef<HTMLUListElement>(null);
+    const restoreRef = useRef<HTMLElement | null>(null);
+    const fetchedRef = useRef(false);
 
-    const pathname = usePathname() ?? '/';
-    const firstSegment = pathname.split('/')[1];
-    const currentLang = (locales as readonly string[]).includes(firstSegment) ? firstSegment : 'tr';
-
+    /* ---- Açılış / kapanış: odak, kaydırma kilidi, sıfırlama ---- */
     useEffect(() => {
-        if (isOpen) {
-            const focusTimer = setTimeout(() => inputRef.current?.focus(), 100);
-            return () => clearTimeout(focusTimer);
-        }
-        // Kapanışta sıfırlama: efekt gövdesinde senkron setState yerine
-        // bir sonraki tick'te uygulanır (modal zaten kapanmış olur)
-        const resetTimer = setTimeout(() => {
-            setQuery('');
-            setResults([]);
-            setHasSearched(false);
-        }, 0);
-        return () => clearTimeout(resetTimer);
+        if (!isOpen) return;
+        restoreRef.current = (document.activeElement as HTMLElement) || null;
+        const prevOverflow = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+        const focusTimer = setTimeout(() => inputRef.current?.focus(), 30);
+        return () => {
+            clearTimeout(focusTimer);
+            document.body.style.overflow = prevOverflow;
+            const el = restoreRef.current;
+            // Kapanışta sıfırlama + odağı açan öğeye geri verme
+            setTimeout(() => {
+                setQuery('');
+                setActive(0);
+                if (el && document.contains(el)) el.focus();
+            }, 0);
+        };
     }, [isOpen]);
 
-    const doSearch = useCallback(async (q: string) => {
-        if (!q.trim()) {
-            setResults([]);
-            setHasSearched(false);
+    /* ---- Haber + proje verisi: ilk açılışta bir kez (bileşen Header ile hep bağlı kalır) ---- */
+    useEffect(() => {
+        if (!isOpen || fetchedRef.current) return;
+        fetchedRef.current = true;
+        const timer = setTimeout(() => setLoadingRemote(true), 0);
+        const getJson = (url: string) => fetch(url).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+        Promise.all([
+            getJson('/api/public/news?status=published&limit=50'),
+            getJson('/api/public/portfolio?limit=60'),
+        ]).then(([n, p]) => {
+            clearTimeout(timer);
+            const newsItems = n?.data?.items || n?.items || n?.news || (Array.isArray(n) ? n : []);
+            const projItems = Array.isArray(p) ? p : p?.portfolios || p?.items || p?.data || [];
+            setRemote({ news: Array.isArray(newsItems) ? newsItems : [], projects: Array.isArray(projItems) ? projItems : [] });
+            setLoadingRemote(false);
+        });
+    }, [isOpen]);
+
+    /* ---- Kaynak listesi ---- */
+    const staticHits = useMemo<Hit[]>(() => {
+        const svc = fx.services.map((s): Hit => {
+            const x = s.text[L];
+            return { group: 'service', title: x.name, description: x.short, href: serviceHref(L, s), hay: norm(`${x.name} ${x.short} ${s.files.join(' ')} ${s.text.tr.name}`) };
+        });
+        const sw = fx.software.map((s): Hit => {
+            const x = s.text[L];
+            return { group: 'software', title: s.name, description: x.tagline, href: softwareHref(L, s), hay: norm(`${s.name} ${x.tagline} ${x.kicker} ${x.chips.join(' ')}`) };
+        });
+        return [...svc, ...sw];
+    }, [L, fx.services, fx.software]);
+
+    const remoteHits = useMemo<Hit[]>(() => {
+        if (!remote) return [];
+        const news = remote.news
+            .filter((n) => n?.slug)
+            .map((n): Hit => {
+                const x = n.translations?.[L] || n.translations?.tr || {};
+                const title = x.title || n.title || '';
+                const description = stripHtml(x.excerpt || n.excerpt || '').slice(0, 140);
+                return { group: 'news', title, description, href: `${newsBase(L)}/${n.slug}`, hay: norm(`${title} ${description}`) };
+            })
+            .filter((h) => h.title);
+        const projects = remote.projects
+            .filter((p) => p?.slug)
+            .map((p): Hit => {
+                const x = pickTranslation(p as RemotePortfolio & Record<string, unknown>, L) as RemotePortfolio;
+                const title = x.title || '';
+                const description = stripHtml(x.description || x.summary || '').slice(0, 140);
+                return { group: 'project', title, description, href: `/${L}/portfolio/${p.slug}`, hay: norm(`${title} ${description}`) };
+            })
+            .filter((h) => h.title);
+        return [...projects, ...news];
+    }, [remote, L]);
+
+    const q = norm(query.trim());
+    const hits = useMemo<Hit[]>(() => {
+        if (!q) return staticHits;
+        const terms = q.split(/\s+/).filter(Boolean);
+        const match = (h: Hit) => terms.every((term) => h.hay.includes(term));
+        const fromStatic = staticHits.filter(match);
+        const counts: Record<string, number> = {};
+        const fromRemote = remoteHits.filter((h) => {
+            if (!match(h)) return false;
+            counts[h.group] = (counts[h.group] || 0) + 1;
+            return counts[h.group] <= MAX_PER_REMOTE_GROUP;
+        });
+        return [...fromStatic, ...fromRemote].sort((a, b) => GROUP_ORDER.indexOf(a.group) - GROUP_ORDER.indexOf(b.group));
+    }, [q, staticHits, remoteHits]);
+
+    const activeIndex = hits.length ? Math.min(active, hits.length - 1) : -1;
+
+    /* ---- Seçili sonucu görünür tut ---- */
+    useEffect(() => {
+        if (activeIndex < 0) return;
+        listRef.current?.querySelector<HTMLElement>(`[data-idx="${activeIndex}"]`)?.scrollIntoView({ block: 'nearest' });
+    }, [activeIndex]);
+
+    const go = useCallback((href: string) => {
+        onClose();
+        router.push(href);
+    }, [onClose, router]);
+
+    const onInputKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            if (hits.length) setActive((activeIndex + 1) % hits.length);
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            if (hits.length) setActive((activeIndex - 1 + hits.length) % hits.length);
+        } else if (e.key === 'Home' && hits.length && e.ctrlKey) {
+            e.preventDefault();
+            setActive(0);
+        } else if (e.key === 'End' && hits.length && e.ctrlKey) {
+            e.preventDefault();
+            setActive(hits.length - 1);
+        } else if (e.key === 'Enter') {
+            e.preventDefault();
+            if (activeIndex >= 0 && hits[activeIndex]) go(hits[activeIndex].href);
+            else if (query.trim()) go(`${newsBase(L)}?search=${encodeURIComponent(query.trim())}`);
+        }
+    };
+
+    /* ---- Esc + odak kapanı ---- */
+    const onDialogKey = (e: React.KeyboardEvent<HTMLDivElement>) => {
+        if (e.key === 'Escape') {
+            e.preventDefault();
+            e.stopPropagation();
+            onClose();
             return;
         }
-
-        setIsLoading(true);
-        setHasSearched(true);
-
-        try {
-            const searchResults: SearchResult[] = [];
-
-            const [newsRes, portfolioRes] = await Promise.allSettled([
-                fetch(`/api/public/news?search=${encodeURIComponent(q)}&limit=3`),
-                fetch(`/api/public/portfolio?search=${encodeURIComponent(q)}&limit=3`),
-            ]);
-
-            if (newsRes.status === 'fulfilled' && newsRes.value.ok) {
-                const data = await newsRes.value.json();
-                const items = Array.isArray(data) ? data : data.news || data.items || [];
-                items.slice(0, 3).forEach((item: any) => {
-                    const newsRoute = currentLang === 'es' ? 'noticias' : 'haberler';
-                    searchResults.push({
-                        title: item.title || item.name,
-                        description: item.summary || item.excerpt || '',
-                        href: `/${currentLang}/${newsRoute}/${item.slug}`,
-                        category: 'Haberler',
-                    });
-                });
-            }
-
-            if (portfolioRes.status === 'fulfilled' && portfolioRes.value.ok) {
-                const data = await portfolioRes.value.json();
-                const items = Array.isArray(data) ? data : data.portfolios || data.items || [];
-                items.slice(0, 3).forEach((item: any) => {
-                    searchResults.push({
-                        title: item.title || item.name,
-                        description: item.description || item.summary || '',
-                        href: `/${currentLang}/portfolio/${item.slug}`,
-                        category: 'Portföy',
-                    });
-                });
-            }
-
-            setResults(searchResults);
-        } catch {
-            setResults([]);
-        } finally {
-            setIsLoading(false);
-        }
-    }, [currentLang]);
-
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const val = e.target.value;
-        setQuery(val);
-        clearTimeout(debounceRef.current);
-        debounceRef.current = setTimeout(() => doSearch(val), 350);
+        if (e.key !== 'Tab' || !boxRef.current) return;
+        const items = Array.from(boxRef.current.querySelectorAll<HTMLElement>(FOCUSABLE)).filter((el) => el.offsetParent !== null);
+        if (items.length === 0) return;
+        const first = items[0];
+        const last = items[items.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (query.trim()) {
-            const newsRoute = currentLang === 'es' ? 'noticias' : 'haberler';
-            window.location.href = `/${currentLang}/${newsRoute}?q=${encodeURIComponent(query.trim())}`;
-            onClose();
-        }
-    };
-
-    const groupedResults = results.reduce<Record<string, SearchResult[]>>((acc, r) => {
-        if (!acc[r.category]) acc[r.category] = [];
-        acc[r.category].push(r);
-        return acc;
-    }, {});
+    const groupLabel = (g: Group) => t(`search.${g}`).toLocaleUpperCase('tr-TR');
+    const showSpinner = !!q && loadingRemote;
+    const optionId = (i: number) => `${uid}-opt-${i}`;
 
     return (
         <AnimatePresence>
             {isOpen && (
                 <m.div
-                    initial={{ opacity: 0 }}
+                    key="fx-search"
+                    className="fx-search public-theme public-dark"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-label={t('search.dialogLabel')}
+                    initial={reduced ? false : { opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                    className="fixed inset-0 z-[400] flex items-start justify-center pt-[12vh]"
-                    onClick={onClose}
+                    exit={reduced ? { opacity: 0, transition: { duration: 0 } } : { opacity: 0 }}
+                    transition={{ duration: 0.16 }}
+                    onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}
+                    onKeyDown={onDialogKey}
                 >
-                    {/* Backdrop — token tabanlı scrim */}
-                    <div className="absolute inset-0 bg-[hsl(var(--scrim)/0.72)]" />
+                    <div className="fx-search__box" ref={boxRef}>
+                        <div className="fx-search__bar">
+                            <SearchIcon />
+                            <input
+                                ref={inputRef}
+                                type="search"
+                                value={query}
+                                onChange={(e) => { setQuery(e.target.value); setActive(0); }}
+                                onKeyDown={onInputKey}
+                                placeholder={t('search.placeholder')}
+                                aria-label={t('search.inputLabel')}
+                                autoComplete="off"
+                                spellCheck={false}
+                                enterKeyHint="go"
+                                role="combobox"
+                                aria-expanded={hits.length > 0}
+                                aria-controls={listId}
+                                aria-autocomplete="list"
+                                aria-activedescendant={activeIndex >= 0 ? optionId(activeIndex) : undefined}
+                            />
+                            <kbd className="fx-search__kbd">Esc</kbd>
+                            <button type="button" className="fx-search__close" onClick={onClose} aria-label={t('search.close')}>
+                                <CloseIcon />
+                            </button>
+                        </div>
 
-                    {/* Modal */}
-                    <m.div
-                        initial={{ opacity: 0, y: -20, scale: 0.97 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: -20, scale: 0.97 }}
-                        transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
-                        className="relative w-full max-w-2xl mx-4"
-                        onClick={(e) => e.stopPropagation()}
-                    >
-                        <div className="bg-card rounded-sm border border-border overflow-hidden">
-                            {/* Search Input */}
-                            <form onSubmit={handleSubmit} className="relative">
-                                <MagnifyingGlassIcon className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none" />
-                                <input
-                                    ref={inputRef}
-                                    type="text"
-                                    value={query}
-                                    onChange={handleInputChange}
-                                    placeholder="Site genelinde ara..."
-                                    className="w-full pl-14 pr-20 py-5 text-lg text-foreground placeholder:text-muted-foreground focus:outline-hidden bg-transparent"
-                                    autoComplete="off"
-                                />
-                                <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
-                                    <kbd className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 font-mono text-[11px] font-medium text-muted-foreground bg-muted rounded-xs border border-border">
-                                        ESC
-                                    </kbd>
-                                    <button
-                                        type="button"
-                                        onClick={onClose}
-                                        className="p-1.5 rounded-xs text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
-                                        aria-label="Aramayı kapat"
-                                    >
-                                        <XMarkIcon className="w-5 h-5" />
-                                    </button>
-                                </div>
-                            </form>
-
-                            {/* Results */}
-                            {(hasSearched || query.length > 0) && (
-                                <div className="border-t border-border">
-                                    {isLoading ? (
-                                        <div className="flex items-center justify-center py-12">
-                                            <div className="w-6 h-6 border-2 border-primary/20 border-t-primary rounded-full animate-spin" />
-                                        </div>
-                                    ) : results.length > 0 ? (
-                                        <div className="max-h-[50vh] overflow-y-auto py-2">
-                                            {Object.entries(groupedResults).map(([category, items]) => {
-                                                const Icon = CATEGORY_ICONS[category] || FolderOpenIcon;
-                                                const colorClass = CATEGORY_COLORS[category] || 'bg-muted text-muted-foreground';
-                                                return (
-                                                    <div key={category} className="px-2 mb-1 last:mb-0">
-                                                        <div className="flex items-center gap-2 px-3 py-2">
-                                                            <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-xs font-mono text-[10px] font-medium uppercase tracking-[0.14em] ${colorClass}`}>
-                                                                <Icon className="w-3 h-3" />
-                                                                {category}
-                                                            </span>
-                                                            <div className="flex-1 h-px bg-border" />
-                                                        </div>
-                                                        {items.map((item, i) => (
-                                                            <Link
-                                                                key={i}
-                                                                href={item.href}
-                                                                onClick={onClose}
-                                                                className="flex items-center gap-3 px-3 py-2.5 mx-1 rounded-xs hover:bg-accent transition-colors group"
-                                                            >
-                                                                <div className="flex-1 min-w-0">
-                                                                    <p className="text-sm font-medium text-foreground truncate group-hover:text-primary transition-colors">
-                                                                        {item.title}
-                                                                    </p>
-                                                                    {item.description && (
-                                                                        <p className="text-xs text-muted-foreground truncate mt-0.5">
-                                                                            {item.description}
-                                                                        </p>
-                                                                    )}
-                                                                </div>
-                                                                <ArrowRightIcon className="w-4 h-4 text-muted-foreground/60 group-hover:text-primary transition-colors shrink-0" />
-                                                            </Link>
-                                                        ))}
-                                                    </div>
-                                                );
-                                            })}
-                                        </div>
-                                    ) : hasSearched && query.trim() ? (
-                                        <div className="py-12 text-center">
-                                            <MagnifyingGlassIcon className="w-10 h-10 text-muted-foreground/40 mx-auto mb-3" />
-                                            <p className="text-sm text-muted-foreground">
-                                                &quot;<span className="font-medium text-foreground">{query}</span>&quot; ile ilgili sonuç bulunamadı.
-                                            </p>
-                                            <p className="text-xs text-muted-foreground/70 mt-1">
-                                                Farklı anahtar kelimeler deneyin
-                                            </p>
-                                        </div>
-                                    ) : null}
-
-                                    {/* Footer hint */}
-                                    {results.length > 0 && (
-                                        <div className="px-5 py-3 border-t border-border bg-muted/50">
-                                            <button
-                                                type="button"
-                                                onClick={handleSubmit as any}
-                                                className="flex items-center gap-2 text-xs text-muted-foreground hover:text-primary transition-colors"
-                                            >
-                                                <MagnifyingGlassIcon className="w-3.5 h-3.5" />
-                                                <span>Tüm sonuçları gör: &quot;{query}&quot;</span>
-                                                <ArrowRightIcon className="w-3 h-3" />
-                                            </button>
-                                        </div>
-                                    )}
-                                </div>
-                            )}
-
-                            {/* Quick links when empty */}
-                            {!query && (
-                                <div className="border-t border-border px-5 py-4">
-                                    <p className="font-mono text-[10px] font-medium text-muted-foreground uppercase tracking-[0.18em] mb-2.5">Hızlı Erişim</p>
-                                    <div className="flex flex-wrap gap-2">
-                                        {[
-                                            { label: 'Haberler', href: `/${currentLang}/${currentLang === 'es' ? 'noticias' : 'haberler'}` },
-                                            { label: 'Portföy', href: `/${currentLang}/portfolio` },
-                                            { label: 'Hizmetler', href: `/${currentLang}/services` },
-                                        ].map((link) => (
+                        <div className="fx-search__res">
+                            {!q && <p className="fx-search__head fx-tag">{t('search.shortcuts')}</p>}
+                            {hits.length > 0 ? (
+                                <ul id={listId} ref={listRef} role="listbox" aria-label={t('search.resultsLabel')} className="fx-search__list">
+                                    {hits.map((h, i) => (
+                                        <li key={`${h.group}-${h.href}`} role="presentation" className={i > 0 && hits[i - 1].group !== h.group ? 'fx-search__sep' : undefined}>
                                             <Link
-                                                key={link.label}
-                                                href={link.href}
+                                                id={optionId(i)}
+                                                data-idx={i}
+                                                role="option"
+                                                aria-selected={i === activeIndex}
+                                                tabIndex={-1}
+                                                className="fx-search__hit"
+                                                href={h.href}
                                                 onClick={onClose}
-                                                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-muted-foreground bg-muted rounded-xs border border-border hover:bg-accent hover:text-foreground transition-colors"
+                                                onMouseMove={() => { if (i !== activeIndex) setActive(i); }}
                                             >
-                                                {link.label}
-                                                <ArrowRightIcon className="w-3 h-3" />
+                                                <span className="fx-tag">{groupLabel(h.group)}</span>
+                                                <b>{h.title}</b>
+                                                {h.description && <span className="fx-small fx-muted">{h.description}</span>}
                                             </Link>
-                                        ))}
-                                    </div>
-                                </div>
+                                        </li>
+                                    ))}
+                                </ul>
+                            ) : (
+                                !showSpinner && q && (
+                                    <p className="fx-search__empty fx-small fx-muted">{t('search.noResults', { q: query.trim() })}</p>
+                                )
+                            )}
+                            {showSpinner && <p className="fx-search__loading fx-tag" aria-hidden="true">{t('search.loading')}…</p>}
+                        </div>
+
+                        <div className="fx-search__foot">
+                            <span className="fx-search__keys fx-tag" aria-hidden="true">
+                                <kbd>↑</kbd><kbd>↓</kbd> {t('search.hintNav')} · <kbd>Enter</kbd> {t('search.hintOpen')} · <kbd>Esc</kbd> {t('search.hintClose')}
+                            </span>
+                            {q && (
+                                <Link className="fx-link fx-small" href={`${newsBase(L)}?search=${encodeURIComponent(query.trim())}`} onClick={onClose}>
+                                    {t('search.allNews', { q: query.trim() })} <ArrowRight />
+                                </Link>
                             )}
                         </div>
-                    </m.div>
+                        <p className="sr-only" role="status" aria-live="polite">
+                            {q ? (showSpinner ? t('search.loading') : t('search.count', { count: hits.length })) : ''}
+                        </p>
+                    </div>
                 </m.div>
             )}
         </AnimatePresence>

@@ -1,14 +1,16 @@
 'use client'
 
-import { m, useReducedMotion } from 'framer-motion'
+/**
+ * Haber listesi (redesign 2026) — prototip `PAGES.haberler()`.
+ * Etiket filtreleri (fx-chip), arama formu (GET ?search=), ilk sayfada öne çıkan
+ * yazı + `.fx-newsrow` satırları, sayfalama ve tasarlanmış boş / sonuçsuz / hata durumları.
+ * `search`, `tag`, `page` sorgu parametreleri sunucu bileşeninde işlenir.
+ */
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowRight, Search as MagnifyingGlass, Newspaper } from 'lucide-react';
-import { TechLabel } from '@/components/ui'
-import { ScrollReveal } from '@/components/ui/ScrollReveal'
-import { cn } from '@/lib/utils'
-
-const ease = [0.32, 0.72, 0, 1] as const
+import { useAppTranslations } from '@/hooks/useAppTranslations'
+import { ArrowRight, ArrowUpRight, SearchIcon, CloseIcon } from '@/components/fx/FxIcons'
+import { WorkPlaceholder } from '@/components/fx/FxCards'
 
 interface ArticleData {
   _id?: string
@@ -32,178 +34,37 @@ interface NewsListClientProps {
   page: number
   totalPages: number
   allTags: string[]
-  newsT: Record<string, string>
-  commonT: Record<string, string>
-  locale?: 'tr' | 'es'
+  locale?: 'tr'
+  loadError?: boolean
 }
-
-type TranslationEntry = { title: string; excerpt: string; content: string; keywords: string[] }
-const EMPTY_TRANSLATION: TranslationEntry = { title: '', excerpt: '', content: '', keywords: [] }
 
 function formatDate(date: Date | string, dateLocale: string) {
-  return new Date(date).toLocaleDateString(dateLocale, {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
+  const d = new Date(date)
+  if (Number.isNaN(d.getTime())) return ''
+  return d.toLocaleDateString(dateLocale, { day: '2-digit', month: '2-digit', year: 'numeric' })
+}
+
+/** Sorgu parametrelerini koruyarak liste adresi üretir */
+function listHref(base: string, q: { page?: number; search?: string; tag?: string }) {
+  const p = new URLSearchParams()
+  if (q.search) p.set('search', q.search)
+  if (q.tag) p.set('tag', q.tag)
+  if (q.page && q.page > 1) p.set('page', String(q.page))
+  const s = p.toString()
+  return s ? `${base}?${s}` : base
+}
+
+/** 1 … 4 5 6 … 12 biçiminde kısaltılmış sayfa listesi */
+function pageItems(page: number, total: number): (number | 'gap')[] {
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1)
+  const set = new Set([1, total, page - 1, page, page + 1].filter((n) => n >= 1 && n <= total))
+  const sorted = [...set].sort((a, b) => a - b)
+  const out: (number | 'gap')[] = []
+  sorted.forEach((n, i) => {
+    if (i > 0 && n - sorted[i - 1] > 1) out.push('gap')
+    out.push(n)
   })
-}
-
-function HeroCard({ article, lang, newsT, basePath, translationKey, dateLocale }: { article: ArticleData; lang: string; newsT: Record<string, string>; basePath: string; translationKey: 'tr' | 'es'; dateLocale: string }) {
-  const translation = article.translations?.[translationKey] || EMPTY_TRANSLATION
-  const prefersReduced = useReducedMotion()
-
-  return (
-    <m.div
-      initial={prefersReduced ? { opacity: 1 } : { opacity: 0, y: 32, filter: 'blur(6px)' }}
-      whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-      viewport={{ once: true, margin: '-40px' }}
-      transition={{ duration: prefersReduced ? 0.01 : 0.7, ease }}
-    >
-      <Link
-        href={`/${lang}/${basePath}/${article.slug}`}
-        className="group relative block w-full rounded-sm overflow-hidden bg-surface-tertiary border border-border"
-      >
-        <div className="relative aspect-21/9 md:aspect-[2.4/1] w-full overflow-hidden">
-          <Image
-            src={article.featuredImage?.url || '/images/placeholder.jpg'}
-            alt={article.featuredImage?.altText || translation.title}
-            fill
-            priority
-            className="object-cover transition-transform duration-700 will-change-transform group-hover:scale-[1.03]"
-            style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
-            sizes="100vw"
-          />
-          <div className="absolute inset-0 bg-linear-to-t from-surface-tertiary/95 via-surface-tertiary/40 to-transparent" />
-          <div className="absolute inset-0 bg-linear-to-r from-surface-tertiary/30 to-transparent" />
-        </div>
-
-        <div className="absolute bottom-0 left-0 right-0 p-6 md:p-10 lg:p-14">
-          <div className="max-w-2xl space-y-4">
-            <div className="flex items-center gap-3">
-              {article.tags?.[0] && (
-                <TechLabel as="span" marker="tick">{article.tags[0]}</TechLabel>
-              )}
-              <span className="font-mono text-[11px] text-muted-foreground tracking-wide">
-                {formatDate(article.publishedAt || article.createdAt, dateLocale)}
-              </span>
-            </div>
-
-            <h2 className="text-2xl md:text-3xl lg:text-4xl font-semibold text-foreground leading-[1.15] tracking-tight line-clamp-2">
-              {translation.title}
-            </h2>
-
-            <p className="text-sm md:text-base text-muted-foreground line-clamp-2 leading-relaxed max-w-xl">
-              {translation.excerpt}
-            </p>
-
-            <span
-              className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-all duration-700 group-hover:text-foreground group-hover:gap-3"
-              style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
-            >
-              {newsT.readMore || 'Devamını Oku'}
-              <ArrowRight size={16} />
-            </span>
-          </div>
-        </div>
-      </Link>
-    </m.div>
-  )
-}
-
-function ArticleCard({
-  article,
-  lang,
-  newsT,
-  index,
-  variant = 'default',
-  basePath,
-  translationKey,
-  dateLocale,
-}: {
-  article: ArticleData
-  lang: string
-  newsT: Record<string, string>
-  index: number
-  variant?: 'large' | 'default'
-  basePath: string
-  translationKey: 'tr' | 'es'
-  dateLocale: string
-}) {
-  const translation = article.translations?.[translationKey] || EMPTY_TRANSLATION
-  const isLarge = variant === 'large'
-  const prefersReduced = useReducedMotion()
-
-  return (
-    <m.li
-      initial={prefersReduced ? { opacity: 1 } : { opacity: 0, y: 28, filter: 'blur(4px)' }}
-      whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-      viewport={{ once: true, margin: '-60px' }}
-      transition={{ duration: prefersReduced ? 0.01 : 0.7, delay: prefersReduced ? 0 : index * 0.08, ease }}
-    >
-      <Link
-        href={`/${lang}/${basePath}/${article.slug}`}
-        className={cn(
-          'group flex flex-col h-full rounded-sm overflow-hidden border border-border bg-card',
-          'transition-[transform,box-shadow,border-color] duration-200 ease-out',
-          'hover:border-primary/30 hover:shadow-lg hover:-translate-y-0.5',
-          'motion-reduce:transition-none motion-reduce:hover:translate-y-0'
-        )}
-      >
-        <div className={cn(
-          'relative w-full overflow-hidden bg-surface-tertiary',
-          isLarge ? 'aspect-4/3' : 'aspect-16/10'
-        )}>
-          <Image
-            src={article.featuredImage?.url || '/images/placeholder.jpg'}
-            alt={article.featuredImage?.altText || translation.title}
-            fill
-            className="object-cover transition-transform duration-700 will-change-transform group-hover:scale-[1.04]"
-            style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
-            sizes={isLarge ? '(max-width: 768px) 100vw, 55vw' : '(max-width: 768px) 100vw, 45vw'}
-          />
-          <div className="absolute inset-0 bg-linear-to-t from-[hsl(var(--scrim)/0.2)] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-        </div>
-
-        <div className={cn('flex flex-col grow', isLarge ? 'p-7' : 'p-5 md:p-6')}>
-          <div className="flex items-center gap-3 mb-3">
-            {article.tags?.[0] && (
-              <TechLabel as="span" marker="tick">{article.tags[0]}</TechLabel>
-            )}
-            <span className="font-mono text-[11px] text-muted-foreground tracking-wide">
-              {formatDate(article.publishedAt || article.createdAt, dateLocale)}
-            </span>
-          </div>
-
-          <h2 className={cn(
-            'font-semibold text-foreground leading-snug tracking-tight line-clamp-2 mb-2',
-            'transition-colors duration-700 group-hover:text-accent-foreground',
-            isLarge ? 'text-xl md:text-2xl' : 'text-lg'
-          )}
-            style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
-          >
-            {translation.title}
-          </h2>
-
-          <p className={cn(
-            'text-muted-foreground line-clamp-3 grow leading-relaxed',
-            isLarge ? 'text-sm md:text-base' : 'text-sm'
-          )}>
-            {translation.excerpt}
-          </p>
-
-          <div className="pt-4 mt-auto">
-            <span
-              className="inline-flex items-center gap-1.5 text-sm font-medium text-accent-foreground transition-all duration-700 group-hover:gap-2.5"
-              style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
-            >
-              {newsT.readMore || 'Devamını Oku'}
-              <ArrowRight size={14} />
-            </span>
-          </div>
-        </div>
-      </Link>
-    </m.li>
-  )
+  return out
 }
 
 export default function NewsListClient({
@@ -215,193 +76,183 @@ export default function NewsListClient({
   page,
   totalPages,
   allTags,
-  newsT,
-  commonT,
   locale = 'tr',
+  loadError = false,
 }: NewsListClientProps) {
+  const { t } = useAppTranslations('fx')
+  const basePath = `/${lang}/haberler`
+  const dateLocale = 'tr-TR'
+  const filtered = !!(search || tag)
+  const showFeatured = page === 1 && !filtered && articles.length > 0
   const [featured, ...rest] = articles
-  const basePath = locale === 'es' ? 'noticias' : 'haberler'
-  const translationKey = locale
-  const dateLocale = locale === 'es' ? 'es-ES' : 'tr-TR'
+  const rows = showFeatured ? rest : articles
+
+  const tr = (a: ArticleData) => a.translations?.[locale] || a.translations?.tr
+  const kindOf = (a: ArticleData) => (a.tags?.[0] || t('news.kind')).toLocaleUpperCase(dateLocale)
+  const dateOf = (a: ArticleData) => formatDate(a.publishedAt || a.createdAt, dateLocale)
 
   return (
-    <div className="space-y-10">
-      {/* Search + Filters */}
-      <ScrollReveal
-        className={cn(
-          'flex flex-col md:flex-row gap-4 justify-between items-center rounded-sm border border-border bg-surface-primary backdrop-blur-xs p-4 md:p-5 shadow-xs'
-        )}
-      >
-        <form className="relative w-full md:w-80 group">
-          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-            <MagnifyingGlass
-              size={18}
-              className="text-muted-foreground transition-colors duration-700 group-focus-within:text-accent-foreground"
-              style={{ transitionTimingFunction: 'cubic-bezier(0.32, 0.72, 0, 1)' }}
-            />
-          </div>
-          <input
-            type="text"
-            name="search"
-            placeholder={newsT.searchPlaceholder || 'Haberlerde ara...'}
-            defaultValue={search}
-            className={cn(
-              'block w-full pl-10 pr-4 py-2.5 rounded-xs text-sm text-foreground placeholder:text-muted-foreground',
-              'border border-border bg-surface-secondary',
-              'focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus:border-primary/40',
-              'transition-[border-color,box-shadow] duration-200 motion-reduce:transition-none'
+    <>
+      <section className="fx-sec fx-sec--tight fx-newspage" aria-labelledby="fx-news-list-title">
+        <div className="fx-wrap">
+          <h2 id="fx-news-list-title" className="sr-only">{t('news.listLabel')}</h2>
+
+          {/* Arama + etiket filtreleri */}
+          <div className="fx-newsbar">
+            <form className="fx-newsbar__search" role="search" action={basePath} method="get">
+              <label htmlFor="fx-news-q" className="sr-only">{t('news.searchLabel')}</label>
+              <span className="fx-newsbar__icon" aria-hidden="true"><SearchIcon /></span>
+              <input
+                id="fx-news-q"
+                type="search"
+                name="search"
+                defaultValue={search}
+                placeholder={t('news.searchPlaceholder')}
+                autoComplete="off"
+                enterKeyHint="search"
+              />
+              {tag && <input type="hidden" name="tag" value={tag} />}
+              <button type="submit" className="fx-btn fx-btn--ghost fx-btn--sm">{t('news.searchSubmit')}</button>
+            </form>
+
+            {allTags.length > 0 && (
+              <nav className="fx-filters fx-newsbar__tags" aria-label={t('news.filtersLabel')}>
+                <Link className="fx-chip" href={listHref(basePath, { search })} aria-current={!tag ? 'true' : undefined}>
+                  {t('news.all')}
+                </Link>
+                {allTags.map((name) => (
+                  <Link
+                    key={name}
+                    className="fx-chip"
+                    href={listHref(basePath, { search, tag: name })}
+                    aria-current={tag === name ? 'true' : undefined}
+                  >
+                    {name}
+                  </Link>
+                ))}
+              </nav>
             )}
-          />
-        </form>
+          </div>
 
-        {allTags.length > 0 && (
-          <div className="flex flex-wrap gap-2 justify-center md:justify-end">
-            <Link
-              href={`/${lang}/${basePath}`}
-              className={cn(
-                'px-4 py-1.5 rounded-xs text-xs font-medium tracking-wide transition-colors duration-200 motion-reduce:transition-none',
-                !tag
-                  ? 'bg-primary text-primary-foreground'
-                  : 'bg-secondary text-secondary-foreground hover:bg-accent hover:text-accent-foreground'
-              )}
-            >
-              {commonT.all || 'Tümü'}
-            </Link>
-            {allTags.map((t) => (
-              <Link
-                key={t}
-                href={`/${lang}/${basePath}?tag=${encodeURIComponent(t)}`}
-                className={cn(
-                  'px-4 py-1.5 rounded-xs text-xs font-medium tracking-wide transition-colors duration-200 motion-reduce:transition-none',
-                  tag === t
-                    ? 'bg-primary text-primary-foreground'
-                    : 'bg-secondary text-secondary-foreground hover:bg-accent hover:text-accent-foreground'
-                )}
-              >
-                {t}
+          {/* Sonuç özeti */}
+          {filtered && !loadError && (
+            <p className="fx-newsbar__summary" role="status">
+              <span className="fx-mono">{t('news.results', { count: total })}</span>
+              {search && <span>{t('news.resultsFor', { q: search })}</span>}
+              {tag && <span>{t('news.resultsTag', { tag })}</span>}
+              <Link className="fx-link fx-newsbar__clear" href={basePath}>
+                <CloseIcon /> {t('news.clear')}
               </Link>
-            ))}
-          </div>
-        )}
-      </ScrollReveal>
-
-      {/* Results Info */}
-      {(search || tag) && (
-        <m.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-          className="text-sm text-muted-foreground flex items-center gap-2"
-        >
-          <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-          {search && <span>&ldquo;{search}&rdquo; {newsT.forQuery || 'için'}</span>}
-          {tag && <span>&ldquo;{tag}&rdquo; {newsT.inTag || 'etiketinde'}</span>}
-          <strong className="text-foreground">
-            {(newsT.resultsFound || '{count} sonuç bulundu').replace('{count}', String(total))}
-          </strong>
-        </m.div>
-      )}
-
-      {/* Articles */}
-      {articles.length > 0 ? (
-        <>
-          {/* Featured hero card */}
-          {featured && page === 1 && !search && !tag && (
-            <HeroCard article={featured} lang={lang} newsT={newsT} basePath={basePath} translationKey={translationKey} dateLocale={dateLocale} />
+            </p>
           )}
 
-          {/* Asymmetric grid */}
-          <ul className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-7">
-            {(page === 1 && !search && !tag ? rest : articles).map((article, i) => {
-              const isLeftLarge = i % 3 === 0
-              return (
-                <div
-                  key={article._id || article.slug}
-                  className={cn(
-                    isLeftLarge ? 'md:col-span-7' : 'md:col-span-5'
-                  )}
-                >
-                  <ArticleCard
-                    article={article}
-                    lang={lang}
-                    newsT={newsT}
-                    index={i}
-                    variant={isLeftLarge ? 'large' : 'default'}
-                    basePath={basePath}
-                    translationKey={translationKey}
-                    dateLocale={dateLocale}
-                  />
-                </div>
-              )
-            })}
-          </ul>
-
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <m.nav
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7, ease }}
-              aria-label="Sayfalama"
-              className="flex justify-center items-center gap-2 pt-4"
-            >
-              {page > 1 && (
-                <Link
-                  href={`/${lang}/${basePath}?page=${page - 1}${search ? `&search=${search}` : ''}${tag ? `&tag=${tag}` : ''}`}
-                  className="px-4 py-1.5 rounded-xs text-sm font-medium bg-secondary text-secondary-foreground hover:bg-accent hover:text-accent-foreground transition-colors duration-200 motion-reduce:transition-none"
-                >
-                  {commonT.previous || 'Önceki'}
+          {loadError ? (
+            <div className="fx-empty fx-news-empty" role="alert">
+              <b>{t('news.errorTitle')}</b>
+              <span>{t('news.errorText')}</span>
+            </div>
+          ) : articles.length === 0 ? (
+            <div className="fx-empty fx-news-empty">
+              <b>{filtered ? t('news.noResultsTitle') : t('news.emptyTitle')}</b>
+              <span>{filtered ? t('news.noResultsText') : t('news.emptyText')}</span>
+              <div className="fx-news-empty__cta">
+                {filtered ? (
+                  <Link className="fx-btn fx-btn--ghost fx-btn--sm" href={basePath}>{t('news.showAll')}</Link>
+                ) : (
+                  <Link className="fx-btn fx-btn--ghost fx-btn--sm" href={`/${lang}/portfolio`}>
+                    {t('news.emptyCta')} <ArrowRight />
+                  </Link>
+                )}
+              </div>
+            </div>
+          ) : (
+            <>
+              {showFeatured && featured && (
+                <Link className="fx-newsfeat" href={`${basePath}/${featured.slug}`}>
+                  <div className="fx-post__thumb fx-newsfeat__img">
+                    {featured.featuredImage?.url ? (
+                      <Image
+                        src={featured.featuredImage.url}
+                        alt={featured.featuredImage.altText || ''}
+                        fill
+                        priority
+                        sizes="(max-width: 900px) 100vw, 640px"
+                      />
+                    ) : (
+                      <WorkPlaceholder />
+                    )}
+                  </div>
+                  <div className="fx-newsfeat__copy">
+                    <p className="fx-eyebrow">{t('news.latest')}</p>
+                    <span className="fx-tag">{kindOf(featured)} · {dateOf(featured)}</span>
+                    <h3 className="fx-h2 fx-newsfeat__title">{tr(featured)?.title || featured.slug}</h3>
+                    {tr(featured)?.excerpt && <p className="fx-muted fx-newsfeat__ex">{tr(featured)?.excerpt}</p>}
+                    <span className="fx-link">{t('news.readMore')} <ArrowRight /></span>
+                  </div>
                 </Link>
               )}
 
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-                <Link
-                  key={p}
-                  href={`/${lang}/${basePath}?page=${p}${search ? `&search=${search}` : ''}${tag ? `&tag=${tag}` : ''}`}
-                  className={cn(
-                    'w-10 h-10 flex items-center justify-center rounded-xs font-mono text-sm font-medium tabular-nums transition-colors duration-200 motion-reduce:transition-none',
-                    p === page
-                      ? 'bg-primary text-primary-foreground'
-                      : 'bg-secondary text-secondary-foreground hover:bg-accent hover:text-accent-foreground'
-                  )}
-                >
-                  {p}
-                </Link>
-              ))}
-
-              {page < totalPages && (
-                <Link
-                  href={`/${lang}/${basePath}?page=${page + 1}${search ? `&search=${search}` : ''}${tag ? `&tag=${tag}` : ''}`}
-                  className="px-4 py-1.5 rounded-xs text-sm font-medium bg-secondary text-secondary-foreground hover:bg-accent hover:text-accent-foreground transition-colors duration-200 motion-reduce:transition-none"
-                >
-                  {commonT.next || 'Sonraki'}
-                </Link>
+              {rows.length > 0 && (
+                <ul className="fx-newslist">
+                  {rows.map((a) => {
+                    const x = tr(a)
+                    return (
+                      <li key={a._id || a.slug}>
+                        <Link className="fx-newsrow" href={`${basePath}/${a.slug}`}>
+                          <span className="fx-tag">{kindOf(a)} · {dateOf(a)}</span>
+                          <span className="fx-newsrow__t">
+                            <b>{x?.title || a.slug}</b>
+                            {x?.excerpt && <span className="fx-muted">{x.excerpt}</span>}
+                          </span>
+                          <span className="fx-svc__arrow" aria-hidden="true"><ArrowUpRight /></span>
+                        </Link>
+                      </li>
+                    )
+                  })}
+                </ul>
               )}
-            </m.nav>
+
+              {totalPages > 1 && (
+                <nav className="fx-pager" aria-label={t('news.pagination')}>
+                  {page > 1 ? (
+                    <Link className="fx-pager__step" href={listHref(basePath, { search, tag, page: page - 1 })} rel="prev">
+                      <ArrowRight className="fx-flip" /> {t('news.prev')}
+                    </Link>
+                  ) : (
+                    <span className="fx-pager__step" aria-disabled="true"><ArrowRight className="fx-flip" /> {t('news.prev')}</span>
+                  )}
+                  <span className="fx-pager__compact fx-mono">{t('news.pageOf', { page, total: totalPages })}</span>
+                  <ol className="fx-pager__pages">
+                    {pageItems(page, totalPages).map((p, i) =>
+                      p === 'gap' ? (
+                        <li key={`gap-${i}`} className="fx-pager__gap" aria-hidden="true">…</li>
+                      ) : (
+                        <li key={p}>
+                          <Link
+                            className="fx-pager__num"
+                            href={listHref(basePath, { search, tag, page: p })}
+                            aria-current={p === page ? 'page' : undefined}
+                            aria-label={t('news.pageN', { n: p })}
+                          >
+                            {p}
+                          </Link>
+                        </li>
+                      ),
+                    )}
+                  </ol>
+                  {page < totalPages ? (
+                    <Link className="fx-pager__step" href={listHref(basePath, { search, tag, page: page + 1 })} rel="next">
+                      {t('news.next')} <ArrowRight />
+                    </Link>
+                  ) : (
+                    <span className="fx-pager__step" aria-disabled="true">{t('news.next')} <ArrowRight /></span>
+                  )}
+                </nav>
+              )}
+            </>
           )}
-        </>
-      ) : (
-        <ScrollReveal
-          className="text-center py-20 rounded-sm border border-dashed border-border bg-surface-primary"
-        >
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-sm bg-surface-secondary border border-border text-primary mb-4">
-            <Newspaper size={28} />
-          </div>
-          <h3 className="text-lg font-medium text-foreground mb-1">
-            {newsT.noResults || 'Sonuç Bulunamadı'}
-          </h3>
-          <p className="text-muted-foreground text-sm mb-6">
-            {newsT.noResultsDescription || 'Aradığınız kriterlere uygun haber bulunamadı.'}
-          </p>
-          <Link
-            href={`/${lang}/${basePath}`}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xs text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors duration-200 shadow-xs motion-reduce:transition-none"
-          >
-            {newsT.showAll || 'Tüm Haberleri Göster'}
-          </Link>
-        </ScrollReveal>
-      )}
-    </div>
+        </div>
+      </section>
+    </>
   )
 }

@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { Search, Check, X, Plus, AlertCircle } from 'lucide-react';
+import { Search, Check, X, Plus, AlertCircle, Sparkles } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { seoDefaults } from '@/models/_factory';
 
 interface ISeoConfig {
   metaTitleSuffix: string;
@@ -14,9 +15,7 @@ interface ISeoConfig {
 }
 
 const DEFAULT_CONFIG: ISeoConfig = {
-  metaTitleSuffix: ' | Fixral',
-  globalMetaDescription: '',
-  globalKeywords: [],
+  ...seoDefaults.seoConfig,
   enableSchemaMarkup: true,
   enableOpenGraph: true,
   enableTwitterCards: true,
@@ -35,7 +34,15 @@ export default function AdminSeoPage() {
       if (res.ok) {
         const data = await res.json();
         if (data.seoConfig) {
-          setConfig({ ...DEFAULT_CONFIG, ...data.seoConfig });
+          const saved = data.seoConfig;
+          setConfig({
+            ...DEFAULT_CONFIG,
+            ...saved,
+            // Boş kayıtlı alanlar önerilen içerikle doldurulur
+            metaTitleSuffix: saved.metaTitleSuffix?.trim() ? saved.metaTitleSuffix : DEFAULT_CONFIG.metaTitleSuffix,
+            globalMetaDescription: saved.globalMetaDescription?.trim() ? saved.globalMetaDescription : DEFAULT_CONFIG.globalMetaDescription,
+            globalKeywords: saved.globalKeywords?.length ? saved.globalKeywords : DEFAULT_CONFIG.globalKeywords,
+          });
         }
       }
     } catch (err) {
@@ -103,6 +110,16 @@ export default function AdminSeoPage() {
     }
   };
 
+  const applySuggested = () => {
+    setConfig((prev) => ({
+      ...prev,
+      metaTitleSuffix: DEFAULT_CONFIG.metaTitleSuffix,
+      globalMetaDescription: DEFAULT_CONFIG.globalMetaDescription,
+      globalKeywords: DEFAULT_CONFIG.globalKeywords,
+    }));
+    setMessage({ type: 'success', text: 'Önerilen SEO içeriği uygulandı. Kalıcı olması için kaydedin.' });
+  };
+
   const toggleField = (field: keyof ISeoConfig) => {
     setConfig((prev) => ({ ...prev, [field]: !prev[field] }));
   };
@@ -141,23 +158,32 @@ export default function AdminSeoPage() {
             </p>
           </div>
         </div>
-        <button
-          onClick={handleSave}
-          disabled={saving}
-          className="px-6 py-2.5 bg-primary text-primary-foreground font-medium rounded-xl hover:bg-primary/90 transition-colors disabled:opacity-50 flex items-center gap-2 self-start sm:self-auto"
-        >
-          {saving ? (
-            <>
-              <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-              Kaydediliyor...
-            </>
-          ) : (
-            <>
-              <Check className="w-5 h-5" />
-              Kaydet
-            </>
-          )}
-        </button>
+        <div className="flex items-center gap-2 self-start sm:self-auto">
+          <button
+            onClick={applySuggested}
+            className="px-4 py-2.5 border border-border text-foreground font-medium rounded-xl hover:bg-muted transition-colors flex items-center gap-2"
+          >
+            <Sparkles className="w-4 h-4" />
+            Önerileni Uygula
+          </button>
+          <button
+            onClick={handleSave}
+            disabled={saving}
+            className="px-6 py-2.5 bg-primary text-primary-foreground font-medium rounded-xl hover:bg-primary/90 transition-colors disabled:opacity-50 flex items-center gap-2"
+          >
+            {saving ? (
+              <>
+                <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                Kaydediliyor...
+              </>
+            ) : (
+              <>
+                <Check className="w-5 h-5" />
+                Kaydet
+              </>
+            )}
+          </button>
+        </div>
       </div>
 
       {/* Status Message */}
@@ -202,10 +228,10 @@ export default function AdminSeoPage() {
               value={config.metaTitleSuffix}
               onChange={(e) => setConfig((prev) => ({ ...prev, metaTitleSuffix: e.target.value }))}
               className="w-full px-3 py-2 bg-transparent border border-input rounded-lg text-foreground text-sm focus:ring-2 focus:ring-ring focus:border-transparent outline-hidden transition-shadow"
-              placeholder=" | Fixral"
+              placeholder={seoDefaults.seoConfig.metaTitleSuffix}
             />
             <p className="text-xs text-muted-foreground mt-1.5">
-              Her sayfa başlığının sonuna eklenir. Örn: &quot;Hakkımızda{config.metaTitleSuffix || ' | Fixral'}&quot;
+              Site adının sonuna eklenerek ana sayfa başlığını oluşturur. Önizleme: &quot;FIXRAL{config.metaTitleSuffix}&quot;
             </p>
           </div>
 

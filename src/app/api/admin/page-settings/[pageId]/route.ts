@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../../../../../lib/auth';
 import PageSetting from '../../../../../models/PageSetting';
+import { withFxRevalidate } from '@/lib/fx-revalidate';
 
 // GET - Belirli bir sayfanın ayarlarını getir
 export async function GET(request: NextRequest, props: { params: Promise<{ pageId: string }> }) {
@@ -36,7 +37,7 @@ export async function GET(request: NextRequest, props: { params: Promise<{ pageI
 }
 
 // PUT - Belirli bir sayfanın ayarlarını güncelle
-export async function PUT(request: NextRequest, props: { params: Promise<{ pageId: string }> }) {
+async function PUT__handler(request: NextRequest, props: { params: Promise<{ pageId: string }> }) {
   const params = await props.params;
   try {
     const session = await getServerSession(authOptions);
@@ -79,3 +80,6 @@ export async function PUT(request: NextRequest, props: { params: Promise<{ pageI
     );
   }
 }
+
+// Panel → site canlı tazeleme (redesign 2026)
+export const PUT = withFxRevalidate(PUT__handler);

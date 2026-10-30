@@ -1,490 +1,495 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
-import { m } from 'framer-motion';
-import { MapPin, Mail as EnvelopeSimple, Phone, Clock, ArrowRight, CheckCircle, AlertCircle as WarningCircle } from 'lucide-react';
-import { Skeleton } from '@/components/ui/skeleton';
+/**
+ * İletişim / teklif sayfası (redesign 2026) — prototip `PAGES.iletisim()`.
+ * Sol: dört adımlı teklif formu (Hizmet → Parça → Dosya → İletişim), `sendQuote` ile
+ * /api/public/contact'a gider. API dosya alamadığı için yalnızca dosya adları iletilir.
+ * Sağ: /api/public/contact-info'dan gelen iletişim bilgileri (boş satırlar gizlenir).
+ */
+import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import PageHero from '@/components/common/PageHero';
-import { BlueprintGrid, TechLabel } from '@/components/ui';
-import { ScrollReveal, ScrollRevealItem } from '@/components/ui/ScrollReveal';
-
-const ease = [0.32, 0.72, 0, 1] as const;
+import { useAppTranslations } from '@/hooks/useAppTranslations';
+import { toFxLocale } from '@/content/fixral';
+import { useFx } from '@/components/fx/FxData';
+import { isEmail, sendQuote } from '@/lib/fx-quote';
+import { ArrowRight, CloseIcon, ExternalIcon, ServiceIcon } from '@/components/fx/FxIcons';
 
 interface ContactInfo {
-  email: string;
-  phone: string;
-  address: string;
-  workingHours: string;
-  socialLinks: {
-    linkedin: string;
-    twitter: string;
-    instagram: string;
-    facebook: string;
-  };
+  email?: string;
+  phone?: string;
+  address?: string;
+  workingHours?: string;
+  socialLinks?: Partial<Record<'linkedin' | 'twitter' | 'instagram' | 'facebook' | 'youtube' | 'github', string>>;
 }
 
-function ContactPageContent() {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    subject: '',
-    message: ''
-  });
-  const [contactInfo, setContactInfo] = useState<ContactInfo>({
-    email: 'erdem.erciyas@gmail.com',
-    phone: '+90 (532) 123 45 67',
-    address: 'Altay Mahallesi Bilgi sk No: 5 Turgutlu Manisa',
-    workingHours: 'Pazartesi - Cuma: 09:00 - 18:00',
-    socialLinks: {
-      linkedin: '',
-      twitter: '@fixral',
-      instagram: '',
-      facebook: '',
-    }
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<'success' | 'error' | null>(null);
-  const [submitMessage, setSubmitMessage] = useState<string | null>(null);
-  const [contactLoading, setContactLoading] = useState(true);
-  const [hero, setHero] = useState<{ title: string; description: string }>({
-    title: 'Bizimle İletişime Geçin',
-    description: 'Sorularınız ve önerileriniz için bize ulaşın'
-  });
+type T = (key: string, params?: Record<string, string | number>) => string;
 
-  useEffect(() => {
-    const fetchContactInfo = async () => {
-      try {
-        const response = await fetch('/api/public/contact-info');
-        if (response.ok) {
-          const data = await response.json();
-          setContactInfo(data);
-        }
-      } catch (error) {
-        console.error('Contact info fetch error:', error);
-      } finally {
-        setContactLoading(false);
-      }
-    };
+const STEP_KEYS = ['service', 'part', 'files', 'contact'] as const;
+const MATERIALS = ['unknown', 'plasticIn', 'plasticHarsh', 'metal', 'pcb'] as const;
+const ACCEPT = '.stl,.step,.stp,.iges,.igs,.3mf,.obj,.jpg,.jpeg,.png,.heic,.pdf,.zip';
+const MAX_FILES = 20;
+/** API'nin varsayılan (Türkçe) çalışma saati metni — yerelleştirilmiş karşılığıyla gösterilir */
+const DEFAULT_HOURS = 'Pazartesi - Cuma: 09:00 - 18:00';
+const isPhone = (v: string) => /^\+?[\d\s().-]{7,20}$/.test(v.trim()) && (v.match(/\d/g) || []).length >= 7;
 
-    fetchContactInfo();
-  }, []);
+const SOCIAL: Record<string, { label: string; base: string }> = {
+  linkedin: { label: 'LinkedIn', base: 'https://www.linkedin.com/in/' },
+  twitter: { label: 'X', base: 'https://x.com/' },
+  instagram: { label: 'Instagram', base: 'https://www.instagram.com/' },
+  facebook: { label: 'Facebook', base: 'https://www.facebook.com/' },
+  youtube: { label: 'YouTube', base: 'https://www.youtube.com/@' },
+  github: { label: 'GitHub', base: 'https://github.com/' },
+};
+function socialHref(key: string, raw: string) {
+  const v = raw.trim();
+  if (!v) return '';
+  if (/^https?:\/\//i.test(v)) return v;
+  if (/^[\w-]+(\.[\w-]+)+\//.test(v)) return `https://${v}`;
+  return `${SOCIAL[key]?.base || 'https://'}${v.replace(/^@/, '')}`;
+}
+const fmtSize = (b: number) => (b >= 1048576 ? `${(b / 1048576).toFixed(1)} MB` : `${Math.max(1, Math.round(b / 1024))} KB`);
 
-  useEffect(() => {
-    fetch('/api/admin/page-settings/contact')
-      .then(res => res.ok ? res.json() : null)
-      .then(data => {
-        if (data) setHero({ title: data.title || 'Bizimle İletişime Geçin', description: data.description || '' });
-        else setHero({ title: 'Bizimle İletişime Geçin', description: '' });
-      });
-  }, []);
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setSubmitStatus(null);
-    setSubmitMessage(null);
-
-    try {
-      const response = await fetch('/api/public/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.message || 'Mesaj gönderilirken bir hata oluştu.');
-      }
-
-      setSubmitStatus('success');
-      setSubmitMessage(result.message || 'Mesajınız başarıyla gönderildi!');
-      setFormData({ name: '', email: '', subject: '', message: '' });
-    } catch (error) {
-      console.error('Form gönderimi sırasında hata:', error);
-      setSubmitStatus('error');
-      setSubmitMessage(error instanceof Error ? error.message : 'Bir hata oluştu. Lütfen tekrar deneyin.');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const infoItems = [
-    {
-      icon: EnvelopeSimple,
-      label: 'E-posta',
-      value: contactInfo.email,
-      href: `mailto:${contactInfo.email}`,
-    },
-    {
-      icon: Phone,
-      label: 'Telefon',
-      value: contactInfo.phone,
-      href: `tel:${contactInfo.phone.replace(/\s/g, '')}`,
-    },
-    {
-      icon: MapPin,
-      label: 'Adres',
-      value: contactInfo.address,
-    },
-    ...(contactInfo.workingHours
-      ? [{
-          icon: Clock,
-          label: 'Çalışma Saatleri',
-          value: contactInfo.workingHours,
-        }]
-      : []),
-  ];
-
+function UploadIcon() {
   return (
-    <div className="min-h-dvh bg-background">
-      <PageHero
-        title={hero.title || 'İletişim'}
-        description={hero.description || 'Bizimle iletişime geçin ve projelerinizi konuşalım'}
-        buttonText="İletişim Formu"
-        buttonLink="#contact-form"
-        showButton={true}
-        showBreadcrumbs={true}
-        index={5}
-      />
-
-      <section id="contact-form" className="relative py-16 lg:py-24">
-        {/* Blueprint band — bölüm başında aşağı doğru sönen teknik ızgara */}
-        <BlueprintGrid
-          density="coarse"
-          opacity="faint"
-          className="[mask-image:linear-gradient(to_bottom,black,transparent_45%)]"
-        />
-        <div className="container-content relative">
-          <ScrollReveal className="mb-12 lg:mb-16">
-            <TechLabel as="p" index={1} marker="crosshair">İletişim</TechLabel>
-            <h2 className="mt-4 text-3xl lg:text-4xl font-semibold tracking-tight text-foreground">
-              Size nasıl yardımcı olabiliriz?
-            </h2>
-            <p className="mt-3 max-w-xl text-base text-muted-foreground leading-relaxed">
-              Proje teklifleriniz, sorularınız veya iş birliği önerileriniz için formu doldurun. En kısa sürede dönüş yapacağız.
-            </p>
-          </ScrollReveal>
-
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
-            {/* Form — left, 7 cols */}
-            <ScrollReveal className="lg:col-span-7" delay={0.05}>
-              <div className="rounded-sm bg-card border border-border p-8 lg:p-10 shadow-[var(--shadow-sm)]">
-                <form onSubmit={handleSubmit} className="space-y-5">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                    <div className="flex flex-col gap-2">
-                      <label htmlFor="name" className="text-sm font-medium text-foreground">
-                        Adınız Soyadınız
-                      </label>
-                      <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleInputChange}
-                        placeholder="Örn: Ali Veli"
-                        required
-                        className="h-12 rounded-xs border border-input bg-background px-4 text-sm text-foreground placeholder:text-muted-foreground outline-hidden transition-[border-color,box-shadow] duration-150 focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring motion-reduce:transition-none"
-                      />
-                    </div>
-                    <div className="flex flex-col gap-2">
-                      <label htmlFor="email" className="text-sm font-medium text-foreground">
-                        E-posta Adresiniz
-                      </label>
-                      <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleInputChange}
-                        placeholder="iletisim@example.com"
-                        required
-                        className="h-12 rounded-xs border border-input bg-background px-4 text-sm text-foreground placeholder:text-muted-foreground outline-hidden transition-[border-color,box-shadow] duration-150 focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring motion-reduce:transition-none"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col gap-2">
-                    <label htmlFor="subject" className="text-sm font-medium text-foreground">
-                      Konu
-                    </label>
-                    <input
-                      type="text"
-                      id="subject"
-                      name="subject"
-                      value={formData.subject}
-                      onChange={handleInputChange}
-                      placeholder="Proje Teklifi"
-                      required
-                      className="h-12 rounded-xs border border-input bg-background px-4 text-sm text-foreground placeholder:text-muted-foreground outline-hidden transition-[border-color,box-shadow] duration-150 focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring motion-reduce:transition-none"
-                    />
-                  </div>
-
-                  <div className="flex flex-col gap-2">
-                    <label htmlFor="message" className="text-sm font-medium text-foreground">
-                      Mesajınız
-                    </label>
-                    <textarea
-                      id="message"
-                      name="message"
-                      value={formData.message}
-                      onChange={handleInputChange}
-                      rows={5}
-                      placeholder="Merhaba, ..."
-                      required
-                      className="rounded-xs border border-input bg-background px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground outline-hidden resize-none transition-[border-color,box-shadow] duration-150 focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring motion-reduce:transition-none"
-                    />
-                  </div>
-
-                  <m.button
-                    type="submit"
-                    disabled={isSubmitting}
-                    whileTap={{ scale: 0.98 }}
-                    transition={{ duration: 0.15, ease }}
-                    className="group relative mt-2 flex h-12 w-full items-center justify-center gap-2 rounded-xs bg-primary text-sm font-medium text-primary-foreground shadow-[var(--shadow-md)] transition-colors duration-150 hover:bg-primary/90 disabled:opacity-60 disabled:cursor-not-allowed motion-reduce:transition-none"
-                  >
-                    {isSubmitting ? (
-                      <span className="flex items-center gap-2">
-                        <span className="h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground/30 border-t-primary-foreground" />
-                        Gönderiliyor...
-                      </span>
-                    ) : (
-                      <>
-                        <span>Mesajı Gönder</span>
-                        <ArrowRight
-                          className="h-4.5 w-4.5 transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transition-none"
-                        />
-                      </>
-                    )}
-                  </m.button>
-
-                  {submitStatus === 'success' && submitMessage && (
-                    <m.div
-                      initial={{ opacity: 0, y: 8 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.5, ease }}
-                      className="flex items-start gap-3 rounded-sm border border-success/30 bg-success/10 p-4 text-sm text-success"
-                    >
-                      <CheckCircle className="mt-0.5 h-5 w-5 shrink-0 text-success" />
-                      <span>{submitMessage}</span>
-                    </m.div>
-                  )}
-                  {submitStatus === 'error' && submitMessage && (
-                    <m.div
-                      initial={{ opacity: 0, y: 8 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.5, ease }}
-                      className="flex items-start gap-3 rounded-sm border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive"
-                    >
-                      <WarningCircle className="mt-0.5 h-5 w-5 shrink-0 text-destructive" />
-                      <span>{submitMessage}</span>
-                    </m.div>
-                  )}
-                </form>
-              </div>
-            </ScrollReveal>
-
-            {/* Info — right, 5 cols */}
-            <ScrollReveal className="lg:col-span-5" delay={0.15}>
-              <div className="space-y-8">
-                <div className="rounded-sm border border-border bg-card p-8 shadow-[var(--shadow-sm)]">
-                  <h3 className="text-lg font-semibold tracking-tight text-foreground mb-6">
-                    İletişim Bilgilerimiz
-                  </h3>
-                  {contactLoading ? (
-                    <div className="space-y-5">
-                      {Array.from({ length: 4 }).map((_, i) => (
-                        <div key={i} className="flex items-start gap-4">
-                          <Skeleton className="h-10 w-10 rounded-xs shrink-0" />
-                          <div className="flex-1 space-y-2">
-                            <Skeleton className="h-4 w-1/3" />
-                            <Skeleton className="h-4 w-2/3" />
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <ScrollReveal as="div" stagger className="space-y-5">
-                      {infoItems.map((item) => (
-                        <ScrollRevealItem key={item.label}>
-                          <div className="flex items-start gap-4">
-                            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xs bg-accent">
-                              <item.icon className="h-5 w-5 text-accent-foreground" />
-                            </span>
-                            <div className="min-w-0">
-                              <p className="font-mono text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground mb-1">
-                                {item.label}
-                              </p>
-                              {item.href ? (
-                                <a
-                                  href={item.href}
-                                  className="text-sm text-foreground transition-colors duration-150 hover:text-accent-foreground motion-reduce:transition-none"
-                                >
-                                  {item.value}
-                                </a>
-                              ) : (
-                                <p className="text-sm text-foreground leading-relaxed">{item.value}</p>
-                              )}
-                            </div>
-                          </div>
-                        </ScrollRevealItem>
-                      ))}
-                    </ScrollReveal>
-                  )}
-                </div>
-
-                {!contactLoading && (contactInfo.socialLinks.linkedin || contactInfo.socialLinks.twitter || contactInfo.socialLinks.instagram || contactInfo.socialLinks.facebook) && (
-                  <div className="rounded-sm border border-border bg-card p-8 shadow-[var(--shadow-sm)]">
-                    <h3 className="text-lg font-semibold tracking-tight text-foreground mb-5">
-                      Sosyal Medya
-                    </h3>
-                    <div className="flex gap-3">
-                      {contactInfo.socialLinks.linkedin && (
-                        <a
-                          href={contactInfo.socialLinks.linkedin}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex h-10 w-10 items-center justify-center rounded-xs border border-border text-muted-foreground transition-colors duration-150 hover:border-primary hover:text-accent-foreground hover:bg-accent motion-reduce:transition-none"
-                        >
-                          <span className="sr-only">LinkedIn</span>
-                          <svg className="w-4.5 h-4.5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.338 16.338H13.67V12.16c0-.995-.017-2.277-1.387-2.277-1.39 0-1.601 1.086-1.601 2.207v4.248H8.014v-8.59h2.559v1.174h.037c.356-.675 1.227-1.387 2.526-1.387 2.703 0 3.203 1.778 3.203 4.092v4.711zM5.005 6.575a1.548 1.548 0 11-.003-3.096 1.548 1.548 0 01.003 3.096zm-1.337 9.763H6.34v-8.59H3.667v8.59zM17.668 1H2.328C1.595 1 1 1.581 1 2.298v15.403C1 18.418 1.595 19 2.328 19h15.34c.734 0 1.332-.582 1.332-1.299V2.298C19 1.581 18.402 1 17.668 1z" clipRule="evenodd" /></svg>
-                        </a>
-                      )}
-                      {contactInfo.socialLinks.twitter && (
-                        <a
-                          href={contactInfo.socialLinks.twitter}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex h-10 w-10 items-center justify-center rounded-xs border border-border text-muted-foreground transition-colors duration-150 hover:border-primary hover:text-accent-foreground hover:bg-accent motion-reduce:transition-none"
-                        >
-                          <span className="sr-only">Twitter</span>
-                          <svg className="w-4.5 h-4.5" fill="currentColor" viewBox="0 0 20 20"><path d="M6.29 18.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0020 3.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.073 4.073 0 01.8 7.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 010 16.407a11.616 11.616 0 006.29 1.84" /></svg>
-                        </a>
-                      )}
-                      {contactInfo.socialLinks.instagram && (
-                        <a
-                          href={contactInfo.socialLinks.instagram}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex h-10 w-10 items-center justify-center rounded-xs border border-border text-muted-foreground transition-colors duration-150 hover:border-primary hover:text-accent-foreground hover:bg-accent motion-reduce:transition-none"
-                        >
-                          <span className="sr-only">Instagram</span>
-                          <svg className="w-4.5 h-4.5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 0C4.477 0 0 4.484 0 10.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0110 4.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.203 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.942.359.31.678.921.678 1.856 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0020 10.017C20 4.484 15.522 0 10 0z" clipRule="evenodd" /></svg>
-                        </a>
-                      )}
-                      {contactInfo.socialLinks.facebook && (
-                        <a
-                          href={contactInfo.socialLinks.facebook}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex h-10 w-10 items-center justify-center rounded-xs border border-border text-muted-foreground transition-colors duration-150 hover:border-primary hover:text-accent-foreground hover:bg-accent motion-reduce:transition-none"
-                        >
-                          <span className="sr-only">Facebook</span>
-                          <svg className="w-4.5 h-4.5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M20 10c0-5.523-4.477-10-10-10S0 4.477 0 10c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V10h2.54V7.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V10h2.773l-.443 2.89h-2.33v6.988C16.343 19.128 20 14.991 20 10z" clipRule="evenodd" /></svg>
-                        </a>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </ScrollReveal>
-          </div>
-
-          {/* Map section */}
-          <ScrollReveal className="mt-16 lg:mt-24" delay={0.1}>
-            <div className="rounded-sm border border-border bg-card p-8 shadow-[var(--shadow-sm)]">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-semibold tracking-tight text-foreground">Konumumuz</h3>
-                <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                  <MapPin className="h-3.5 w-3.5" />
-                  <span>Haritada göster</span>
-                </div>
-              </div>
-
-              {contactLoading ? (
-                <div className="rounded-sm bg-muted p-4 space-y-3">
-                  <Skeleton className="h-10 w-10 rounded-xs" />
-                  <Skeleton className="h-4 w-1/2" />
-                  <Skeleton className="h-4 w-3/4" />
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-sm bg-surface-secondary p-4">
-                    <div className="flex items-center gap-3">
-                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xs bg-accent">
-                        <MapPin className="h-5 w-5 text-accent-foreground" />
-                      </span>
-                      <div>
-                        <p className="text-sm font-medium text-foreground">İletişim Bilgileri</p>
-                        <p className="text-xs text-muted-foreground">{contactInfo.address}</p>
-                      </div>
-                    </div>
-                    <div className="flex gap-2">
-                      <a
-                        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(contactInfo.address)}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center rounded-xs border border-border px-4 py-2 text-xs font-medium text-foreground transition-colors duration-150 hover:border-primary hover:text-accent-foreground motion-reduce:transition-none"
-                      >
-                        Büyük Harita
-                      </a>
-                      <a
-                        href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(contactInfo.address)}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center rounded-xs bg-primary px-4 py-2 text-xs font-medium text-primary-foreground transition-colors duration-200 hover:bg-primary/90 active:scale-[0.98] motion-reduce:transition-none"
-                      >
-                        Yol Tarifi
-                      </a>
-                    </div>
-                  </div>
-
-                  <div className="relative h-96 overflow-hidden rounded-sm bg-muted">
-                    <iframe
-                      src={`https://maps.google.com/maps?width=100%25&height=400&hl=tr&q=${encodeURIComponent(contactInfo.address)}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
-                      className="w-full h-full border-0"
-                      allowFullScreen
-                      loading="lazy"
-                      referrerPolicy="no-referrer-when-downgrade"
-                      title="İletişim Konumu"
-                    />
-                    <div
-                      className="absolute inset-0 flex items-center justify-center bg-muted pointer-events-none opacity-100 transition-opacity duration-700"
-                      id="map-loading"
-                    >
-                      <div className="text-center">
-                        <span className="mb-2 block h-8 w-8 mx-auto animate-spin rounded-full border-2 border-border border-t-primary" />
-                        <span className="text-sm text-muted-foreground">Harita yükleniyor...</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          </ScrollReveal>
-        </div>
-      </section>
-    </div>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M12 15V4M7.5 8.5 12 4l4.5 4.5M4 15v3.5A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5V15" />
+    </svg>
   );
 }
 
-export default function ContactClient() {
-  return (
-    <Suspense fallback={
-      <div className="min-h-dvh bg-background">
-        <div className="bg-primary pt-32 pb-20 md:pt-40 md:pb-28">
-          <div className="container-content text-center">
-            <span className="mb-4 block h-16 w-16 mx-auto animate-spin rounded-full border-4 border-primary-foreground/25 border-t-primary-foreground" />
-            <p className="text-primary-foreground/85 text-lg">İletişim sayfası yükleniyor...</p>
-          </div>
+/* --------------------------------------------------------------- Teklif formu */
+
+function QuoteForm({ lang, t }: { lang: string; t: T }) {
+  const L = toFxLocale(lang);
+  const fxSvc = useFx(lang);
+  const params = useSearchParams();
+  const preset = useMemo(() => {
+    const q = params?.get('service')?.trim();
+    if (!q) return [] as string[];
+    const s = fxSvc.service(q);
+    return s ? [s.key] : [];
+  }, [params, fxSvc]);
+
+  const [step, setStep] = useState(0);
+  const [furthest, setFurthest] = useState(0);
+  const [sel, setSel] = useState<string[]>(preset);
+  const [desc, setDesc] = useState('');
+  const [size, setSize] = useState('');
+  const [qty, setQty] = useState('');
+  const [material, setMaterial] = useState<(typeof MATERIALS)[number]>('unknown');
+  const [files, setFiles] = useState<{ name: string; size: number }[]>([]);
+  const [over, setOver] = useState(false);
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [status, setStatus] = useState<'idle' | 'sending' | 'done' | 'error'>('idle');
+  const fieldsetRef = useRef<HTMLFieldSetElement>(null);
+  const doneRef = useRef<HTMLDivElement>(null);
+  const navigated = useRef(false);
+  const dropRef = useRef<HTMLLabelElement>(null);
+  const addFilesRef = useRef<(l: FileList | null) => void>(() => {});
+
+  // ?service= sonradan değişirse (istemci içi gezinme) ön seçimi uygula
+  const [presetSeen, setPresetSeen] = useState(preset.join());
+  if (preset.join() !== presetSeen) {
+    setPresetSeen(preset.join());
+    if (preset.length) setSel((s) => Array.from(new Set([...s, ...preset])));
+  }
+
+  useEffect(() => {
+    if (!navigated.current) return;
+    fieldsetRef.current?.focus();
+  }, [step]);
+  useEffect(() => {
+    if (status === 'done') doneRef.current?.focus();
+  }, [status]);
+
+  // Sürükle-bırak: dinleyiciler doğrudan bırakma alanına bağlanır (adım 03 görünürken)
+  useEffect(() => {
+    const el = dropRef.current;
+    if (!el) return;
+    const onOver = (e: DragEvent) => { e.preventDefault(); setOver(true); };
+    const onLeave = () => setOver(false);
+    const onDrop = (e: DragEvent) => { e.preventDefault(); setOver(false); addFilesRef.current(e.dataTransfer?.files || null); };
+    el.addEventListener('dragover', onOver);
+    el.addEventListener('dragleave', onLeave);
+    el.addEventListener('drop', onDrop);
+    return () => {
+      el.removeEventListener('dragover', onOver);
+      el.removeEventListener('dragleave', onLeave);
+      el.removeEventListener('drop', onDrop);
+    };
+  }, [step, status]);
+
+  const stepName = (i: number) => t(`contact.form.steps.${STEP_KEYS[i]}`);
+
+  const validate = (i: number) => {
+    const e: Record<string, string> = {};
+    if (i === 1 && desc.trim().length < 10) e.desc = t('contact.form.errors.desc');
+    if (i === 3) {
+      if (name.trim().length < 2) e.name = t('contact.form.errors.name');
+      if (!isEmail(email)) e.email = t('contact.form.errors.email');
+      if (phone.trim() && !isPhone(phone)) e.phone = t('contact.form.errors.phone');
+    }
+    return e;
+  };
+
+  const focusField = (id: string) => {
+    window.requestAnimationFrame(() => document.getElementById(`cq-${id}`)?.focus());
+  };
+
+  const goTo = (target: number) => {
+    if (target === step) return;
+    if (target > step) {
+      for (let i = step; i < target; i++) {
+        const e = validate(i);
+        if (Object.keys(e).length) {
+          navigated.current = true;
+          if (i !== step) setStep(i);
+          setErrors(e);
+          focusField(Object.keys(e)[0]);
+          return;
+        }
+      }
+    }
+    navigated.current = true;
+    setErrors({});
+    setStep(target);
+    setFurthest((f) => Math.max(f, target));
+  };
+
+  const addFiles = (list: FileList | null) => {
+    if (!list?.length) return;
+    // FileList canlıdır (input temizlenince boşalır); önce kopyalanır
+    const incoming = Array.from(list);
+    setFiles((cur) => {
+      const next = [...cur];
+      incoming.forEach((f) => {
+        if (next.length < MAX_FILES && !next.some((x) => x.name === f.name && x.size === f.size)) next.push({ name: f.name, size: f.size });
+      });
+      return next;
+    });
+  };
+
+  useEffect(() => { addFilesRef.current = addFiles; });
+
+  const submit = async (ev: React.FormEvent) => {
+    ev.preventDefault();
+    if (status === 'sending') return;
+    if (step < 3) { goTo(step + 1); return; }
+    const e1 = validate(1);
+    if (Object.keys(e1).length) {
+      navigated.current = true;
+      setStep(1);
+      setErrors(e1);
+      focusField('desc');
+      return;
+    }
+    const e3 = validate(3);
+    setErrors(e3);
+    if (Object.keys(e3).length) { focusField(Object.keys(e3)[0]); return; }
+    setStatus('sending');
+    const res = await sendQuote({
+      name: name.trim(),
+      email: email.trim(),
+      phone: phone.trim() || undefined,
+      services: sel.map((k) => fxSvc.service(k)?.text.tr.name || k),
+      quantity: qty.trim() || undefined,
+      size: size.trim() || undefined,
+      material: material === 'unknown' ? undefined : t(`contact.form.materials.${material}`),
+      message: desc.trim(),
+      files: files.map((f) => f.name),
+      source: 'contact',
+    });
+    setStatus(res.ok ? 'done' : 'error');
+  };
+
+  const reset = () => {
+    setSel([]); setDesc(''); setSize(''); setQty(''); setMaterial('unknown'); setFiles([]);
+    setName(''); setEmail(''); setPhone(''); setErrors({}); setStatus('idle');
+    navigated.current = true; setStep(0); setFurthest(0);
+  };
+
+  const err = (id: string) => (errors[id] ? { 'aria-invalid': true as const, 'aria-describedby': `cq-${id}-err` } : {});
+  const errMsg = (id: string) => (errors[id] ? <p className="fx-field__err" id={`cq-${id}-err`}>{errors[id]}</p> : null);
+
+  if (status === 'done') {
+    return (
+      <div className="fx-qform fx-qform__done">
+        <div className="fx-notice fx-notice--ok" role="status" tabIndex={-1} ref={doneRef}>
+          <b>{t('contact.form.doneTitle')}</b>
+          <span className="fx-small fx-muted">{t('contact.form.doneBody')}</span>
+          {files.length > 0 && <span className="fx-small fx-muted">{t('contact.form.doneFiles')}</span>}
         </div>
+        <button type="button" className="fx-btn fx-btn--ghost" onClick={reset}>{t('contact.form.again')}</button>
       </div>
-    }>
-      <ContactPageContent />
-    </Suspense>
+    );
+  }
+
+  return (
+    <form className="fx-form fx-qform" onSubmit={submit} noValidate aria-label={t('contact.form.label')}>
+      <nav aria-label={t('contact.form.stepsLabel')}>
+        <ol className="fx-steps-nav">
+          {STEP_KEYS.map((k, i) => (
+            <li key={k}>
+              <button
+                type="button"
+                aria-current={i === step ? 'step' : undefined}
+                className={i !== step && i <= furthest ? 'done' : undefined}
+                onClick={() => goTo(i)}
+              >
+                <span className="fx-steps-nav__no">{String(i + 1).padStart(2, '0')}</span>
+                {stepName(i)}
+                {i !== step && i < furthest && <span className="sr-only"> ({t('contact.form.done')})</span>}
+              </button>
+            </li>
+          ))}
+        </ol>
+      </nav>
+
+      <fieldset className="fx-fstep" ref={fieldsetRef} tabIndex={-1} aria-describedby={Object.keys(errors).length ? 'cq-summary' : undefined}>
+        <legend className="sr-only">{t('contact.form.stepOf', { n: step + 1, total: STEP_KEYS.length, name: stepName(step) })}</legend>
+
+        {step === 0 && (
+          <div className="fx-field" role="group" aria-labelledby="cq-svc-lbl" aria-describedby="cq-svc-hint">
+            <span className="fx-lbl" id="cq-svc-lbl">{t('contact.form.servicesLabel')}</span>
+            <small id="cq-svc-hint">{t('contact.form.servicesHint')}</small>
+            <div className="fx-chips">
+              {fxSvc.services.map((s) => (
+                <button
+                  key={s.key}
+                  type="button"
+                  className="fx-chip"
+                  aria-pressed={sel.includes(s.key)}
+                  onClick={() => setSel((cur) => (cur.includes(s.key) ? cur.filter((x) => x !== s.key) : [...cur, s.key]))}
+                >
+                  <ServiceIcon name={s.icon} />
+                  {s.text[L].name}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {step === 1 && (
+          <>
+            <div className="fx-field">
+              <label htmlFor="cq-desc">{t('contact.form.desc')}</label>
+              <textarea id="cq-desc" value={desc} onChange={(e) => setDesc(e.target.value)} placeholder={t('contact.form.descPh')} maxLength={1500} required aria-required="true" {...err('desc')} />
+              {errMsg('desc')}
+            </div>
+            <div className="fx-row2">
+              <div className="fx-field">
+                <label htmlFor="cq-size">{t('contact.form.size')} <span className="fx-req">{t('contact.form.optional')}</span></label>
+                <input id="cq-size" type="text" value={size} onChange={(e) => setSize(e.target.value)} placeholder={t('contact.form.sizePh')} maxLength={80} />
+              </div>
+              <div className="fx-field">
+                <label htmlFor="cq-qty">{t('contact.form.qty')} <span className="fx-req">{t('contact.form.optional')}</span></label>
+                <input id="cq-qty" type="text" inputMode="numeric" value={qty} onChange={(e) => setQty(e.target.value)} placeholder="1" maxLength={20} />
+              </div>
+            </div>
+            <div className="fx-field">
+              <label htmlFor="cq-mat">{t('contact.form.material')}</label>
+              <select id="cq-mat" value={material} onChange={(e) => setMaterial(e.target.value as (typeof MATERIALS)[number])}>
+                {MATERIALS.map((m) => <option key={m} value={m}>{t(`contact.form.materials.${m}`)}</option>)}
+              </select>
+            </div>
+          </>
+        )}
+
+        {step === 2 && (
+          <>
+            <label className={`fx-drop ${over ? 'is-over' : ''}`} htmlFor="cq-file" ref={dropRef}>
+              <input id="cq-file" type="file" multiple accept={ACCEPT} aria-describedby="cq-file-note" onChange={(e) => { addFiles(e.target.files); e.target.value = ''; }} />
+              <UploadIcon />
+              <b>{t('contact.form.dropTitle')}</b>
+              <span className="fx-small">{t('contact.form.dropHint')}</span>
+            </label>
+            <p className="fx-notice fx-small" id="cq-file-note">{t('contact.form.filesNote')}</p>
+            {files.length > 0 && (
+              <div className="fx-field">
+                <span className="fx-lbl" id="cq-files-lbl">{t('contact.form.filesChosen')} <span className="fx-req fx-mono">· {files.length}</span></span>
+                <ul className="fx-filelist" aria-labelledby="cq-files-lbl">
+                  {files.map((f) => (
+                    <li key={`${f.name}-${f.size}`} className="fx-filechip">
+                      <span>{f.name}</span>
+                      <small>{fmtSize(f.size)}</small>
+                      <button type="button" aria-label={t('contact.form.removeFile', { name: f.name })} onClick={() => setFiles((cur) => cur.filter((x) => x !== f))}>
+                        <CloseIcon />
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            <p className="fx-fstep__lede">{t('contact.form.photoTip')}</p>
+          </>
+        )}
+
+        {step === 3 && (
+          <>
+            <div className="fx-row2">
+              <div className="fx-field">
+                <label htmlFor="cq-name">{t('contact.form.name')}</label>
+                <input id="cq-name" type="text" autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} maxLength={100} required aria-required="true" {...err('name')} />
+                {errMsg('name')}
+              </div>
+              <div className="fx-field">
+                <label htmlFor="cq-email">{t('contact.form.email')}</label>
+                <input id="cq-email" type="email" autoComplete="email" inputMode="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={t('contact.form.emailPh')} maxLength={160} required aria-required="true" {...err('email')} />
+                {errMsg('email')}
+              </div>
+            </div>
+            <div className="fx-field">
+              <label htmlFor="cq-phone">{t('contact.form.phone')} <span className="fx-req">{t('contact.form.optional')}</span></label>
+              <input id="cq-phone" type="tel" autoComplete="tel" inputMode="tel" value={phone} onChange={(e) => setPhone(e.target.value)} maxLength={24} {...err('phone')} />
+              {errMsg('phone')}
+            </div>
+          </>
+        )}
+      </fieldset>
+
+      {Object.keys(errors).length > 0 && <p className="sr-only" id="cq-summary" role="alert">{t('contact.form.errors.summary')}</p>}
+
+      <div className="fx-form-actions">
+        {step > 0 && (
+          <button type="button" className="fx-btn fx-btn--ghost" onClick={() => goTo(step - 1)}>{t('contact.form.back')}</button>
+        )}
+        <button type="submit" className="fx-btn fx-btn--primary" disabled={status === 'sending'} aria-busy={status === 'sending'}>
+          {step < 3 ? t('contact.form.next') : status === 'sending' ? t('contact.form.sending') : t('contact.form.submit')} <ArrowRight />
+        </button>
+      </div>
+
+      {status === 'error' && (
+        <div className="fx-notice fx-notice--err" role="alert">
+          <b>{t('contact.form.errorTitle')}</b>
+          <span className="fx-small fx-muted">{t('contact.form.errorBody')}</span>
+        </div>
+      )}
+    </form>
+  );
+}
+
+/* ----------------------------------------------------------- İletişim bilgisi */
+
+function InfoList({ t }: { t: T }) {
+  const [info, setInfo] = useState<ContactInfo | null>(null);
+  const [state, setState] = useState<'loading' | 'ok' | 'error'>('loading');
+
+  useEffect(() => {
+    let off = false;
+    fetch('/api/public/contact-info')
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
+      .then((data: ContactInfo) => { if (!off) { setInfo(data); setState('ok'); } })
+      .catch(() => { if (!off) setState('error'); });
+    return () => { off = true; };
+  }, []);
+
+  const email = info?.email?.trim();
+  const phone = info?.phone?.trim();
+  const address = info?.address?.trim();
+  const hours = info?.workingHours?.trim();
+  const socials = Object.entries(info?.socialLinks || {})
+    .map(([k, v]) => ({ key: k, label: SOCIAL[k]?.label || k, href: socialHref(k, String(v || '')) }))
+    .filter((s) => s.href);
+  const newTab = <span className="sr-only"> ({t('contact.info.newTab')})</span>;
+
+  return (
+    <aside className="fx-contact-aside" aria-label={t('contact.info.label')}>
+      <div className="fx-info-list" aria-busy={state === 'loading'}>
+        {state === 'loading' && (
+          <>
+            <span className="sr-only" role="status">{t('contact.info.loading')}</span>
+            {[0, 1, 2].map((i) => (
+              <div key={i} className="fx-info-list__skel" aria-hidden="true">
+                <span className="fx-skel-line fx-skel-line--short" />
+                <span className="fx-skel-line fx-skel-line--mid" />
+              </div>
+            ))}
+          </>
+        )}
+        {state === 'ok' && (
+          <>
+            {email && (
+              <div>
+                <small>{t('contact.info.email')}</small>
+                <a className="fx-mono" href={`mailto:${email}`}>{email}</a>
+              </div>
+            )}
+            {phone && (
+              <div>
+                <small>{t('contact.info.phone')}</small>
+                <a className="fx-mono" href={`tel:${phone.replace(/[^\d+]/g, '')}`}>{phone}</a>
+              </div>
+            )}
+            {address && (
+              <div>
+                <small>{t('contact.info.address')}</small>
+                <address><span>{address}</span></address>
+                <span className="fx-inline-links">
+                  <a className="fx-link" href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`} target="_blank" rel="noopener noreferrer">
+                    {t('contact.info.map')} <ExternalIcon />{newTab}
+                  </a>
+                  <a className="fx-link" href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(address)}`} target="_blank" rel="noopener noreferrer">
+                    {t('contact.info.directions')} <ExternalIcon />{newTab}
+                  </a>
+                </span>
+              </div>
+            )}
+            {hours && (
+              <div>
+                <small>{t('contact.info.hours')}</small>
+                <span>{hours === DEFAULT_HOURS ? t('contact.info.hoursDefault') : hours}</span>
+              </div>
+            )}
+          </>
+        )}
+        <div>
+          <small>{t('contact.info.response')}</small>
+          <span>{t('contact.info.responseValue')}</span>
+        </div>
+        {state === 'ok' && socials.length > 0 && (
+          <div>
+            <small>{t('contact.info.channels')}</small>
+            <span className="fx-inline-links">
+              {socials.map((s) => (
+                <a key={s.key} className="fx-link" href={s.href} target="_blank" rel="noopener noreferrer">
+                  {s.label}{newTab}
+                </a>
+              ))}
+            </span>
+          </div>
+        )}
+      </div>
+      {state === 'error' && (
+        <p className="fx-empty fx-small" role="status">{t('contact.info.unavailable')}</p>
+      )}
+    </aside>
+  );
+}
+
+/* ---------------------------------------------------------------------- Sayfa */
+
+export default function ContactClient({ lang }: { lang: string }) {
+  const { t } = useAppTranslations('fx');
+  const head = useFx(lang).page('contact');
+  return (
+    <>
+      <PageHero
+        badge={head.eyebrow || t('contact.hero.eyebrow')}
+        title={head.title || t('contact.hero.title')}
+        description={head.lede || t('contact.hero.lede')}
+      />
+      <section className="fx-sec fx-sec--tight">
+        <div className="fx-wrap fx-contact-grid">
+          <Suspense fallback={<div className="fx-loadrow" role="status"><span className="fx-spin" aria-hidden="true" />{t('common.loading')}</div>}>
+            <QuoteForm lang={lang} t={t} />
+          </Suspense>
+          <InfoList t={t} />
+        </div>
+      </section>
+    </>
   );
 }

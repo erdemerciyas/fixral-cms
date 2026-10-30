@@ -101,3 +101,6 @@ build_output*.txt
 # Lint output artifacts
 lint_output_current.txt
 lint_results.txt
+
+# app/sitemap.ts tarafindan dinamik uretilir; statik kopya onu golgeler
+/public/sitemap.xml

@@ -1,65 +1,49 @@
 'use client'
 
 /**
- * HomeTemplate — anasayfa bileşim şablonu (precision engineering anlatısı).
- * 8 aktif bölüm; TechShowcase3D kaldırıldı (3D viewer hero'ya taşındı),
- * SectionTransition yerine bölüm içi hairline'lar kullanılıyor.
+ * HomeTemplate — FIXRAL anasayfası (redesign 2026).
  *
  * Akış sırası:
- * 1. NewHero                     — full-bleed dark hero (BlueprintGrid + 3D öğe)
- * 2. ClientLogos                 — monospace yetkinlik ticker'ı (capabilities strip)
- * 3. ServicesBentoGrid           — numaralı teknik kart grid'i
- * 4. ProcessFlow                 — Tara → Modelle → Doğrula → Üret (MeasureRule)
- * 5. PortfolioHorizontalShowcase — scan-line hover + monospace metadata
- * 6. StatsCounter                — DataStat bandı (µm / mm / + birimleri)
- * 7. NewsEditorialGrid           — editorial haber grid'i
- * 8. FullWidthCTA                — BlueprintGrid'li dark panel, tek turuncu CTA
+ * 1. HeroSection          — 3D FX işareti (three.js) + tez + teknik resim anteti   [koyu ada]
+ * 2. ServiceStrip         — sekiz hizmet, marka ikonlarıyla                          [koyu ada]
+ * 3. DisciplinesSection   — Mühendislik / Tasarım / Üretim altında 8 hizmet           [açık bant]
+ * 4. ProcessSection       — Tara → Modelle → Doğrula → Üret, kaydırmaya bağlı 3D     [koyu ada]
+ * 5. WorksSection         — seçili projeler (yönetim panelinden, 8/4/4/8 ızgara)    [açık bant]
+ * 6. SoftwareSection      — Fixral 3D Splitter, Router Studio, ESP32-S3 OBD-II
+ * 7. DeliverablesSection  — teslim dosyaları + örnek G-kodu / BOM / ölçüm raporu    [açık bant]
+ * 8. JournalSection       — son haberler ve videolar (yönetim paneli + YouTube)
+ * 9. QuoteBand            — kısa teklif formu (/api/public/contact)                [koyu ada]
+ *
+ * İçerik panelden gelir (Site İçeriği, Hizmetler, Yazılımlar, Slider, Projeler, Haberler,
+ * Videolar); panelde kayıt yoksa `src/content/fixral.ts` + `messages/*.json` varsayılanları kullanılır.
  */
-import { NewHero } from '@/components/home/NewHero'
-import ClientLogos from '@/components/home/ClientLogos'
-import ServicesBentoGrid from '@/components/home/ServicesBentoGrid'
-import ProcessFlow from '@/components/home/ProcessFlow'
-import PortfolioHorizontalShowcase from '@/components/home/PortfolioHorizontalShowcase'
-import NewsEditorialGrid from '@/components/home/NewsEditorialGrid'
-import StatsCounter from '@/components/home/StatsCounter'
-import FullWidthCTA from '@/components/home/FullWidthCTA'
+import HeroSection from '@/components/fx/home/HeroSection'
+import { DisciplinesSection, ServiceStrip } from '@/components/fx/home/ServicesSections'
+import ProcessSection from '@/components/fx/home/ProcessSection'
+import { DeliverablesSection, JournalSection, QuoteBand, SoftwareSection, WorksSection } from '@/components/fx/home/HomeSections'
+import { toFxLocale } from '@/content/fixral'
+import { useFx } from '@/components/fx/FxData'
 
 interface HomeTemplateProps {
   lang?: string
 }
 
-export default function HomeTemplate({ lang: _lang }: HomeTemplateProps) {
+export default function HomeTemplate({ lang }: HomeTemplateProps) {
+  const L = toFxLocale(lang)
+  const { visible } = useFx(L)
+  const openQuote = () => window.dispatchEvent(new Event('openProjectModal'))
+  // Bölüm görünürlüğü: panel → Site İçeriği → Bölümler
   return (
     <>
-      {/* 1. Hero — full-bleed dark panel; fixed header telafisi hero içinde (pt-14) */}
-      <NewHero />
-
-      <main className="relative isolate">
-        {/* 2. Capabilities strip — monospace ticker */}
-        <div className="relative border-b border-border bg-secondary">
-          <ClientLogos />
-        </div>
-
-        {/* 3. Services — numaralı teknik kart grid'i */}
-        <ServicesBentoGrid />
-
-        {/* 4. Process — 4 adımlı süreç akışı */}
-        <ProcessFlow />
-
-        {/* 5. Portfolio — scan-line hover'lı showcase */}
-        <PortfolioHorizontalShowcase />
-
-        {/* 6. Stats — DataStat bandı */}
-        <div className="relative border-y border-border bg-secondary">
-          <StatsCounter />
-        </div>
-
-        {/* 7. News — editorial grid */}
-        <NewsEditorialGrid />
-
-        {/* 8. CTA — full width dark panel */}
-        <FullWidthCTA />
-      </main>
+      <HeroSection lang={L} onQuote={openQuote} />
+      {visible('strip') && <ServiceStrip lang={L} />}
+      {visible('services') && <DisciplinesSection lang={L} />}
+      {visible('process') && <ProcessSection lang={L} />}
+      {visible('works') && <WorksSection lang={L} />}
+      {visible('software') && <SoftwareSection lang={L} />}
+      {visible('deliv') && <DeliverablesSection lang={L} />}
+      {visible('journal') && <JournalSection lang={L} />}
+      {visible('quote') && <QuoteBand lang={L} />}
     </>
   )
 }

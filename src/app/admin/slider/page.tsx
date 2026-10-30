@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import {
   Image as ImageIcon,
   Plus,
@@ -11,7 +12,8 @@ import {
   Trash2,
   Eye,
   ArrowUp,
-  ArrowDown
+  ArrowDown,
+  Info
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useConfirm } from '@/hooks/use-confirm';
@@ -174,6 +176,18 @@ export default function AdminSliderPage() {
         </button>
       }
     >
+      {/* Hero bilgisi: slider'ın anasayfada kullanılıp kullanılmadığı Site İçeriği'nden ayarlanır */}
+      <div className="flex items-start gap-3 rounded-xl border border-info/30 bg-info/5 px-4 py-3 text-sm text-muted-foreground">
+        <Info className="mt-0.5 size-4 shrink-0 text-info" aria-hidden="true" />
+        <p>
+          Anasayfa hero alanının bu slider kayıtlarını kullanıp kullanmayacağı{' '}
+          <Link href="/admin/site-content" className="font-medium text-foreground underline underline-offset-4 hover:text-primary">
+            Site İçeriği → Anasayfa hero
+          </Link>{' '}
+          sayfasından ayarlanır. Açıkken aktif kayıtlar Türkçe anasayfanın hero alanında döner.
+        </p>
+      </div>
+
       {/* Search and Filter Bar */}
       <div className="bg-card rounded-xl shadow-xs border border-border/60 p-4">
         <div className="flex flex-col sm:flex-row gap-4">

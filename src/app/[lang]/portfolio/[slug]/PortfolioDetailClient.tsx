@@ -1,237 +1,210 @@
 'use client';
 
+/**
+ * Proje detayı (redesign 2026) — prototip `PAGES.project(id)`.
+ * PageHero → 5 hücreli proje künyesi (fx-case-meta) → 3D görüntüleyici /
+ * görseller → zengin içerik (public-prose) → sonraki proje → benzer projeler → QuoteBand.
+ */
 import Link from 'next/link';
-import { m } from 'framer-motion';
-import { Check as CheckIcon } from 'lucide-react';
-import { PortfolioItem } from '@/types/portfolio';
 import PageHero from '@/components/common/PageHero';
-import { MeasureRule } from '@/components/ui';
+import { WorkCard } from '@/components/fx/FxCards';
+import { QuoteBand } from '@/components/fx/home/HomeSections';
+import { FxSectionHead } from '@/components/fx/FxSectionHead';
+import { ArrowRight, ExternalIcon, GithubIcon } from '@/components/fx/FxIcons';
 import PortfolioMediaGallery from '@/components/portfolio/PortfolioMediaGallery';
-import Portfolio3DFiles from '@/components/portfolio/Portfolio3DFiles';
-import ModernProjectGrid from '@/components/portfolio/ModernProjectGrid';
+import { usePfT } from '@/components/portfolio/usePfT';
+import { clip, fmtMonthYear, stripTags, toProjectCard, upper, type PfProject } from '@/components/portfolio/portfolio-data';
 import HTMLContent from '@/components/HTMLContent';
 import BreadcrumbsJsonLd from '@/components/seo/BreadcrumbsJsonLd';
 import PortfolioJsonLd from '@/components/seo/PortfolioJsonLd';
+import { useAppTranslations } from '@/hooks/useAppTranslations';
 import { SITE_URL } from '@/lib/seo-utils';
 
 interface Props {
-  portfolioItem: PortfolioItem;
-  relatedProjects: PortfolioItem[];
+  project: PfProject;
+  next: PfProject | null;
+  related: PfProject[];
   slug: string;
-  lang?: string;
+  lang: string;
 }
 
-const EASE = [0.22, 1, 0.36, 1] as const;
+const LEAD_P = /^\s*<p\b[^>]*>([\s\S]*?)<\/p>/i;
 
-export default function PortfolioDetailClient({ portfolioItem, relatedProjects, slug, lang = 'tr' }: Props) {
-  const allImages = portfolioItem.coverImage
-    ? [portfolioItem.coverImage, ...(portfolioItem.images || []).filter(img => img !== portfolioItem.coverImage)]
-    : (portfolioItem.images || []);
+/**
+ * Hero açıklaması ile gövde içeriğini ayırır; aynı metin iki kez gösterilmez.
+ * Açıklama HTML ise ilk paragraf hero'ya çıkar, kalanı gövdede kalır.
+ */
+function splitCopy(p: PfProject): { lede?: string; body?: string } {
+  const desc = p.description || '';
+  const lead = desc.match(LEAD_P);
+  const leadText = lead ? stripTags(lead[1]) : '';
+  if (p.content) return { lede: p.excerpt || clip(leadText || stripTags(desc), 260) || undefined, body: p.content };
+  if (p.excerpt) return { lede: p.excerpt, body: desc || undefined };
+  if (lead && leadText) {
+    const rest = desc.slice(lead[0].length).trim();
+    if (leadText.length <= 320) return { lede: leadText, body: stripTags(rest) ? rest : undefined };
+    return { lede: clip(leadText, 240), body: desc };
+  }
+  const text = stripTags(desc);
+  if (text.length <= 320 && !/<[a-z]/i.test(desc)) return { lede: text || undefined, body: undefined };
+  return { lede: clip(text, 240) || undefined, body: desc || undefined };
+}
 
-  const safeDescription = (() => {
-    const desc = portfolioItem.description || '';
-    let result = '';
-    let inTag = false;
-    for (let i = 0; i < desc.length; i++) {
-      if (desc[i] === '<') { inTag = true; continue; }
-      if (desc[i] === '>') { inTag = false; continue; }
-      if (!inTag) result += desc[i];
-    }
-    return result.slice(0, 200);
-  })();
+const hostOf = (url: string) => {
+  try {
+    return new URL(url).hostname.replace(/^www\./, '');
+  } catch {
+    return url;
+  }
+};
+
+export default function PortfolioDetailClient({ project, next, related, slug, lang }: Props) {
+  const t = usePfT();
+  const { t: tf } = useAppTranslations('fx');
+  const { lede, body } = splitCopy(project);
+  const href = (s: string) => `/${lang}/portfolio/${encodeURIComponent(s)}`;
+
+  const eyebrow = project.categories.length
+    ? project.categories.map((c) => c.name).join(' · ')
+    : project.technologies.slice(0, 3).join(' · ') || t('eyebrow');
+
+  const links = [
+    project.projectUrl && { href: project.projectUrl, label: t('meta.live'), icon: <ExternalIcon /> },
+    project.githubUrl && { href: project.githubUrl, label: t('meta.github'), icon: <GithubIcon /> },
+    project.externalUrl && { href: project.externalUrl, label: `${t('meta.external')} · ${hostOf(project.externalUrl)}`, icon: <ExternalIcon /> },
+  ].filter(Boolean) as { href: string; label: string; icon: React.ReactNode }[];
+
+  const date = fmtMonthYear(project.completionDate, lang);
+  const cells = [
+    project.client && { k: 'client', label: t('meta.client'), value: project.client },
+    date && { k: 'date', label: t('meta.date'), value: date },
+    project.categories.length > 0 && { k: 'cat', label: t('meta.category'), value: project.categories.map((c) => c.name).join(', ') },
+    project.technologies.length > 0 && { k: 'tech', label: t('meta.tech'), value: project.technologies.join(' · ') },
+    links.length > 0 && {
+      k: 'link',
+      label: t('meta.link'),
+      value: (
+        <span className="fx-pf-links">
+          {links.map((l) => (
+            <a key={l.href} className="fx-link" href={l.href} target="_blank" rel="noopener noreferrer">
+              {l.icon}
+              {l.label}
+            </a>
+          ))}
+        </span>
+      ),
+    },
+  ].filter(Boolean) as { k: string; label: string; value: React.ReactNode }[];
+
+  const images = Array.from(new Set([project.coverImage, ...project.images].filter((x): x is string => !!x)));
+  const hasMedia = images.length > 0 || project.models3D.length > 0;
 
   return (
-    <div className="min-h-dvh bg-background">
+    <>
       <PageHero
-        title={portfolioItem.title}
-        showButton={false}
-        variant="compact"
-        showBreadcrumbs={true}
-        featuredBadge={portfolioItem.featured ? 'Öne Çıkan Proje' : undefined}
-        index={2}
+        title={project.title}
+        description={lede}
+        badge={upper(eyebrow, lang)}
+        featuredBadge={project.featured ? upper(t('featured'), lang) : undefined}
+        crumbs={[
+          { label: tf('nav.home'), href: `/${lang}` },
+          { label: t('crumb'), href: `/${lang}/portfolio` },
+          { label: project.title, href: href(project.slug) },
+        ]}
       />
 
       <BreadcrumbsJsonLd
         items={[
-          { name: 'Anasayfa', item: `/${lang}` },
-          { name: 'Portföy', item: `/${lang}/portfolio` },
-          { name: portfolioItem.title, item: `/${lang}/portfolio/${slug}` },
+          { name: tf('nav.home'), item: `/${lang}` },
+          { name: t('crumb'), item: `/${lang}/portfolio` },
+          { name: project.title, item: `/${lang}/portfolio/${slug}` },
         ]}
       />
       <PortfolioJsonLd
-        name={portfolioItem.title}
-        description={safeDescription}
-        url={`${SITE_URL}/tr/portfolio/${slug}`}
-        images={allImages}
+        name={project.title}
+        description={clip(stripTags(project.excerpt || project.description), 200)}
+        url={`${SITE_URL}/${lang}/portfolio/${slug}`}
+        images={images}
         baseUrl={SITE_URL}
       />
 
-      <section className="relative z-10 py-10 md:py-14">
-        <div className="container-content">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
-            <div className="lg:col-span-8 space-y-12">
-              <m.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, ease: EASE }}
-                className="rounded-sm overflow-hidden border border-border bg-surface-primary shadow-[var(--shadow-md)]"
-              >
-                <PortfolioMediaGallery
-                  images={portfolioItem.images || []}
-                  models3D={portfolioItem.models3D || []}
-                  title={portfolioItem.title}
-                  coverImage={portfolioItem.coverImage}
-                />
-              </m.div>
-
-              <m.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.15, ease: EASE }}
-              >
-                <div className="mb-6">
-                  <h2 className="text-xl md:text-2xl font-semibold text-foreground tracking-tight">Proje Detayları</h2>
-                  <MeasureRule ticks="normal" className="mt-4" />
-                </div>
-                <div className="rounded-sm border border-border bg-card p-6 md:p-8 lg:p-10">
-                  <div className="prose prose-lg max-w-none
-                    prose-headings:font-semibold prose-headings:tracking-tight prose-headings:text-foreground
-                    prose-p:text-muted-foreground prose-p:leading-relaxed
-                    prose-a:text-accent-foreground prose-a:hover:text-accent-foreground
-                    prose-strong:text-foreground
-                    prose-li:text-muted-foreground">
-                    <HTMLContent content={portfolioItem.description} className="leading-relaxed" />
+      {(cells.length > 0 || hasMedia) && (
+        <section className="fx-sec fx-sec--tight" aria-label={t('meta.label')}>
+          <div className="fx-wrap fx-pf-case">
+            {cells.length > 0 && (
+              <dl className={`fx-case-meta fx-pf-meta fx-pf-meta--n${cells.length}`}>
+                {cells.map((c) => (
+                  <div key={c.k}>
+                    <dt><small>{c.label}</small></dt>
+                    <dd>{typeof c.value === 'string' ? <span>{c.value}</span> : c.value}</dd>
                   </div>
-                </div>
-              </m.div>
+                ))}
+              </dl>
+            )}
+            {hasMedia && (
+              <PortfolioMediaGallery
+                images={project.images}
+                models3D={project.models3D}
+                title={project.title}
+                coverImage={project.coverImage}
+              />
+            )}
+          </div>
+        </section>
+      )}
 
-              {portfolioItem.models3D && portfolioItem.models3D.length > 0 && (
-                <m.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.25, ease: EASE }}
-                  className="rounded-sm border border-border bg-surface-primary p-6"
-                >
-                  <h3 className="text-lg font-semibold text-foreground mb-3">3D Modeller</h3>
-                  <MeasureRule ticks="sparse" className="mb-4" />
-                  <Portfolio3DFiles models3D={portfolioItem.models3D} />
-                </m.div>
-              )}
-            </div>
-
-            <div className="lg:col-span-4 space-y-8">
-              <m.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8, delay: 0.3, ease: EASE }}
-                className="lg:sticky lg:top-24 space-y-6"
-              >
-                <div className="rounded-sm border border-border bg-surface-primary p-6 md:p-8">
-                  <h3 className="text-xl font-semibold text-foreground tracking-tight mb-4">Proje Bilgileri</h3>
-                  <MeasureRule ticks="sparse" className="mb-1" />
-                  {/* Monospace spec tablosu — hairline satır ayraçları */}
-                  <dl className="divide-y divide-border">
-                    {portfolioItem.client && (
-                      <div className="flex items-baseline justify-between gap-4 py-3">
-                        <dt className="shrink-0 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">Müşteri</dt>
-                        <dd className="text-right text-sm font-medium text-foreground">{portfolioItem.client}</dd>
-                      </div>
-                    )}
-                    {portfolioItem.completionDate && (
-                      <div className="flex items-baseline justify-between gap-4 py-3">
-                        <dt className="shrink-0 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">Tarih</dt>
-                        <dd className="text-right font-mono text-sm text-foreground tabular-nums">
-                          {new Date(portfolioItem.completionDate).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })}
-                        </dd>
-                      </div>
-                    )}
-                    {(portfolioItem.category || (portfolioItem.categories && portfolioItem.categories.length > 0)) && (
-                      <div className="flex items-baseline justify-between gap-4 py-3">
-                        <dt className="shrink-0 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">Kategori</dt>
-                        <dd className="text-right text-sm font-medium text-foreground">
-                          {portfolioItem.categories && portfolioItem.categories.length > 0
-                            ? portfolioItem.categories.map(cat => cat.name).join(', ')
-                            : portfolioItem.category?.name || 'Genel'}
-                        </dd>
-                      </div>
-                    )}
-                    <div className="flex items-baseline justify-between gap-4 py-3">
-                      <dt className="shrink-0 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">Durum</dt>
-                      <dd>
-                        <span className="inline-flex items-center rounded-xs border border-success/30 bg-success/10 px-2.5 py-1 font-mono text-[11px] uppercase tracking-[0.14em] text-success">
-                          <CheckIcon className="w-3.5 h-3.5 mr-1.5" aria-hidden="true" />
-                          Tamamlandı
-                        </span>
-                      </dd>
-                    </div>
-                    {portfolioItem.technologies && portfolioItem.technologies.length > 0 && (
-                      <div className="py-3">
-                        <dt className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground mb-3">Kullanılan Teknolojiler</dt>
-                        <dd className="flex flex-wrap gap-2">
-                          {portfolioItem.technologies.map((tech, index) => (
-                            <span
-                              key={index}
-                              className="rounded-xs border border-border bg-secondary px-2.5 py-1 font-mono text-[11px] text-foreground"
-                            >
-                              {tech}
-                            </span>
-                          ))}
-                        </dd>
-                      </div>
-                    )}
-                  </dl>
-                </div>
-
-                <div className="rounded-sm p-6 md:p-8 text-center border border-primary/30 bg-card">
-                  <div className="relative z-10">
-                    <h4 className="text-xl font-semibold mb-3 text-foreground tracking-tight">Benzer Bir Projeniz mi Var?</h4>
-                    <p className="text-muted-foreground text-sm mb-6 leading-relaxed">
-                      Sizin için de benzer bir çözüm üretebiliriz. Detayları konuşmak için iletişime geçin.
-                    </p>
-                    <Link
-                      href={`/${lang}/contact`}
-                      className="inline-flex items-center justify-center w-full px-6 py-3 bg-primary text-primary-foreground text-sm font-semibold rounded-xs hover:bg-primary/90 transition-colors duration-200 active:scale-[0.98] shadow-[var(--shadow-sm)] motion-reduce:transition-none"
-                    >
-                      Teklif Alın
-                    </Link>
-                  </div>
-                </div>
-              </m.div>
+      {body && (
+        <section className={`fx-sec fx-pf-body ${cells.length > 0 || hasMedia ? 'fx-pf-body--follow' : ''}`} aria-labelledby="fx-pf-notes">
+          <div className="fx-wrap">
+            <div className="fx-block">
+              <h2 id="fx-pf-notes">{t('detailsTitle')}</h2>
+              <div className="fx-block__body">
+                <HTMLContent content={body} className="fx-pf-prose" />
+              </div>
             </div>
           </div>
+        </section>
+      )}
 
-          {relatedProjects.length > 0 && (
-            <div className="mt-20 md:mt-28 pt-14 border-t border-border">
-              <div className="section-header">
-                <h2 className="section-title text-foreground">Benzer Projeler</h2>
-                <p className="section-subtitle">Aynı kategoriden ilginizi çekebilecek diğer çalışmalarımız</p>
-              </div>
-              <div className="mb-12">
-                <ModernProjectGrid
-                  projects={relatedProjects.map(p => ({
-                    id: p._id,
-                    slug: p.slug,
-                    title: p.title || '',
-                    description: p.description || '',
-                    coverImage: p.coverImage || '',
-                    category: p.categories && p.categories.length > 0
-                      ? p.categories.map(cat => cat.name).join(', ')
-                      : p.category?.name || 'Genel',
-                    client: p.client,
-                    completionDate: p.completionDate,
-                    technologies: p.technologies,
-                    featured: p.featured
-                  }))}
-                  layout="grid"
-                />
-              </div>
-              <div className="text-center">
-                <Link href={`/${lang}/portfolio`} className="btn-outline">Tüm Portföyü Görüntüle</Link>
-              </div>
+      {next && (
+        <section className="fx-sec fx-sec--alt fx-sec--tight fx-pf-next" aria-labelledby="fx-pf-next-title">
+          <div className="fx-wrap fx-pf-next__in">
+            <div className="fx-pf-next__copy">
+              <span className="fx-tag">{upper(t('next'), lang)}</span>
+              <Link id="fx-pf-next-title" href={href(next.slug)} className="fx-h2 fx-pf-next__title">
+                {next.title}
+              </Link>
             </div>
-          )}
-        </div>
-      </section>
-    </div>
+            <Link className="fx-btn fx-btn--ghost" href={href(next.slug)} aria-label={`${t('goNext')}: ${next.title}`}>
+              {t('goNext')} <ArrowRight />
+            </Link>
+          </div>
+        </section>
+      )}
+
+      {related.length > 0 && (
+        <section className="fx-sec fx-pf-related" aria-labelledby="fx-pf-related-title">
+          <div className="fx-wrap">
+            <FxSectionHead
+              id="fx-pf-related-title"
+              eyebrow={t('relatedEyebrow')}
+              title={t('relatedTitle')}
+              aside={
+                <Link className="fx-link" href={`/${lang}/portfolio`}>
+                  {t('all')} <ArrowRight />
+                </Link>
+              }
+            />
+            <div className="fx-works">
+              {related.map((p) => (
+                <WorkCard key={p._id} data={toProjectCard(p, lang)} span={related.length === 3 ? 4 : related.length === 2 ? 6 : 12} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      <QuoteBand lang={lang} />
+    </>
   );
 }

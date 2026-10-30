@@ -5,12 +5,11 @@ import { rateLimit, getClientIP, RATE_LIMITS } from '@/lib/rate-limit';
 import { SecurityHeaders, getPageType } from '@/lib/security-headers';
 import { logger } from '@/core/lib/logger';
 
-const locales = ['tr', 'es'];
+const locales = ['tr'];
 const defaultLocale = 'tr';
 
 const LOCALIZED_ROUTE_MAP: Record<string, Record<string, string>> = {
   tr: { noticias: 'haberler' },
-  es: { haberler: 'noticias' },
 };
 
 let pageSettingsCache: { data: PageSetting[]; timestamp: number } | null = null;
@@ -204,6 +203,14 @@ export async function proxy(request: NextRequest) {
     }
   }
 
+  // --- i18n: kaldırılan İspanyolca adresler kalıcı olarak Türkçe karşılığına yönlenir ---
+  if (pathname === '/es' || pathname.startsWith('/es/')) {
+    const rest = pathname.slice(3).replace(/^\/noticias(?=\/|$)/, '/haberler');
+    const newUrl = new URL(`/${defaultLocale}${rest}`, request.url);
+    newUrl.search = request.nextUrl.search;
+    return NextResponse.redirect(newUrl, 301);
+  }
+
   // --- i18n: redirect locale-less public pages to default locale ---
   if (!pathname.startsWith('/api') && !pathname.startsWith('/admin')) {
     const pathnameIsMissingLocale = locales.every(
@@ -217,7 +224,7 @@ export async function proxy(request: NextRequest) {
       return NextResponse.redirect(newUrl);
     }
 
-    // Redirect mismatched locale-route combos (e.g. /es/haberler -> /es/noticias)
+    // Redirect legacy route names (e.g. /tr/noticias -> /tr/haberler)
     const segments = pathname.split('/');
     if (segments.length >= 3 && locales.includes(segments[1])) {
       const lang = segments[1];
@@ -263,8 +270,6 @@ export async function proxy(request: NextRequest) {
   } else if (pathname.startsWith('/api')) {
     secureResponse.headers.set('X-Robots-Tag', 'noindex, nofollow');
     secureResponse.headers.set('Cache-Control', 'no-cache, no-store, must-revalidate');
-  } else {
-    secureResponse.headers.set('X-Robots-Tag', 'index, follow');
   }
 
   if (process.env.VERCEL) {

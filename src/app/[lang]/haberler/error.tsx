@@ -1,23 +1,35 @@
 'use client';
 
-export default function NewsError({ error, reset }: { error: Error; reset: () => void }) {
-    return (
-        <div className="min-h-dvh bg-background flex items-center justify-center p-8">
-            <div className="text-center max-w-md">
-                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-destructive/15 text-destructive mb-6">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
-                    </svg>
-                </div>
-                <h1 className="text-2xl font-bold text-foreground mb-3">Bir hata oluştu</h1>
-                <p className="text-muted-foreground mb-8">Sayfa yüklenirken bir sorun oluştu. Lütfen tekrar deneyin.</p>
-                <button
-                    onClick={reset}
-                    className="px-6 py-2.5 bg-primary text-primary-foreground rounded-lg font-medium hover:opacity-90 transition-opacity"
-                >
-                    Tekrar Dene
-                </button>
-            </div>
-        </div>
-    );
+/** Haber listesi/yazısı hata sınırı (redesign 2026). */
+import { useEffect } from 'react';
+import Link from 'next/link';
+import { useAppTranslations } from '@/hooks/useAppTranslations';
+import { newsBase } from '@/content/fixral';
+import { FxSystemPage } from '@/components/fx/FxSystem';
+
+export default function NewsError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
+  const { t, locale: lang } = useAppTranslations('fx');
+  useEffect(() => {
+    console.error('News error:', error);
+  }, [error]);
+
+  return (
+    <FxSystemPage
+      eyebrow={t('system.error.eyebrow')}
+      title={t('system.newsError.title')}
+      lede={t('system.newsError.lede')}
+      crumb={t('system.error.eyebrow')}
+      actions={
+        <>
+          <button type="button" className="fx-btn fx-btn--primary" onClick={reset}>{t('system.error.retry')}</button>
+          <Link className="fx-btn fx-btn--ghost" href={newsBase(lang)}>{t('system.newsError.list')}</Link>
+          <Link className="fx-btn fx-btn--ghost" href={`/${lang}`}>{t('system.home')}</Link>
+        </>
+      }
+    >
+      {error.digest && (
+        <p className="fx-sys-path"><span>{t('system.error.code')}</span><code>{error.digest}</code></p>
+      )}
+    </FxSystemPage>
+  );
 }

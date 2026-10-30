@@ -29,6 +29,14 @@ import {
   Loader2,
 } from 'lucide-react';
 import { availableIcons, resolveIcon } from '@/lib/icons';
+import ServiceWebFields, {
+  buildServiceTranslations,
+  initServiceWebState,
+  serializeServiceWeb,
+  slugError,
+  type ServiceWebState,
+} from '@/components/admin/ServiceWebFields';
+import type { FxLocale } from '@/content/fixral';
 
 const ModernEditor = dynamic(() => import('@/components/admin/ModernEditor'), {
   ssr: false,
@@ -51,6 +59,8 @@ interface TranslationFields {
 interface Service {
   _id: string;
   title: string;
+  slug?: string;
+  isActive?: boolean;
   description: string;
   image: string;
   icon?: string;
@@ -80,6 +90,7 @@ export default function EditServicePage(props: { params: Promise<{ id: string }>
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [seoExpanded, setSeoExpanded] = useState(false);
+  const [web, setWeb] = useState<ServiceWebState>(() => initServiceWebState(null));
 
   const { languages, defaultLanguage, loading: langsLoading, error: langsError } = useActiveLanguages();
   const [activeLanguage, setActiveLanguage] = useState('');
@@ -124,8 +135,8 @@ export default function EditServicePage(props: { params: Promise<{ id: string }>
 
     setTranslations(initTranslations);
     translationsInitialized.current = true;
-    initialFormRef.current = JSON.stringify({ translations: initTranslations, features, serviceImage, serviceIcon });
-  }, [service, languages, features, serviceImage, serviceIcon]);
+    initialFormRef.current = JSON.stringify({ translations: initTranslations, features, serviceImage, serviceIcon, web: serializeServiceWeb(web) });
+  }, [service, languages, features, serviceImage, serviceIcon, web]);
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -143,6 +154,7 @@ export default function EditServicePage(props: { params: Promise<{ id: string }>
         }
         const data = await response.json();
         setService(data);
+        setWeb(initServiceWebState(data));
         setServiceImage(data.image || '');
         setServiceIcon(data.icon || '');
         setFeatures(data.features && data.features.length > 0 ? data.features : ['']);
@@ -157,8 +169,8 @@ export default function EditServicePage(props: { params: Promise<{ id: string }>
 
   const isDirty = useMemo(() => {
     if (!initialFormRef.current) return false;
-    return JSON.stringify({ translations, features, serviceImage, serviceIcon }) !== initialFormRef.current;
-  }, [translations, features, serviceImage, serviceIcon]);
+    return JSON.stringify({ translations, features, serviceImage, serviceIcon, web: serializeServiceWeb(web) }) !== initialFormRef.current;
+  }, [translations, features, serviceImage, serviceIcon, web]);
 
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -193,6 +205,23 @@ export default function EditServicePage(props: { params: Promise<{ id: string }>
       },
     }));
   }, [activeLanguage]);
+
+  /** "Katalogdan doldur": yalnızca boş ad / kart metni alanlarını doldurur */
+  const fillTexts = useCallback((fill: Partial<Record<FxLocale, { title?: string; excerpt?: string }>>) => {
+    setTranslations(prev => {
+      const next = { ...prev };
+      for (const [code, f] of Object.entries(fill)) {
+        if (!f) continue;
+        const cur = next[code] || emptyTranslation();
+        next[code] = {
+          ...cur,
+          title: cur.title.trim() ? cur.title : f.title ?? cur.title,
+          excerpt: cur.excerpt.trim() ? cur.excerpt : f.excerpt ?? cur.excerpt,
+        };
+      }
+      return next;
+    });
+  }, []);
 
   const addFeature = () => setFeatures(prev => [...prev, '']);
 
@@ -281,7 +310,16 @@ export default function EditServicePage(props: { params: Promise<{ id: string }>
       return;
     }
 
+    const slugProblem = slugError(web.slug);
+    if (slugProblem) {
+      setError(`Web sitesi bölümü: ${slugProblem}`);
+      setSaving(false);
+      return;
+    }
+
     const filteredFeatures = features.filter(f => f.trim() !== '');
+    // Kayıttaki diğer anahtarlar (_fx, diğer diller) korunur; web alanları üstüne yazılır
+    const mergedTranslations = buildServiceTranslations(service?.translations, translations, web);
 
     try {
       const response = await fetch(`/api/admin/services/${params.id}`, {
@@ -289,11 +327,14 @@ export default function EditServicePage(props: { params: Promise<{ id: string }>
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           title: defTrans.title,
+          // slug her zaman gönderilir; gönderilmezse API zaman damgalı yeni slug üretir
+          slug: web.slug,
+          isActive: web.isActive,
           description: defTrans.description || '',
           image: serviceImage || '',
           icon: serviceIcon || '',
           features: filteredFeatures,
-          translations,
+          translations: mergedTranslations,
         }),
       });
 
@@ -302,7 +343,9 @@ export default function EditServicePage(props: { params: Promise<{ id: string }>
         throw new Error(errorData?.error || 'Servis güncellenirken bir hata oluştu');
       }
 
-      initialFormRef.current = JSON.stringify({ translations, features, serviceImage, serviceIcon });
+      const updated = await response.json().catch(() => null);
+      setService(prev => (updated && updated._id ? updated : prev ? { ...prev, slug: web.slug, isActive: web.isActive, translations: mergedTranslations as Service['translations'] } : prev));
+      initialFormRef.current = JSON.stringify({ translations, features, serviceImage, serviceIcon, web: serializeServiceWeb(web) });
       setSuccess('Servis başarıyla güncellendi');
       setTimeout(() => setSuccess(null), 3000);
     } catch (err) {
@@ -374,10 +417,11 @@ export default function EditServicePage(props: { params: Promise<{ id: string }>
         <div className="space-y-6 min-w-0">
           {/* Title */}
           <div className="bg-card rounded-xl shadow-xs border border-border p-5">
-            <label className="block text-sm font-semibold text-foreground mb-2">
-              Servis Başlığı <span className="text-destructive">*</span>
+            <label htmlFor="svc-title" className="block text-sm font-semibold text-foreground mb-2">
+              Hizmet Adı <span className="text-destructive">*</span>
             </label>
             <input
+              id="svc-title"
               type="text"
               value={translation.title}
               onChange={(e) => updateTranslation('title', e.target.value)}
@@ -387,7 +431,7 @@ export default function EditServicePage(props: { params: Promise<{ id: string }>
               disabled={saving}
             />
             <div className="flex items-center justify-between mt-1.5">
-              <span />
+              <span className="text-xs text-muted-foreground">Sitede hizmetin adı (kartlar, menü ve hizmet sayfası başlığı).</span>
               <p className="text-xs text-muted-foreground">{translation.title.length}/200</p>
             </div>
           </div>
@@ -395,9 +439,12 @@ export default function EditServicePage(props: { params: Promise<{ id: string }>
           {/* Content Editor */}
           <div className="bg-card rounded-xl shadow-xs border border-border p-5">
             <div className="flex items-center justify-between mb-3">
-              <label className="block text-sm font-semibold text-foreground">
-                Servis Açıklaması
-              </label>
+              <div>
+                <span className="block text-sm font-semibold text-foreground">
+                  Hizmet Hakkında (uzun açıklama)
+                </span>
+                <p className="text-xs text-muted-foreground mt-0.5">Hizmet sayfasındaki &quot;Hizmet hakkında&quot; bloğu.</p>
+              </div>
             </div>
             <ModernEditor
               key={activeLanguage}
@@ -414,27 +461,44 @@ export default function EditServicePage(props: { params: Promise<{ id: string }>
 
           {/* Excerpt */}
           <div className="bg-card rounded-xl shadow-xs border border-border p-5">
-            <label className="block text-sm font-semibold text-foreground mb-2">
-              Kısa Açıklama (Excerpt)
+            <label htmlFor="svc-excerpt" className="block text-sm font-semibold text-foreground mb-2">
+              Kart Metni (kısa açıklama)
             </label>
             <textarea
+              id="svc-excerpt"
               value={translation.excerpt}
               onChange={(e) => updateTranslation('excerpt', e.target.value)}
-              placeholder="Listeleme sayfalarında görünecek kısa açıklama"
+              placeholder="Sitede hizmet kartlarında ve listelerde görünen tek cümlelik metin"
               maxLength={300}
               rows={3}
               className={`${inputNormal} resize-none`}
               disabled={saving}
             />
-            <p className="text-xs text-muted-foreground mt-1.5 text-right">{translation.excerpt.length}/300</p>
+            <p className="text-xs text-muted-foreground mt-1.5 flex justify-between gap-3">
+              <span>Hizmet kartlarında ve listelerde görünür; tek cümle önerilir.</span>
+              <span>{translation.excerpt.length}/300</span>
+            </p>
           </div>
+
+          {/* Web sitesi (FIXRAL tasarımı) */}
+          <ServiceWebFields
+            value={web}
+            onChange={setWeb}
+            activeLanguage={activeLanguage}
+            texts={translations}
+            onFillTexts={fillTexts}
+            recordId={params.id}
+            image={serviceImage}
+            disabled={saving}
+          />
 
           {/* Features */}
           <div className="bg-card rounded-xl shadow-xs border border-border p-5">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
                 <ListIcon className="w-4 h-4 text-muted-foreground" />
-                <label className="text-sm font-semibold text-foreground">Servis Özellikleri</label>
+                <span className="text-sm font-semibold text-foreground">Servis Özellikleri</span>
+                <span className="text-[11px] text-muted-foreground">(yeni sitede gösterilmez)</span>
               </div>
               <button
                 type="button"

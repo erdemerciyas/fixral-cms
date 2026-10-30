@@ -32,7 +32,7 @@ export async function PUT(request: Request, props: { params: Promise<{ id: strin
   const params = await props.params;
   try {
     const session = await getServerSession(authOptions);
-    if (!session?.user) {
+    if (!session?.user || session.user.role !== 'admin') {
       return NextResponse.json(
         { error: 'Bu işlem için yetkiniz yok' },
         { status: 401 }
@@ -80,7 +80,7 @@ export async function DELETE(request: Request, props: { params: Promise<{ id: st
   const params = await props.params;
   try {
     const session = await getServerSession(authOptions);
-    if (!session?.user) {
+    if (!session?.user || session.user.role !== 'admin') {
       return NextResponse.json(
         { error: 'Bu işlem için yetkiniz yok' },
         { status: 401 }

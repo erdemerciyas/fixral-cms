@@ -14,7 +14,7 @@ export interface SitemapURL {
 }
 
 export class SitemapService {
-    private static readonly SUPPORTED_LOCALES = ['tr', 'es'];
+    private static readonly SUPPORTED_LOCALES = ['tr'];
 
     private static readonly STATIC_PAGES = [
         { path: '', changefreq: 'daily' as const, priority: 1.0 },
@@ -44,19 +44,13 @@ export class SitemapService {
             });
         }
 
-        // 3. Add News (locale-specific paths: haberler for TR, noticias for ES)
+        // 3. Add News (/tr/haberler)
         try {
             const posts = await News.find({ status: 'published' }).select('slug updatedAt').lean();
             posts.forEach((post: any) => {
                 const lastmod = post.updatedAt ? new Date(post.updatedAt).toISOString() : new Date().toISOString();
                 urls.push({
                     loc: `${baseUrl}/tr/haberler/${post.slug}`,
-                    lastmod,
-                    changefreq: 'weekly',
-                    priority: 0.7
-                });
-                urls.push({
-                    loc: `${baseUrl}/es/noticias/${post.slug}`,
                     lastmod,
                     changefreq: 'weekly',
                     priority: 0.7

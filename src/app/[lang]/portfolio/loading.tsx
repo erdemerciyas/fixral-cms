@@ -1,32 +1,26 @@
+'use client';
+
+/** Portfolyo yükleme durumu: gerçek başlık + filtre ve masonry iskeleti */
+import { PortfolioGridSkeleton, PortfolioHero } from '@/templates/PortfolioTemplate';
+import { usePfT } from '@/components/portfolio/usePfT';
+import { useLocale } from '@/hooks/useLocale';
+
 export default function PortfolioLoading() {
-    return (
-        <div className="min-h-dvh bg-background pt-24 pb-20">
-            <div className="container-content">
-                {/* Skeleton for Hero */}
-                <div className="w-full max-w-3xl mx-auto text-center mb-12 animate-pulse space-y-4">
-                    <div className="h-10 bg-muted rounded-sm w-2/3 mx-auto"></div>
-                    <div className="h-6 bg-muted rounded-sm w-1/2 mx-auto"></div>
-                </div>
-
-                {/* Skeleton for Filter Tabs */}
-                <div className="flex justify-center gap-2 mb-8 animate-pulse">
-                    <div className="w-20 h-8 bg-muted rounded-xs"></div>
-                    <div className="w-24 h-8 bg-muted rounded-xs"></div>
-                    <div className="w-16 h-8 bg-muted rounded-xs"></div>
-                    <div className="w-24 h-8 bg-muted rounded-xs"></div>
-                </div>
-
-                {/* Skeleton for Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-pulse">
-                    {[...Array(6)].map((_, i) => (
-                        <div key={i} className="bg-card rounded-sm shadow-xs border border-border p-4 space-y-4">
-                            <div className="h-48 bg-muted rounded-xs w-full"></div>
-                            <div className="h-6 bg-muted rounded-xs w-3/4"></div>
-                            <div className="h-4 bg-muted rounded-xs w-1/2"></div>
-                        </div>
-                    ))}
-                </div>
-            </div>
+  const lang = useLocale();
+  const t = usePfT();
+  return (
+    <>
+      <PortfolioHero lang={lang} />
+      <section className="fx-sec fx-pf-list">
+        <div className="fx-wrap">
+          <div className="fx-pf-skel-bar" aria-hidden="true">
+            {[64, 120, 96, 140, 88].map((w, i) => (
+              <span key={i} className={`fx-pf-skel-chip fx-pf-skel-chip--${w}`} />
+            ))}
+          </div>
+          <PortfolioGridSkeleton label={t('loading')} />
         </div>
-    );
+      </section>
+    </>
+  );
 }

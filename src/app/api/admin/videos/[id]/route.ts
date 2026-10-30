@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import Video from "@/models/Video";
-export async function DELETE(req: Request, props: { params: Promise<{ id: string }> }) {
+import { withFxRevalidate } from '@/lib/fx-revalidate';
+async function DELETE__handler(req: Request, props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
   try {
     const session = await getServerSession(authOptions);
@@ -34,7 +35,7 @@ export async function DELETE(req: Request, props: { params: Promise<{ id: string
   }
 }
 
-export async function PUT(req: Request, props: { params: Promise<{ id: string }> }) {
+async function PUT__handler(req: Request, props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
   try {
     const session = await getServerSession(authOptions);
@@ -42,8 +43,26 @@ export async function PUT(req: Request, props: { params: Promise<{ id: string }>
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const updateData = await req.json();
-    
+    const body = await req.json();
+    // Yalnızca panelden düzenlenebilen alanlar kabul edilir
+    const updateData: Record<string, unknown> = {};
+    if (typeof body.title === 'string') {
+      if (!body.title.trim()) return NextResponse.json({ error: 'Başlık boş olamaz' }, { status: 400 });
+      updateData.title = body.title.trim();
+    }
+    if (typeof body.description === 'string') updateData.description = body.description;
+    if (body.type === 'normal' || body.type === 'short') updateData.type = body.type;
+    if (body.status !== undefined) {
+      if (!['visible', 'draft', 'hidden'].includes(body.status)) return NextResponse.json({ error: 'Geçersiz durum' }, { status: 400 });
+      updateData.status = body.status;
+    }
+    if (Array.isArray(body.tags)) updateData.tags = body.tags.filter((t: unknown) => typeof t === 'string' && t.trim()).map((t: string) => t.trim());
+    if (body.publishedAt !== undefined) {
+      const d = body.publishedAt ? new Date(body.publishedAt) : null;
+      if (d && isNaN(d.getTime())) return NextResponse.json({ error: 'Geçersiz tarih' }, { status: 400 });
+      updateData.publishedAt = d;
+    }
+
     const video = await Video.findByIdAndUpdate(
       params.id,
       { ...updateData, updatedAt: new Date() },
@@ -64,3 +83,7 @@ export async function PUT(req: Request, props: { params: Promise<{ id: string }>
     );
   }
 }
+
+// Panel → site canlı tazeleme (redesign 2026)
+export const PUT = withFxRevalidate(PUT__handler);
+export const DELETE = withFxRevalidate(DELETE__handler);

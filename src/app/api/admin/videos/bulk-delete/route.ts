@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import Video from "@/models/Video";
-export async function POST(req: Request) {
+import { withFxRevalidate } from '@/lib/fx-revalidate';
+async function POST__handler(req: Request) {
   try {
     const session = await getServerSession(authOptions);
     if (!session) {
@@ -37,3 +38,6 @@ export async function POST(req: Request) {
     );
   }
 }
+
+// Panel → site canlı tazeleme (redesign 2026)
+export const POST = withFxRevalidate(POST__handler);

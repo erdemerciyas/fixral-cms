@@ -2,8 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { cloneContent } from '@/lib/clone';
+import { withFxRevalidate } from '@/lib/fx-revalidate';
 
-export async function POST(
+async function POST__handler(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -21,3 +22,6 @@ export async function POST(
 
   return NextResponse.json({ success: true, data: { id: result.id, slug: result.slug } }, { status: 201 });
 }
+
+// Panel → site canlı tazeleme (redesign 2026)
+export const POST = withFxRevalidate(POST__handler);

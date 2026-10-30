@@ -16,6 +16,7 @@ import {
   PanelBottom,
   Users,
   BarChart3,
+  Boxes,
 } from 'lucide-react'
 import {
   SidebarGroup,
@@ -72,6 +73,8 @@ const navigationGroups: NavGroup[] = [
           { name: 'Haberler', href: '/admin/news' },
           { name: 'Sayfalar', href: '/admin/pages' },
           { name: 'Hizmetler', href: '/admin/services' },
+          { name: 'Yazılımlar', href: '/admin/software' },
+          { name: 'Site İçeriği', href: '/admin/site-content' },
           { name: 'Tüm İçerikler', href: '/admin/content' },
         ],
       },
@@ -84,6 +87,7 @@ const navigationGroups: NavGroup[] = [
           { name: '3D Modeller', href: '/admin/models' },
         ],
       },
+      { name: 'FX 3D', href: '/admin/fx-3d', icon: Boxes },
       {
         name: 'Medya',
         icon: ImageIcon,

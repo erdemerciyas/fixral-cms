@@ -1,0 +1,24 @@
+/* FIXRAL web — FX 3D (Cults3D modelleri). fx-web.css token'larını kullanır. */
+@layer components {
+
+/* ---------- Liste ---------- */
+.fx-3d-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px; margin-bottom: clamp(24px, 3vw, 40px); }
+.fx-3d-bar .fx-filters { margin-bottom: 0; }
+
+/* ---------- Detay: hero ---------- */
+.fx-3d-cover { position: relative; aspect-ratio: 1; width: 100%; max-width: 440px; margin-left: auto; border-radius: var(--fx-r-lg); overflow: hidden; border: 1px solid var(--fx-line); background: radial-gradient(90% 80% at 50% 40%, #1E2A42, #0B111D); }
+.fx-3d-cover img { object-fit: cover; }
+.fx-3d-buy { display: grid; gap: 14px; justify-items: start; margin-top: 28px; }
+.fx-3d-note { margin: 0; max-width: 52ch; font-size: 14px; line-height: 1.6; color: var(--fx-ink-muted); }
+
+/* ---------- Detay: içerik ---------- */
+.fx-3d-files th, .fx-3d-files td { vertical-align: middle; }
+.fx-3d-files img { display: block; width: 56px; height: 56px; border-radius: var(--fx-r-sm); object-fit: cover; background: var(--fx-bg-alt); }
+.fx-3d-prose table { border-collapse: collapse; width: 100%; font-size: 14px; }
+.fx-3d-prose th, .fx-3d-prose td { border: 1px solid var(--fx-line); padding: 8px 12px; text-align: left; }
+.fx-3d-prose h3, .fx-3d-prose h4, .fx-3d-prose strong { color: var(--fx-ink); }
+
+@media (max-width: 960px) {
+  .fx-3d-cover { margin: 0; max-width: 360px; }
+}
+}

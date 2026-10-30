@@ -1,24 +1,17 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
-import { m, AnimatePresence } from 'framer-motion';
-import { Search as MagnifyingGlassIcon, X as XMarkIcon, Tag as TagIcon, LayoutGrid as Squares2X2Icon, Calendar as CalendarIcon, Code as CodeBracketIcon, SlidersHorizontal as AdjustmentsHorizontalIcon, ChevronDown as ChevronDownIcon } from 'lucide-react';
-import type { Category } from '../../types/portfolio';
-
-interface FilterState {
-  search: string;
-  categories: string[];
-  technologies: string[];
-  dateRange: {
-    start: string;
-    end: string;
-  };
-  sortBy: 'newest' | 'oldest' | 'title' | 'category';
-  sortOrder: 'asc' | 'desc';
-}
+/**
+ * Portfolyo filtre çubuğu (redesign 2026).
+ * Kategori çipleri (aria-pressed), gecikmeli arama, sıralama, teknoloji ve
+ * tarih aralığı filtreleri. Durum URL'de tutulur (usePortfolioFilters).
+ */
+import { useEffect, useId, useState } from 'react';
+import { usePfT } from './usePfT';
+import { SearchIcon, CloseIcon } from '@/components/fx/FxIcons';
+import type { FilterState } from '@/hooks/usePortfolioFilters';
 
 interface PortfolioFiltersProps {
-  categories: Category[];
+  categories: { _id: string; name: string; slug: string }[];
   technologies: string[];
   filters: FilterState;
   onFiltersChange: (filters: FilterState) => void;
@@ -26,386 +19,219 @@ interface PortfolioFiltersProps {
   isLoading?: boolean;
 }
 
+export const EMPTY_FILTERS: FilterState = {
+  search: '',
+  categories: [],
+  technologies: [],
+  dateRange: { start: '', end: '' },
+  sortBy: 'newest',
+  sortOrder: 'desc',
+};
+
+const SORTS = [
+  ['newest-desc', 'sortNewest'],
+  ['oldest-asc', 'sortOldest'],
+  ['title-asc', 'sortAz'],
+  ['title-desc', 'sortZa'],
+  ['category-asc', 'sortCategory'],
+] as const;
+
 export default function PortfolioFilters({
   categories,
   technologies,
   filters,
   onFiltersChange,
   totalResults,
-  isLoading = false
+  isLoading = false,
 }: PortfolioFiltersProps) {
-  const [showAdvanced, setShowAdvanced] = useState(false);
+  const t = usePfT();
+  const uid = useId();
+  const advancedOn = filters.technologies.length > 0 || !!filters.dateRange.start || !!filters.dateRange.end;
+  const [showAdvanced, setShowAdvanced] = useState(advancedOn);
 
-  // Debounced search
+  // Gecikmeli arama: yazarken URL her tuşta değişmesin
   const [searchValue, setSearchValue] = useState(filters.search);
+  const [syncedSearch, setSyncedSearch] = useState(filters.search);
+  if (syncedSearch !== filters.search) {
+    // URL (geri/ileri) değişince kutu da güncellenir
+    setSyncedSearch(filters.search);
+    setSearchValue(filters.search);
+  }
   useEffect(() => {
-    if (searchValue === filters.search) {
-      return;
-    }
-    const timer = setTimeout(() => {
-      onFiltersChange({ ...filters, search: searchValue });
-    }, 300);
+    if (searchValue === filters.search) return;
+    const timer = setTimeout(() => onFiltersChange({ ...filters, search: searchValue }), 300);
     return () => clearTimeout(timer);
   }, [searchValue, filters, onFiltersChange]);
 
-  // Active filters count
-  const activeFiltersCount = useMemo(() => {
-    let count = 0;
-    if (filters.search) count++;
-    if (filters.categories.length > 0) count++;
-    if (filters.technologies.length > 0) count++;
-    if (filters.dateRange.start || filters.dateRange.end) count++;
-    return count;
-  }, [filters]);
+  const activeCount = [
+    filters.search,
+    filters.categories.length > 0,
+    filters.technologies.length > 0,
+    filters.dateRange.start || filters.dateRange.end,
+  ].filter(Boolean).length;
 
-  const handleCategoryToggle = (categorySlug: string) => {
-    const newCategories = filters.categories.includes(categorySlug)
-      ? filters.categories.filter(c => c !== categorySlug)
-      : [...filters.categories, categorySlug];
-
-    onFiltersChange({ ...filters, categories: newCategories });
+  const toggleCategory = (slug: string) => {
+    const next = filters.categories.includes(slug)
+      ? filters.categories.filter((c) => c !== slug)
+      : [...filters.categories, slug];
+    onFiltersChange({ ...filters, categories: next });
   };
-
-  const handleTechnologyToggle = (tech: string) => {
-    const newTechnologies = filters.technologies.includes(tech)
-      ? filters.technologies.filter(t => t !== tech)
+  const toggleTech = (tech: string) => {
+    const next = filters.technologies.includes(tech)
+      ? filters.technologies.filter((x) => x !== tech)
       : [...filters.technologies, tech];
-
-    onFiltersChange({ ...filters, technologies: newTechnologies });
+    onFiltersChange({ ...filters, technologies: next });
   };
-
-  const clearAllFilters = () => {
+  const clearAll = () => {
     setSearchValue('');
-    onFiltersChange({
-      search: '',
-      categories: [],
-      technologies: [],
-      dateRange: { start: '', end: '' },
-      sortBy: 'newest',
-      sortOrder: 'desc'
-    });
+    onFiltersChange({ ...EMPTY_FILTERS, sortBy: filters.sortBy, sortOrder: filters.sortOrder });
   };
 
-  const clearFilter = (type: string, value?: string) => {
-    switch (type) {
-      case 'search':
-        setSearchValue('');
-        break;
-      case 'category':
-        if (value) {
-          onFiltersChange({
-            ...filters,
-            categories: filters.categories.filter(c => c !== value)
-          });
-        }
-        break;
-      case 'technology':
-        if (value) {
-          onFiltersChange({
-            ...filters,
-            technologies: filters.technologies.filter(t => t !== value)
-          });
-        }
-        break;
-      case 'dateRange':
-        onFiltersChange({
-          ...filters,
-          dateRange: { start: '', end: '' }
-        });
-        break;
-    }
-  };
+  const sortValue = `${filters.sortBy}-${filters.sortOrder}`;
+  const panelId = `${uid}-adv`;
 
   return (
-    <div className="bg-card rounded-sm border border-border p-6 md:p-8 mb-8">
-      {/* Search and Quick Actions */}
-      <div className="flex flex-col lg:flex-row gap-4 mb-6">
-        {/* Search Input */}
-        <div className="flex-1 relative">
-          <div className="relative">
-            <MagnifyingGlassIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-            <input
-              type="text"
-              placeholder="Proje ara..."
-              value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-ring outline-hidden transition-colors duration-200 motion-reduce:transition-none"
-            />
-            {searchValue && (
-              <button
-                onClick={() => clearFilter('search')}
-                className="absolute right-4 top-1/2 transform -translate-y-1/2 p-1 hover:bg-accent rounded-full transition-colors duration-200"
-                aria-label="Aramayı temizle"
-              >
-                <XMarkIcon className="w-4 h-4 text-muted-foreground" />
-              </button>
-            )}
-          </div>
+    <div className="fx-pf-filters">
+      {categories.length > 0 && (
+        <div className="fx-filters fx-pf-cats" role="group" aria-label={t('filters.group')}>
+          <button
+            type="button"
+            className="fx-chip"
+            aria-pressed={filters.categories.length === 0}
+            onClick={() => filters.categories.length && onFiltersChange({ ...filters, categories: [] })}
+          >
+            {t('filters.all')}
+          </button>
+          {categories.map((cat) => (
+            <button
+              key={cat.slug}
+              type="button"
+              className="fx-chip"
+              aria-pressed={filters.categories.includes(cat.slug)}
+              onClick={() => toggleCategory(cat.slug)}
+            >
+              {cat.name}
+            </button>
+          ))}
+        </div>
+      )}
+
+      <div className="fx-pf-bar">
+        <div className="fx-field fx-pf-search">
+          <label htmlFor={`${uid}-q`} className="sr-only">{t('filters.search')}</label>
+          <SearchIcon className="fx-pf-search__icon" />
+          <input
+            id={`${uid}-q`}
+            type="search"
+            inputMode="search"
+            autoComplete="off"
+            placeholder={t('filters.searchPh')}
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
+          />
+          {searchValue && (
+            <button
+              type="button"
+              className="fx-pf-search__clear"
+              aria-label={t('filters.clearSearch')}
+              onClick={() => {
+                setSearchValue('');
+                onFiltersChange({ ...filters, search: '' });
+              }}
+            >
+              <CloseIcon />
+            </button>
+          )}
         </div>
 
-        {/* Sort and Advanced Toggle */}
-        <div className="flex gap-3">
-          {/* Sort Dropdown */}
-          <div className="relative" role="group" aria-label="Sıralama">
-            <select
-              value={`${filters.sortBy}-${filters.sortOrder}`}
-              onChange={(e) => {
-                const [sortBy, sortOrder] = e.target.value.split('-') as [FilterState['sortBy'], FilterState['sortOrder']];
-                onFiltersChange({ ...filters, sortBy, sortOrder });
-              }}
-              className="appearance-none bg-background border border-border rounded-lg px-4 py-3 pr-10 text-foreground focus:border-primary focus:ring-2 focus:ring-ring outline-hidden transition-colors duration-200 cursor-pointer motion-reduce:transition-none"
-              aria-label="Sırala"
-            >
-              <option value="newest-desc">En Yeni</option>
-              <option value="oldest-asc">En Eski</option>
-              <option value="title-asc">A-Z</option>
-              <option value="title-desc">Z-A</option>
-              <option value="category-asc">Kategoriye Göre</option>
-            </select>
-            <ChevronDownIcon className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none" />
-          </div>
-
-          {/* Advanced Filters Toggle */}
-          <button
-            onClick={() => setShowAdvanced(!showAdvanced)}
-            className={`flex items-center px-6 py-3 rounded-lg font-medium border transition-colors duration-200 motion-reduce:transition-none ${showAdvanced || activeFiltersCount > 0
-                ? 'bg-primary border-primary text-primary-foreground'
-                : 'bg-card border-border text-foreground hover:bg-accent hover:text-accent-foreground'
-              }`}
-            aria-expanded={showAdvanced}
-            aria-controls="advanced-filters"
+        <div className="fx-field fx-pf-sort">
+          <label htmlFor={`${uid}-s`} className="sr-only">{t('filters.sort')}</label>
+          <select
+            id={`${uid}-s`}
+            value={sortValue}
+            onChange={(e) => {
+              const [sortBy, sortOrder] = e.target.value.split('-') as [FilterState['sortBy'], FilterState['sortOrder']];
+              onFiltersChange({ ...filters, sortBy, sortOrder });
+            }}
           >
-            <AdjustmentsHorizontalIcon className="w-5 h-5 mr-2" />
-            Filtreler
-            {activeFiltersCount > 0 && (
-              <span className="ml-2 px-2 py-0.5 bg-background/25 rounded-full text-xs font-semibold">
-                {activeFiltersCount}
+            {SORTS.map(([v, k]) => (
+              <option key={v} value={v}>{t(`filters.${k}`)}</option>
+            ))}
+          </select>
+        </div>
+
+        {(technologies.length > 0 || advancedOn) && (
+          <button
+            type="button"
+            className="fx-btn fx-btn--ghost fx-pf-more"
+            aria-expanded={showAdvanced}
+            aria-controls={panelId}
+            onClick={() => setShowAdvanced((v) => !v)}
+          >
+            {t('filters.more')}
+            {(filters.technologies.length > 0 || filters.dateRange.start || filters.dateRange.end) && (
+              <span className="fx-pf-count fx-mono" aria-hidden="true">
+                {filters.technologies.length + (filters.dateRange.start || filters.dateRange.end ? 1 : 0)}
               </span>
             )}
           </button>
-        </div>
+        )}
       </div>
 
-      {/* Active Filters Display */}
-      <AnimatePresence>
-        {activeFiltersCount > 0 && (
-          <m.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="mb-6"
-          >
-            <div className="flex flex-wrap items-center gap-2 mb-4">
-              <span className="text-sm font-medium text-muted-foreground">Aktif Filtreler:</span>
-
-              {/* Search Filter */}
-              {filters.search && (
-                <span className="inline-flex items-center px-3 py-1 bg-accent text-accent-foreground rounded-sm text-sm font-medium">
-                  <MagnifyingGlassIcon className="w-4 h-4 mr-1" />
-                  &quot;{filters.search}&quot;
-                  <button
-                    onClick={() => clearFilter('search')}
-                    className="ml-2 hover:text-primary"
-                    aria-label="Arama filtresini kaldır"
-                  >
-                    <XMarkIcon className="w-3 h-3" />
-                  </button>
-                </span>
-              )}
-
-              {/* Category Filters */}
-              {filters.categories.map(categorySlug => {
-                const category = categories.find(c => c.slug === categorySlug);
-                return category ? (
-                  <span
-                    key={categorySlug}
-                    className="inline-flex items-center px-3 py-1 bg-secondary text-foreground border border-border rounded-sm text-sm font-medium"
-                  >
-                    <TagIcon className="w-4 h-4 mr-1 text-muted-foreground" />
-                    {category.name}
-                    <button
-                      onClick={() => clearFilter('category', categorySlug)}
-                      className="ml-2 text-muted-foreground hover:text-foreground"
-                      aria-label={`${category.name} filtresini kaldır`}
-                    >
-                      <XMarkIcon className="w-3 h-3" />
-                    </button>
-                  </span>
-                ) : null;
-              })}
-
-              {/* Technology Filters */}
-              {filters.technologies.map(tech => (
-                <span
+      <div id={panelId} className="fx-pf-adv" hidden={!showAdvanced}>
+        {technologies.length > 0 && (
+          <fieldset className="fx-fieldset">
+            <legend className="fx-pf-lbl">{t('filters.tech')}</legend>
+            <div className="fx-chips" role="group" aria-label={t('filters.techGroup')}>
+              {technologies.map((tech) => (
+                <button
                   key={tech}
-                  className="inline-flex items-center px-3 py-1 bg-secondary text-foreground border border-border rounded-sm text-sm font-medium"
+                  type="button"
+                  className="fx-chip fx-chip--sm fx-mono"
+                  aria-pressed={filters.technologies.includes(tech)}
+                  onClick={() => toggleTech(tech)}
                 >
-                  <CodeBracketIcon className="w-4 h-4 mr-1 text-muted-foreground" />
                   {tech}
-                  <button
-                    onClick={() => clearFilter('technology', tech)}
-                    className="ml-2 text-muted-foreground hover:text-foreground"
-                    aria-label={`${tech} filtresini kaldır`}
-                  >
-                    <XMarkIcon className="w-3 h-3" />
-                  </button>
-                </span>
+                </button>
               ))}
-
-              {/* Date Range Filter */}
-              {(filters.dateRange.start || filters.dateRange.end) && (
-                <span className="inline-flex items-center px-3 py-1 bg-secondary text-foreground border border-border rounded-sm text-sm font-medium">
-                  <CalendarIcon className="w-4 h-4 mr-1 text-muted-foreground" />
-                  {filters.dateRange.start && filters.dateRange.end
-                    ? `${filters.dateRange.start} - ${filters.dateRange.end}`
-                    : filters.dateRange.start
-                      ? `${filters.dateRange.start} sonrası`
-                      : `${filters.dateRange.end} öncesi`
-                  }
-                  <button
-                    onClick={() => clearFilter('dateRange')}
-                    className="ml-2 text-muted-foreground hover:text-foreground"
-                    aria-label="Tarih filtresini kaldır"
-                  >
-                    <XMarkIcon className="w-3 h-3" />
-                  </button>
-                </span>
-              )}
-
-              <button
-                onClick={clearAllFilters}
-                className="text-sm text-muted-foreground hover:text-foreground underline ml-2"
-              >
-                Tümünü Temizle
-              </button>
             </div>
-          </m.div>
+          </fieldset>
         )}
-      </AnimatePresence>
-
-      {/* Advanced Filters */}
-      <AnimatePresence>
-        {showAdvanced && (
-          <m.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="border-t border-border pt-6"
-            id="advanced-filters"
-          >
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Categories */}
-              <div>
-                <h3 className="text-base font-semibold text-foreground mb-4 flex items-center">
-                  <TagIcon className="w-5 h-5 mr-2 text-primary" />
-                  Kategoriler
-                </h3>
-                <div className="space-y-1 max-h-48 overflow-y-auto scrollbar-thin">
-                  {categories.map(category => (
-                    <label
-                      key={category._id}
-                      className="flex items-center p-3 rounded-sm hover:bg-accent hover:text-accent-foreground cursor-pointer transition-colors duration-200"
-                    >
-                      <input
-                        type="checkbox"
-                        checked={filters.categories.includes(category.slug)}
-                        onChange={() => handleCategoryToggle(category.slug)}
-                        className="w-4 h-4 accent-[hsl(var(--primary))] border-border rounded"
-                      />
-                      <span className="ml-3 text-sm font-medium">{category.name}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              {/* Technologies */}
-              <div>
-                <h3 className="text-base font-semibold text-foreground mb-4 flex items-center">
-                  <CodeBracketIcon className="w-5 h-5 mr-2 text-primary" />
-                  Teknolojiler
-                </h3>
-                <div className="space-y-1 max-h-48 overflow-y-auto scrollbar-thin">
-                  {technologies.map(tech => (
-                    <label
-                      key={tech}
-                      className="flex items-center p-3 rounded-sm hover:bg-accent hover:text-accent-foreground cursor-pointer transition-colors duration-200"
-                    >
-                      <input
-                        type="checkbox"
-                        checked={filters.technologies.includes(tech)}
-                        onChange={() => handleTechnologyToggle(tech)}
-                        className="w-4 h-4 accent-[hsl(var(--primary))] border-border rounded"
-                      />
-                      <span className="ml-3 text-sm font-medium">{tech}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              {/* Date Range */}
-              <div>
-                <h3 className="text-base font-semibold text-foreground mb-4 flex items-center">
-                  <CalendarIcon className="w-5 h-5 mr-2 text-primary" />
-                  Tarih Aralığı
-                </h3>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-muted-foreground mb-2">
-                      Başlangıç Tarihi
-                    </label>
-                    <input
-                      type="date"
-                      value={filters.dateRange.start}
-                      onChange={(e) => onFiltersChange({
-                        ...filters,
-                        dateRange: { ...filters.dateRange, start: e.target.value }
-                      })}
-                      className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground focus:border-primary focus:ring-2 focus:ring-ring outline-hidden transition-colors duration-200 motion-reduce:transition-none"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-muted-foreground mb-2">
-                      Bitiş Tarihi
-                    </label>
-                    <input
-                      type="date"
-                      value={filters.dateRange.end}
-                      onChange={(e) => onFiltersChange({
-                        ...filters,
-                        dateRange: { ...filters.dateRange, end: e.target.value }
-                      })}
-                      className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground focus:border-primary focus:ring-2 focus:ring-ring outline-hidden transition-colors duration-200 motion-reduce:transition-none"
-                    />
-                  </div>
-                </div>
-              </div>
+        <fieldset className="fx-fieldset">
+          <legend className="fx-pf-lbl">{t('filters.date')}</legend>
+          <div className="fx-row2">
+            <div className="fx-field">
+              <label htmlFor={`${uid}-from`}>{t('filters.from')}</label>
+              <input
+                id={`${uid}-from`}
+                type="date"
+                value={filters.dateRange.start}
+                max={filters.dateRange.end || undefined}
+                onChange={(e) => onFiltersChange({ ...filters, dateRange: { ...filters.dateRange, start: e.target.value } })}
+              />
             </div>
-          </m.div>
-        )}
-      </AnimatePresence>
+            <div className="fx-field">
+              <label htmlFor={`${uid}-to`}>{t('filters.to')}</label>
+              <input
+                id={`${uid}-to`}
+                type="date"
+                value={filters.dateRange.end}
+                min={filters.dateRange.start || undefined}
+                onChange={(e) => onFiltersChange({ ...filters, dateRange: { ...filters.dateRange, end: e.target.value } })}
+              />
+            </div>
+          </div>
+        </fieldset>
+      </div>
 
-      {/* Results Count */}
-      <div className="flex items-center justify-between pt-4 border-t border-border">
-        <div className="flex items-center text-muted-foreground" role="status" aria-live="polite">
-          <Squares2X2Icon className="w-5 h-5 mr-2" />
-          <span className="font-medium text-sm">
-            {isLoading ? (
-              <span className="inline-flex items-center">
-                <div className="w-4 h-4 border-2 border-border border-t-primary rounded-full animate-spin mr-2"></div>
-                Yükleniyor...
-              </span>
-            ) : (
-              `${totalResults} proje bulundu`
-            )}
-          </span>
-        </div>
-
-        {activeFiltersCount > 0 && (
-          <button
-            onClick={clearAllFilters}
-            className="text-sm text-accent-foreground hover:text-primary font-semibold transition-colors duration-200"
-          >
-            Filtreleri Temizle
+      <div className="fx-pf-status">
+        <span className="fx-tag" role="status" aria-live="polite" aria-busy={isLoading}>
+          {totalResults === 1 ? t('filters.resultsOne') : t('filters.results', { count: totalResults })}
+        </span>
+        {activeCount > 0 && (
+          <button type="button" className="fx-pf-clear" onClick={clearAll}>
+            <CloseIcon />
+            {t('filters.clear')}
           </button>
         )}
       </div>

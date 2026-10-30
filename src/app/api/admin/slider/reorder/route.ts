@@ -2,8 +2,9 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import Slider from '@/models/Slider';
+import { withFxRevalidate } from '@/lib/fx-revalidate';
 
-export async function POST(request: Request) {
+async function POST__handler(request: Request) {
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user || session.user.role !== 'admin') {
@@ -37,3 +38,6 @@ export async function POST(request: Request) {
     );
   }
 }
+
+// Panel → site canlı tazeleme (redesign 2026)
+export const POST = withFxRevalidate(POST__handler);

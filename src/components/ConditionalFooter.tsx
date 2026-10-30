@@ -2,13 +2,14 @@
 
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { useAppTranslations } from '@/hooks/useAppTranslations';
-import { Mail as Envelope, Phone, MapPin, ArrowUp } from 'lucide-react';
+import { ArrowUp } from 'lucide-react';
 import { m, AnimatePresence, useReducedMotion } from 'framer-motion';
-import { MeasureRule } from '@/components/ui';
+import { FxLogo, FxWordmark } from '@/components/fx/FxLogo';
+import { serviceHref, softwareHref, toFxLocale } from '@/content/fixral';
+import { useFx } from '@/components/fx/FxData';
 import {
   LinkedinLogo,
   TwitterLogo,
@@ -87,6 +88,8 @@ const ConditionalFooter: React.FC = () => {
   const [site, setSite] = useState<SiteSettingsMinimal | null>(null);
   const [showBackToTop, setShowBackToTop] = useState(false);
   const { t, locale } = useAppTranslations('footer');
+  const { t: tFx } = useAppTranslations('fx');
+  const fx = useFx(locale);
   const prefersReducedMotion = useReducedMotion();
 
   const isAdminPage = pathname?.startsWith('/admin');
@@ -222,241 +225,129 @@ const ConditionalFooter: React.FC = () => {
     { key: 'youtube', label: 'YouTube', url: settings.socialLinks.youtube },
   ].filter((item) => item.url && item.url.trim().length > 0);
 
-  // Split quick links into two columns
-  const quickLinksHalf = settings.quickLinks.slice(
-    0,
-    Math.ceil(settings.quickLinks.length / 2)
-  );
-  const quickLinksSecondHalf = settings.quickLinks.slice(
-    Math.ceil(settings.quickLinks.length / 2)
-  );
 
   const scrollToTop = () => {
-    const prefersReduced = window.matchMedia(
-      '(prefers-reduced-motion: reduce)'
-    ).matches;
-    window.scrollTo({
-      top: 0,
-      behavior: prefersReduced ? 'auto' : 'smooth',
-    });
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.scrollTo({ top: 0, behavior: prefersReduced ? 'auto' : 'smooth' });
   };
 
-  const renderLink = (link: { title: string; url: string; isExternal: boolean }, index: number) => {
-    const linkUrl =
-      link.isExternal || link.url.startsWith('http')
-        ? link.url
-        : link.url.startsWith(`/${locale}`)
-          ? link.url
-          : `/${locale}${link.url.startsWith('/') ? link.url : `/${link.url}`}`;
-
-    const sharedClasses =
-      'text-sm text-muted-foreground hover:text-primary transition-colors duration-200 inline-block py-0.5 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary rounded-xs';
-
-    return (
-      <li key={index}>
-        {link.isExternal ? (
-          <a
-            href={linkUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={sharedClasses}
-          >
-            {link.title}
-          </a>
-        ) : (
-          <Link href={linkUrl} className={sharedClasses}>
-            {link.title}
-          </Link>
-        )}
-      </li>
-    );
+  const lang = toFxLocale(locale);
+  const localize = (url: string, isExternal: boolean) => {
+    if (isExternal || url.startsWith('http') || url.startsWith('mailto:') || url.startsWith('tel:')) return url;
+    if (url.startsWith(`/${locale}/`) || url === `/${locale}`) return url;
+    let clean = url.startsWith('/') ? url : `/${url}`;
+    clean = clean.replace(/^\/noticias(?=\/|$)/, '/haberler');
+    return `/${locale}${clean === '/' ? '' : clean}`;
   };
+  const year = settings.copyrightInfo?.year || new Date().getFullYear();
+  const company = settings.copyrightInfo?.companyName || site?.siteName || 'FIXRAL';
+  const description = settings.mainDescription || tFx('footer.about');
 
   return (
-    <>
-      {/* Always-dark footer: public-theme public-dark scope'u ile her iki temada grafit zemin */}
-      <footer
-        className="public-theme public-dark relative overflow-hidden bg-background text-foreground border-t border-border"
-        role="contentinfo"
-      >
-        {/* Hairline üst bandı — precision ruler */}
-        <div className="container-boxed pt-8">
-          <MeasureRule ticks="sparse" />
-        </div>
-
-        {/* ── Main grid: 4 columns ── */}
-        <div className="container-boxed pt-10 pb-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {/* Column 1: Logo + Description + Social */}
-            <section aria-labelledby="footer-about" className="lg:col-span-1">
-              <h2 id="footer-about" className="sr-only">
-                {t('aboutTitle')}
-              </h2>
-
-              {/* Logo & site name */}
-              <div className="mb-4 flex items-center gap-3">
-                {site?.logo?.url && (
-                  <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-sm bg-card border border-border">
-                    <Image
-                      src={site.logo.url}
-                      alt={site.logo.alt}
-                      fill
-                      className="object-contain p-1"
-                      sizes="40px"
-                      priority={false}
-                    />
-                  </div>
-                )}
-                {site?.siteName && (
-                  <span className="font-display text-lg font-semibold tracking-tight text-foreground">
-                    {site.siteName}
-                  </span>
-                )}
-              </div>
-
-              {/* Description */}
-              <p className="max-w-xs text-sm leading-relaxed text-muted-foreground">
-                {settings.mainDescription}
-              </p>
-
-              {/* Social icons — düz ikon satırı, kart arkaplanı yok */}
-              {settings.visibility.showSocialLinks && socialEntries.length > 0 && (
-                <nav aria-label="Social media" className="mt-6 flex items-center gap-4">
-                  {socialEntries.map((item) => {
-                    const IconComp = socialIconMap[item.key];
-                    return (
-                      <a
-                        key={item.key}
-                        href={item.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label={item.label}
-                        className="text-muted-foreground hover:text-primary transition-colors duration-150 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary rounded-xs"
-                      >
-                        {IconComp && <IconComp className="h-5 w-5" />}
+    <footer className="fx-ftr public-theme public-dark" role="contentinfo">
+      <div className="fx-wrap">
+        <div className="fx-ftr__top">
+          <div className="fx-ftr__brand">
+            <Link href={`/${locale}`} aria-label={company} className="fx-hdr__logo-link">
+              <FxLogo tone="light" title={company} />
+            </Link>
+            <p>{description}</p>
+            <p className="fx-eyebrow">{tFx('footer.slogan')}</p>
+            {settings.visibility?.showSocialLinks && socialEntries.length > 0 && (
+              <ul className="fx-ftr__social" aria-label="Sosyal medya">
+                {socialEntries.map((item) => {
+                  const Icon = socialIconMap[item.key];
+                  return (
+                    <li key={item.key}>
+                      <a href={item.url} target="_blank" rel="noopener noreferrer" aria-label={item.label} className="fx-iconbtn">
+                        {Icon ? <Icon className="h-4 w-4" /> : item.label}
                       </a>
-                    );
-                  })}
-                </nav>
-              )}
-            </section>
-
-            {/* Column 2: Quick Links (first half) */}
-            {settings.visibility.showQuickLinks && quickLinksHalf.length > 0 && (
-              <nav aria-label="Footer navigation">
-                <h3 className="mb-5 font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
-                  {t('quickLinks')}
-                </h3>
-                <ul className="flex flex-col gap-2.5">
-                  {quickLinksHalf.map(renderLink)}
-                </ul>
-              </nav>
-            )}
-
-            {/* Column 3: Quick Links (second half) or Services */}
-            {settings.visibility.showQuickLinks && quickLinksSecondHalf.length > 0 && (
-              <nav aria-label="Footer services">
-                <h3 className="mb-5 font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
-                  {t('services', { defaultValue: 'Hizmetler' })}
-                </h3>
-                <ul className="flex flex-col gap-2.5">
-                  {quickLinksSecondHalf.map(renderLink)}
-                </ul>
-              </nav>
-            )}
-
-            {/* Column 4: Contact Info */}
-            {settings.visibility.showContactInfo && (
-              <section aria-labelledby="footer-contact">
-                <h3
-                  id="footer-contact"
-                  className="mb-5 font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
-                >
-                  {t('contactTitle', { defaultValue: 'İletişim' })}
-                </h3>
-                <div className="flex flex-col gap-3">
-                  {settings.contactInfo.email && (
-                    <a
-                      href={`mailto:${settings.contactInfo.email}`}
-                      className="group inline-flex items-start gap-2.5 text-sm text-muted-foreground hover:text-primary transition-colors duration-200"
-                    >
-                      <Envelope className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground/70" />
-                      <span>{settings.contactInfo.email}</span>
-                    </a>
-                  )}
-                  {settings.contactInfo.phone && (
-                    <a
-                      href={`tel:${settings.contactInfo.phone.replace(/\s/g, '')}`}
-                      className="group inline-flex items-start gap-2.5 text-sm text-muted-foreground hover:text-primary transition-colors duration-200"
-                    >
-                      <Phone className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground/70" />
-                      <span>{settings.contactInfo.phone}</span>
-                    </a>
-                  )}
-                  {settings.contactInfo.address && (
-                    <div className="inline-flex items-start gap-2.5 text-sm text-muted-foreground">
-                      <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground/70" />
-                      <span>{settings.contactInfo.address}</span>
-                    </div>
-                  )}
-                </div>
-              </section>
+                    </li>
+                  );
+                })}
+              </ul>
             )}
           </div>
-        </div>
 
-        {/* ── Bottom section ── */}
-        <div className="container-boxed">
-          <div className="border-t border-border mt-8 pt-8 pb-8">
-            <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-              {/* Left: Copyright + Version */}
-              <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
-                <p className="font-mono text-xs text-muted-foreground">
-                  &copy; {settings.copyrightInfo.year}{' '}
-                  {settings.copyrightInfo.companyName}.{' '}
-                  {settings.copyrightInfo.additionalText}
-                </p>
-                <Version variant="badge" />
-                {settings.visibility.showDeveloperInfo && (
-                  <span className="font-mono text-xs text-muted-foreground">
-                    {t('developer')}{' '}
-                    <a
-                      href={settings.developerInfo.website}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-foreground hover:text-primary underline decoration-border-strong underline-offset-2 transition-colors duration-200"
-                    >
-                      {settings.developerInfo.name}
-                    </a>
-                  </span>
+          <div className="fx-ftr__col">
+            <h4>{tFx('footer.services')}</h4>
+            {fx.services.map((svc) => (
+              <Link key={svc.key} href={serviceHref(locale, svc)}>{svc.text[lang].name}</Link>
+            ))}
+          </div>
+
+          <div className="fx-ftr__col">
+            <h4>{tFx('footer.software')}</h4>
+            {fx.software.map((sw) => (
+              <Link key={sw.slug} href={softwareHref(locale, sw)}>{sw.name}</Link>
+            ))}
+            <a href="https://github.com/fixral3d" target="_blank" rel="noopener noreferrer">{tFx('footer.github')}</a>
+            {settings.visibility?.showQuickLinks && settings.quickLinks?.length > 0 && (
+              <>
+                <h4 className="fx-ftr__sub">{tFx('footer.site')}</h4>
+                {settings.quickLinks.map((link, index) =>
+                  link.isExternal ? (
+                    <a key={index} href={link.url} target="_blank" rel="noopener noreferrer">{link.title}</a>
+                  ) : (
+                    <Link key={index} href={localize(link.url, false)}>{link.title}</Link>
+                  ),
                 )}
-              </div>
-            </div>
+              </>
+            )}
+          </div>
+
+          <div className="fx-ftr__col">
+            <h4>{tFx('footer.contact')}</h4>
+            {settings.visibility?.showContactInfo !== false && (
+              <>
+                {settings.contactInfo?.email && <span className="fx-mono fx-ftr__select">{settings.contactInfo.email}</span>}
+                {settings.contactInfo?.phone && <span className="fx-mono fx-ftr__select">{settings.contactInfo.phone}</span>}
+                {settings.contactInfo?.address && <span className="fx-ftr__muted">{settings.contactInfo.address}</span>}
+              </>
+            )}
+            <Link href={`/${locale}/contact`}>{tFx('nav.quote')}</Link>
           </div>
         </div>
-      </footer>
 
-      {/* ── Fixed Back to Top button ── */}
+        <FxWordmark className="fx-ftr__mega" />
+
+        <div className="fx-ftr__bot">
+          <span>
+            © {year} {company}. {settings.copyrightInfo?.additionalText && lang === 'tr' ? settings.copyrightInfo.additionalText : tFx('footer.rights')}
+          </span>
+          <span className="fx-ftr__meta">
+            {settings.visibility?.showDeveloperInfo && settings.developerInfo?.name && (
+              <>
+                {t('developer')}{' '}
+                {settings.developerInfo.website ? (
+                  <a href={settings.developerInfo.website} target="_blank" rel="noopener noreferrer">{settings.developerInfo.name}</a>
+                ) : (
+                  settings.developerInfo.name
+                )}
+                <span aria-hidden="true"> · </span>
+              </>
+            )}
+            <Version />
+          </span>
+        </div>
+      </div>
+
       <AnimatePresence>
         {showBackToTop && (
           <m.button
             type="button"
             onClick={scrollToTop}
-            aria-label={t('backToTop')}
-            initial={{ opacity: 0, scale: 0.8, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.8, y: 20 }}
-            transition={{
-              duration: prefersReducedMotion ? 0 : 0.3,
-              ease: [0.32, 0.72, 0, 1],
-            }}
-            className="fixed bottom-6 right-6 z-40 inline-flex h-11 w-11 items-center justify-center rounded-xs bg-primary text-primary-foreground shadow-[var(--shadow-md)] hover:bg-primary/90 transition-colors duration-150 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            className="fx-totop"
+            aria-label={tFx('footer.backToTop')}
+            initial={prefersReducedMotion ? false : { opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 8 }}
           >
-            <ArrowUp className="h-5 w-5" />
+            <ArrowUp className="h-4 w-4" aria-hidden="true" />
           </m.button>
         )}
       </AnimatePresence>
-    </>
+    </footer>
   );
 };
 

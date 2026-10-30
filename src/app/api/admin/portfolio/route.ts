@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import Portfolio from '@/models/Portfolio';
 import slugify from 'slugify';
+import { withFxRevalidate } from '@/lib/fx-revalidate';
 
 /**
  * GET /api/admin/portfolio - List all portfolio items for admin
@@ -34,7 +35,7 @@ export async function GET(_req: NextRequest) {
 /**
  * POST /api/admin/portfolio - Create a new portfolio item
  */
-export async function POST(req: NextRequest) {
+async function POST__handler(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
 
@@ -80,3 +81,6 @@ export async function POST(req: NextRequest) {
     );
   }
 }
+
+// Panel → site canlı tazeleme (redesign 2026)
+export const POST = withFxRevalidate(POST__handler);

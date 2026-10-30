@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '../../../../lib/auth';
 import Slider from '../../../../models/Slider';
 import { withSecurity, SecurityConfigs } from '../../../../lib/security-middleware';
+import { withFxRevalidate } from '@/lib/fx-revalidate';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
@@ -26,7 +27,7 @@ export const GET = withSecurity(SecurityConfigs.admin)(async () => {
 });
 
 // POST /api/admin/slider - Yeni slider oluştur (Admin only)
-export const POST = withSecurity(SecurityConfigs.admin)(async (request: Request) => {
+const POST__handler = withSecurity(SecurityConfigs.admin)(async (request: Request) => {
   try {
     const session = await getServerSession(authOptions); // only to capture email
 
@@ -66,3 +67,6 @@ export const POST = withSecurity(SecurityConfigs.admin)(async (request: Request)
     );
   }
 });
+
+// Panel → site canlı tazeleme (redesign 2026)
+export const POST = withFxRevalidate(POST__handler);

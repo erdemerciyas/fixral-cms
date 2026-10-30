@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../../../../../lib/auth';
 import Slider from '../../../../../models/Slider';
+import { withFxRevalidate } from '@/lib/fx-revalidate';
 
 // GET /api/admin/slider/[id] - Tek slider getir
 export async function GET(request: Request, props: { params: Promise<{ id: string }> }) {
@@ -36,7 +37,7 @@ export async function GET(request: Request, props: { params: Promise<{ id: strin
 }
 
 // PUT /api/admin/slider/[id] - Slider güncelle
-export async function PUT(request: Request, props: { params: Promise<{ id: string }> }) {
+async function PUT__handler(request: Request, props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
   try {
     const session = await getServerSession(authOptions);
@@ -111,7 +112,7 @@ export async function PUT(request: Request, props: { params: Promise<{ id: strin
 }
 
 // POST /api/admin/slider/[id] - Slider durumunu değiştir
-export async function POST(request: Request, props: { params: Promise<{ id: string }> }) {
+async function POST__handler(request: Request, props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
   try {
     const session = await getServerSession(authOptions);
@@ -148,7 +149,7 @@ export async function POST(request: Request, props: { params: Promise<{ id: stri
 }
 
 // DELETE /api/admin/slider/[id] - Slider sil
-export async function DELETE(request: Request, props: { params: Promise<{ id: string }> }) {
+async function DELETE__handler(request: Request, props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
   try {
     const session = await getServerSession(authOptions);
@@ -180,3 +181,8 @@ export async function DELETE(request: Request, props: { params: Promise<{ id: st
     );
   }
 }
+
+// Panel → site canlı tazeleme (redesign 2026)
+export const POST = withFxRevalidate(POST__handler);
+export const PUT = withFxRevalidate(PUT__handler);
+export const DELETE = withFxRevalidate(DELETE__handler);

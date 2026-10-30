@@ -1,6 +1,6 @@
 {
   "name": "fixral-cms",
-  "version": "5.1.3",
+  "version": "5.2.0",
   "private": true,
   "scripts": {
     "predev": "node scripts/cleanup.js",
@@ -34,7 +34,8 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:push": "prisma db push",
-    "db:seed": "node prisma/seed.mjs"
+    "db:seed": "node prisma/seed.mjs",
+    "content:redesign": "node scripts/redesign-content.mjs"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",

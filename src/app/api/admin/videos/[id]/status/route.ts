@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import Video from "@/models/Video";
-export async function PUT(req: Request, props: { params: Promise<{ id: string }> }) {
+import { withFxRevalidate } from '@/lib/fx-revalidate';
+async function PUT__handler(req: Request, props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
   try {
     const session = await getServerSession(authOptions);
@@ -12,7 +13,7 @@ export async function PUT(req: Request, props: { params: Promise<{ id: string }>
 
     const { status } = await req.json();
     
-    if (!status || !['visible', 'hidden'].includes(status)) {
+    if (!status || !['visible', 'draft', 'hidden'].includes(status)) {
       return NextResponse.json({ error: "Geçerli bir durum belirtin" }, { status: 400 });
     }
 
@@ -27,7 +28,7 @@ export async function PUT(req: Request, props: { params: Promise<{ id: string }>
     }
 
     return NextResponse.json({
-      message: `Video ${status === 'visible' ? 'görünür yapıldı' : 'gizlendi'}`,
+      message: `Video ${status === 'visible' ? 'yayınlandı' : status === 'draft' ? 'taslağa alındı' : 'pasif yapıldı'}`,
       video
     });
 
@@ -39,3 +40,6 @@ export async function PUT(req: Request, props: { params: Promise<{ id: string }>
     );
   }
 }
+
+// Panel → site canlı tazeleme (redesign 2026)
+export const PUT = withFxRevalidate(PUT__handler);

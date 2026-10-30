@@ -1,27 +1,36 @@
 import type { Metadata } from 'next';
 import { SITE_URL, generateAlternates, generateOgImages } from '@/lib/seo-utils';
+import { getMessages } from '@/i18n';
 import ContactClient from './ContactClient';
 
 export const revalidate = 3600;
 
+type ContactMeta = { title: string; description: string };
+
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const { lang } = await params;
-  const canonical = lang === 'es' ? `${SITE_URL}/es/contact` : `${SITE_URL}/tr/contact`;
+  const canonical = `${SITE_URL}/tr/contact`;
+  const messages = (await getMessages(lang)) as { fx?: { contact?: { meta?: ContactMeta } } };
+  const meta: ContactMeta = messages.fx?.contact?.meta ?? {
+    title: 'İletişim ve teklif | FIXRAL',
+    description: 'Parçanızı dört kısa adımda anlatın; iki iş günü içinde yöntem, süre ve fiyatla dönelim.',
+  };
 
   return {
-    title: 'İletişim | Fixral',
-    description: 'Bizimle iletişime geçin. Proje teklifleriniz ve sorularınız için form doldurun veya doğrudan ulaşın.',
-    alternates: generateAlternates('/tr/contact', '/es/contact'),
+    title: meta.title,
+    description: meta.description,
+    alternates: generateAlternates('/tr/contact'),
     openGraph: {
-      title: 'İletişim | Fixral',
-      description: 'Bizimle iletişime geçin. Proje teklifleriniz ve sorularınız için form doldurun veya doğrudan ulaşın.',
+      title: meta.title,
+      description: meta.description,
       url: canonical,
       type: 'website',
-      images: generateOgImages(undefined, 'İletişim | Fixral'),
+      images: generateOgImages(undefined, meta.title),
     },
   };
 }
 
-export default function ContactPage() {
-  return <ContactClient />;
+export default async function ContactPage({ params }: { params: Promise<{ lang: string }> }) {
+  const { lang } = await params;
+  return <ContactClient lang={lang} />;
 }

@@ -63,13 +63,13 @@ describe('TechLabel', () => {
     expect(screen.getByText('/')).toBeTruthy()
   })
 
-  it('renders the crosshair marker and honors the as prop', () => {
+  it('renders the fiducial marker and honors the as prop', () => {
     render(
       <TechLabel as="p" marker="crosshair">
         Precision
       </TechLabel>,
     )
-    expect(screen.getByText('+')).toBeTruthy()
+    expect(screen.getByTestId('fiducial')).toBeTruthy()
     expect(screen.getByText('Precision').closest('p')).toBeTruthy()
   })
 

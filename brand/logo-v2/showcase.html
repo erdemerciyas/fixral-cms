@@ -1,0 +1,572 @@
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>Fixral Mark System</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Düzen: tam genişlikte koyu atölye şeritleri, içte 1180px ızgara */
+:root{
+  --bg:#0C0E12; --panel:#14171D; --line:#242931; --fg:#EEF1F5; --dim:#8E97A3;
+  --ac:#F97316; --ac-soft:#F9731622;
+  --mk:#FFFFFF; --mk-ac:#F97316; --mk-mute:#4A515B; --mk-on:#FFFFFF;
+  --display:'Space Grotesk','Arial Narrow',system-ui,sans-serif;
+  --body:'Inter',system-ui,-apple-system,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme:light){
+  :root:not([data-theme="dark"]){
+    --bg:#FAFAFB; --panel:#F1F2F4; --line:#DFE2E7; --fg:#101828; --dim:#5C646F;
+    --ac:#D9600A; --ac-soft:#F9731618;
+    --mk:#101828; --mk-ac:#F97316; --mk-mute:#C3C8CF; --mk-on:#FFFFFF;
+    color-scheme:light;
+  }
+}
+:root[data-theme="light"]{
+  --bg:#FAFAFB; --panel:#F1F2F4; --line:#DFE2E7; --fg:#101828; --dim:#5C646F;
+  --ac:#D9600A; --ac-soft:#F9731618;
+  --mk:#101828; --mk-ac:#F97316; --mk-mute:#C3C8CF; --mk-on:#FFFFFF;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+section{padding-block:clamp(44px,6vw,86px)}
+section+section{border-top:1px solid var(--line)}
+
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ac);margin:0 0 14px}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(34px,6vw,60px);line-height:1.02;letter-spacing:-.02em;margin:0 0 18px;text-wrap:balance}
+h2{font-family:var(--display);font-weight:700;font-size:clamp(22px,3vw,30px);letter-spacing:-.015em;margin:0 0 8px;text-wrap:balance}
+h3{font-family:var(--display);font-weight:500;font-size:19px;letter-spacing:-.01em;margin:0 0 6px}
+.lede{color:var(--dim);max-width:62ch;font-size:16px;margin:0}
+.sec-head{margin-bottom:clamp(24px,3vw,40px)}
+
+/* Başlık */
+.hero{padding-block:clamp(40px,6vw,76px) clamp(32px,4vw,56px)}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.85fr);gap:clamp(24px,4vw,56px);align-items:center}
+@media(max-width:760px){.hero-grid{grid-template-columns:1fr}}
+.hero-mark{background:var(--panel);border:1px solid var(--line);padding:clamp(26px,4vw,48px);display:grid;place-items:center;min-width:0}
+.hero-mark svg{width:100%;max-width:420px;height:auto}
+.rule{display:flex;gap:10px;align-items:center;font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--dim);text-transform:uppercase;margin-top:18px}
+.rule::before{content:"";height:1px;flex:0 0 42px;background:var(--ac)}
+
+/* Izgara */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:18px}
+.grid--lock{grid-template-columns:repeat(auto-fill,minmax(340px,1fr))}
+.card{border:1px solid var(--line);background:var(--panel);display:flex;flex-direction:column;min-width:0}
+.stage{aspect-ratio:16/9;display:grid;place-items:center;padding:30px;border-bottom:1px solid var(--line);background:
+  linear-gradient(var(--line) 1px,transparent 1px) 0 0/100% 34px,
+  linear-gradient(90deg,var(--line) 1px,transparent 1px) 0 0/34px 100%;
+  background-color:transparent;min-width:0}
+.stage--lock{aspect-ratio:21/9}
+.mk{width:100%;height:100%;max-height:150px;object-fit:contain;display:block}
+.card--sq .mk{max-height:128px}
+.meta{padding:18px 20px 20px;display:flex;flex-direction:column;gap:2px;flex:1}
+.idx{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--ac);margin:0 0 8px;text-transform:uppercase}
+.idx span{color:var(--dim);margin-left:8px}
+.desc{color:var(--dim);font-size:14px;margin:4px 0 0}
+.file{font-family:var(--mono);font-size:11px;color:var(--dim);opacity:.65;margin:14px 0 0}
+
+/* Renk varyantları */
+.vars{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px}
+.var{border:1px solid var(--line);padding:26px 18px;display:grid;place-items:center;gap:0;min-height:128px}
+.var svg{width:100%;max-width:170px;height:auto}
+.var p{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;margin:16px 0 0;opacity:.7}
+.v-dark{background:#101828;color:#fff}
+.v-light{background:#F3F4F6;color:#101828}
+.v-ac{background:#F97316;color:#1a1005}
+.v-out{background:transparent;color:var(--fg)}
+
+/* Renk + tipografi */
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:clamp(24px,4vw,48px)}
+.sws{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.sw{display:grid;grid-template-columns:40px auto 1fr;align-items:center;gap:12px;border-bottom:1px solid var(--line);padding-bottom:10px}
+.chip{width:40px;height:40px;border:1px solid var(--line);display:block}
+.sw b{font-family:var(--display);font-weight:500;font-size:15px}
+.sw code{font-family:var(--mono);font-size:12px;color:var(--dim);grid-column:2}
+.sw em{grid-column:3;grid-row:1/3;font-style:normal;font-size:13px;color:var(--dim);text-align:right}
+.type-row{border-bottom:1px solid var(--line);padding:14px 0;display:flex;justify-content:space-between;gap:16px;align-items:baseline;flex-wrap:wrap}
+.type-row span:last-child{font-family:var(--mono);font-size:11px;color:var(--dim);letter-spacing:.1em;text-transform:uppercase}
+.t1{font-family:var(--display);font-weight:700;font-size:26px;letter-spacing:-.01em}
+.t2{font-family:var(--body);font-size:17px}
+.t3{font-family:var(--mono);font-size:15px}
+
+/* Uygulamalar */
+.apps{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:18px;align-items:start}
+.app{min-width:0}
+.app .frame{border:1px solid var(--line);background:var(--panel);display:grid;place-items:center;padding:22px;min-height:168px}
+.app p{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin:10px 0 0}
+.avatar{width:120px;height:120px;border-radius:50%;background:#101828;display:grid;place-items:center;overflow:hidden}
+.avatar svg{width:62px;height:auto}
+.appicon{width:120px;height:120px}
+.appicon svg{width:100%;height:100%;display:block;border-radius:26px}
+.fav{display:flex;gap:16px;align-items:flex-end}
+.fav i{display:grid;place-items:center;background:#101828;border-radius:4px}
+.fav i svg{width:70%;height:auto}
+.f32{width:32px;height:32px}.f16{width:16px;height:16px;border-radius:2px}.f48{width:48px;height:48px;border-radius:6px}
+.banner{grid-column:1/-1}
+.banner .frame{padding:0;min-height:0;position:relative;aspect-ratio:16/5;background:#101828;overflow:hidden}
+.banner .safe{position:absolute;inset:14% 26%;border:1px dashed #F9731655;display:grid;place-items:center}
+.banner .safe svg{width:min(70%,320px);height:auto}
+.banner .tagline{position:absolute;left:50%;bottom:11%;transform:translateX(-50%);font-family:var(--mono);font-size:clamp(8px,1.1vw,13px);letter-spacing:.3em;color:#8E97A3;text-transform:uppercase;white-space:nowrap}
+.card-mock{aspect-ratio:1.75/1;background:#101828;display:grid;place-items:center;width:100%;max-width:260px}
+.card-mock svg{width:62%;height:auto}
+
+/* Boşluk kuralı */
+.clear{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:22px;align-items:center}
+.clearbox{position:relative;border:1px dashed var(--line);padding:11.5%;background:var(--panel)}
+.clearbox svg{width:100%;height:auto;display:block}
+.clearbox::after{content:"x = F gövde kalınlığı × 2";position:absolute;left:10px;bottom:8px;font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--dim)}
+.rules{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.rules li{display:grid;grid-template-columns:18px 1fr;gap:12px;font-size:14px;color:var(--dim);border-bottom:1px solid var(--line);padding-bottom:12px}
+.rules b{color:var(--fg);font-weight:500;font-family:var(--display)}
+.rules i{font-style:normal;color:var(--ac);font-family:var(--mono);font-size:12px}
+
+/* Toggle */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--bg);border-bottom:1px solid var(--line)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.bar .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:12px}
+.brandline{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);min-width:0}
+.brandline svg{height:17px;width:auto;flex:0 0 auto}
+.brandline span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+button{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;background:transparent;color:var(--fg);border:1px solid var(--line);padding:7px 13px;cursor:pointer;flex:0 0 auto}
+button:hover{border-color:var(--ac);color:var(--ac)}
+button:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+footer{padding-block:34px;color:var(--dim);font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="bar"><div class="wrap">
+  <span class="brandline"><svg class="mk " viewBox="0 0 290 160" role="img" aria-label="Fixral Blade">
+<g fill="var(--mk)">
+  <polygon points="0,0 90,0 118,28 0,28"/>
+  <rect x="0" y="0" width="28" height="160"/>
+  <polygon points="0,66 86,66 114,94 0,94"/>
+</g>
+<g transform="translate(90,0)">
+  <polygon points="0,0 40,0 100,60 160,0 200,0 120,80 200,160 160,160 100,100 40,160 0,160 80,80" fill="var(--mk)"/>
+  <polygon points="80,80 100,100 40,160 0,160" fill="var(--mk-ac)"/>
+</g></svg><span>Mark System · v2</span></span>
+  <button id="themeBtn" type="button">Tema</button>
+</div></div>
+
+<header class="hero wrap">
+  <div class="hero-grid">
+    <div>
+      <p class="eyebrow">Fixral · Kimlik Çalışması</p>
+      <h1>On marka, tek geometri.</h1>
+      <p class="lede">Hepsi aynı 45° ızgaradan türüyor: F’in üst kolu kesilip X’in bıçağına akıyor, turuncu yalnızca güneybatı kolunda duruyor. Konseptler birbirinin alternatifi değil — biri ana marka, diğerleri aynı ailenin iş koluna göre konuşan versiyonları.</p>
+      <p class="rule">45° ızgara · 28 birim gövde · tek vurgu rengi</p>
+    </div>
+    <div class="hero-mark"><svg class="mk " viewBox="0 0 515 100" role="img" aria-label="Fixral Yatay kilit">
+<g transform="scale(0.625)">
+<g fill="var(--mk)">
+  <polygon points="0,0 90,0 118,28 0,28"/>
+  <rect x="0" y="0" width="28" height="160"/>
+  <polygon points="0,66 86,66 114,94 0,94"/>
+</g>
+<g transform="translate(90,0)">
+  <polygon points="0,0 40,0 100,60 160,0 200,0 120,80 200,160 160,160 100,100 40,160 0,160 80,80" fill="var(--mk)"/>
+  <polygon points="80,80 100,100 40,160 0,160" fill="var(--mk-ac)"/>
+</g></g>
+<g transform="translate(209.25,29) scale(0.846)"><g transform="translate(-1.26,-193.73)" fill="var(--mk)"><path d="M1.27,193.73h54.98v12.23H17.11v9.83h37.22v11.96H17.11v17.98H1.27v-52Z"/><path d="M59.86,193.73h16.65v52h-16.65v-52Z"/><path d="M81.62,193.73h21.68l16.04,18.25,16.15-18.25h21.94l-25.03,25.72,26.25,26.29h-22.29l-17.03-18.71-16.92,18.71h-22.82l26.59-26.29-24.57-25.72Z"/><path d="M161.81,245.74v-52h38.29c9.17,0,14.55.1,16.15.3,1.78.15,3.49.74,5.14,1.75,1.96,1.17,3.31,2.81,4.06,4.91.75,2.11,1.12,5.41,1.12,9.91,0,3.81-.24,6.58-.71,8.32-.47,1.74-1.37,3.17-2.69,4.29-1.32,1.12-3.42,1.91-6.29,2.36,1.57,0,2.96.25,4.17.76,1.21.51,2.22,1.23,3.03,2.17.81.94,1.33,2.11,1.56,3.5.23,1.4.34,4.36.34,8.88v4.84h-15.62v-2.78c0-2.9-.11-4.96-.32-6.19-.22-1.23-.62-2.17-1.2-2.8-.58-.63-1.26-1.01-2.04-1.12-.78-.11-1.69-.2-2.74-.25-1.05-.05-2.42-.08-4.1-.08h-22.33v13.22h-15.85ZM177.66,219.53h22.29c1.37,0,2.71-.01,4-.04,1.3-.03,2.31-.08,3.03-.15s1.34-.28,1.85-.61c.66-.41,1.14-1.05,1.43-1.92.29-.88.44-2.17.44-3.87s-.16-2.97-.48-3.81c-.32-.84-.87-1.45-1.66-1.83-.53-.23-1.21-.38-2.02-.46l-6.63-.11h-22.25v12.8Z"/><path d="M288.49,245.74l-4.46-8.8h-34.4l-4.46,8.8h-18.1l27.58-52h24.61l27.2,52h-17.98ZM278.47,225.55l-10.02-19.7h-3.16l-10.02,19.7h23.2Z"/><path d="M308.84,193.73h16.65v38.75h36.99v13.26h-53.64v-52Z"/></g></g></svg></div>
+  </div>
+</header>
+
+<section class="wrap">
+  <div class="sec-head">
+    <p class="eyebrow">01 — Konseptler</p>
+    <h2>Marka ailesi</h2>
+    <p class="lede">Her kart 16:9 bir sahnede duruyor; ızgara çizgileri markanın optik ağırlığını göstermek için.</p>
+  </div>
+  <div class="grid">
+<article class="card">
+  <div class="stage"><svg class="mk " viewBox="0 0 290 160" role="img" aria-label="Fixral Blade">
+<g fill="var(--mk)">
+  <polygon points="0,0 90,0 118,28 0,28"/>
+  <rect x="0" y="0" width="28" height="160"/>
+  <polygon points="0,66 86,66 114,94 0,94"/>
+</g>
+<g transform="translate(90,0)">
+  <polygon points="0,0 40,0 100,60 160,0 200,0 120,80 200,160 160,160 100,100 40,160 0,160 80,80" fill="var(--mk)"/>
+  <polygon points="80,80 100,100 40,160 0,160" fill="var(--mk-ac)"/>
+</g></svg></div>
+  <div class="meta">
+    <p class="idx">01 <span>Ana marka</span></p>
+    <h3>FX Blade</h3>
+    <p class="desc">F’in üst kolu 45° kesilip X’in kuzeybatı bıçağına akıyor — tek bir sürekli hareket. Turuncu sadece güneybatı kolunda.</p>
+    <p class="file">fx-blade.svg</p>
+  </div>
+</article>
+<article class="card">
+  <div class="stage"><svg class="mk " viewBox="0 0 200 160" role="img" aria-label="Fixral Apex"><polygon points="0,0 40,0 100,60 160,0 200,0 120,80 200,160 160,160 100,100 40,160 0,160 80,80" fill="var(--mk)"/><polygon points="80,80 100,100 40,160 0,160" fill="var(--mk-ac)"/></svg></div>
+  <div class="meta">
+    <p class="idx">02 <span>İkon / avatar</span></p>
+    <h3>FX Apex</h3>
+    <p class="desc">Markanın en küçük okunabilir hali. 16 px favicon’dan YouTube kanal ikonuna kadar aynı kalıyor.</p>
+    <p class="file">fx-apex.svg</p>
+  </div>
+</article>
+<article class="card">
+  <div class="stage"><svg class="mk " viewBox="0 0 290 160" role="img" aria-label="Fixral Slice"><defs><clipPath id="sl-ui-fx-slice"><rect x="-10" y="-4" width="320" height="9"/><rect x="-10" y="9" width="320" height="9"/><rect x="-10" y="22" width="320" height="9"/><rect x="-10" y="35" width="320" height="9"/><rect x="-10" y="48" width="320" height="9"/><rect x="-10" y="61" width="320" height="9"/><rect x="-10" y="74" width="320" height="9"/><rect x="-10" y="87" width="320" height="9"/><rect x="-10" y="100" width="320" height="9"/><rect x="-10" y="113" width="320" height="9"/><rect x="-10" y="126" width="320" height="9"/><rect x="-10" y="139" width="320" height="9"/><rect x="-10" y="152" width="320" height="9"/></clipPath></defs><g clip-path="url(#sl-ui-fx-slice)">
+<g fill="var(--mk)">
+  <polygon points="0,0 90,0 118,28 0,28"/>
+  <rect x="0" y="0" width="28" height="160"/>
+  <polygon points="0,66 86,66 114,94 0,94"/>
+</g>
+<g transform="translate(90,0)">
+  <polygon points="0,0 40,0 100,60 160,0 200,0 120,80 200,160 160,160 100,100 40,160 0,160 80,80" fill="var(--mk)"/>
+  <polygon points="80,80 100,100 40,160 0,160" fill="var(--mk-ac)"/>
+</g></g></svg></div>
+  <div class="meta">
+    <p class="idx">03 <span>Slicer / 3D baskı</span></p>
+    <h3>FX Slice</h3>
+    <p class="desc">Marka katman katman dilimlenmiş. Slicer ve additive üretim tarafı için doğrudan okunan bir kod.</p>
+    <p class="file">fx-slice.svg</p>
+  </div>
+</article>
+<article class="card">
+  <div class="stage"><svg class="mk " viewBox="0 0 290 160" role="img" aria-label="Fixral Cloud"><circle cx="0.0" cy="0.0" r="2.20" fill="var(--mk)"/><circle cx="8.6" cy="0.0" r="2.95" fill="var(--mk)"/><circle cx="17.2" cy="0.0" r="3.70" fill="var(--mk)"/><circle cx="25.8" cy="0.0" r="2.58" fill="var(--mk)"/><circle cx="34.4" cy="0.0" r="3.33" fill="var(--mk)"/><circle cx="43.0" cy="0.0" r="2.20" fill="var(--mk)"/><circle cx="51.6" cy="0.0" r="2.95" fill="var(--mk)"/><circle cx="60.2" cy="0.0" r="3.70" fill="var(--mk)"/><circle cx="68.8" cy="0.0" r="2.58" fill="var(--mk)"/><circle cx="77.4" cy="0.0" r="3.33" fill="var(--mk)"/><circle cx="86.0" cy="0.0" r="2.20" fill="var(--mk)"/><circle cx="94.6" cy="0.0" r="2.95" fill="var(--mk)"/><circle cx="103.2" cy="0.0" r="3.70" fill="var(--mk)"/><circle cx="111.8" cy="0.0" r="2.58" fill="var(--mk)"/><circle cx="120.4" cy="0.0" r="3.33" fill="var(--mk)"/><circle cx="129.0" cy="0.0" r="2.20" fill="var(--mk)"/><circle cx="258.0" cy="0.0" r="2.20" fill="var(--mk)"/><circle cx="266.6" cy="0.0" r="2.95" fill="var(--mk)"/><circle cx="275.2" cy="0.0" r="3.70" fill="var(--mk)"/><circle cx="283.8" cy="0.0" r="2.58" fill="var(--mk)"/><circle cx="4.3" cy="8.6" r="3.33" fill="var(--mk)"/><circle cx="12.9" cy="8.6" r="2.20" fill="var(--mk)"/><circle cx="21.5" cy="8.6" r="2.95" fill="var(--mk)"/><circle cx="30.1" cy="8.6" r="3.70" fill="var(--mk)"/><circle cx="38.7" cy="8.6" r="2.58" fill="var(--mk)"/><circle cx="47.3" cy="8.6" r="3.33" fill="var(--mk)"/><circle cx="55.9" cy="8.6" r="2.20" fill="var(--mk)"/><circle cx="64.5" cy="8.6" r="2.95" fill="var(--mk)"/><circle cx="73.1" cy="8.6" r="3.70" fill="var(--mk)"/><circle cx="81.7" cy="8.6" r="2.58" fill="var(--mk)"/><circle cx="90.3" cy="8.6" r="3.33" fill="var(--mk)"/><circle cx="98.9" cy="8.6" r="2.20" fill="var(--mk)"/><circle cx="107.5" cy="8.6" r="2.95" fill="var(--mk)"/><circle cx="116.1" cy="8.6" r="3.70" fill="var(--mk)"/><circle cx="124.7" cy="8.6" r="2.58" fill="var(--mk)"/><circle cx="133.3" cy="8.6" r="3.33" fill="var(--mk)"/><circle cx="245.1" cy="8.6" r="3.70" fill="var(--mk)"/><circle cx="253.7" cy="8.6" r="2.58" fill="var(--mk)"/><circle cx="262.3" cy="8.6" r="3.33" fill="var(--mk)"/><circle cx="270.9" cy="8.6" r="2.20" fill="var(--mk)"/><circle cx="279.5" cy="8.6" r="2.95" fill="var(--mk)"/><circle cx="0.0" cy="17.2" r="2.58" fill="var(--mk)"/><circle cx="8.6" cy="17.2" r="3.33" fill="var(--mk)"/><circle cx="17.2" cy="17.2" r="2.20" fill="var(--mk)"/><circle cx="25.8" cy="17.2" r="2.95" fill="var(--mk)"/><circle cx="34.4" cy="17.2" r="3.70" fill="var(--mk)"/><circle cx="43.0" cy="17.2" r="2.58" fill="var(--mk)"/><circle cx="51.6" cy="17.2" r="3.33" fill="var(--mk)"/><circle cx="60.2" cy="17.2" r="2.20" fill="var(--mk)"/><circle cx="68.8" cy="17.2" r="2.95" fill="var(--mk)"/><circle cx="77.4" cy="17.2" r="3.70" fill="var(--mk)"/><circle cx="86.0" cy="17.2" r="2.58" fill="var(--mk)"/><circle cx="94.6" cy="17.2" r="3.33" fill="var(--mk)"/><circle cx="103.2" cy="17.2" r="2.20" fill="var(--mk)"/><circle cx="111.8" cy="17.2" r="2.95" fill="var(--mk)"/><circle cx="120.4" cy="17.2" r="3.70" fill="var(--mk)"/><circle cx="129.0" cy="17.2" r="2.58" fill="var(--mk)"/><circle cx="137.6" cy="17.2" r="3.33" fill="var(--mk)"/><circle cx="146.2" cy="17.2" r="2.20" fill="var(--mk)"/><circle cx="240.8" cy="17.2" r="2.95" fill="var(--mk)"/><circle cx="249.4" cy="17.2" r="3.70" fill="var(--mk)"/><circle cx="258.0" cy="17.2" r="2.58" fill="var(--mk)"/><circle cx="266.6" cy="17.2" r="3.33" fill="var(--mk)"/><circle cx="4.3" cy="25.8" r="3.70" fill="var(--mk)"/><circle cx="12.9" cy="25.8" r="2.58" fill="var(--mk)"/><circle cx="21.5" cy="25.8" r="3.33" fill="var(--mk)"/><circle cx="30.1" cy="25.8" r="2.20" fill="var(--mk)"/><circle cx="38.7" cy="25.8" r="2.95" fill="var(--mk)"/><circle cx="47.3" cy="25.8" r="3.70" fill="var(--mk)"/><circle cx="55.9" cy="25.8" r="2.58" fill="var(--mk)"/><circle cx="64.5" cy="25.8" r="3.33" fill="var(--mk)"/><circle cx="73.1" cy="25.8" r="2.20" fill="var(--mk)"/><circle cx="81.7" cy="25.8" r="2.95" fill="var(--mk)"/><circle cx="90.3" cy="25.8" r="3.70" fill="var(--mk)"/><circle cx="98.9" cy="25.8" r="2.58" fill="var(--mk)"/><circle cx="107.5" cy="25.8" r="3.33" fill="var(--mk)"/><circle cx="116.1" cy="25.8" r="2.20" fill="var(--mk)"/><circle cx="124.7" cy="25.8" r="2.95" fill="var(--mk)"/><circle cx="133.3" cy="25.8" r="3.70" fill="var(--mk)"/><circle cx="141.9" cy="25.8" r="2.58" fill="var(--mk)"/><circle cx="150.5" cy="25.8" r="3.33" fill="var(--mk)"/><circle cx="227.9" cy="25.8" r="2.58" fill="var(--mk)"/><circle cx="236.5" cy="25.8" r="3.33" fill="var(--mk)"/><circle cx="245.1" cy="25.8" r="2.20" fill="var(--mk)"/><circle cx="253.7" cy="25.8" r="2.95" fill="var(--mk)"/><circle cx="262.3" cy="25.8" r="3.70" fill="var(--mk)"/><circle cx="0.0" cy="34.4" r="2.95" fill="var(--mk)"/><circle cx="8.6" cy="34.4" r="3.70" fill="var(--mk)"/><circle cx="17.2" cy="34.4" r="2.58" fill="var(--mk)"/><circle cx="25.8" cy="34.4" r="3.33" fill="var(--mk)"/><circle cx="129.0" cy="34.4" r="2.95" fill="var(--mk)"/><circle cx="137.6" cy="34.4" r="3.70" fill="var(--mk)"/><circle cx="146.2" cy="34.4" r="2.58" fill="var(--mk)"/><circle cx="154.8" cy="34.4" r="3.33" fill="var(--mk)"/><circle cx="163.4" cy="34.4" r="2.20" fill="var(--mk)"/><circle cx="223.6" cy="34.4" r="3.70" fill="var(--mk)"/><circle cx="232.2" cy="34.4" r="2.58" fill="var(--mk)"/><circle cx="240.8" cy="34.4" r="3.33" fill="var(--mk)"/><circle cx="249.4" cy="34.4" r="2.20" fill="var(--mk)"/><circle cx="4.3" cy="43.0" r="2.20" fill="var(--mk)"/><circle cx="12.9" cy="43.0" r="2.95" fill="var(--mk)"/><circle cx="21.5" cy="43.0" r="3.70" fill="var(--mk)"/><circle cx="133.3" cy="43.0" r="2.20" fill="var(--mk)"/><circle cx="141.9" cy="43.0" r="2.95" fill="var(--mk)"/><circle cx="150.5" cy="43.0" r="3.70" fill="var(--mk)"/><circle cx="159.1" cy="43.0" r="2.58" fill="var(--mk)"/><circle cx="167.7" cy="43.0" r="3.33" fill="var(--mk)"/><circle cx="210.7" cy="43.0" r="3.33" fill="var(--mk)"/><circle cx="219.3" cy="43.0" r="2.20" fill="var(--mk)"/><circle cx="227.9" cy="43.0" r="2.95" fill="var(--mk)"/><circle cx="236.5" cy="43.0" r="3.70" fill="var(--mk)"/><circle cx="245.1" cy="43.0" r="2.58" fill="var(--mk)"/><circle cx="0.0" cy="51.6" r="3.33" fill="var(--mk)"/><circle cx="8.6" cy="51.6" r="2.20" fill="var(--mk)"/><circle cx="17.2" cy="51.6" r="2.95" fill="var(--mk)"/><circle cx="25.8" cy="51.6" r="3.70" fill="var(--mk)"/><circle cx="146.2" cy="51.6" r="2.95" fill="var(--mk)"/><circle cx="154.8" cy="51.6" r="3.70" fill="var(--mk)"/><circle cx="163.4" cy="51.6" r="2.58" fill="var(--mk)"/><circle cx="172.0" cy="51.6" r="3.33" fill="var(--mk)"/><circle cx="180.6" cy="51.6" r="2.20" fill="var(--mk)"/><circle cx="206.4" cy="51.6" r="2.58" fill="var(--mk)"/><circle cx="215.0" cy="51.6" r="3.33" fill="var(--mk)"/><circle cx="223.6" cy="51.6" r="2.20" fill="var(--mk)"/><circle cx="232.2" cy="51.6" r="2.95" fill="var(--mk)"/><circle cx="4.3" cy="60.2" r="2.58" fill="var(--mk)"/><circle cx="12.9" cy="60.2" r="3.33" fill="var(--mk)"/><circle cx="21.5" cy="60.2" r="2.20" fill="var(--mk)"/><circle cx="150.5" cy="60.2" r="2.20" fill="var(--mk)"/><circle cx="159.1" cy="60.2" r="2.95" fill="var(--mk)"/><circle cx="167.7" cy="60.2" r="3.70" fill="var(--mk)"/><circle cx="176.3" cy="60.2" r="2.58" fill="var(--mk)"/><circle cx="184.9" cy="60.2" r="3.33" fill="var(--mk)"/><circle cx="193.5" cy="60.2" r="2.20" fill="var(--mk)"/><circle cx="202.1" cy="60.2" r="2.95" fill="var(--mk)"/><circle cx="210.7" cy="60.2" r="3.70" fill="var(--mk)"/><circle cx="219.3" cy="60.2" r="2.58" fill="var(--mk)"/><circle cx="227.9" cy="60.2" r="3.33" fill="var(--mk)"/><circle cx="0.0" cy="68.8" r="3.70" fill="var(--mk)"/><circle cx="8.6" cy="68.8" r="2.58" fill="var(--mk)"/><circle cx="17.2" cy="68.8" r="3.33" fill="var(--mk)"/><circle cx="25.8" cy="68.8" r="2.20" fill="var(--mk)"/><circle cx="34.4" cy="68.8" r="2.95" fill="var(--mk)"/><circle cx="43.0" cy="68.8" r="3.70" fill="var(--mk)"/><circle cx="51.6" cy="68.8" r="2.58" fill="var(--mk)"/><circle cx="60.2" cy="68.8" r="3.33" fill="var(--mk)"/><circle cx="68.8" cy="68.8" r="2.20" fill="var(--mk)"/><circle cx="77.4" cy="68.8" r="2.95" fill="var(--mk)"/><circle cx="86.0" cy="68.8" r="3.70" fill="var(--mk)"/><circle cx="163.4" cy="68.8" r="2.95" fill="var(--mk)"/><circle cx="172.0" cy="68.8" r="3.70" fill="var(--mk)"/><circle cx="180.6" cy="68.8" r="2.58" fill="var(--mk)"/><circle cx="189.2" cy="68.8" r="3.33" fill="var(--mk)"/><circle cx="197.8" cy="68.8" r="2.20" fill="var(--mk)"/><circle cx="206.4" cy="68.8" r="2.95" fill="var(--mk)"/><circle cx="215.0" cy="68.8" r="3.70" fill="var(--mk)"/><circle cx="4.3" cy="77.4" r="2.95" fill="var(--mk)"/><circle cx="12.9" cy="77.4" r="3.70" fill="var(--mk)"/><circle cx="21.5" cy="77.4" r="2.58" fill="var(--mk)"/><circle cx="30.1" cy="77.4" r="3.33" fill="var(--mk)"/><circle cx="38.7" cy="77.4" r="2.20" fill="var(--mk)"/><circle cx="47.3" cy="77.4" r="2.95" fill="var(--mk)"/><circle cx="55.9" cy="77.4" r="3.70" fill="var(--mk)"/><circle cx="64.5" cy="77.4" r="2.58" fill="var(--mk)"/><circle cx="73.1" cy="77.4" r="3.33" fill="var(--mk)"/><circle cx="81.7" cy="77.4" r="2.20" fill="var(--mk)"/><circle cx="90.3" cy="77.4" r="2.95" fill="var(--mk)"/><circle cx="167.7" cy="77.4" r="2.20" fill="var(--mk)"/><circle cx="176.3" cy="77.4" r="2.95" fill="var(--mk)"/><circle cx="184.9" cy="77.4" r="3.70" fill="var(--mk)"/><circle cx="193.5" cy="77.4" r="2.58" fill="var(--mk)"/><circle cx="202.1" cy="77.4" r="3.33" fill="var(--mk)"/><circle cx="210.7" cy="77.4" r="2.20" fill="var(--mk)"/><circle cx="0.0" cy="86.0" r="2.20" fill="var(--mk)"/><circle cx="8.6" cy="86.0" r="2.95" fill="var(--mk)"/><circle cx="17.2" cy="86.0" r="3.70" fill="var(--mk)"/><circle cx="25.8" cy="86.0" r="2.58" fill="var(--mk)"/><circle cx="34.4" cy="86.0" r="3.33" fill="var(--mk)"/><circle cx="43.0" cy="86.0" r="2.20" fill="var(--mk)"/><circle cx="51.6" cy="86.0" r="2.95" fill="var(--mk)"/><circle cx="60.2" cy="86.0" r="3.70" fill="var(--mk)"/><circle cx="68.8" cy="86.0" r="2.58" fill="var(--mk)"/><circle cx="77.4" cy="86.0" r="3.33" fill="var(--mk)"/><circle cx="86.0" cy="86.0" r="2.20" fill="var(--mk)"/><circle cx="94.6" cy="86.0" r="2.95" fill="var(--mk)"/><circle cx="103.2" cy="86.0" r="3.70" fill="var(--mk)"/><circle cx="172.0" cy="86.0" r="2.20" fill="var(--mk-ac)"/><circle cx="180.6" cy="86.0" r="2.95" fill="var(--mk)"/><circle cx="189.2" cy="86.0" r="3.70" fill="var(--mk)"/><circle cx="197.8" cy="86.0" r="2.58" fill="var(--mk)"/><circle cx="206.4" cy="86.0" r="3.33" fill="var(--mk)"/><circle cx="215.0" cy="86.0" r="2.20" fill="var(--mk)"/><circle cx="4.3" cy="94.6" r="3.33" fill="var(--mk)"/><circle cx="12.9" cy="94.6" r="2.20" fill="var(--mk)"/><circle cx="21.5" cy="94.6" r="2.95" fill="var(--mk)"/><circle cx="159.1" cy="94.6" r="3.70" fill="var(--mk-ac)"/><circle cx="167.7" cy="94.6" r="2.58" fill="var(--mk-ac)"/><circle cx="176.3" cy="94.6" r="3.33" fill="var(--mk-ac)"/><circle cx="184.9" cy="94.6" r="2.20" fill="var(--mk)"/><circle cx="193.5" cy="94.6" r="2.95" fill="var(--mk)"/><circle cx="202.1" cy="94.6" r="3.70" fill="var(--mk)"/><circle cx="210.7" cy="94.6" r="2.58" fill="var(--mk)"/><circle cx="219.3" cy="94.6" r="3.33" fill="var(--mk)"/><circle cx="0.0" cy="103.2" r="2.58" fill="var(--mk)"/><circle cx="8.6" cy="103.2" r="3.33" fill="var(--mk)"/><circle cx="17.2" cy="103.2" r="2.20" fill="var(--mk)"/><circle cx="25.8" cy="103.2" r="2.95" fill="var(--mk)"/><circle cx="154.8" cy="103.2" r="2.95" fill="var(--mk-ac)"/><circle cx="163.4" cy="103.2" r="3.70" fill="var(--mk-ac)"/><circle cx="172.0" cy="103.2" r="2.58" fill="var(--mk-ac)"/><circle cx="180.6" cy="103.2" r="3.33" fill="var(--mk-ac)"/><circle cx="197.8" cy="103.2" r="2.95" fill="var(--mk)"/><circle cx="206.4" cy="103.2" r="3.70" fill="var(--mk)"/><circle cx="215.0" cy="103.2" r="2.58" fill="var(--mk)"/><circle cx="223.6" cy="103.2" r="3.33" fill="var(--mk)"/><circle cx="232.2" cy="103.2" r="2.20" fill="var(--mk)"/><circle cx="4.3" cy="111.8" r="3.70" fill="var(--mk)"/><circle cx="12.9" cy="111.8" r="2.58" fill="var(--mk)"/><circle cx="21.5" cy="111.8" r="3.33" fill="var(--mk)"/><circle cx="141.9" cy="111.8" r="2.58" fill="var(--mk-ac)"/><circle cx="150.5" cy="111.8" r="3.33" fill="var(--mk-ac)"/><circle cx="159.1" cy="111.8" r="2.20" fill="var(--mk-ac)"/><circle cx="167.7" cy="111.8" r="2.95" fill="var(--mk-ac)"/><circle cx="176.3" cy="111.8" r="3.70" fill="var(--mk-ac)"/><circle cx="202.1" cy="111.8" r="2.20" fill="var(--mk)"/><circle cx="210.7" cy="111.8" r="2.95" fill="var(--mk)"/><circle cx="219.3" cy="111.8" r="3.70" fill="var(--mk)"/><circle cx="227.9" cy="111.8" r="2.58" fill="var(--mk)"/><circle cx="236.5" cy="111.8" r="3.33" fill="var(--mk)"/><circle cx="0.0" cy="120.4" r="2.95" fill="var(--mk)"/><circle cx="8.6" cy="120.4" r="3.70" fill="var(--mk)"/><circle cx="17.2" cy="120.4" r="2.58" fill="var(--mk)"/><circle cx="25.8" cy="120.4" r="3.33" fill="var(--mk)"/><circle cx="137.6" cy="120.4" r="3.70" fill="var(--mk-ac)"/><circle cx="146.2" cy="120.4" r="2.58" fill="var(--mk-ac)"/><circle cx="154.8" cy="120.4" r="3.33" fill="var(--mk-ac)"/><circle cx="163.4" cy="120.4" r="2.20" fill="var(--mk-ac)"/><circle cx="215.0" cy="120.4" r="2.95" fill="var(--mk)"/><circle cx="223.6" cy="120.4" r="3.70" fill="var(--mk)"/><circle cx="232.2" cy="120.4" r="2.58" fill="var(--mk)"/><circle cx="240.8" cy="120.4" r="3.33" fill="var(--mk)"/><circle cx="249.4" cy="120.4" r="2.20" fill="var(--mk)"/><circle cx="4.3" cy="129.0" r="2.20" fill="var(--mk)"/><circle cx="12.9" cy="129.0" r="2.95" fill="var(--mk)"/><circle cx="21.5" cy="129.0" r="3.70" fill="var(--mk)"/><circle cx="124.7" cy="129.0" r="3.33" fill="var(--mk-ac)"/><circle cx="133.3" cy="129.0" r="2.20" fill="var(--mk-ac)"/><circle cx="141.9" cy="129.0" r="2.95" fill="var(--mk-ac)"/><circle cx="150.5" cy="129.0" r="3.70" fill="var(--mk-ac)"/><circle cx="159.1" cy="129.0" r="2.58" fill="var(--mk-ac)"/><circle cx="219.3" cy="129.0" r="2.20" fill="var(--mk)"/><circle cx="227.9" cy="129.0" r="2.95" fill="var(--mk)"/><circle cx="236.5" cy="129.0" r="3.70" fill="var(--mk)"/><circle cx="245.1" cy="129.0" r="2.58" fill="var(--mk)"/><circle cx="253.7" cy="129.0" r="3.33" fill="var(--mk)"/><circle cx="0.0" cy="137.6" r="3.33" fill="var(--mk)"/><circle cx="8.6" cy="137.6" r="2.20" fill="var(--mk)"/><circle cx="17.2" cy="137.6" r="2.95" fill="var(--mk)"/><circle cx="25.8" cy="137.6" r="3.70" fill="var(--mk)"/><circle cx="120.4" cy="137.6" r="2.58" fill="var(--mk-ac)"/><circle cx="129.0" cy="137.6" r="3.33" fill="var(--mk-ac)"/><circle cx="137.6" cy="137.6" r="2.20" fill="var(--mk-ac)"/><circle cx="146.2" cy="137.6" r="2.95" fill="var(--mk-ac)"/><circle cx="232.2" cy="137.6" r="2.95" fill="var(--mk)"/><circle cx="240.8" cy="137.6" r="3.70" fill="var(--mk)"/><circle cx="249.4" cy="137.6" r="2.58" fill="var(--mk)"/><circle cx="258.0" cy="137.6" r="3.33" fill="var(--mk)"/><circle cx="266.6" cy="137.6" r="2.20" fill="var(--mk)"/><circle cx="4.3" cy="146.2" r="2.58" fill="var(--mk)"/><circle cx="12.9" cy="146.2" r="3.33" fill="var(--mk)"/><circle cx="21.5" cy="146.2" r="2.20" fill="var(--mk)"/><circle cx="107.5" cy="146.2" r="2.20" fill="var(--mk-ac)"/><circle cx="116.1" cy="146.2" r="2.95" fill="var(--mk-ac)"/><circle cx="124.7" cy="146.2" r="3.70" fill="var(--mk-ac)"/><circle cx="133.3" cy="146.2" r="2.58" fill="var(--mk-ac)"/><circle cx="141.9" cy="146.2" r="3.33" fill="var(--mk-ac)"/><circle cx="236.5" cy="146.2" r="2.20" fill="var(--mk)"/><circle cx="245.1" cy="146.2" r="2.95" fill="var(--mk)"/><circle cx="253.7" cy="146.2" r="3.70" fill="var(--mk)"/><circle cx="262.3" cy="146.2" r="2.58" fill="var(--mk)"/><circle cx="270.9" cy="146.2" r="3.33" fill="var(--mk)"/><circle cx="0.0" cy="154.8" r="3.70" fill="var(--mk)"/><circle cx="8.6" cy="154.8" r="2.58" fill="var(--mk)"/><circle cx="17.2" cy="154.8" r="3.33" fill="var(--mk)"/><circle cx="25.8" cy="154.8" r="2.20" fill="var(--mk)"/><circle cx="103.2" cy="154.8" r="3.33" fill="var(--mk-ac)"/><circle cx="111.8" cy="154.8" r="2.20" fill="var(--mk-ac)"/><circle cx="120.4" cy="154.8" r="2.95" fill="var(--mk-ac)"/><circle cx="129.0" cy="154.8" r="3.70" fill="var(--mk-ac)"/><circle cx="249.4" cy="154.8" r="2.95" fill="var(--mk)"/><circle cx="258.0" cy="154.8" r="3.70" fill="var(--mk)"/><circle cx="266.6" cy="154.8" r="2.58" fill="var(--mk)"/><circle cx="275.2" cy="154.8" r="3.33" fill="var(--mk)"/><circle cx="283.8" cy="154.8" r="2.20" fill="var(--mk)"/></svg></div>
+  <div class="meta">
+    <p class="idx">04 <span>3D tarama</span></p>
+    <h3>FX Cloud</h3>
+    <p class="desc">Nokta bulutu. Tarama verisinin ham hâli — marka, ölçülen bir nesne gibi davranıyor.</p>
+    <p class="file">fx-cloud.svg</p>
+  </div>
+</article>
+<article class="card">
+  <div class="stage"><svg class="mk " viewBox="0 0 290 160" role="img" aria-label="Fixral Mesh">
+<g fill="none" stroke="var(--mk)" stroke-width="6.5" stroke-linejoin="miter">
+  <polygon points="0,0 90,0 118,28 28,28 28,66 86,66 114,94 28,94 28,160 0,160"/>
+  <polygon points="0,0 40,0 100,60 160,0 200,0 120,80 200,160 160,160 100,100 40,160 0,160 80,80" transform="translate(90,0)"/>
+  <polygon points="190,60 210,80 190,100 170,80"/>
+</g>
+<polygon points="80,80 100,100 40,160 0,160" transform="translate(90,0)" fill="none" stroke="var(--mk-ac)" stroke-width="6"/>
+<rect x="85.5" y="-4.5" width="9" height="9" fill="var(--mk)"/><rect x="125.5" y="-4.5" width="9" height="9" fill="var(--mk)"/><rect x="185.5" y="55.5" width="9" height="9" fill="var(--mk)"/><rect x="245.5" y="-4.5" width="9" height="9" fill="var(--mk)"/><rect x="285.5" y="-4.5" width="9" height="9" fill="var(--mk)"/><rect x="205.5" y="75.5" width="9" height="9" fill="var(--mk)"/><rect x="285.5" y="155.5" width="9" height="9" fill="var(--mk)"/><rect x="245.5" y="155.5" width="9" height="9" fill="var(--mk)"/><rect x="185.5" y="95.5" width="9" height="9" fill="var(--mk)"/><rect x="125.5" y="155.5" width="9" height="9" fill="var(--mk)"/><rect x="85.5" y="155.5" width="9" height="9" fill="var(--mk)"/><rect x="165.5" y="75.5" width="9" height="9" fill="var(--mk)"/><rect x="-4.5" y="-4.5" width="9" height="9" fill="var(--mk)"/><rect x="85.5" y="-4.5" width="9" height="9" fill="var(--mk)"/><rect x="113.5" y="23.5" width="9" height="9" fill="var(--mk)"/><rect x="23.5" y="23.5" width="9" height="9" fill="var(--mk)"/><rect x="23.5" y="61.5" width="9" height="9" fill="var(--mk)"/><rect x="81.5" y="61.5" width="9" height="9" fill="var(--mk)"/><rect x="109.5" y="89.5" width="9" height="9" fill="var(--mk)"/><rect x="23.5" y="89.5" width="9" height="9" fill="var(--mk)"/><rect x="23.5" y="155.5" width="9" height="9" fill="var(--mk)"/><rect x="-4.5" y="155.5" width="9" height="9" fill="var(--mk)"/><rect x="165.5" y="75.5" width="9" height="9" fill="var(--mk-ac)"/><rect x="185.5" y="95.5" width="9" height="9" fill="var(--mk-ac)"/><rect x="125.5" y="155.5" width="9" height="9" fill="var(--mk-ac)"/><rect x="85.5" y="155.5" width="9" height="9" fill="var(--mk-ac)"/></svg></div>
+  <div class="meta">
+    <p class="idx">05 <span>Tersine mühendislik</span></p>
+    <h3>FX Mesh</h3>
+    <p class="desc">Kontur + vertex. CAD ekranındaki tel kafes görünümü; ölçülen yüzeyin yeniden kurulması.</p>
+    <p class="file">fx-mesh.svg</p>
+  </div>
+</article>
+<article class="card">
+  <div class="stage"><svg class="mk " viewBox="0 0 290 160" role="img" aria-label="Fixral Scan">
+<defs><clipPath id="sc-ui-fx-scan">
+<polygon points="0,0 90,0 118,28 0,28"/>
+<rect x="0" y="0" width="28" height="160"/>
+<polygon points="0,66 86,66 114,94 0,94"/>
+<polygon points="0,0 40,0 100,60 160,0 200,0 120,80 200,160 160,160 100,100 40,160 0,160 80,80" transform="translate(90,0)"/></clipPath></defs>
+<g clip-path="url(#sc-ui-fx-scan)">
+  <rect x="-10" y="-10" width="320" height="190" fill="var(--mk)"/>
+  <rect x="-10" y="3.0" width="320" height="2.8" fill="var(--mk-ac)" opacity="0.22"/><rect x="-10" y="10.6" width="320" height="2.8" fill="var(--mk-ac)" opacity="0.27"/><rect x="-10" y="18.2" width="320" height="2.8" fill="var(--mk-ac)" opacity="0.32"/><rect x="-10" y="25.8" width="320" height="2.8" fill="var(--mk-ac)" opacity="0.36"/><rect x="-10" y="33.4" width="320" height="2.8" fill="var(--mk-ac)" opacity="0.41"/><rect x="-10" y="41.0" width="320" height="2.8" fill="var(--mk-ac)" opacity="0.46"/><rect x="-10" y="48.6" width="320" height="2.8" fill="var(--mk-ac)" opacity="0.51"/><rect x="-10" y="56.2" width="320" height="2.8" fill="var(--mk-ac)" opacity="0.56"/><rect x="-10" y="63.8" width="320" height="2.8" fill="var(--mk-ac)" opacity="0.60"/><rect x="-10" y="71.4" width="320" height="2.8" fill="var(--mk-ac)" opacity="0.65"/><rect x="-10" y="79.0" width="320" height="2.8" fill="var(--mk-ac)" opacity="0.70"/><rect x="-10" y="86.6" width="320" height="2.8" fill="var(--mk-ac)" opacity="0.75"/><rect x="-10" y="94.2" width="320" height="2.8" fill="var(--mk-ac)" opacity="0.80"/>
+  <rect x="-10" y="102" width="320" height="9" fill="var(--mk-ac)"/>
+</g></svg></div>
+  <div class="meta">
+    <p class="idx">06 <span>Lazer tarama</span></p>
+    <h3>FX Scan</h3>
+    <p class="desc">Markanın içinden geçen tarama çizgisi. Hareketli versiyonu intro/bumper için birebir.</p>
+    <p class="file">fx-scan.svg</p>
+  </div>
+</article>
+<article class="card">
+  <div class="stage"><svg class="mk " viewBox="0 0 362 232" role="img" aria-label="Fixral Bracket">
+<path d="M4,52L4,4L52,4L52,13L13,13L13,52Z" fill="var(--mk-ac)"/><path d="M358,52L358,4L310,4L310,13L349,13L349,52Z" fill="var(--mk-ac)"/><path d="M4,180L4,228L52,228L52,219L13,219L13,180Z" fill="var(--mk-ac)"/><path d="M358,180L358,228L310,228L310,219L349,219L349,180Z" fill="var(--mk-ac)"/>
+<g transform="translate(36,36)">
+<g fill="var(--mk)">
+  <polygon points="0,0 90,0 118,28 0,28"/>
+  <rect x="0" y="0" width="28" height="160"/>
+  <polygon points="0,66 86,66 114,94 0,94"/>
+</g>
+<g transform="translate(90,0)">
+  <polygon points="0,0 40,0 100,60 160,0 200,0 120,80 200,160 160,160 100,100 40,160 0,160 80,80" fill="var(--mk)"/>
+  <polygon points="80,80 100,100 40,160 0,160" fill="var(--mk-ac)"/>
+</g></g></svg></div>
+  <div class="meta">
+    <p class="idx">07 <span>Sosyal medya kartı</span></p>
+    <h3>FX Bracket</h3>
+    <p class="desc">Ölçü çerçevesi. Kare ve 16:9 alanlarda markayı kendi başına ayakta tutuyor.</p>
+    <p class="file">fx-bracket.svg</p>
+  </div>
+</article>
+<article class="card card--sq">
+  <div class="stage"><svg class="mk " viewBox="0 0 512 512" role="img" aria-label="Fixral Core">
+<rect width="512" height="512" rx="114" fill="var(--mk)"/>
+<g transform="translate(126,152) scale(1.3)">
+  <polygon points="0,0 40,0 100,60 160,0 200,0 120,80 200,160 160,160 100,100 40,160 0,160 80,80" fill="var(--mk-on)"/>
+  <polygon points="80,80 100,100 40,160 0,160" fill="var(--mk-ac)"/>
+</g></svg></div>
+  <div class="meta">
+    <p class="idx">08 <span>App icon</span></p>
+    <h3>FX Core</h3>
+    <p class="desc">Yuvarlatılmış kare içinde Apex. iOS/Android ikonu, Discord ve YouTube kanal görseli için.</p>
+    <p class="file">fx-core.svg</p>
+  </div>
+</article>
+<article class="card">
+  <div class="stage"><svg class="mk " viewBox="0 0 304 174" role="img" aria-label="Fixral Stack">
+<g transform="translate(14,14)">
+<g fill="var(--mk-mute)">
+  <polygon points="0,0 90,0 118,28 0,28"/>
+  <rect x="0" y="0" width="28" height="160"/>
+  <polygon points="0,66 86,66 114,94 0,94"/>
+</g>
+<g transform="translate(90,0)">
+  <polygon points="0,0 40,0 100,60 160,0 200,0 120,80 200,160 160,160 100,100 40,160 0,160 80,80" fill="var(--mk-mute)"/>
+  <polygon points="80,80 100,100 40,160 0,160" fill="var(--mk-mute)"/>
+</g></g>
+<g>
+<g fill="var(--mk)">
+  <polygon points="0,0 90,0 118,28 0,28"/>
+  <rect x="0" y="0" width="28" height="160"/>
+  <polygon points="0,66 86,66 114,94 0,94"/>
+</g>
+<g transform="translate(90,0)">
+  <polygon points="0,0 40,0 100,60 160,0 200,0 120,80 200,160 160,160 100,100 40,160 0,160 80,80" fill="var(--mk)"/>
+  <polygon points="80,80 100,100 40,160 0,160" fill="var(--mk-ac)"/>
+</g></g></svg></div>
+  <div class="meta">
+    <p class="idx">09 <span>Derinlik / üretim</span></p>
+    <h3>FX Stack</h3>
+    <p class="desc">Katı modelin ekstrüzyonu. Fiziksel ürün, kalıp ve CNC tarafına bakan hacimli varyant.</p>
+    <p class="file">fx-stack.svg</p>
+  </div>
+</article>
+<article class="card">
+  <div class="stage"><svg class="mk " viewBox="0 0 290 160" role="img" aria-label="Fixral Trace">
+<g stroke="var(--mk)" stroke-width="15" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M14,14 L14,152"/>
+  <path d="M14,14 L100,14"/>
+  <path d="M14,80 L96,80"/>
+  <path d="M110,6 L270,154"/>
+</g>
+<path d="M270,6 L110,154" stroke="var(--mk-ac)" stroke-width="15" fill="none" stroke-linecap="round"/>
+<path fill-rule="evenodd" fill="var(--mk)" d="M85,14a15,15 0 1,0 30,0a15,15 0 1,0 -30,0ZM94,14a6,6 0 1,0 12,0a6,6 0 1,0 -12,0Z"/>
+<path fill-rule="evenodd" fill="var(--mk)" d="M81,80a15,15 0 1,0 30,0a15,15 0 1,0 -30,0ZM90,80a6,6 0 1,0 12,0a6,6 0 1,0 -12,0Z"/>
+<path fill-rule="evenodd" fill="var(--mk)" d="M-1,152a15,15 0 1,0 30,0a15,15 0 1,0 -30,0ZM8,152a6,6 0 1,0 12,0a6,6 0 1,0 -12,0Z"/>
+<path fill-rule="evenodd" fill="var(--mk)" d="M255,154a15,15 0 1,0 30,0a15,15 0 1,0 -30,0ZM264,154a6,6 0 1,0 12,0a6,6 0 1,0 -12,0Z"/>
+<path fill-rule="evenodd" fill="var(--mk)" d="M95,6a15,15 0 1,0 30,0a15,15 0 1,0 -30,0ZM104,6a6,6 0 1,0 12,0a6,6 0 1,0 -12,0Z"/>
+<path fill-rule="evenodd" fill="var(--mk-ac)" d="M255,6a15,15 0 1,0 30,0a15,15 0 1,0 -30,0ZM264,6a6,6 0 1,0 12,0a6,6 0 1,0 -12,0Z"/>
+<path fill-rule="evenodd" fill="var(--mk-ac)" d="M95,154a15,15 0 1,0 30,0a15,15 0 1,0 -30,0ZM104,154a6,6 0 1,0 12,0a6,6 0 1,0 -12,0Z"/></svg></div>
+  <div class="meta">
+    <p class="idx">10 <span>PCB / elektronik</span></p>
+    <h3>FX Trace</h3>
+    <p class="desc">İnce yol + pad. ESP32, gerber ve otomotiv elektroniği hattı için alt marka olarak çalışır.</p>
+    <p class="file">fx-trace.svg</p>
+  </div>
+</article></div>
+</section>
+
+<section class="wrap">
+  <div class="sec-head">
+    <p class="eyebrow">02 — Renk varyantları</p>
+    <h2>Her zeminde aynı marka</h2>
+    <p class="lede">Dört zorunlu varyant. Gradyan, gölge, dış çizgi ve ikinci bir vurgu rengi yok.</p>
+  </div>
+  <div class="vars">
+    <div class="var v-dark"><svg class="mk " viewBox="0 0 290 160" role="img" aria-label="Fixral Blade">
+<g fill="var(--mk)">
+  <polygon points="0,0 90,0 118,28 0,28"/>
+  <rect x="0" y="0" width="28" height="160"/>
+  <polygon points="0,66 86,66 114,94 0,94"/>
+</g>
+<g transform="translate(90,0)">
+  <polygon points="0,0 40,0 100,60 160,0 200,0 120,80 200,160 160,160 100,100 40,160 0,160 80,80" fill="var(--mk)"/>
+  <polygon points="80,80 100,100 40,160 0,160" fill="var(--mk-ac)"/>
+</g></svg><p>Koyu zemin</p></div>
+    <div class="var v-light"><svg class="mk " viewBox="0 0 290 160" role="img" aria-label="Fixral Blade">
+<g fill="var(--mk)">
+  <polygon points="0,0 90,0 118,28 0,28"/>
+  <rect x="0" y="0" width="28" height="160"/>
+  <polygon points="0,66 86,66 114,94 0,94"/>
+</g>
+<g transform="translate(90,0)">
+  <polygon points="0,0 40,0 100,60 160,0 200,0 120,80 200,160 160,160 100,100 40,160 0,160 80,80" fill="var(--mk)"/>
+  <polygon points="80,80 100,100 40,160 0,160" fill="var(--mk-ac)"/>
+</g></svg><p>Açık zemin</p></div>
+    <div class="var v-ac"><svg class="mk " viewBox="0 0 290 160" role="img" aria-label="Fixral Blade">
+<g fill="var(--mk)">
+  <polygon points="0,0 90,0 118,28 0,28"/>
+  <rect x="0" y="0" width="28" height="160"/>
+  <polygon points="0,66 86,66 114,94 0,94"/>
+</g>
+<g transform="translate(90,0)">
+  <polygon points="0,0 40,0 100,60 160,0 200,0 120,80 200,160 160,160 100,100 40,160 0,160 80,80" fill="var(--mk)"/>
+  <polygon points="80,80 100,100 40,160 0,160" fill="var(--mk-ac)"/>
+</g></svg><p>Turuncu zemin · tek renk</p></div>
+    <div class="var v-out"><svg class="mk " viewBox="0 0 290 160" role="img" aria-label="Fixral Blade">
+<g fill="var(--mk)">
+  <polygon points="0,0 90,0 118,28 0,28"/>
+  <rect x="0" y="0" width="28" height="160"/>
+  <polygon points="0,66 86,66 114,94 0,94"/>
+</g>
+<g transform="translate(90,0)">
+  <polygon points="0,0 40,0 100,60 160,0 200,0 120,80 200,160 160,160 100,100 40,160 0,160 80,80" fill="var(--mk)"/>
+  <polygon points="80,80 100,100 40,160 0,160" fill="var(--mk-ac)"/>
+</g></svg><p>Tek renk baskı · gravür</p></div>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="sec-head">
+    <p class="eyebrow">03 — Kilitlenmeler</p>
+    <h2>Marka + kelime markası</h2>
+    <p class="lede">Kelime markası mevcut logonuzdan alınan outline’lar — font kurulumuna bağlı değil, her yerde aynı açılır.</p>
+  </div>
+  <div class="grid grid--lock">
+<article class="card card--wide">
+  <div class="stage stage--lock"><svg class="mk " viewBox="0 0 515 100" role="img" aria-label="Fixral Yatay kilit">
+<g transform="scale(0.625)">
+<g fill="var(--mk)">
+  <polygon points="0,0 90,0 118,28 0,28"/>
+  <rect x="0" y="0" width="28" height="160"/>
+  <polygon points="0,66 86,66 114,94 0,94"/>
+</g>
+<g transform="translate(90,0)">
+  <polygon points="0,0 40,0 100,60 160,0 200,0 120,80 200,160 160,160 100,100 40,160 0,160 80,80" fill="var(--mk)"/>
+  <polygon points="80,80 100,100 40,160 0,160" fill="var(--mk-ac)"/>
+</g></g>
+<g transform="translate(209.25,29) scale(0.846)"><g transform="translate(-1.26,-193.73)" fill="var(--mk)"><path d="M1.27,193.73h54.98v12.23H17.11v9.83h37.22v11.96H17.11v17.98H1.27v-52Z"/><path d="M59.86,193.73h16.65v52h-16.65v-52Z"/><path d="M81.62,193.73h21.68l16.04,18.25,16.15-18.25h21.94l-25.03,25.72,26.25,26.29h-22.29l-17.03-18.71-16.92,18.71h-22.82l26.59-26.29-24.57-25.72Z"/><path d="M161.81,245.74v-52h38.29c9.17,0,14.55.1,16.15.3,1.78.15,3.49.74,5.14,1.75,1.96,1.17,3.31,2.81,4.06,4.91.75,2.11,1.12,5.41,1.12,9.91,0,3.81-.24,6.58-.71,8.32-.47,1.74-1.37,3.17-2.69,4.29-1.32,1.12-3.42,1.91-6.29,2.36,1.57,0,2.96.25,4.17.76,1.21.51,2.22,1.23,3.03,2.17.81.94,1.33,2.11,1.56,3.5.23,1.4.34,4.36.34,8.88v4.84h-15.62v-2.78c0-2.9-.11-4.96-.32-6.19-.22-1.23-.62-2.17-1.2-2.8-.58-.63-1.26-1.01-2.04-1.12-.78-.11-1.69-.2-2.74-.25-1.05-.05-2.42-.08-4.1-.08h-22.33v13.22h-15.85ZM177.66,219.53h22.29c1.37,0,2.71-.01,4-.04,1.3-.03,2.31-.08,3.03-.15s1.34-.28,1.85-.61c.66-.41,1.14-1.05,1.43-1.92.29-.88.44-2.17.44-3.87s-.16-2.97-.48-3.81c-.32-.84-.87-1.45-1.66-1.83-.53-.23-1.21-.38-2.02-.46l-6.63-.11h-22.25v12.8Z"/><path d="M288.49,245.74l-4.46-8.8h-34.4l-4.46,8.8h-18.1l27.58-52h24.61l27.2,52h-17.98ZM278.47,225.55l-10.02-19.7h-3.16l-10.02,19.7h23.2Z"/><path d="M308.84,193.73h16.65v38.75h36.99v13.26h-53.64v-52Z"/></g></g></svg></div>
+  <div class="meta">
+    <p class="idx"><span>Web header · antetli kâğıt</span></p>
+    <h3>Yatay kilit</h3>
+    <p class="desc">Varsayılan kullanım. Marka yüksekliği 100 birim, kelime markası optik olarak ortalanmış.</p>
+    <p class="file">fx-lockup-h.svg</p>
+  </div>
+</article>
+<article class="card card--wide">
+  <div class="stage stage--lock"><svg class="mk " viewBox="0 0 290 226" role="img" aria-label="Fixral Dikey kilit">
+
+<g fill="var(--mk)">
+  <polygon points="0,0 90,0 118,28 0,28"/>
+  <rect x="0" y="0" width="28" height="160"/>
+  <polygon points="0,66 86,66 114,94 0,94"/>
+</g>
+<g transform="translate(90,0)">
+  <polygon points="0,0 40,0 100,60 160,0 200,0 120,80 200,160 160,160 100,100 40,160 0,160 80,80" fill="var(--mk)"/>
+  <polygon points="80,80 100,100 40,160 0,160" fill="var(--mk-ac)"/>
+</g>
+<g transform="translate(0,184) scale(0.8043)"><g transform="translate(-1.26,-193.73)" fill="var(--mk)"><path d="M1.27,193.73h54.98v12.23H17.11v9.83h37.22v11.96H17.11v17.98H1.27v-52Z"/><path d="M59.86,193.73h16.65v52h-16.65v-52Z"/><path d="M81.62,193.73h21.68l16.04,18.25,16.15-18.25h21.94l-25.03,25.72,26.25,26.29h-22.29l-17.03-18.71-16.92,18.71h-22.82l26.59-26.29-24.57-25.72Z"/><path d="M161.81,245.74v-52h38.29c9.17,0,14.55.1,16.15.3,1.78.15,3.49.74,5.14,1.75,1.96,1.17,3.31,2.81,4.06,4.91.75,2.11,1.12,5.41,1.12,9.91,0,3.81-.24,6.58-.71,8.32-.47,1.74-1.37,3.17-2.69,4.29-1.32,1.12-3.42,1.91-6.29,2.36,1.57,0,2.96.25,4.17.76,1.21.51,2.22,1.23,3.03,2.17.81.94,1.33,2.11,1.56,3.5.23,1.4.34,4.36.34,8.88v4.84h-15.62v-2.78c0-2.9-.11-4.96-.32-6.19-.22-1.23-.62-2.17-1.2-2.8-.58-.63-1.26-1.01-2.04-1.12-.78-.11-1.69-.2-2.74-.25-1.05-.05-2.42-.08-4.1-.08h-22.33v13.22h-15.85ZM177.66,219.53h22.29c1.37,0,2.71-.01,4-.04,1.3-.03,2.31-.08,3.03-.15s1.34-.28,1.85-.61c.66-.41,1.14-1.05,1.43-1.92.29-.88.44-2.17.44-3.87s-.16-2.97-.48-3.81c-.32-.84-.87-1.45-1.66-1.83-.53-.23-1.21-.38-2.02-.46l-6.63-.11h-22.25v12.8Z"/><path d="M288.49,245.74l-4.46-8.8h-34.4l-4.46,8.8h-18.1l27.58-52h24.61l27.2,52h-17.98ZM278.47,225.55l-10.02-19.7h-3.16l-10.02,19.7h23.2Z"/><path d="M308.84,193.73h16.65v38.75h36.99v13.26h-53.64v-52Z"/></g></g></svg></div>
+  <div class="meta">
+    <p class="idx"><span>Avatar · damga · ambalaj</span></p>
+    <h3>Dikey kilit</h3>
+    <p class="desc">Kare alanlarda ve dar yerlerde. Kelime markası genişliği, marka genişliğine kilitli.</p>
+    <p class="file">fx-lockup-v.svg</p>
+  </div>
+</article>
+<article class="card card--wide">
+  <div class="stage stage--lock"><svg class="mk " viewBox="0 0 360.57 52.01" role="img" aria-label="Fixral Kelime markası"><g transform="translate(-1.26,-193.73)" fill="var(--mk)"><path d="M1.27,193.73h54.98v12.23H17.11v9.83h37.22v11.96H17.11v17.98H1.27v-52Z"/><path d="M59.86,193.73h16.65v52h-16.65v-52Z"/><path d="M81.62,193.73h21.68l16.04,18.25,16.15-18.25h21.94l-25.03,25.72,26.25,26.29h-22.29l-17.03-18.71-16.92,18.71h-22.82l26.59-26.29-24.57-25.72Z"/><path d="M161.81,245.74v-52h38.29c9.17,0,14.55.1,16.15.3,1.78.15,3.49.74,5.14,1.75,1.96,1.17,3.31,2.81,4.06,4.91.75,2.11,1.12,5.41,1.12,9.91,0,3.81-.24,6.58-.71,8.32-.47,1.74-1.37,3.17-2.69,4.29-1.32,1.12-3.42,1.91-6.29,2.36,1.57,0,2.96.25,4.17.76,1.21.51,2.22,1.23,3.03,2.17.81.94,1.33,2.11,1.56,3.5.23,1.4.34,4.36.34,8.88v4.84h-15.62v-2.78c0-2.9-.11-4.96-.32-6.19-.22-1.23-.62-2.17-1.2-2.8-.58-.63-1.26-1.01-2.04-1.12-.78-.11-1.69-.2-2.74-.25-1.05-.05-2.42-.08-4.1-.08h-22.33v13.22h-15.85ZM177.66,219.53h22.29c1.37,0,2.71-.01,4-.04,1.3-.03,2.31-.08,3.03-.15s1.34-.28,1.85-.61c.66-.41,1.14-1.05,1.43-1.92.29-.88.44-2.17.44-3.87s-.16-2.97-.48-3.81c-.32-.84-.87-1.45-1.66-1.83-.53-.23-1.21-.38-2.02-.46l-6.63-.11h-22.25v12.8Z"/><path d="M288.49,245.74l-4.46-8.8h-34.4l-4.46,8.8h-18.1l27.58-52h24.61l27.2,52h-17.98ZM278.47,225.55l-10.02-19.7h-3.16l-10.02,19.7h23.2Z"/><path d="M308.84,193.73h16.65v38.75h36.99v13.26h-53.64v-52Z"/></g></svg></div>
+  <div class="meta">
+    <p class="idx"><span>Tek başına</span></p>
+    <h3>Kelime markası</h3>
+    <p class="desc">Markanın zaten tanındığı yerlerde: fatura altlığı, sponsor şeridi, merch.</p>
+    <p class="file">fixral-wordmark.svg</p>
+  </div>
+</article></div>
+</section>
+
+<section class="wrap">
+  <div class="sec-head">
+    <p class="eyebrow">04 — Uygulama</p>
+    <h2>Gerçek yüzeylerde</h2>
+    <p class="lede">16 px favicon’dan YouTube banner’ına kadar aynı geometri okunuyor.</p>
+  </div>
+  <div class="apps">
+    <div class="app"><div class="frame"><span class="avatar"><svg class="mk " viewBox="0 0 200 160" role="img" aria-label="Fixral Apex"><polygon points="0,0 40,0 100,60 160,0 200,0 120,80 200,160 160,160 100,100 40,160 0,160 80,80" fill="var(--mk)"/><polygon points="80,80 100,100 40,160 0,160" fill="var(--mk-ac)"/></svg></span></div><p>Sosyal avatar</p></div>
+    <div class="app"><div class="frame"><span class="appicon"><svg class="mk " viewBox="0 0 512 512" role="img" aria-label="Fixral Core">
+<rect width="512" height="512" rx="114" fill="var(--mk)"/>
+<g transform="translate(126,152) scale(1.3)">
+  <polygon points="0,0 40,0 100,60 160,0 200,0 120,80 200,160 160,160 100,100 40,160 0,160 80,80" fill="var(--mk-on)"/>
+  <polygon points="80,80 100,100 40,160 0,160" fill="var(--mk-ac)"/>
+</g></svg></span></div><p>App icon · 512</p></div>
+    <div class="app"><div class="frame"><span class="fav">
+      <i class="f48"><svg class="mk " viewBox="0 0 200 160" role="img" aria-label="Fixral Apex"><polygon points="0,0 40,0 100,60 160,0 200,0 120,80 200,160 160,160 100,100 40,160 0,160 80,80" fill="var(--mk)"/><polygon points="80,80 100,100 40,160 0,160" fill="var(--mk-ac)"/></svg></i><i class="f32"><svg class="mk " viewBox="0 0 200 160" role="img" aria-label="Fixral Apex"><polygon points="0,0 40,0 100,60 160,0 200,0 120,80 200,160 160,160 100,100 40,160 0,160 80,80" fill="var(--mk)"/><polygon points="80,80 100,100 40,160 0,160" fill="var(--mk-ac)"/></svg></i><i class="f16"><svg class="mk " viewBox="0 0 200 160" role="img" aria-label="Fixral Apex"><polygon points="0,0 40,0 100,60 160,0 200,0 120,80 200,160 160,160 100,100 40,160 0,160 80,80" fill="var(--mk)"/><polygon points="80,80 100,100 40,160 0,160" fill="var(--mk-ac)"/></svg></i>
+    </span></div><p>Favicon 48 / 32 / 16</p></div>
+    <div class="app"><div class="frame"><span class="card-mock"><svg class="mk " viewBox="0 0 290 226" role="img" aria-label="Fixral Dikey kilit">
+
+<g fill="var(--mk)">
+  <polygon points="0,0 90,0 118,28 0,28"/>
+  <rect x="0" y="0" width="28" height="160"/>
+  <polygon points="0,66 86,66 114,94 0,94"/>
+</g>
+<g transform="translate(90,0)">
+  <polygon points="0,0 40,0 100,60 160,0 200,0 120,80 200,160 160,160 100,100 40,160 0,160 80,80" fill="var(--mk)"/>
+  <polygon points="80,80 100,100 40,160 0,160" fill="var(--mk-ac)"/>
+</g>
+<g transform="translate(0,184) scale(0.8043)"><g transform="translate(-1.26,-193.73)" fill="var(--mk)"><path d="M1.27,193.73h54.98v12.23H17.11v9.83h37.22v11.96H17.11v17.98H1.27v-52Z"/><path d="M59.86,193.73h16.65v52h-16.65v-52Z"/><path d="M81.62,193.73h21.68l16.04,18.25,16.15-18.25h21.94l-25.03,25.72,26.25,26.29h-22.29l-17.03-18.71-16.92,18.71h-22.82l26.59-26.29-24.57-25.72Z"/><path d="M161.81,245.74v-52h38.29c9.17,0,14.55.1,16.15.3,1.78.15,3.49.74,5.14,1.75,1.96,1.17,3.31,2.81,4.06,4.91.75,2.11,1.12,5.41,1.12,9.91,0,3.81-.24,6.58-.71,8.32-.47,1.74-1.37,3.17-2.69,4.29-1.32,1.12-3.42,1.91-6.29,2.36,1.57,0,2.96.25,4.17.76,1.21.51,2.22,1.23,3.03,2.17.81.94,1.33,2.11,1.56,3.5.23,1.4.34,4.36.34,8.88v4.84h-15.62v-2.78c0-2.9-.11-4.96-.32-6.19-.22-1.23-.62-2.17-1.2-2.8-.58-.63-1.26-1.01-2.04-1.12-.78-.11-1.69-.2-2.74-.25-1.05-.05-2.42-.08-4.1-.08h-22.33v13.22h-15.85ZM177.66,219.53h22.29c1.37,0,2.71-.01,4-.04,1.3-.03,2.31-.08,3.03-.15s1.34-.28,1.85-.61c.66-.41,1.14-1.05,1.43-1.92.29-.88.44-2.17.44-3.87s-.16-2.97-.48-3.81c-.32-.84-.87-1.45-1.66-1.83-.53-.23-1.21-.38-2.02-.46l-6.63-.11h-22.25v12.8Z"/><path d="M288.49,245.74l-4.46-8.8h-34.4l-4.46,8.8h-18.1l27.58-52h24.61l27.2,52h-17.98ZM278.47,225.55l-10.02-19.7h-3.16l-10.02,19.7h23.2Z"/><path d="M308.84,193.73h16.65v38.75h36.99v13.26h-53.64v-52Z"/></g></g></svg></span></div><p>Kartvizit · ön yüz</p></div>
+    <div class="app banner"><div class="frame">
+      <span class="safe"><svg class="mk " viewBox="0 0 515 100" role="img" aria-label="Fixral Yatay kilit">
+<g transform="scale(0.625)">
+<g fill="var(--mk)">
+  <polygon points="0,0 90,0 118,28 0,28"/>
+  <rect x="0" y="0" width="28" height="160"/>
+  <polygon points="0,66 86,66 114,94 0,94"/>
+</g>
+<g transform="translate(90,0)">
+  <polygon points="0,0 40,0 100,60 160,0 200,0 120,80 200,160 160,160 100,100 40,160 0,160 80,80" fill="var(--mk)"/>
+  <polygon points="80,80 100,100 40,160 0,160" fill="var(--mk-ac)"/>
+</g></g>
+<g transform="translate(209.25,29) scale(0.846)"><g transform="translate(-1.26,-193.73)" fill="var(--mk)"><path d="M1.27,193.73h54.98v12.23H17.11v9.83h37.22v11.96H17.11v17.98H1.27v-52Z"/><path d="M59.86,193.73h16.65v52h-16.65v-52Z"/><path d="M81.62,193.73h21.68l16.04,18.25,16.15-18.25h21.94l-25.03,25.72,26.25,26.29h-22.29l-17.03-18.71-16.92,18.71h-22.82l26.59-26.29-24.57-25.72Z"/><path d="M161.81,245.74v-52h38.29c9.17,0,14.55.1,16.15.3,1.78.15,3.49.74,5.14,1.75,1.96,1.17,3.31,2.81,4.06,4.91.75,2.11,1.12,5.41,1.12,9.91,0,3.81-.24,6.58-.71,8.32-.47,1.74-1.37,3.17-2.69,4.29-1.32,1.12-3.42,1.91-6.29,2.36,1.57,0,2.96.25,4.17.76,1.21.51,2.22,1.23,3.03,2.17.81.94,1.33,2.11,1.56,3.5.23,1.4.34,4.36.34,8.88v4.84h-15.62v-2.78c0-2.9-.11-4.96-.32-6.19-.22-1.23-.62-2.17-1.2-2.8-.58-.63-1.26-1.01-2.04-1.12-.78-.11-1.69-.2-2.74-.25-1.05-.05-2.42-.08-4.1-.08h-22.33v13.22h-15.85ZM177.66,219.53h22.29c1.37,0,2.71-.01,4-.04,1.3-.03,2.31-.08,3.03-.15s1.34-.28,1.85-.61c.66-.41,1.14-1.05,1.43-1.92.29-.88.44-2.17.44-3.87s-.16-2.97-.48-3.81c-.32-.84-.87-1.45-1.66-1.83-.53-.23-1.21-.38-2.02-.46l-6.63-.11h-22.25v12.8Z"/><path d="M288.49,245.74l-4.46-8.8h-34.4l-4.46,8.8h-18.1l27.58-52h24.61l27.2,52h-17.98ZM278.47,225.55l-10.02-19.7h-3.16l-10.02,19.7h23.2Z"/><path d="M308.84,193.73h16.65v38.75h36.99v13.26h-53.64v-52Z"/></g></g></svg></span>
+      <span class="tagline">Reverse Engineering · 3D Scan · CAD · CNC · Electronics</span>
+    </div><p>YouTube banner · kesikli çizgi mobil güvenli alan</p></div>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="sec-head">
+    <p class="eyebrow">05 — Sistem</p>
+    <h2>Renk ve tipografi</h2>
+  </div>
+  <div class="cols">
+    <div><ul class="sws"><li class="sw"><span class="chip" style="background:#101828"></span>
+    <b>Ink</b><code>#101828</code><em>Ana yüzey ve marka</em></li><li class="sw"><span class="chip" style="background:#3A3F46"></span>
+    <b>Graphite</b><code>#3A3F46</code><em>İkincil, ekstrüzyon gölgesi</em></li><li class="sw"><span class="chip" style="background:#F97316"></span>
+    <b>Torch</b><code>#F97316</code><em>Tek vurgu — asla ikinci bir renk</em></li><li class="sw"><span class="chip" style="background:#F3F4F6"></span>
+    <b>Paper</b><code>#F3F4F6</code><em>Açık zemin</em></li><li class="sw"><span class="chip" style="background:#FFFFFF"></span>
+    <b>White</b><code>#FFFFFF</code><em>Ters kullanım</em></li></ul></div>
+    <div>
+      <div class="type-row"><span class="t1">Space Grotesk Bold</span><span>Başlık · marka</span></div>
+      <div class="type-row"><span class="t2">Inter Regular — gövde metni, ürün açıklaması, web içeriği</span><span>Gövde</span></div>
+      <div class="type-row"><span class="t3">JetBrains Mono — Ø42.5 ±0.02 mm</span><span>Teknik veri · etiket</span></div>
+      <p class="desc" style="margin-top:18px">Üçü de Google Fonts’ta; web, Figma ve baskıda aynı. Ölçü, tolerans ve dosya adı gibi her şey mono ile yazılıyor — markanın mühendislik tarafını taşıyan asıl detay bu.</p>
+    </div>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="sec-head">
+    <p class="eyebrow">06 — Kullanım</p>
+    <h2>Boşluk ve sınırlar</h2>
+  </div>
+  <div class="clear">
+    <div class="clearbox"><svg class="mk " viewBox="0 0 290 160" role="img" aria-label="Fixral Blade">
+<g fill="var(--mk)">
+  <polygon points="0,0 90,0 118,28 0,28"/>
+  <rect x="0" y="0" width="28" height="160"/>
+  <polygon points="0,66 86,66 114,94 0,94"/>
+</g>
+<g transform="translate(90,0)">
+  <polygon points="0,0 40,0 100,60 160,0 200,0 120,80 200,160 160,160 100,100 40,160 0,160 80,80" fill="var(--mk)"/>
+  <polygon points="80,80 100,100 40,160 0,160" fill="var(--mk-ac)"/>
+</g></svg></div>
+    <ul class="rules">
+      <li><i>→</i><span><b>Koruma alanı:</b> her yönde x = 56 birim (F gövdesinin iki katı). İçine hiçbir şey girmez.</span></li>
+      <li><i>→</i><span><b>Minimum boy:</b> yatay kilit 120 px / 32 mm. Altında Apex’e geç.</span></li>
+      <li><i>→</i><span><b>Turuncu tek yerde:</b> güneybatı kolu. İkinci bir vurgu rengi eklenmez.</span></li>
+      <li><i>→</i><span><b>Yapılmaz:</b> germek, eğmek, gölge/gradyan eklemek, kelime markasını yeniden dizmek, turuncuyu başka bir kola taşımak.</span></li>
+      <li><i>→</i><span><b>Fotoğraf üzerinde:</b> beyaz varyant + en az %45 koyultma. Doğrudan desenli zemine konmaz.</span></li>
+    </ul>
+  </div>
+</section>
+
+<footer class="wrap">52 SVG dosyası · brand/logo-v2/svg/ · node brand/logo-v2/build.mjs</footer>
+
+<script>
+(function(){
+  var b=document.getElementById('themeBtn');
+  b.addEventListener('click',function(){
+    var r=document.documentElement;
+    var dark=r.getAttribute('data-theme')==='dark'||(!r.getAttribute('data-theme')&&matchMedia('(prefers-color-scheme: dark)').matches);
+    r.setAttribute('data-theme',dark?'light':'dark');
+  });
+})();
+</script>

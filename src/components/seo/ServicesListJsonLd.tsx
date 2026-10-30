@@ -48,7 +48,7 @@ export default function ServicesListJsonLd({ items, baseUrl = '' }: Props) {
     <script
       type="application/ld+json"
       // eslint-disable-next-line react/no-danger
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(json) }}
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(json).replace(/</g, '\\u003c') }}
     />
   );
 }

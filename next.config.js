@@ -28,6 +28,20 @@ try {
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Eski hizmet kayıtlarının slug'ları yeni katalog adreslerine kalıcı yönlenir
+  // (kaynak: src/content/fixral.ts → SERVICES[].dbSlugs). Redesign 2026.
+  async redirects() {
+    return [
+      { source: '/tr/services/plastik-restorasyon', destination: '/tr/services/3d-tarama', permanent: true },
+      { source: '/tr/services/restorasyon-danismanlik', destination: '/tr/services/tersine-muhendislik', permanent: true },
+      { source: '/tr/services/extreme-ecu-cozumleri', destination: '/tr/services/otomotiv-elektronigi', permanent: true },
+      { source: '/tr/services/arac-restorasyon', destination: '/tr/services/otomotiv-elektronigi', permanent: true },
+      { source: '/tr/services/3d-modelleme-hizmetleri', destination: '/tr/services/cad-3d-cizim', permanent: true },
+      { source: '/tr/services/3d-baski-hizmetleri', destination: '/tr/services/3d-baski', permanent: true },
+      { source: '/tr/services/prototipleme-hizmetleri', destination: '/tr/services/3d-baski', permanent: true },
+      { source: '/tr/services/kurumsal-bireysel-yazilim', destination: '/tr/services/cnc-cam', permanent: true },
+    ];
+  },
   typescript: {
     ignoreBuildErrors: false,
   },
@@ -86,6 +100,18 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'images.pexels.com',
+        pathname: '/**',
+      },
+      {
+        // YouTube küçük resimleri (anasayfa haber/video şeridi)
+        protocol: 'https',
+        hostname: 'i.ytimg.com',
+        pathname: '/**',
+      },
+      {
+        // FX 3D: Cults3D model görselleri ve dosya önizlemeleri
+        protocol: 'https',
+        hostname: 'images.cults3d.com',
         pathname: '/**',
       },
       {

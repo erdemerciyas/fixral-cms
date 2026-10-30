@@ -2,20 +2,18 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { Menu as List, X, Search as MagnifyingGlass, Send as PaperPlaneTilt } from 'lucide-react';
 import { resolveIcon, getIconForPage } from '../lib/icons';
-import DesktopNav from './layout/DesktopNav';
+import DesktopNav, { AccountMenu } from './layout/DesktopNav';
+import { FxLogo } from './fx/FxLogo';
+import { MenuIcon, SearchIcon } from './fx/FxIcons';
 import MobileNav from './layout/MobileNav';
 import SearchModal from './layout/SearchModal';
 import LanguageSwitch from './ui/LanguageSwitch';
 import ProjectModal from './features/ProjectModal';
-import { MagneticButton } from './ui/MagneticButton';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { locales } from '@/i18n';
 import { useAppTranslations } from '@/hooks/useAppTranslations';
-import { m, AnimatePresence } from 'framer-motion';
 
 interface SiteSettings {
   siteName: string;
@@ -40,15 +38,41 @@ interface PageSetting {
   order: number;
 }
 
-function getDefaultNavLinks() {
+type HeaderNavLink = { href: string; label: string; icon: unknown; pageId?: string; isExternal?: boolean };
+
+function getDefaultNavLinks(): HeaderNavLink[] {
   return [
-    { href: '/', label: 'Anasayfa', icon: null },
-    { href: '/haberler', label: 'Haberler', icon: null },
-    { href: '/services', label: 'Hizmetler', icon: null },
-    { href: '/portfolio', label: 'Portföy', icon: null },
-    { href: '/videos', label: 'Videolar', icon: null },
-    { href: '/contact', label: 'İletişim', icon: null },
+    { href: '/', label: 'Anasayfa', pageId: 'home', icon: null },
+    { href: '/services', label: 'Hizmetler', pageId: 'services', icon: null },
+    { href: '/software', label: 'Yazılımlar', pageId: 'software', icon: null },
+    { href: '/fx-3d', label: 'FX 3D', pageId: 'fx-3d', icon: null },
+    { href: '/portfolio', label: 'Projeler', pageId: 'portfolio', icon: null },
+    { href: '/haberler', label: 'Haberler', pageId: 'news', icon: null },
+    { href: '/videos', label: 'Videolar', pageId: 'videos', icon: null },
+    { href: '/contact', label: 'İletişim', pageId: 'contact', icon: null },
   ];
+}
+
+/* Yazılımlar sayfası (redesign 2026) sayfa ayarlarında henüz yoksa menüye
+ * Hizmetler'in hemen arkasına eklenir; yönetim panelinden kayıt eklendiğinde
+ * (pageId: 'software') oradaki sıra ve görünürlük geçerli olur. */
+function withSoftwareLink(links: HeaderNavLink[]): HeaderNavLink[] {
+  if (links.some((l) => l.pageId === 'software' || l.href === '/software')) return links;
+  const soft: HeaderNavLink = { href: '/software', label: 'Yazılımlar', pageId: 'software', icon: null };
+  const i = links.findIndex((l) => l.pageId === 'services' || l.href === '/services');
+  const out = links.slice();
+  out.splice(i >= 0 ? i + 1 : out.length, 0, soft);
+  return out;
+}
+
+/* FX 3D (Cults3D modelleri) aynı kuralla Yazılımlar'ın arkasına eklenir. */
+function withFx3dLink(links: HeaderNavLink[]): HeaderNavLink[] {
+  if (links.some((l) => l.pageId === 'fx-3d' || l.href === '/fx-3d')) return links;
+  const fx3d: HeaderNavLink = { href: '/fx-3d', label: 'FX 3D', pageId: 'fx-3d', icon: null };
+  const i = links.findIndex((l) => l.pageId === 'software' || l.href === '/software');
+  const out = links.slice();
+  out.splice(i >= 0 ? i + 1 : out.length, 0, fx3d);
+  return out;
 }
 
 const Header: React.FC = () => {
@@ -56,10 +80,11 @@ const Header: React.FC = () => {
   const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [navLinks, setNavLinks] = useState<Array<{ href: string; label: string; icon: any; isExternal?: boolean }>>([]);
+  const [navLinks, setNavLinks] = useState<HeaderNavLink[]>([]);
   const [navLoaded, setNavLoaded] = useState(false);
   const [siteSettings, setSiteSettings] = useState<SiteSettings | null>(null);
   const { t: tHeader } = useAppTranslations('header');
+  const { t: tFx } = useAppTranslations('fx');
 
   const pathname = usePathname() || '';
 
@@ -151,10 +176,11 @@ const Header: React.FC = () => {
             .map((page: PageSetting) => ({
               href: page.path.startsWith('http') || page.path.startsWith('/') ? page.path : `/${page.path}`,
               label: page.title,
+              pageId: page.pageId,
               icon: resolveIcon(page.icon) || getIconForPage(page.pageId),
               isExternal: page.isExternal
             }));
-          setNavLinks(navPages);
+          setNavLinks(withFx3dLink(withSoftwareLink(navPages)));
           setNavLoaded(true);
         } else {
           setNavLinks(getDefaultNavLinks());
@@ -192,16 +218,8 @@ const Header: React.FC = () => {
   const firstSegment = pathname.split('/')[1];
   const currentLang = (locales as readonly string[]).includes(firstSegment) ? firstSegment : 'tr';
 
-  /* Semantik route tespiti: yalnızca ana sayfa hero'su always-dark scope'ta
-   * başlıyor; header tepedeyken hero'nun üzerine saydam biner ve kendi
-   * `public-theme public-dark` scope'u ile tüm token'ları grafit palete çevirir
-   * (açık metin/ikon). Scroll'da veya alt sayfalarda token yüzeye döner. */
-  const isHome = pathname === '/' || pathname === `/${currentLang}` || pathname === `/${currentLang}/`;
-  const overHero = isHome && !isScrolled;
-
   const ROUTE_SEGMENT_MAP: Record<string, Record<string, string>> = {
     tr: { noticias: 'haberler' },
-    es: { haberler: 'noticias' },
   };
 
   const localizedNavLinks = navLinks.map(link => {
@@ -225,130 +243,47 @@ const Header: React.FC = () => {
     <>
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-9999 focus:bg-background focus:text-primary focus:px-4 focus:py-2 focus:rounded-xs focus:shadow-[var(--shadow-lg)] focus:border focus:border-border"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-9999 focus:bg-background focus:text-foreground focus:px-4 focus:py-2 focus:rounded-[var(--radius-button)] focus:border focus:border-border"
       >
         {tHeader('skipToContent')}
       </a>
 
-      {/* Precision chrome: flat, dark-capable bar. Ana sayfa tepesinde hero'nun
-          always-dark scope'uyla aynı teknikle saydamlaşır, sonrasında token zemin. */}
-      <header
-        className={`fixed top-0 left-0 right-0 z-[200] transition-colors duration-200 motion-reduce:transition-none ${
-          overHero
-            ? 'public-theme public-dark bg-transparent border-b border-transparent'
-            : 'bg-background border-b border-border'
-        }`}
-        role="banner"
-      >
-        <div className="container-boxed">
-          <div className="flex items-center gap-3 h-14">
-            {/* Logo — sol blok: token tabanlı kutu + foreground metin */}
-            <Link
-              href={`/${currentLang}`}
-              className="flex items-center gap-2.5 group shrink-0 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 rounded-xs"
-              aria-label={tHeader('goToHome')}
-            >
-              {siteSettings?.logo?.url && (
-                <div className="relative w-9 h-9 rounded-sm overflow-hidden bg-card border border-border transition-transform duration-150 group-hover:scale-[1.03]">
-                  <Image
-                    src={siteSettings.logo.url}
-                    alt={siteSettings.logo.alt}
-                    fill
-                    className="object-contain p-1"
-                    sizes="36px"
-                    priority
-                  />
-                </div>
-              )}
-              {siteSettings?.logoText && (
-                <span className="font-semibold tracking-tight text-base text-foreground">
-                  {siteSettings.logoText}
-                </span>
-              )}
-            </Link>
+      {/* FIXRAL header — her temada koyu ada (public-theme public-dark), sticky,
+          64px. Menü yönetim panelindeki sayfa ayarlarından gelir. */}
+      <header className={`fx-hdr public-theme public-dark ${isScrolled ? 'is-scrolled' : ''}`} role="banner">
+        <div className="fx-wrap fx-hdr__in">
+          <Link href={`/${currentLang}`} className="fx-hdr__logo-link" aria-label={tHeader('goToHome')}>
+            <FxLogo tone="light" title={siteSettings?.siteName || 'FIXRAL'} />
+          </Link>
 
-            {/* Arama kontrolü — precision: turuncu dolgu, 2px radius, hover/focus'ta genişler.
-                Token tabanlı: primary/primary-foreground her iki temada da geçerli. */}
+          <DesktopNav navLinks={localizedNavLinks.filter((l) => l.pageId !== 'home')} pathname={pathname || ''} />
+
+          <div className="fx-hdr__tools">
+            <LanguageSwitch currentLang={currentLang} variant="segmented" />
             <button
+              type="button"
+              className="fx-searchbtn"
               onClick={() => setIsSearchOpen(true)}
-              className="hidden lg:flex items-center gap-2 h-9 w-48 hover:w-64 focus-visible:w-64 px-4 rounded-xs bg-primary text-sm text-primary-foreground hover:bg-primary/90 transition-all duration-200 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               aria-label={`${tHeader('search')} (Ctrl+K)`}
             >
-              <MagnifyingGlass size={15} className="shrink-0 text-primary-foreground" aria-hidden="true" />
-              <span className="flex-1 text-left truncate text-primary-foreground/90">{tHeader('searchPlaceholder')}</span>
-              <kbd className="hidden xl:inline-flex items-center px-1.5 py-0.5 rounded-xs bg-primary-foreground/15 font-mono text-[10px] font-medium tracking-wide text-primary-foreground/85">
-                Ctrl K
-              </kbd>
+              <SearchIcon />
+              <span>{tFx('nav.searchShort')}</span>
+              <kbd>Ctrl K</kbd>
             </button>
-
-            {/* Desktop Nav — sade metin linkleri (orta blok) */}
-            <div className="hidden lg:flex flex-1 items-center ml-3">
-              <DesktopNav
-                navLinks={localizedNavLinks}
-                pathname={pathname || ''}
-              />
-            </div>
-
-            {/* Sağ blok: dil + tema + arama (mobil) + CTA + hamburger */}
-            <div className="flex items-center gap-1.5 ml-auto lg:ml-0">
-              <div className="hidden lg:block">
-                <LanguageSwitch currentLang={currentLang} variant="compact" />
-              </div>
-
-              <ThemeToggle />
-
-              {/* Mobile search trigger */}
-              <button
-                onClick={() => setIsSearchOpen(true)}
-                className="lg:hidden p-2 rounded-xs text-muted-foreground hover:text-foreground hover:bg-accent transition-colors duration-150 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0"
-                aria-label={tHeader('search')}
-              >
-                <MagnifyingGlass size={18} />
-              </button>
-
-              {/* CTA — tek turuncu dolgu, 2px kontrol radius'u */}
-              <div className="hidden lg:block">
-                <MagneticButton
-                  onClick={openProjectModal}
-                  className="rounded-xs bg-primary text-primary-foreground text-sm px-4 py-2 font-semibold hover:bg-primary/90 transition-colors duration-200 active:scale-[0.98] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                >
-                  <PaperPlaneTilt size={14} className="mr-1.5 inline-block" aria-hidden="true" />
-                  Teklif Al
-                </MagneticButton>
-              </div>
-
-              {/* Mobile Hamburger */}
-              <button
-                onClick={toggleMobileMenu}
-                aria-label={tHeader('openMenu')}
-                aria-expanded={isMobileMenuOpen}
-                className="lg:hidden p-2 rounded-xs text-foreground hover:bg-accent transition-colors duration-150 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0"
-              >
-                <AnimatePresence mode="wait">
-                  {isMobileMenuOpen ? (
-                    <m.div
-                      key="close"
-                      initial={{ rotate: -90, opacity: 0 }}
-                      animate={{ rotate: 0, opacity: 1 }}
-                      exit={{ rotate: 90, opacity: 0 }}
-                      transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-                    >
-                      <X size={24} />
-                    </m.div>
-                  ) : (
-                    <m.div
-                      key="menu"
-                      initial={{ rotate: 90, opacity: 0 }}
-                      animate={{ rotate: 0, opacity: 1 }}
-                      exit={{ rotate: -90, opacity: 0 }}
-                      transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-                    >
-                      <List size={24} />
-                    </m.div>
-                  )}
-                </AnimatePresence>
-              </button>
-            </div>
+            <ThemeToggle className="fx-themebtn" />
+            <AccountMenu currentLang={currentLang} />
+            <button type="button" className="fx-btn fx-btn--primary fx-btn--sm" onClick={openProjectModal}>
+              {tFx('nav.quote')}
+            </button>
+            <button
+              type="button"
+              className="fx-iconbtn fx-menu-btn"
+              onClick={toggleMobileMenu}
+              aria-label={tHeader('openMenu')}
+              aria-expanded={isMobileMenuOpen}
+            >
+              <MenuIcon />
+            </button>
           </div>
         </div>
       </header>

@@ -9,14 +9,8 @@ export { default as Logo } from './Logo';
 export { default as ProjectCard } from './ProjectCard';
 export { default as ProjectGrid } from './ProjectGrid';
 
-// Modern Portfolio Components
-// Modern Portfolio Components
-export { default as ModernProjectCard } from './portfolio/ModernProjectCard';
-export { default as ModernProjectGrid } from './portfolio/ModernProjectGrid';
 
 export { default as PortfolioFilters } from './portfolio/PortfolioFilters';
-export { default as PortfolioDetailHero } from './portfolio/PortfolioDetailHero';
-export { default as HomePortfolioSection } from './portfolio/HomePortfolioSection';
 
 // Common Components
 export { default as PageHero } from './common/PageHero';

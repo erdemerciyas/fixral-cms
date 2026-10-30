@@ -3,23 +3,51 @@
 import { Suspense, useRef, useEffect, useState } from 'react';
 import { Canvas, useFrame, useLoader } from '@react-three/fiber';
 import { OrbitControls, useGLTF, Html, Center } from '@react-three/drei';
-import { Mesh, BufferGeometry, MeshStandardMaterial, Box3, Vector3 } from 'three';
+import { Mesh, BufferGeometry, MeshStandardMaterial, Box3, Vector3, type Object3D } from 'three';
 import { STLLoader } from 'three-stdlib';
 import { OBJLoader } from 'three-stdlib';
+
+export interface ModelViewerLabels {
+  /** Yükleniyor metni (varsayılan: "3D Model Yükleniyor...") */
+  loading?: string;
+  /** Geometri işleniyor metni */
+  processing?: string;
+  /** Desteklenmeyen biçim metni */
+  unsupported?: string;
+  /** Görüntüleyici erişilebilir adı */
+  aria?: string;
+  /** Ekran okuyucu yardım metni */
+  help?: string;
+}
 
 interface ModelProps {
   url: string;
   format: string;
+  color?: string;
+  spin?: boolean;
+  labels?: ModelViewerLabels;
+}
+
+/** Yükleme göstergesi (Canvas içinde HTML) */
+function LoadingNote({ text }: { text: string }) {
+  return (
+    <Html center>
+      <div className="fx-mv-note" role="status">
+        <span className="fx-mv-spin" aria-hidden="true" />
+        <p>{text}</p>
+      </div>
+    </Html>
+  );
 }
 
 // GLTF/GLB modelleri için ayrı bileşen
-function GLTFModel({ url }: { url: string }) {
+function GLTFModel({ url, spin = true }: { url: string; spin?: boolean }) {
   const meshRef = useRef<Mesh>(null);
   const { scene } = useGLTF(url);
 
   // Basit rotasyon animasyonu
   useFrame((state, delta) => {
-    if (meshRef.current) {
+    if (spin && meshRef.current) {
       meshRef.current.rotation.y += delta * 0.5;
     }
   });
@@ -36,7 +64,7 @@ function GLTFModel({ url }: { url: string }) {
 }
 
 // STL modelleri için bileşen
-function STLModel({ url }: { url: string }) {
+function STLModel({ url, color = '#FA6831', spin = true, processing }: { url: string; color?: string; spin?: boolean; processing: string }) {
   const meshRef = useRef<Mesh>(null);
   const geometry = useLoader(STLLoader, url) as BufferGeometry;
   const [processedGeometry, setProcessedGeometry] = useState<BufferGeometry | null>(null);
@@ -74,32 +102,19 @@ function STLModel({ url }: { url: string }) {
         setScale(calculatedScale);
         setProcessedGeometry(clonedGeometry);
         
-        console.log('STL Model Info:', {
-          originalCenter: centerPoint,
-          size: size,
-          maxDimension,
-          calculatedScale
-        });
       }
     });
   }, [geometry]);
 
   // Basit rotasyon animasyonu
   useFrame((state, delta) => {
-    if (meshRef.current) {
+    if (spin && meshRef.current) {
       meshRef.current.rotation.y += delta * 0.5;
     }
   });
 
   if (!processedGeometry) {
-    return (
-      <Html center>
-        <div className="text-primary text-center p-4 bg-card rounded-lg shadow-lg">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2"></div>
-          <p>STL işleniyor...</p>
-        </div>
-      </Html>
-    );
+    return <LoadingNote text={processing} />;
   }
 
   return (
@@ -109,16 +124,16 @@ function STLModel({ url }: { url: string }) {
       scale={scale}
     >
       {/* Marka paletiyle tutarlı: STL = brand primary (#FA6831) */}
-      <meshStandardMaterial color="#FA6831" />
+      <meshStandardMaterial color={color} roughness={0.55} metalness={0.1} />
     </mesh>
   );
 }
 
 // OBJ modelleri için bileşen
-function OBJModel({ url }: { url: string }) {
+function OBJModel({ url, color = '#C24E1E', spin = true, processing }: { url: string; color?: string; spin?: boolean; processing: string }) {
   const meshRef = useRef<Mesh>(null);
   const obj = useLoader(OBJLoader, url);
-  const [processedObj, setProcessedObj] = useState<any>(null);
+  const [processedObj, setProcessedObj] = useState<Object3D | null>(null);
   const [scale, setScale] = useState(1);
 
   // OBJ yüklendiğinde merkez ve boyut hesapla
@@ -154,37 +169,23 @@ function OBJModel({ url }: { url: string }) {
       clonedObj.traverse((child) => {
         if (child instanceof Mesh) {
           // Marka paletiyle tutarlı: OBJ = brand derin ton (#C24E1E)
-          child.material = new MeshStandardMaterial({ color: '#C24E1E' });
+          child.material = new MeshStandardMaterial({ color, roughness: 0.55, metalness: 0.1 });
         }
       });
       
       setProcessedObj(clonedObj);
-      
-      console.log('OBJ Model Info:', {
-        originalCenter: centerPoint,
-        size: size,
-        maxDimension,
-        calculatedScale
-      });
     });
-  }, [obj]);
+  }, [obj, color]);
 
   // Basit rotasyon animasyonu
   useFrame((state, delta) => {
-    if (meshRef.current) {
+    if (spin && meshRef.current) {
       meshRef.current.rotation.y += delta * 0.5;
     }
   });
 
   if (!processedObj) {
-    return (
-      <Html center>
-        <div className="text-primary text-center p-4 bg-card rounded-lg shadow-lg">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2"></div>
-          <p>OBJ işleniyor...</p>
-        </div>
-      </Html>
-    );
+    return <LoadingNote text={processing} />;
   }
 
   return (
@@ -196,46 +197,27 @@ function OBJModel({ url }: { url: string }) {
   );
 }
 
-// Error boundary bileşeni
-function ModelErrorBoundary({ children, format }: { children: React.ReactNode; format: string }) {
-  return (
-    <Suspense fallback={
-      <Html center>
-        <div className="text-primary text-center p-4 bg-card rounded-lg shadow-lg">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2"></div>
-          <p>{format.toUpperCase()} Model Yükleniyor...</p>
-        </div>
-      </Html>
-    }>
-      {children}
-    </Suspense>
-  );
-}
-
 // Ana model bileşeni
-function Model({ url, format }: ModelProps) {
-  console.log('3DModelViewer - Loading model:', { url, format });
-  
+function Model({ url, format, color, spin, labels }: ModelProps) {
+  const processing = labels?.processing || `${format.toUpperCase()} işleniyor...`;
   const renderModel = () => {
     switch (format.toLowerCase()) {
       case 'gltf':
       case 'glb':
-        return <GLTFModel url={url} />;
-      
+        return <GLTFModel url={url} spin={spin} />;
+
       case 'stl':
-        return <STLModel url={url} />;
-      
+        return <STLModel url={url} color={color} spin={spin} processing={processing} />;
+
       case 'obj':
-        return <OBJModel url={url} />;
-      
+        return <OBJModel url={url} color={color} spin={spin} processing={processing} />;
+
       default:
         return (
           <Html center>
-            <div className="text-warning-dark text-center p-4 bg-card rounded-lg shadow-lg">
-              <p>{format.toUpperCase()} Önizleme</p>
-              <p className="text-sm text-muted-foreground mt-2">
-                Bu format için önizleme henüz desteklenmiyor
-              </p>
+            <div className="fx-mv-note">
+              <p>{format.toUpperCase()}</p>
+              <p>{labels?.unsupported || 'Bu format için önizleme henüz desteklenmiyor'}</p>
             </div>
           </Html>
         );
@@ -243,9 +225,9 @@ function Model({ url, format }: ModelProps) {
   };
 
   return (
-    <ModelErrorBoundary format={format}>
+    <Suspense fallback={<LoadingNote text={labels?.loading || `${format.toUpperCase()} Model Yükleniyor...`} />}>
       {renderModel()}
-    </ModelErrorBoundary>
+    </Suspense>
   );
 }
 
@@ -255,11 +237,21 @@ interface ModelViewerProps {
   className?: string;
   /** Saydam arkaplan: hero gibi token tabanlı koyu zeminlerde kullanılır (varsayılan: false) */
   transparent?: boolean;
+  /** STL/OBJ malzeme rengi (verilmezse eski marka tonları) */
+  color?: string;
+  /** Kendiliğinden dönme (varsayılan: açık; azaltılmış hareket tercihinde kapanır) */
+  spin?: boolean;
+  /** Yerelleştirilmiş metinler */
+  labels?: ModelViewerLabels;
 }
 
-export default function ModelViewer({ modelUrl, format, className = '', transparent = false }: ModelViewerProps) {
-  console.log('ModelViewer - Rendering:', { modelUrl, format, className });
-  
+const prefersReducedMotion = () =>
+  typeof window !== 'undefined' && !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+
+export default function ModelViewer({ modelUrl, format, className = '', transparent = false, color, spin = true, labels }: ModelViewerProps) {
+  const [reduced] = useState(prefersReducedMotion);
+  const doSpin = spin && !reduced;
+
   return (
     <>
       <div 
@@ -269,31 +261,23 @@ export default function ModelViewer({ modelUrl, format, className = '', transpar
             : `w-full h-96 bg-card rounded-lg overflow-hidden ${className}`
         }
         role="img"
-        aria-label={`3D ${format.toUpperCase()} Model Görüntüleyici`}
+        aria-label={labels?.aria || `3D ${format.toUpperCase()} Model Görüntüleyici`}
       >
         <Canvas
         camera={{ position: [3, 3, 3], fov: 60 }}
         gl={transparent ? { alpha: true } : undefined}
-        style={transparent ? { background: 'transparent' } : { background: 'var(--gradient-surface)' }}
+        className={transparent ? 'bg-transparent' : 'fx-mv-surface'}
         onCreated={(_state) => {
           // Kamerayı modele odakla
           _state.camera.lookAt(0, 0, 0);
-          console.log('Canvas created:', _state);
         }}
       >
         <ambientLight intensity={0.7} />
         <directionalLight position={[10, 10, 5]} intensity={1} />
         <directionalLight position={[-10, -10, -5]} intensity={0.5} />
         
-        <Suspense fallback={
-          <Html center>
-            <div className="text-primary text-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2"></div>
-              <p>3D Model Yükleniyor...</p>
-            </div>
-          </Html>
-        }>
-          <Model url={modelUrl} format={format} />
+        <Suspense fallback={<LoadingNote text={labels?.loading || '3D Model Yükleniyor...'} />}>
+          <Model url={modelUrl} format={format} color={color} spin={doSpin} labels={labels} />
         </Suspense>
         
         <OrbitControls 
@@ -307,12 +291,11 @@ export default function ModelViewer({ modelUrl, format, className = '', transpar
         />
       </Canvas>
       </div>
-      <p className="sr-only">3D {format.toUpperCase()} model - Döndürmek için fare ya da dokunmayı kullanın, zoom için tekerlek ya da pinch hareketi</p>
+      <p className="sr-only">{labels?.help || `3D ${format.toUpperCase()} model - Döndürmek için fare ya da dokunmayı kullanın, zoom için tekerlek ya da pinch hareketi`}</p>
     </>
   );
 }
 
 // GLTF loader için preload
 // Note: preload function is intentionally empty and used for type declaration
-// eslint-disable-next-line @typescript-eslint/no-empty-function
 useGLTF.preload = (_url: string) => {};

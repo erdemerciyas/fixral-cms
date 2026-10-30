@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
 import { generateMetadata, validateMetadata } from '@/lib/ai-service';
 import { ApiResponse, AIMetadataGenerationResponse } from '@/types/news';
 import { logger } from '@/core/lib/logger';
@@ -41,8 +42,8 @@ import { logger } from '@/core/lib/logger';
 export async function POST(request: NextRequest) {
   try {
     // Check authentication
-    const session = await getServerSession();
-    if (!session || !session.user) {
+    const session = await getServerSession(authOptions);
+    if (!session || session.user?.role !== 'admin') {
       return NextResponse.json(
         {
           success: false,
@@ -65,11 +66,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (!body.language || !['tr', 'es'].includes(body.language)) {
+    if (!body.language || body.language !== 'tr') {
       return NextResponse.json(
         {
           success: false,
-          error: 'Language must be either "tr" or "es"',
+          error: 'Language must be "tr"',
         } as ApiResponse<null>,
         { status: 400 }
       );
