@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 304 174" width="304" height="174" role="img" aria-label="Fixral Stack">
+<title>Fixral — Stack-white</title>
+<g transform="translate(14,14)">
+<g fill="#6E7681">
+  <polygon points="0,0 90,0 118,28 0,28"/>
+  <rect x="0" y="0" width="28" height="160"/>
+  <polygon points="0,66 86,66 114,94 0,94"/>
+</g>
+<g transform="translate(90,0)">
+  <polygon points="0,0 40,0 100,60 160,0 200,0 120,80 200,160 160,160 100,100 40,160 0,160 80,80" fill="#6E7681"/>
+  <polygon points="80,80 100,100 40,160 0,160" fill="#6E7681"/>
+</g></g>
+<g>
+<g fill="#FFFFFF">
+  <polygon points="0,0 90,0 118,28 0,28"/>
+  <rect x="0" y="0" width="28" height="160"/>
+  <polygon points="0,66 86,66 114,94 0,94"/>
+</g>
+<g transform="translate(90,0)">
+  <polygon points="0,0 40,0 100,60 160,0 200,0 120,80 200,160 160,160 100,100 40,160 0,160 80,80" fill="#FFFFFF"/>
+  <polygon points="80,80 100,100 40,160 0,160" fill="#F97316"/>
+</g></g>
+</svg>

@@ -40,7 +40,7 @@ export class SecurityHeaders {
     "img-src 'self' data: blob: https:",
     "media-src 'self' https:",
     "connect-src 'self' https: wss:",
-    "frame-src 'self' https://maps.google.com https://www.google.com",
+    "frame-src 'self' https://maps.google.com https://www.google.com https://www.youtube-nocookie.com https://www.youtube.com",
     "worker-src 'self' blob:",
     "child-src 'self' blob:",
     "object-src 'none'",
@@ -200,7 +200,7 @@ export class SecurityHeaders {
           // Explicitly allow Cloudinary
           "img-src 'self' data: https: res.cloudinary.com",
           "media-src 'self' https:",
-          "frame-src 'self' https://maps.google.com https://www.google.com",
+          "frame-src 'self' https://maps.google.com https://www.google.com https://www.youtube-nocookie.com https://www.youtube.com",
           "frame-ancestors 'none'"
         ];
 

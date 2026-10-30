@@ -8,36 +8,16 @@ export const SITE_URL = (
 ).replace(/\/$/, '');
 
 /**
- * Verilen TR ve ES yolları için alternates (hreflang + canonical) bloğu üretir.
- * Next.js Metadata API formatında döner.
+ * Verilen yol için alternates (canonical + hreflang) bloğu üretir.
+ * Site tek dilli (Türkçe). Next.js Metadata API formatında döner.
  */
-export function generateAlternates(trPath: string, esPath: string) {
+export function generateAlternates(path: string) {
+  const url = `${SITE_URL}${path}`;
   return {
-    canonical: `${SITE_URL}${trPath}`,
+    canonical: url,
     languages: {
-      'tr-TR': `${SITE_URL}${trPath}`,
-      'es-ES': `${SITE_URL}${esPath}`,
-      'x-default': `${SITE_URL}${trPath}`,
-    },
-  };
-}
-
-/**
- * Dile göre doğru alternates bloğu döndürür.
- * Sayfa bileşenlerinde params.lang'e göre canonical belirlenmesinde kullanılır.
- */
-export function generateAlternatesForLang(
-  lang: string,
-  trPath: string,
-  esPath: string
-) {
-  const canonical = lang === 'es' ? `${SITE_URL}${esPath}` : `${SITE_URL}${trPath}`;
-  return {
-    canonical,
-    languages: {
-      'tr-TR': `${SITE_URL}${trPath}`,
-      'es-ES': `${SITE_URL}${esPath}`,
-      'x-default': `${SITE_URL}${trPath}`,
+      'tr-TR': url,
+      'x-default': url,
     },
   };
 }
@@ -57,18 +37,13 @@ export function generateOgImages(imageUrl?: string, alt?: string) {
   ];
 }
 
-/**
- * İçerik slug'ı için TR-ES URL çiftini döndürür.
- * Blog yazıları: haberler/noticias
- */
+/** Haber yazısı alternates bloğu */
 export function getBlogAlternates(slug: string) {
-  return generateAlternates(`/tr/haberler/${slug}`, `/es/noticias/${slug}`);
+  return generateAlternates(`/tr/haberler/${slug}`);
 }
 
-/**
- * Portfolio slug'ı için TR-ES URL çiftini döndürür.
- */
+/** Portfolyo projesi alternates bloğu */
 export function getPortfolioAlternates(slug: string) {
-  return generateAlternates(`/tr/portfolio/${slug}`, `/es/portfolio/${slug}`);
+  return generateAlternates(`/tr/portfolio/${slug}`);
 }
 

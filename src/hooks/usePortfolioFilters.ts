@@ -2,10 +2,23 @@
 
 import { useState, useMemo, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import type { PortfolioItem, Category } from '../types/portfolio';
 import { useLocale } from '@/hooks/useLocale';
 
-interface FilterState {
+/** Filtrelenebilir proje — kategori adları/slug'ları çözülmüş olmalı */
+export interface FilterableProject {
+  _id: string;
+  title: string;
+  description?: string;
+  client?: string;
+  completionDate?: string;
+  createdAt?: string;
+  technologies?: string[];
+  categories?: { name: string; slug: string }[];
+  category?: { name: string; slug: string };
+  categoryId?: unknown;
+}
+
+export interface FilterState {
   search: string;
   categories: string[];
   technologies: string[];
@@ -15,6 +28,12 @@ interface FilterState {
   };
   sortBy: 'newest' | 'oldest' | 'title' | 'category';
   sortOrder: 'asc' | 'desc';
+}
+
+// Sıralama zamanı: önce createdAt, yoksa completionDate; geçersizse 0
+function sortTime(p: { createdAt?: string; completionDate?: string }): number {
+  const t = new Date(p.createdAt || p.completionDate || 0).getTime();
+  return Number.isNaN(t) ? 0 : t;
 }
 
 // URL parametrelerinden filtre durumunu çözer
@@ -53,20 +72,21 @@ function parseFiltersFromSearchParams(searchParams: URLSearchParams | null): Fil
   };
 }
 
-interface UsePortfolioFiltersReturn {
+interface UsePortfolioFiltersReturn<T extends FilterableProject> {
   filters: FilterState;
   setFilters: (filters: FilterState) => void;
-  filteredProjects: PortfolioItem[];
+  filteredProjects: T[];
   isLoading: boolean;
   totalResults: number;
   availableTechnologies: string[];
 }
 
-export function usePortfolioFilters(
-  projects: PortfolioItem[],
-  categories: Category[],
+export function usePortfolioFilters<T extends FilterableProject>(
+  projects: T[],
+  // Geriye uyumluluk için imzada tutulur (kategoriler projelerde çözülmüş gelir)
+  _categories: unknown[] = [],
   isLoading: boolean = false
-): UsePortfolioFiltersReturn {
+): UsePortfolioFiltersReturn<T> {
   const router = useRouter();
   const searchParams = useSearchParams();
   const lang = useLocale();
@@ -106,7 +126,7 @@ export function usePortfolioFilters(
 
     const newURL = params.toString() ? `/${lang}/portfolio?${params.toString()}` : `/${lang}/portfolio`;
     router.push(newURL, { scroll: false });
-  }, [router]);
+  }, [router, lang]);
 
   const setFilters = useCallback((newFilters: FilterState) => {
     setFiltersState(newFilters);
@@ -145,12 +165,15 @@ export function usePortfolioFilters(
 
     // Search filter
     if (filters.search) {
-      const searchLower = filters.search.toLowerCase();
+      const loc = 'tr-TR';
+      const searchLower = filters.search.trim().toLocaleLowerCase(loc);
+      const has = (v?: string) => !!v && v.toLocaleLowerCase(loc).includes(searchLower);
       filtered = filtered.filter(project =>
-        project.title.toLowerCase().includes(searchLower) ||
-        project.description.toLowerCase().includes(searchLower) ||
-        project.client?.toLowerCase().includes(searchLower) ||
-        project.technologies?.some(tech => tech.toLowerCase().includes(searchLower))
+        has(project.title) ||
+        has(project.description) ||
+        has(project.client) ||
+        project.categories?.some(cat => has(cat.name)) ||
+        project.technologies?.some(tech => has(tech))
       );
     }
 
@@ -192,6 +215,7 @@ export function usePortfolioFilters(
     // Date range filter
     if (filters.dateRange.start || filters.dateRange.end) {
       filtered = filtered.filter(project => {
+        if (!project.completionDate) return false;
         const projectDate = new Date(project.completionDate);
         const startDate = filters.dateRange.start ? new Date(filters.dateRange.start) : null;
         const endDate = filters.dateRange.end ? new Date(filters.dateRange.end) : null;
@@ -208,25 +232,21 @@ export function usePortfolioFilters(
 
       switch (filters.sortBy) {
         case 'title':
-          comparison = a.title.localeCompare(b.title, 'tr');
+          comparison = a.title.localeCompare(b.title, lang);
           break;
         case 'category':
           const aCategoryName = a.categories?.[0]?.name || a.category?.name || '';
           const bCategoryName = b.categories?.[0]?.name || b.category?.name || '';
-          comparison = aCategoryName.localeCompare(bCategoryName, 'tr');
+          comparison = aCategoryName.localeCompare(bCategoryName, lang);
           break;
         case 'oldest':
           // Önce createdAt'e göre sırala, yoksa completionDate'e göre
-          const aDateOld = a.createdAt ? new Date(a.createdAt) : new Date(a.completionDate);
-          const bDateOld = b.createdAt ? new Date(b.createdAt) : new Date(b.completionDate);
-          comparison = aDateOld.getTime() - bDateOld.getTime();
+          comparison = sortTime(a) - sortTime(b);
           break;
         case 'newest':
         default:
           // Önce createdAt'e göre sırala, yoksa completionDate'e göre
-          const aDate = a.createdAt ? new Date(a.createdAt) : new Date(a.completionDate);
-          const bDate = b.createdAt ? new Date(b.createdAt) : new Date(b.completionDate);
-          comparison = bDate.getTime() - aDate.getTime();
+          comparison = sortTime(b) - sortTime(a);
           
           // Eğer tarihler aynıysa, _id'ye göre sırala (MongoDB ObjectId doğal olarak zaman içerir)
           if (comparison === 0) {
@@ -235,11 +255,16 @@ export function usePortfolioFilters(
           break;
       }
 
-      return filters.sortOrder === 'desc' ? comparison : -comparison;
+      // newest/oldest yönü sortBy'da tanımlıdır; ad/kategori için sortOrder uygulanır.
+      // (Eski sürüm 'asc' seçeneklerini ters çeviriyordu: "En Eski" en yeniyi, "A-Z" Z-A'yı gösteriyordu.)
+      if (filters.sortBy === 'title' || filters.sortBy === 'category') {
+        return filters.sortOrder === 'desc' ? -comparison : comparison;
+      }
+      return comparison;
     });
 
     return filtered;
-  }, [projects, filters, isLoading]);
+  }, [projects, filters, isLoading, lang]);
 
   return {
     filters,

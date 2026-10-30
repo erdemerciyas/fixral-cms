@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import FooterSettings from '../../../../models/FooterSettings';
 import { withSecurity, SecurityConfigs } from '../../../../lib/security-middleware';
+import { withFxRevalidate } from '@/lib/fx-revalidate';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
@@ -30,7 +31,7 @@ export const GET = withSecurity(SecurityConfigs.admin)(async () => {
 })
 
 // PUT: Footer ayarlarını güncelle  
-export const PUT = withSecurity(SecurityConfigs.admin)(async (request: Request) => {
+const PUT__handler = withSecurity(SecurityConfigs.admin)(async (request: Request) => {
   try {
     console.log('🔄 Footer settings PUT request started');
     
@@ -146,7 +147,7 @@ export const PUT = withSecurity(SecurityConfigs.admin)(async (request: Request) 
 })
 
 // POST: Footer ayarlarını sıfırla (varsayılan değerlere döndür)
-export const POST = withSecurity(SecurityConfigs.admin)(async () => {
+const POST__handler = withSecurity(SecurityConfigs.admin)(async () => {
   try {
     // Mevcut ayarları sil ve yenilerini oluştur
     await FooterSettings.deleteMany({});
@@ -167,3 +168,7 @@ export const POST = withSecurity(SecurityConfigs.admin)(async () => {
     );
   }
 })
+
+// Panel → site canlı tazeleme (redesign 2026)
+export const POST = withFxRevalidate(POST__handler);
+export const PUT = withFxRevalidate(PUT__handler);

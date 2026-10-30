@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../../../../lib/auth';
 import PageSetting from '../../../../models/PageSetting';
+import { withFxRevalidate } from '@/lib/fx-revalidate';
 
 export async function GET() {
   try {
@@ -13,11 +14,12 @@ export async function GET() {
     // Mevcut kayıtlar varsa admin tarafından silinmiş/düzenlenmiş olabilir, dokunulmaz.
     const defaultPages = [
       { pageId: 'home', title: 'Ana Sayfa', path: '/', description: 'Mühendislik ve 3D tarama hizmetlerimizi keşfedin', icon: 'HomeIcon', isExternal: false, isActive: true, showInNavigation: true, order: 0 },
-      { pageId: 'services', title: 'Hizmetler', path: '/services', description: 'Sunduğum profesyonel hizmetleri inceleyin', icon: 'WrenchScrewdriverIcon', isExternal: false, isActive: true, showInNavigation: true, order: 2 },
-      { pageId: 'portfolio', title: 'Portfolio', path: '/portfolio', description: 'Tamamladığım projeleri ve çalışmalarımı görün', icon: 'FolderOpenIcon', isExternal: false, isActive: true, showInNavigation: true, order: 3 },
-      { pageId: 'videos', title: 'Videolar', path: '/videos', description: 'YouTube kanalımızdaki videoları izleyin', icon: 'FilmIcon', isExternal: false, isActive: true, showInNavigation: true, order: 4 },
-      { pageId: 'contact', title: 'İletişim', path: '/contact', description: 'Benimle iletişime geçin ve projelerinizi konuşalım', icon: 'PhoneIcon', isExternal: false, isActive: true, showInNavigation: true, order: 5 },
-      { pageId: 'news', title: 'Haberler', path: '/haberler', description: 'Güncel haberler ve duyurular', icon: 'NewspaperIcon', isExternal: false, isActive: true, showInNavigation: true, order: 1 },
+      { pageId: 'services', title: 'Hizmetler', path: '/services', description: 'Sekiz hizmet, üç disiplin, tek atölye.', icon: 'WrenchScrewdriverIcon', isExternal: false, isActive: true, showInNavigation: true, order: 1 },
+      { pageId: 'software', title: 'Yazılımlar', path: '/software', description: 'Atölyenin araçları, herkesin tarayıcısında.', icon: 'CodeBracketIcon', isExternal: false, isActive: true, showInNavigation: true, order: 2 },
+      { pageId: 'portfolio', title: 'Projeler', path: '/portfolio', description: 'Ölçtüğümüz, modellediğimiz, ürettiğimiz parçalar.', icon: 'FolderOpenIcon', isExternal: false, isActive: true, showInNavigation: true, order: 3 },
+      { pageId: 'videos', title: 'Videolar', path: '/videos', description: 'YouTube kanalımızdaki videoları izleyin', icon: 'FilmIcon', isExternal: false, isActive: true, showInNavigation: true, order: 5 },
+      { pageId: 'contact', title: 'İletişim', path: '/contact', description: 'Parçanızı anlatın, yöntemi biz önerelim.', icon: 'PhoneIcon', isExternal: false, isActive: true, showInNavigation: true, order: 6 },
+      { pageId: 'news', title: 'Haberler', path: '/haberler', description: 'Güncel haberler ve duyurular', icon: 'NewspaperIcon', isExternal: false, isActive: true, showInNavigation: true, order: 4 },
     ];
 
     if (pages.length === 0) {
@@ -34,11 +36,12 @@ export async function GET() {
     console.error('Page settings fetch error:', error);
     const fallbackPages = [
       { pageId: 'home', title: 'Ana Sayfa', path: '/', description: 'Mühendislik ve 3D tarama hizmetlerimizi keşfedin', icon: 'HomeIcon', isExternal: false, isActive: true, showInNavigation: true, order: 0 },
-      { pageId: 'services', title: 'Hizmetler', path: '/services', description: 'Sunduğum profesyonel hizmetleri inceleyin', icon: 'WrenchScrewdriverIcon', isExternal: false, isActive: true, showInNavigation: true, order: 2 },
-      { pageId: 'portfolio', title: 'Portfolio', path: '/portfolio', description: 'Tamamladığım projeleri ve çalışmalarımı görün', icon: 'FolderOpenIcon', isExternal: false, isActive: true, showInNavigation: true, order: 3 },
-      { pageId: 'videos', title: 'Videolar', path: '/videos', description: 'YouTube kanalımızdaki videoları izleyin', icon: 'FilmIcon', isExternal: false, isActive: true, showInNavigation: true, order: 4 },
-      { pageId: 'contact', title: 'İletişim', path: '/contact', description: 'Benimle iletişime geçin ve projelerinizi konuşalım', icon: 'PhoneIcon', isExternal: false, isActive: true, showInNavigation: true, order: 5 },
-      { pageId: 'news', title: 'Haberler', path: '/haberler', description: 'Güncel haberler ve duyurular', icon: 'NewspaperIcon', isExternal: false, isActive: true, showInNavigation: true, order: 1 },
+      { pageId: 'services', title: 'Hizmetler', path: '/services', description: 'Sekiz hizmet, üç disiplin, tek atölye.', icon: 'WrenchScrewdriverIcon', isExternal: false, isActive: true, showInNavigation: true, order: 1 },
+      { pageId: 'software', title: 'Yazılımlar', path: '/software', description: 'Atölyenin araçları, herkesin tarayıcısında.', icon: 'CodeBracketIcon', isExternal: false, isActive: true, showInNavigation: true, order: 2 },
+      { pageId: 'portfolio', title: 'Projeler', path: '/portfolio', description: 'Ölçtüğümüz, modellediğimiz, ürettiğimiz parçalar.', icon: 'FolderOpenIcon', isExternal: false, isActive: true, showInNavigation: true, order: 3 },
+      { pageId: 'videos', title: 'Videolar', path: '/videos', description: 'YouTube kanalımızdaki videoları izleyin', icon: 'FilmIcon', isExternal: false, isActive: true, showInNavigation: true, order: 5 },
+      { pageId: 'contact', title: 'İletişim', path: '/contact', description: 'Parçanızı anlatın, yöntemi biz önerelim.', icon: 'PhoneIcon', isExternal: false, isActive: true, showInNavigation: true, order: 6 },
+      { pageId: 'news', title: 'Haberler', path: '/haberler', description: 'Güncel haberler ve duyurular', icon: 'NewspaperIcon', isExternal: false, isActive: true, showInNavigation: true, order: 4 },
     ];
     const resp = NextResponse.json(fallbackPages, { status: 200 });
     resp.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
@@ -49,7 +52,7 @@ export async function GET() {
   }
 }
 
-export async function POST(request: NextRequest) {
+async function POST__handler(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
 
@@ -75,7 +78,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function PUT(request: NextRequest) {
+async function PUT__handler(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
 
@@ -106,7 +109,7 @@ export async function PUT(request: NextRequest) {
   }
 }
 
-export async function DELETE(request: NextRequest) {
+async function DELETE__handler(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user || session.user.role !== 'admin') {
@@ -129,3 +132,8 @@ export async function DELETE(request: NextRequest) {
     );
   }
 }
+
+// Panel → site canlı tazeleme (redesign 2026)
+export const POST = withFxRevalidate(POST__handler);
+export const PUT = withFxRevalidate(PUT__handler);
+export const DELETE = withFxRevalidate(DELETE__handler);

@@ -74,16 +74,6 @@
       "permanent": false
     }
   ],
-  "rewrites": [
-    {
-      "source": "/sitemap.xml",
-      "destination": "/api/sitemap"
-    },
-    {
-      "source": "/robots.txt",
-      "destination": "/api/robots"
-    }
-  ],
   "crons": [
     {
       "path": "/api/cron/cleanup",

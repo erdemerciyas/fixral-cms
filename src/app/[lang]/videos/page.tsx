@@ -2,16 +2,19 @@ import type { Metadata } from 'next';
 import PageHero from '@/components/common/PageHero';
 import BreadcrumbsJsonLd from '@/components/seo/BreadcrumbsJsonLd';
 import VideosClient from '@/components/videos/VideosClient';
+import { getMessages } from '@/i18n';
+import { getFxData } from '@/lib/fx-data-server';
+import { toFxLocale } from '@/content/fixral';
+import { SITE_URL } from '@/lib/seo-utils';
+import PageSetting from '@/models/PageSetting';
 
 export const revalidate = 3600;
 
 async function getHeroData() {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/admin/page-settings/videos`, {
-      next: { revalidate: 3600 },
-    });
-    if (res.ok) {
-      const data = await res.json();
+    // Kendi API'sine HTTP yerine doğrudan DB (build sırasında localhost'a düşmez)
+    const data = await PageSetting.findOne({ pageId: 'videos' });
+    if (data) {
       return {
         title: data.title || 'Videolar',
         description: data.description || 'YouTube kanalımızdaki en güncel ve popüler içeriklerimize göz atın',
@@ -33,7 +36,6 @@ async function getHeroData() {
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const { lang } = await params;
   const hero = await getHeroData();
-  const SITE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://www.fixral.com';
 
   return {
     title: `${hero.title} | Fixral`,
@@ -42,7 +44,6 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
       canonical: `${SITE_URL}/${lang}/videos`,
       languages: {
         'tr-TR': `${SITE_URL}/tr/videos`,
-        'es-ES': `${SITE_URL}/es/videos`,
         'x-default': `${SITE_URL}/tr/videos`,
       },
     },
@@ -55,29 +56,35 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   };
 }
 
+/** Panelde doldurulmuş sayfa başlığı alanları çeviri metninin üstüne yazılır */
+const pickFilled = (o: { eyebrow: string; title: string; lede: string }) =>
+  Object.fromEntries(Object.entries(o).filter(([, v]) => v && v.trim())) as Record<string, string>;
+
 export default async function VideosPage({ params }: { params: Promise<{ lang: string }> }) {
   const { lang } = await params;
-  const hero = await getHeroData();
+  // Başlık metinleri tasarım sisteminden (fx.videos) gelir; yönetim panelindeki
+  // sayfa ayarları metadata için kullanılmaya devam eder.
+  const messages = (await getMessages(lang)) as { fx?: { videos?: Record<string, string> } };
+  const fxVideos = { ...(messages.fx?.videos || {}), ...pickFilled((await getFxData()).site.pages.videos[toFxLocale(lang)]) };
 
   return (
     <div className="min-h-dvh bg-background">
       <PageHero
-        title={hero.title}
-        description={hero.description}
-        buttonText={hero.buttonText}
-        buttonLink={hero.buttonLink}
+        title={fxVideos.title || 'Ne yaptığımızı gösteriyoruz.'}
+        description={fxVideos.lede}
+        badge={fxVideos.eyebrow}
+        showButton={false}
         showBreadcrumbs={true}
-        index={4}
       />
 
       <BreadcrumbsJsonLd
         items={[
-          { name: 'Anasayfa', item: '/' },
-          { name: 'Videolar', item: '/videos' },
+          { name: 'Anasayfa', item: `${SITE_URL}/tr` },
+          { name: 'Videolar', item: `${SITE_URL}/tr/videos` },
         ]}
       />
 
-      <VideosClient />
+      <VideosClient lang={lang} />
     </div>
   );
 }

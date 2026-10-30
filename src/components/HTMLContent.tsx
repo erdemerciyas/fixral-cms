@@ -28,7 +28,11 @@ export default function HTMLContent({
           başlık/bold/link prose CSS değişkenleri üzerinden token'a bağlanır */}
       <SafeHtmlRenderer 
         html={content}
-        className="prose prose-sm max-w-none text-inherit [--tw-prose-body:currentColor] [--tw-prose-headings:hsl(var(--foreground))] [--tw-prose-bold:currentColor] [--tw-prose-links:hsl(var(--primary))]"
+        className={
+          truncate
+            ? 'public-prose max-w-none text-inherit [&_p]:mb-0'
+            : 'public-prose max-w-none text-inherit'
+        }
         maxLength={truncate}
         showReadMore={showMore}
       />

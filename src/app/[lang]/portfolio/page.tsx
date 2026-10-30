@@ -1,20 +1,22 @@
+import { Suspense } from 'react';
 import PortfolioTemplate from '@/templates/PortfolioTemplate';
 import { getPortfolioItems } from '@/lib/data';
-import PageSetting from '@/models/PageSetting';
 import Category from '@/models/Category';
 import type { Metadata } from 'next';
 import { SITE_URL, generateAlternates, generateOgImages } from '@/lib/seo-utils';
+import { clip, leadText, normalizeCategoryList, normalizeProject, stripTags, type PfProject } from '@/components/portfolio/portfolio-data';
+import PortfolioLoading from './loading';
 
 export const revalidate = 3600;
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const { lang } = await params;
-  const titleByLang = lang === 'es' ? 'Portafolio | Fixral' : 'Portfolyo | Fixral';
-  const descByLang = lang === 'es' ? 'Descubre nuestros proyectos y trabajos completados.' : 'Tamamladığımız projeleri ve çalışmalarımızı keşfedin.';
+  const titleByLang = 'Portfolyo | Fixral';
+  const descByLang = 'Tamamladığımız projeleri ve çalışmalarımızı keşfedin.';
   return {
     title: titleByLang,
     description: descByLang,
-    alternates: generateAlternates('/tr/portfolio', '/es/portfolio'),
+    alternates: generateAlternates('/tr/portfolio'),
     openGraph: {
       title: titleByLang,
       description: descByLang,
@@ -26,48 +28,38 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
 }
 
 export default async function PortfolioPage() {
-  let data: {
-    portfolioItems: Awaited<ReturnType<typeof getPortfolioItems>>;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    categories: any;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    heroData: any;
-  } | null = null;
+  const lang = 'tr';
+
+  // getPortfolioItems hatayı kendi yakalar ([] döner); kategori sorgusu
+  // başarısızsa veritabanına ulaşılamıyor demektir → tasarlanmış hata durumu.
+  const rawItems = await getPortfolioItems(100);
+  let loadError = false;
+  let categories: ReturnType<typeof normalizeCategoryList> = [];
   try {
-    const portfolioItems = await getPortfolioItems(100);
-
-    const categoriesResult = await Category.find({ isActive: true }).sort({ order: 1 }).lean();
-    const categories = JSON.parse(JSON.stringify(categoriesResult));
-
-    const pageSettingsRecord = await PageSetting.findOne({ pageId: 'portfolio' }).lean();
-    const heroData = pageSettingsRecord ? JSON.parse(JSON.stringify(pageSettingsRecord)) : null;
-
-    data = { portfolioItems, categories, heroData };
+    const result = await Category.find({ isActive: true }).sort({ order: 1 }).lean();
+    categories = normalizeCategoryList(JSON.parse(JSON.stringify(result)));
   } catch (error) {
-    console.error('Portfolio fetch error:', error);
+    console.error('Portfolio categories fetch error:', error);
+    loadError = rawItems.length === 0;
   }
 
-  if (!data) {
-    return (
-      <div className="min-h-dvh bg-background flex items-center justify-center">
-        <div className="text-center max-w-md mx-auto px-4 py-8">
-          <h3 className="text-xl font-semibold text-foreground mb-4" style={{ fontFamily: 'var(--font-geist-sans)' }}>
-            Bir Hata Oluştu
-          </h3>
-          <p className="text-muted-foreground mb-6 text-sm">
-            Portfolyo projeleri yüklenirken geçici bir sorun oluştu.
-          </p>
-        </div>
-      </div>
-    );
-  }
+  const items = (Array.isArray(rawItems) ? rawItems : [])
+    .map((raw: unknown) => normalizeProject(raw, lang, categories))
+    .filter((p: PfProject | null): p is PfProject => p !== null)
+    // Liste için gereksiz ağır alanlar istemciye gönderilmez
+    .map((p: PfProject) => ({
+      ...p,
+      content: undefined,
+      models3D: [],
+      images: p.images.slice(0, 1),
+      excerpt: p.excerpt || leadText(p.description) || undefined,
+      description: clip(stripTags(p.description), 600),
+    }));
 
   return (
-    <PortfolioTemplate
-      title="Portfolyo"
-      items={data.portfolioItems}
-      categories={data.categories}
-      heroData={data.heroData}
-    />
+    // useSearchParams (filtre durumu) için Suspense sınırı
+    <Suspense fallback={<PortfolioLoading />}>
+      <PortfolioTemplate lang={lang} items={items} categories={categories} loadError={loadError} />
+    </Suspense>
   );
 }

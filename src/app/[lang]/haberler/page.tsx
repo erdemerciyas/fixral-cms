@@ -6,6 +6,8 @@ import PageHero from '@/components/common/PageHero';
 import { SITE_URL, generateAlternates, generateOgImages } from '@/lib/seo-utils';
 import { getMessages } from '@/i18n';
 import NewsListClient from '@/components/news/NewsListClient';
+import { getFxData } from '@/lib/fx-data-server';
+import { toFxLocale } from '@/content/fixral';
 
 interface PageProps {
     params: Promise<{ lang: string }>;
@@ -20,7 +22,7 @@ export async function generateMetadata(): Promise<Metadata> {
     return {
         title: 'Haberler | Fixral',
         description: 'Fixral\'dan en son haberler ve duyuruları okuyun',
-        alternates: generateAlternates('/tr/haberler', '/es/noticias'),
+        alternates: generateAlternates('/tr/haberler'),
         openGraph: {
             title: 'Haberler | Fixral',
             description: 'Fixral\'dan en son haberler ve duyuruları okuyun',
@@ -33,6 +35,10 @@ export async function generateMetadata(): Promise<Metadata> {
 
 const ITEMS_PER_PAGE = 12;
 
+/** Panelde doldurulmuş sayfa başlığı alanları çeviri metninin üstüne yazılır */
+const pickFilled = (o: { eyebrow: string; title: string; lede: string }) =>
+  Object.fromEntries(Object.entries(o).filter(([, v]) => v && v.trim())) as Record<string, string>;
+
 export default async function NewsListPage({ params: paramsPromise, searchParams: searchParamsPromise }: PageProps) {
     const { lang } = await paramsPromise;
     const searchParams = await searchParamsPromise;
@@ -43,8 +49,7 @@ export default async function NewsListPage({ params: paramsPromise, searchParams
         total: number;
         totalPages: number;
         allTags: string[];
-        newsT: Record<string, string>;
-        commonT: Record<string, string>;
+        loadError?: boolean;
         serializedArticles: Array<{
             _id: string;
             slug: string;
@@ -84,9 +89,6 @@ export default async function NewsListPage({ params: paramsPromise, searchParams
             .lean()) as NewsItem[];
 
         const allTags = await News.distinct('tags', { status: 'published' });
-        const messages = await getMessages(lang) as any;
-        const newsT = messages.news || {};
-        const commonT = messages.common || {};
 
         const serializedArticles = articles.map((a) => ({
             _id: String(a._id),
@@ -102,36 +104,38 @@ export default async function NewsListPage({ params: paramsPromise, searchParams
             },
         }));
 
-        view = { page, search, tag, total, totalPages, allTags, newsT, commonT, serializedArticles };
+        view = { page, search, tag, total, totalPages, allTags, serializedArticles };
     } catch (error) {
         logger.error('Error rendering news list page', 'NEWS_LIST', { error });
-        throw error;
+        // Veri katmanı erişilemezse sayfa çökmez; tasarlanmış hata durumu gösterilir
+        view = { page: 1, search: searchParams.search || '', tag: searchParams.tag || '', total: 0, totalPages: 0, allTags: [], serializedArticles: [], loadError: true };
     }
 
-    return (
-        <div className="min-h-dvh bg-background">
-            <PageHero
-                title={view.newsT.pageTitle || 'Haberler & Duyurular'}
-                description={view.newsT.pageDescription || ''}
-                showButton={false}
-                showBreadcrumbs={true}
-                index={3}
-            />
+    const messages = (await getMessages(lang)) as { fx?: { news?: Record<string, string> } };
+    const fxNews = { ...(messages.fx?.news || {}), ...pickFilled((await getFxData()).site.pages.news[toFxLocale(lang)]) };
 
-            <div className="container-content py-8">
-                <NewsListClient
-                    articles={view.serializedArticles}
-                    lang={lang}
-                    search={view.search}
-                    tag={view.tag}
-                    total={view.total}
-                    page={view.page}
-                    totalPages={view.totalPages}
-                    allTags={view.allTags}
-                    newsT={view.newsT}
-                    commonT={view.commonT}
-                />
-            </div>
-        </div>
+    return (
+      <div className="min-h-dvh bg-background">
+        <PageHero
+          title={fxNews.title || 'Atölyeden haberler.'}
+          description={fxNews.lede || ''}
+          badge={fxNews.eyebrow}
+          showButton={false}
+          showBreadcrumbs={true}
+        />
+
+        <NewsListClient
+          articles={view.serializedArticles}
+          lang={lang}
+          locale="tr"
+          search={view.search}
+          tag={view.tag}
+          total={view.total}
+          page={view.page}
+          totalPages={view.totalPages}
+          allTags={view.allTags}
+          loadError={view.loadError}
+        />
+      </div>
     );
 }

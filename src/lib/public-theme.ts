@@ -11,15 +11,16 @@ export type PublicTheme = 'light' | 'dark'
 
 export const PUBLIC_THEME_STORAGE_KEY = 'fixral-public-theme'
 export const PUBLIC_THEME_CHANGE_EVENT = 'fixral-public-theme-change'
-export const DEFAULT_PUBLIC_THEME: PublicTheme = 'light'
+/** Marka sistemi koyu ağırlıklıdır: tercih yoksa koyu tema uygulanır. */
+export const DEFAULT_PUBLIC_THEME: PublicTheme = 'dark'
 
 /** localStorage'daki tercihi okur; okunamazsa/geçersizse varsayılana düşer. */
 export function readPublicTheme(): PublicTheme {
   if (typeof window === 'undefined') return DEFAULT_PUBLIC_THEME
   try {
-    return window.localStorage.getItem(PUBLIC_THEME_STORAGE_KEY) === 'dark'
-      ? 'dark'
-      : DEFAULT_PUBLIC_THEME
+    const stored = window.localStorage.getItem(PUBLIC_THEME_STORAGE_KEY)
+    if (stored === 'light' || stored === 'dark') return stored
+    return DEFAULT_PUBLIC_THEME
   } catch {
     return DEFAULT_PUBLIC_THEME
   }
@@ -62,5 +63,5 @@ export function setPublicTheme(theme: PublicTheme): void {
 
 /** Custom event / storage event detayını güvenli PublicTheme değerine indirger. */
 export function normalizePublicTheme(value: unknown): PublicTheme {
-  return value === 'dark' ? 'dark' : DEFAULT_PUBLIC_THEME
+  return value === 'light' || value === 'dark' ? value : DEFAULT_PUBLIC_THEME
 }

@@ -14,7 +14,6 @@ export async function revalidateNewsCarousel(): Promise<void> {
   try {
     revalidatePath('/', 'layout');
     revalidatePath('/tr', 'page');
-    revalidatePath('/es', 'page');
 
     revalidateTag('news-carousel', 'max');
     revalidateTag('news-list', 'max');
@@ -31,7 +30,6 @@ export async function revalidateNewsCarousel(): Promise<void> {
 export async function revalidateNewsDetail(slug: string): Promise<void> {
   try {
     revalidatePath(`/tr/haberler/${slug}`, 'page');
-    revalidatePath(`/es/noticias/${slug}`, 'page');
 
     revalidateTag(`news-${slug}`, 'max');
 
@@ -47,7 +45,6 @@ export async function revalidateNewsDetail(slug: string): Promise<void> {
 export async function revalidateNewsListing(): Promise<void> {
   try {
     revalidatePath('/tr/haberler', 'page');
-    revalidatePath('/es/noticias', 'page');
 
     revalidateTag('news-list', 'max');
 

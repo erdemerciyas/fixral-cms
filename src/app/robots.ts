@@ -1,24 +1,21 @@
 import { MetadataRoute } from 'next';
-import { config } from '../core/lib/config';
+import { SITE_URL } from '../lib/seo-utils';
 
 export default function robots(): MetadataRoute.Robots {
-    const baseUrl = config.app.url || 'https://www.fixral.com';
-
     return {
         rules: {
             userAgent: '*',
             allow: '/',
+            // trailingSlash: false — yollar eğik çizgisiz yazılır (önek eşleşmesi alt yolları da kapsar)
             disallow: [
-                '/admin/',
+                '/admin',
                 '/api/',
-                '/tr/account/',
-                '/es/account/',
-                '/tr/login/',
-                '/es/login/',
-                '/tr/register/',
-                '/es/register/',
+                '/tr/account',
+                '/tr/login',
+                '/tr/register',
+                '/tr/offline',
             ],
         },
-        sitemap: `${baseUrl}/sitemap.xml`,
+        sitemap: `${SITE_URL}/sitemap.xml`,
     };
 }

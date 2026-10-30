@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import News from '@/models/News';
 import slugify from 'slugify';
+import { withFxRevalidate } from '@/lib/fx-revalidate';
 
 /**
  * GET /api/admin/news/[id] - Get single news article
@@ -41,7 +42,7 @@ export async function GET(_req: NextRequest, props: { params: Promise<{ id: stri
 /**
  * PUT /api/admin/news/[id] - Update news article
  */
-export async function PUT(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+async function PUT__handler(req: NextRequest, props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
   try {
     const session = await getServerSession(authOptions);
@@ -98,7 +99,7 @@ export async function PUT(req: NextRequest, props: { params: Promise<{ id: strin
 /**
  * DELETE /api/admin/news/[id] - Delete news article
  */
-export async function DELETE(_req: NextRequest, props: { params: Promise<{ id: string }> }) {
+async function DELETE__handler(_req: NextRequest, props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
   try {
     const session = await getServerSession(authOptions);
@@ -128,3 +129,7 @@ export async function DELETE(_req: NextRequest, props: { params: Promise<{ id: s
     );
   }
 }
+
+// Panel → site canlı tazeleme (redesign 2026)
+export const PUT = withFxRevalidate(PUT__handler);
+export const DELETE = withFxRevalidate(DELETE__handler);

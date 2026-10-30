@@ -2,7 +2,7 @@
 // Version 1.0.0
 
 const CACHE_NAME = 'fixral-cms-v1';
-const CACHE_VERSION = '1.0.0';
+const CACHE_VERSION = '1.0.2';
 const STATIC_CACHE_NAME = `${CACHE_NAME}-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE_NAME = `${CACHE_NAME}-dynamic-${CACHE_VERSION}`;
 const API_CACHE_NAME = `${CACHE_NAME}-api-${CACHE_VERSION}`;
@@ -93,6 +93,11 @@ self.addEventListener('fetch', (event) => {
   
   // Skip non-GET requests
   if (request.method !== 'GET') {
+    return;
+  }
+
+  // RSC payload'ları ve görüntü optimizasyonu SW'den geçmez (eski veri / sınırsız cache önlenir)
+  if (url.searchParams.has('_rsc') || request.headers.get('RSC') || url.pathname.startsWith('/_next/image')) {
     return;
   }
   

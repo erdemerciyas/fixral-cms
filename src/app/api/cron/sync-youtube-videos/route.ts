@@ -32,11 +32,10 @@ async function fetchYouTubeVideos() {
 }
 
 export async function GET(request: NextRequest) {
-  const hasVercelCronHeader = !!request.headers.get('x-vercel-cron');
   const authHeader = request.headers.get('authorization') || '';
   const bearer = authHeader.startsWith('Bearer ') ? authHeader.slice('Bearer '.length) : undefined;
   const secretParam = request.nextUrl.searchParams.get('secret') || request.headers.get('x-cron-secret') || bearer;
-  const isAuthorized = hasVercelCronHeader || (secretParam && secretParam === process.env.CRON_SECRET);
+  const isAuthorized = !!process.env.CRON_SECRET && secretParam === process.env.CRON_SECRET;
 
   if (!isAuthorized) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

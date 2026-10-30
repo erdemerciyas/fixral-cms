@@ -16,6 +16,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
+import { seoDefaults } from '@/models/_factory';
 
 const selectInputClass = cn(
   'flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-xs transition-colors focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm'
@@ -61,6 +62,10 @@ export default function AdminSiteSettingsPage() {
         setSettings((prev: any) => ({
           ...prev,
           ...data,
+          // Boş SEO alanları önerilen içerikle doldurulur
+          siteName: data.siteName || seoDefaults.siteName,
+          siteUrl: data.siteUrl || seoDefaults.siteUrl,
+          slogan: data.slogan || seoDefaults.slogan,
           system: { ...prev.system, ...data.system },
           logo: { ...prev.logo, ...data.logo },
         }));

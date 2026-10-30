@@ -8,12 +8,14 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-v4-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
 [![shadcn/ui](https://img.shields.io/badge/shadcn/ui-Radix-000?style=for-the-badge)](https://ui.shadcn.com/)
 [![Vercel](https://img.shields.io/badge/Vercel-Deploy-black?style=for-the-badge&logo=vercel)](https://vercel.com/)
-[![Sürüm](https://img.shields.io/badge/Sürüm-5.1.3-blue?style=for-the-badge)]()
+[![Sürüm](https://img.shields.io/badge/Sürüm-5.2.0-blue?style=for-the-badge)]()
 [![Lisans](https://img.shields.io/badge/Lisans-Özel-red?style=for-the-badge)]()
 
 **Fixral CMS**, Next.js 16 (App Router, Turbopack), React 19.2, Prisma ORM ve PostgreSQL üzerine inşa edilmiş, üretime hazır, tam kapsamlı bir İçerik Yönetim Sistemidir.
 
-Mühendislik portföyleri, 3D baskı hizmetleri ve ajans web siteleri için tasarlanmış olup; shadcn/ui ile güçlendirilmiş modern admin paneli, çoklu dil desteği, zengin içerik düzenleme deneyimi, 112+ API endpoint ve 34 admin sayfası sunar.
+Mühendislik portföyleri, 3D baskı hizmetleri ve ajans web siteleri için tasarlanmış olup; shadcn/ui ile güçlendirilmiş modern admin paneli, zengin içerik düzenleme deneyimi, 115 API endpoint ve 38 admin sayfası sunar.
+
+Herkese açık site, **FIXRAL web 2026** tasarım diliyle (teknik resim paftası estetiği, koyu varsayılan tema, Fixral Turuncu `#F97316`, Space Grotesk · Inter · JetBrains Mono) yeniden kurgulanmıştır: 8 hizmetlik katalog, yazılım vitrinleri, Cults3D entegrasyonlu FX 3D model galerisi, three.js ile kaydırmaya bağlı 3D süreç anlatımı ve 4 adımlı teklif formu.
 
 > **Canlı:** [fixral-cms.vercel.app](https://fixral-cms.vercel.app) &nbsp;|&nbsp; **Kaynak:** [github.com/erdemerciyas/fixral-cms](https://github.com/erdemerciyas/fixral-cms)
 
@@ -59,8 +61,12 @@ Mühendislik portföyleri, 3D baskı hizmetleri ve ajans web siteleri için tasa
 - **Video Yönetimi:** YouTube entegrasyonu, otomatik kanal senkronizasyonu ve toplu silme
 - **Kategori Yönetimi:** Haber ve portföy içerikleri için esnek kategori sistemi
 - **3D Model Yönetimi:** GLB/GLTF/STL dosya yükleme, listeleme ve tarayıcı içi görüntüleme
+- **Hizmet Kataloğu:** Marka kitabındaki 8 hizmet için detay sayfaları (`/tr/services/[slug]`); eski hizmet slug'ları kalıcı (301) olarak yeni adreslere yönlenir
+- **Yazılım Vitrini:** Fixral 3D Splitter, Router Studio ve ESP32-S3 OBD-II için liste ve detay sayfaları (`/tr/software`)
+- **FX 3D (Cults3D):** Cults3D GraphQL API'sinden çekilen model galerisi ve detay sayfaları; görünürlük admin panelinden yönetilir
+- **Site İçeriği (FX Data):** Hero, süreç, antet, teklif bandı gibi public site metinleri tek panelden düzenlenir; kayıt anında tüm site önbelleği tazelenir
 
-### Admin Paneli (34 Sayfa)
+### Admin Paneli (38 Sayfa)
 - **Modern Arayüz:** shadcn/ui (Radix primitives + Tailwind) ile tam donanımlı, katlanabilir kenar çubuğu navigasyonu
 - **Komut Paleti:** Klavye kısayolu ile hızlı gezinme ve arama (Command Palette)
 - **Zengin Metin Editörü:** Tiptap tabanlı editör — tablolar, kod blokları, görseller, linkler, renk ve metin hizalama desteği
@@ -75,11 +81,11 @@ Mühendislik portföyleri, 3D baskı hizmetleri ve ajans web siteleri için tasa
 - **Kullanıcı Yönetimi:** Kullanıcı oluşturma, düzenleme, şifre sıfırlama ve rol tabanlı erişim
 - **Profil ve 2FA:** Admin profil düzenleme ve TOTP tabanlı iki faktörlü doğrulama
 - **Sitemap Yönetimi:** Admin panelinden sitemap içeriğini kontrol etme
+- **Site İçeriği / Yazılımlar / FX 3D:** Redesign 2026 ile gelen public site içerik editörleri
 
 ### Çoklu Dil (i18n)
 - **Tam i18n Desteği:** Tüm herkese açık sayfalar `[lang]` dinamik segmentleri altında `next-intl` ile
-- **Desteklenen Diller:** Türkçe (tr), İspanyolca (es)
-- **Yerelleştirilmiş Rotalar:** Dile özel URL yolları (`/tr/haberler` ↔ `/es/noticias`)
+- **Desteklenen Diller:** Türkçe (tr); site tek dillidir, eski `/es/...` adresleri 301 ile `/tr/...` karşılığına yönlenir
 - **Admin Dil Sekmeleri:** Her dil için yan yana içerik düzenleme
 - **Otomatik Yönlendirme:** Dil ön eki olmayan URL'ler varsayılan dile otomatik yönlendirilir
 
@@ -90,11 +96,11 @@ Mühendislik portföyleri, 3D baskı hizmetleri ve ajans web siteleri için tasa
 - **Klonlama:** Mevcut portföy projelerini tek tıkla kopyalama
 
 ### SEO ve Performans
-- **ISR Önbellekleme:** Hızlı TTFB için Incremental Static Regeneration
+- **ISR Önbellekleme:** Tüm public sayfalar build'de önceden üretilir ve `revalidate` süresiyle tazelenir; admin kayıtları önbelleği anında temizler
 - **Dinamik Sitemap ve Robots.txt:** Veritabanından güncel bağlantılarla otomatik oluşturma (`/sitemap.xml`, `/robots.txt`)
-- **Canonical URL Yönetimi:** Sayfa bazında bağımsız canonical URL üretimi
-- **Hreflang Etiketleri:** Çoklu dil SEO desteği ile hreflang alternate bağlantıları
-- **JSON-LD:** Veritabanından dinamik yapılandırılmış veri (structured data)
+- **Canonical URL Yönetimi:** Tüm mutlak URL'ler tek kaynaktan (`NEXT_PUBLIC_APP_URL` → `SITE_URL`) üretilir
+- **İndeksleme Kontrolü:** Giriş, kayıt, hesap, çevrimdışı ve bulunamayan içerik sayfaları `noindex`
+- **JSON-LD:** Organization, WebSite, NewsArticle, BreadcrumbList ve hizmet listesi yapılandırılmış verileri
 - **PWA Desteği:** Service Worker, manifest.json, çevrimdışı sayfa ve yükleme istemi
 - **Görsel Optimizasyon:** Sharp ile WebP dönüşümü, EXIF temizleme ve boyut sınırlama
 - **Bundle Analizi:** `ANALYZE=true` ile webpack bundle görselleştirme
@@ -114,7 +120,7 @@ Mühendislik portföyleri, 3D baskı hizmetleri ve ajans web siteleri için tasa
 Next.js 16 App Router (Turbopack)
 ├── Server Components (SSR veri çekme)
 ├── Client Components (shadcn/ui ile etkileşimli arayüz)
-├── API Routes (112+ endpoint — public/ + admin/ ayrımı)
+├── API Routes (115 endpoint — public/ + admin/ ayrımı)
 ├── Proxy (src/proxy.ts — kimlik doğrulama, i18n, rate limiting, güvenlik başlıkları)
 ├── Prisma ORM (PostgreSQL / Neon)
 ├── Prisma Model Adapter (Mongoose-uyumlu API katmanı)
@@ -124,7 +130,8 @@ Next.js 16 App Router (Turbopack)
 
 ### Temel Mimari Kararlar
 - **Prisma ORM:** Tüm veritabanı işlemleri PostgreSQL (Neon) üzerinden Prisma ile yönetilir. Mongoose-uyumlu bir adapter katmanı (`prisma-model-adapter`) sayesinde mevcut kod tabanı sorunsuz çalışır
-- **API Ayrımı:** `api/public/` kimlik doğrulaması gerektirmeyen uç noktalar, `api/admin/` korumalı uç noktalar için — her iki grupta da kapsamlı CRUD endpoint'leri
+- **API Ayrımı:** `api/public/` okuma uç noktaları herkese açıktır; bu gruptaki yazma işlemleri (POST/PUT/PATCH/DELETE) handler içinde `role === 'admin'` kontrolü yapar. `api/admin/` tümüyle proxy seviyesinde admin JWT ile korunur
+- **FX Veri Katmanı:** Public site içeriği (`src/content/` varsayılanları + `ServiceRow` kayıtları) `src/lib/fx-data-server.ts` üzerinden `unstable_cache` ile okunur; admin kayıtları `withFxRevalidate` sarmalayıcısıyla `revalidateTag` + `revalidatePath('/', 'layout')` tetikler
 - **Admin Arayüzü:** shadcn/ui bileşenleri (Radix + Tailwind) ile katlanabilir kenar çubuğu düzeni ve şablon tabanlı sayfa yapısı
 - **Bileşen Stratejisi:** shadcn/ui temel bileşenleri + özel Fixral bileşenleri (`GlassCard`, `MagneticButton`, `ScrollReveal` vb.)
 - **Güvenlik Katmanları:** Proxy seviyesinde JWT doğrulama, rate limiting, CSP başlıkları ve kötü amaçlı istek engelleme (`src/proxy.ts` — Next.js 16'da middleware'ın yeni konumu)
@@ -248,11 +255,13 @@ fixral-cms/
 ├── public/
 │   ├── manifest.json              # PWA manifest
 │   ├── sw.js                      # Service Worker
+│   ├── logo.png                   # Marka logosu (JSON-LD Organization/publisher)
+│   ├── brand/                     # Marka varlıkları (SVG işaret, logotip)
 │   ├── icons/                     # PWA ikonları
 │   └── images/                    # Statik görseller
+├── brand/                         # Marka kitabı kaynak dosyaları
 ├── messages/
-│   ├── tr.json                    # Türkçe çevirileri
-│   └── es.json                    # İspanyolca çevirileri
+│   └── tr.json                    # Türkçe arayüz metinleri
 ├── src/
 │   ├── app/
 │   │   ├── layout.tsx             # Kök düzen
@@ -260,28 +269,30 @@ fixral-cms/
 │   │   ├── globals.css            # CSS değişkenleri ve genel stiller
 │   │   ├── sitemap.ts             # Dinamik sitemap.xml üretimi
 │   │   ├── robots.ts              # Dinamik robots.txt üretimi
-│   │   ├── metadata.tsx           # Global metadata yapılandırması
 │   │   ├── not-found.tsx          # 404 sayfası
 │   │   ├── error.tsx              # Hata sınır bileşeni
 │   │   ├── global-error.tsx       # Global hata yakalama
 │   │   ├── loading.tsx            # Yükleme durumu
-│   │   ├── [lang]/                # i18n herkese açık sayfalar (tr, es)
-│   │   │   ├── layout.tsx         # Dil düzeni (next-intl provider)
+│   │   ├── [lang]/                # Herkese açık sayfalar (tek dil: tr)
+│   │   │   ├── layout.tsx         # Dil düzeni (next-intl provider, generateStaticParams, setRequestLocale)
 │   │   │   ├── page.tsx           # Anasayfa
 │   │   │   ├── portfolio/         # Portföy vitrini
 │   │   │   │   └── [slug]/        # Portföy detay sayfası
-│   │   │   ├── services/          # Hizmet listeleme
-│   │   │   ├── haberler/          # Haberler (Türkçe URL)
-│   │   │   │   └── [slug]/        # Haber detay sayfası
-│   │   │   ├── noticias/          # Haberler (İspanyolca URL)
-│   │   │   │   └── [slug]/        # Haber detay sayfası
-│   │   │   ├── contact/           # İletişim formu
-│   │   │   ├── account/           # Kullanıcı hesabı
+│   │   │   ├── services/          # Hizmet kataloğu
+│   │   │   │   └── [slug]/        # Hizmet detay sayfası (8 hizmet)
+│   │   │   ├── software/          # Yazılım vitrini
+│   │   │   │   └── [slug]/        # Yazılım detay sayfası
+│   │   │   ├── fx-3d/             # Cults3D model galerisi
+│   │   │   │   └── [slug]/        # Model detay sayfası
+│   │   │   ├── haberler/          # Haberler
+│   │   │   │   └── [slug]/        # Haber detay sayfası (ISR, sunucu tarafı HTML temizleme)
+│   │   │   ├── contact/           # İletişim + 4 adımlı teklif formu
 │   │   │   ├── videos/            # Video galerisi
-│   │   │   ├── login/             # Giriş sayfası
-│   │   │   ├── register/          # Kayıt sayfası
-│   │   │   └── offline/           # Çevrimdışı sayfası (PWA)
-│   │   ├── admin/                 # Admin panel sayfaları (34 sayfa)
+│   │   │   ├── account/           # Kullanıcı hesabı (noindex)
+│   │   │   ├── login/             # Giriş sayfası (noindex)
+│   │   │   ├── register/          # Kayıt sayfası (noindex)
+│   │   │   └── offline/           # Çevrimdışı sayfası — PWA (noindex)
+│   │   ├── admin/                 # Admin panel sayfaları (38 sayfa)
 │   │   │   ├── layout.tsx         # Admin düzeni (sidebar, header)
 │   │   │   ├── dashboard/         # Kontrol paneli
 │   │   │   ├── analytics/         # Analitik paneli
@@ -307,15 +318,23 @@ fixral-cms/
 │   │   │   ├── backup/            # Yedekleme ve geri yükleme
 │   │   │   ├── profile/           # Admin profili ve 2FA
 │   │   │   ├── sitemap/           # Sitemap yönetimi
+│   │   │   ├── site-content/      # Public site metinleri (FX Data)
+│   │   │   ├── software/          # Yazılım vitrini yönetimi
+│   │   │   ├── fx-3d/             # Cults3D model görünürlüğü
 │   │   │   ├── login/             # Admin giriş sayfası
 │   │   │   └── reset-password/    # Şifre sıfırlama
 │   │   └── api/
 │   │       ├── health/            # Sağlık kontrolü endpoint'i
 │   │       ├── auth/              # NextAuth handler'ları
-│   │       ├── cron/              # Zamanlanmış görevler (cleanup, video sync)
-│   │       ├── public/            # Kimlik doğrulamasız API (50+ endpoint)
-│   │       └── admin/             # Korumalı API (50+ endpoint)
+│   │       ├── cron/              # Zamanlanmış görevler (cleanup, video sync — CRON_SECRET korumalı)
+│   │       ├── public/            # Herkese açık API (44 endpoint; yazma işlemleri admin rolü ister)
+│   │       └── admin/             # Korumalı API (61 endpoint)
+│   ├── content/                   # Public site varsayılan içerikleri (fixral.ts, fx-data.ts)
 │   ├── components/
+│   │   ├── fx/                    # FIXRAL web 2026 bileşenleri (anasayfa bölümleri, kartlar, ikonlar, three.js sahneleri, route loader)
+│   │   ├── fx3d/                  # FX 3D (Cults3D) galeri bileşenleri
+│   │   ├── software/              # Yazılım vitrini bileşenleri
+│   │   ├── services/              # Hizmet kataloğu görünümleri
 │   │   ├── ui/                    # shadcn/ui + özel bileşenler
 │   │   ├── admin/                 # Admin'e özel bileşenler (sidebar, header, formlar, komut paleti)
 │   │   ├── layout/                # Navigasyon, TopBar, mobil menü
@@ -326,7 +345,7 @@ fixral-cms/
 │   │   ├── seo/                   # SEO bileşenleri
 │   │   ├── providers/             # Context provider'ları
 │   │   └── common/                # Paylaşılan bileşenler
-│   ├── lib/                       # Çekirdek kütüphane (43 dosya)
+│   ├── lib/                       # Çekirdek kütüphane (37 dosya)
 │   │   ├── prisma.ts              # Prisma istemci bağlantısı
 │   │   ├── prisma-model-adapter.ts # Mongoose-uyumlu Prisma adapter katmanı
 │   │   ├── auth.ts                # NextAuth yapılandırması
@@ -340,27 +359,28 @@ fixral-cms/
 │   │   ├── security-utils.ts      # Güvenlik yardımcı fonksiyonları
 │   │   ├── csrf.ts                # CSRF token yönetimi
 │   │   ├── email.ts               # E-posta gönderme servisi
-│   │   ├── seo-utils.ts           # SEO yardımcı fonksiyonları
-│   │   ├── seo-service.ts         # SEO veri servisi
+│   │   ├── seo-utils.ts           # SITE_URL, canonical/alternates ve OG yardımcıları (tek kaynak)
 │   │   ├── sitemap-service.ts     # Sitemap oluşturma servisi
+│   │   ├── fx-data-server.ts      # Public site verisi (unstable_cache + revalidateFx)
+│   │   ├── fx-revalidate.ts       # Admin API sarmalayıcısı: başarılı kayıtta önbelleği tazeler
+│   │   ├── fx-quote.ts            # Teklif formu → /api/public/contact gönderimi
+│   │   ├── cults3d.ts             # Cults3D GraphQL istemcisi
+│   │   ├── markdown-lite.ts       # Hafif markdown → HTML dönüştürücü
 │   │   ├── schema-markup.tsx      # JSON-LD yapılandırılmış veri
 │   │   ├── news-cache-service.ts  # Haber önbellek servisi
 │   │   ├── cache.ts               # Önbellek katmanı
 │   │   ├── monitoring.ts          # Performans izleme
-│   │   ├── advanced-logger.ts     # Gelişmiş loglama
 │   │   ├── jwt-utils.ts           # JWT yardımcıları
 │   │   ├── otp.ts                 # OTP (2FA) yardımcıları
 │   │   ├── ai-service.ts          # AI metadata üretimi
 │   │   ├── validation.ts          # Doğrulama şemaları
-│   │   ├── image-optimizer.ts     # Görsel optimizasyon
-│   │   ├── image-validation.ts    # Görsel doğrulama
 │   │   ├── clone.ts               # İçerik klonlama
 │   │   ├── utils.ts               # Genel yardımcılar (cn, vb.)
 │   │   └── __tests__/             # Birim testleri
 │   ├── models/                    # Prisma model adapter'ları (Mongoose-uyumlu API)
 │   ├── hooks/                     # Özel React hook'ları (usePWA vb.)
 │   ├── types/                     # TypeScript tip tanımları
-│   ├── styles/                    # Tasarım token'ları
+│   ├── styles/                    # Tasarım token'ları + FX sayfa stilleri (fx-web, fx-services, fx-3d, fx-loader …)
 │   ├── i18n/                      # next-intl yapılandırması
 │   ├── instrumentation.ts         # Next.js instrumentation (Sentry)
 │   ├── instrumentation-server.ts  # Sunucu tarafı instrumentation
@@ -371,7 +391,7 @@ fixral-cms/
 ├── eslint.config.mjs              # ESLint 9 flat config (React Compiler danışmanlık kuralları dahil)
 ├── tsconfig.json                  # TypeScript yapılandırması (strict mode)
 ├── site.config.js                 # Site geneli yapılandırma sabitleri
-└── scripts/                       # Yardımcı scriptler (cleanup, contrast test, video sync, Vercel env sync)
+└── scripts/                       # Yardımcı scriptler (cleanup, contrast test, video sync, Vercel env sync, marka varlığı üretimi, içerik redesign)
 ```
 
 > **Not:** Tailwind CSS v4 CSS-first yapılandırma kullanır — ayrı bir `tailwind.config.js` yoktur; tema token'ları ve stiller `src/app/globals.css` içinde tanımlıdır.
@@ -380,14 +400,14 @@ fixral-cms/
 
 ## API Uç Noktaları
 
-Proje toplamda **112+ API endpoint** içerir. Aşağıda mantıksal gruplandırma ile:
+Proje toplamda **115 API endpoint** içerir. Aşağıda mantıksal gruplandırma ile:
 
 ### Genel
 | Endpoint | Yöntem | Açıklama |
 |----------|--------|----------|
 | `/api/health` | GET | Sağlık kontrolü |
-| `/api/test-db` | GET | Veritabanı bağlantı testi |
-| `/api/upload` | POST | Dosya yükleme |
+| `/api/test-db` | GET | Veritabanı tablo listesi (yalnızca `development` + admin) |
+| `/api/upload` | POST | Dosya yükleme (`/api/admin/upload`'a yönlendirir; admin oturumu gerekir) |
 
 ### Kimlik Doğrulama
 | Endpoint | Yöntem | Açıklama |
@@ -400,12 +420,14 @@ Proje toplamda **112+ API endpoint** içerir. Aşağıda mantıksal gruplandırm
 ### Zamanlanmış Görevler
 | Endpoint | Yöntem | Açıklama |
 |----------|--------|----------|
-| `/api/cron/cleanup` | GET | Geçici dosya temizliği |
+| `/api/cron/cleanup` | GET | Geçici dosya temizliği (Vercel Cron, her gün 02:00) |
 | `/api/cron/sync-youtube-videos` | GET | YouTube video senkronizasyonu |
+
+Cron uç noktaları yalnızca `CRON_SECRET` ile çağrılabilir: `Authorization: Bearer <CRON_SECRET>` (Vercel Cron bunu otomatik gönderir), `x-cron-secret` başlığı veya `?secret=` parametresi. `CRON_SECRET` tanımlı değilse tüm çağrılar 401 döner.
 
 ### Public API (`/api/public/`)
 
-Kimlik doğrulaması gerektirmeyen uç noktalar:
+Okuma (GET) uç noktaları herkese açıktır. Bu gruptaki yazma işlemleri (haber, hizmet, kategori, portföy, slider, iletişim bilgisi, mesaj güncelleme, AI metadata, 3D model yükleme/silme) **admin rolü** gerektirir; `contact`, `register` ve `user/*` uç noktaları ise ziyaretçi/kullanıcı içindir.
 
 | Grup | Endpoint'ler |
 |------|-------------|
@@ -417,7 +439,8 @@ Kimlik doğrulaması gerektirmeyen uç noktalar:
 | **Videolar** | `youtube`, `youtube-health`, `channels` |
 | **3D Modeller** | `3dmodels/list`, `3dmodels/upload`, `3dmodels/delete`, `3dmodels/download/[id]` |
 | **İletişim** | `contact`, `contact-info`, `messages`, `messages/[id]` |
-| **Ayarlar** | `settings`, `settings/sync`, `settings/email`, `settings/name`, `settings/password`, `footer-settings`, `languages` |
+| **Ayarlar** | `settings`, `settings/sync`, `settings/email` (PUT — mevcut şifre ile), `settings/name`, `settings/password`, `footer-settings`, `languages` |
+| **Site Verisi** | `fx-data` (public site içeriği — hizmetler, yazılımlar, hero, süreç) |
 | **Kullanıcı** | `register`, `user/addresses`, `user/addresses/[id]`, `user/messages`, `user/messages/[id]` |
 | **Güvenlik** | `csrf` |
 | **AI** | `ai/generate-metadata` |
@@ -435,7 +458,8 @@ JWT korumalı uç noktalar:
 | **Hizmetler** | `services`, `services/[id]` |
 | **Kategoriler** | `categories`, `categories/[id]` |
 | **Slider** | `slider`, `slider/[id]`, `slider/reorder` |
-| **Videolar** | `videos`, `videos/[id]`, `videos/[id]/status`, `videos/bulk-delete` |
+| **Videolar** | `videos`, `videos/[id]`, `videos/[id]/status`, `videos/bulk-delete`, `videos/bulk-status` |
+| **Site İçeriği** | `fx-content` (FX Data kaydı), `fx-3d` (Cults3D model görünürlüğü) |
 | **3D Modeller** | `models`, `models/[id]` |
 | **Medya** | `media`, `media/[id]`, `upload`, `logo-upload` |
 | **Mesajlar** | `messages`, `messages/[id]`, `messages/[id]/read`, `messages/reply`, `mail-status` |
@@ -491,6 +515,9 @@ JWT korumalı uç noktalar:
 | Profil | `/admin/profile` | Admin profili ve 2FA |
 | Yedekleme | `/admin/backup` | Yedekleme ve geri yükleme |
 | Sitemap | `/admin/sitemap` | Sitemap yönetimi |
+| Site İçeriği | `/admin/site-content` | Public site metinleri (hero, süreç, antet, teklif bandı) |
+| Yazılımlar | `/admin/software` | Yazılım vitrini kayıtları |
+| FX 3D | `/admin/fx-3d` | Cults3D modellerinin sitede görünürlüğü |
 
 ---
 
@@ -555,8 +582,11 @@ DIRECT_URL=postgresql://user:password@ep-xxxx.eu-central-1.aws.neon.tech/neondb?
 # ─── Kimlik Doğrulama (ZORUNLU) ────────────────────────
 NEXTAUTH_SECRET=your-nextauth-secret        # openssl rand -hex 32 ile üretilebilir
 NEXTAUTH_URL=http://localhost:3000
-NEXT_PUBLIC_APP_URL=https://fixral-cms.vercel.app  # Üretim site URL'si (SEO/canonical)
+NEXT_PUBLIC_APP_URL=https://fixral-cms.vercel.app  # Üretim site URL'si — canonical, sitemap, robots ve JSON-LD'nin tek kaynağı
 JWT_SECRET=your-jwt-secret
+
+# ─── Zamanlanmış Görevler (ZORUNLU — üretim) ───────────
+CRON_SECRET=uzun-rastgele-bir-deger          # openssl rand -hex 32; Vercel Cron Authorization: Bearer olarak gönderir
 
 # ─── Cloudinary (Görsel Yükleme) ───────────────────────
 CLOUDINARY_CLOUD_NAME=your-cloud-name
@@ -571,6 +601,11 @@ GMAIL_APP_PASSWORD=your-gmail-app-password   # Google Uygulama Şifresi
 # ─── YouTube API (Video Senkronizasyonu) ────────────────
 YOUTUBE_API_KEY=your-youtube-api-key
 YOUTUBE_CHANNEL_ID=your-youtube-channel-id
+
+# ─── Cults3D API (FX 3D sayfası) ───────────────────────
+CULTS3D_USERNAME=your-cults3d-username       # https://cults3d.com/en/api/keys
+CULTS3D_API_KEY=your-cults3d-api-key
+CULTS3D_NICK=FIXRAL                          # Opsiyonel — profil takma adı (varsayılan: kullanıcı adı)
 
 # ─── Admin Bilgileri ───────────────────────────────────
 ADMIN_EMAIL=admin@fixral.local
@@ -711,12 +746,27 @@ npm run deploy:preview
 
 Vercel dashboard'unda tüm ortam değişkenlerinin yapılandırıldığından emin olun (veya `node scripts/sync-vercel-env.mjs` ile `.env.local` içeriğini tek komutla senkronize edin). PostgreSQL veritabanının (Neon) Vercel ağından erişilebilir olması gerekir.
 
+#### Üretimde Zorunlu Ortam Değişkenleri
+
+| Değişken | Neden |
+|----------|-------|
+| `DATABASE_URL`, `DIRECT_URL` | Prisma bağlantısı |
+| `NEXTAUTH_SECRET`, `NEXTAUTH_URL`, `JWT_SECRET` | Oturum ve token imzalama |
+| `NEXT_PUBLIC_APP_URL` | Canonical, sitemap, robots, JSON-LD mutlak URL'leri (ayarlanmazsa `https://www.fixral.com` varsayılır) |
+| `CRON_SECRET` | Cron uç noktalarının kimlik doğrulaması — yoksa günlük temizlik 401 ile başarısız olur |
+| `CLOUDINARY_*` | Medya yükleme ve kütüphane |
+| `GMAIL_USER`, `GMAIL_APP_PASSWORD` | İletişim / teklif formu e-postaları |
+| `CULTS3D_USERNAME`, `CULTS3D_API_KEY` | FX 3D galerisi (yoksa galeri boş döner) |
+
+> **Not:** Değerleri CLI ile eklerken sondaki satır sonunun değere dahil olmaması için `printf '%s' "$DEGER" | vercel env add AD production` kullanın (`echo` satır sonu ekler ve imza/karşılaştırma hatalarına yol açar).
+
 #### Vercel Yapılandırma Notları
 - `vercel-build` scripti otomatik olarak `prisma generate && next build` çalıştırır
 - Node.js 20 çalışma zamanı önerilir
 - `experimental.instrumentationHook: true` yapılandırması aktif
 - Serverless function timeout limitleri uzun işlemler için (yedekleme vb.) dikkat edilmelidir
 - `poweredByHeader: false` ve `compress: true` üretim için aktif
+- `vercel.json` yalnızca bölge (`fra1`), fonksiyon süresi, güvenlik başlıkları, `/admin` yönlendirmesi ve cron tanımı içerir; `sitemap.xml` / `robots.txt` doğrudan `src/app/sitemap.ts` ve `src/app/robots.ts` tarafından sunulur (`public/sitemap.xml` gölgelememesi için `.gitignore`'dadır)
 
 ---
 
@@ -787,15 +837,18 @@ Haberler, Portföyler, Hizmetler, Slider'lar, Kategoriler, Videolar, 3D Modeller
 | Önlem | Açıklama |
 |-------|----------|
 | **Veri Doğrulama** | Tüm API uç noktalarında Zod şemaları ve Validator.js |
-| **XSS Koruması** | DOMPurify + sanitize-html ile kullanıcı içeriği temizleme |
+| **XSS Koruması** | Haber gövdesi sunucuda `sanitize-html` ile izinli etiket/stil listesine göre temizlenir; JSON-LD çıktılarında `<` kaçışlanır |
 | **Kimlik Doğrulama** | NextAuth.js — JWT stratejisi ve rol tabanlı erişim kontrolü |
+| **Rol Tabanlı Yazma** | Kayıt herkese açık olduğundan `api/public/` altındaki tüm içerik yazma işlemleri oturumun yanında `role === 'admin'` şartı arar |
+| **Cron Koruması** | `/api/cron/*` yalnızca `CRON_SECRET` ile; taklit edilebilir `x-vercel-cron` başlığına güvenilmez |
+| **Hesap Güvenliği** | E-posta değişikliği yalnızca mevcut şifre doğrulamasıyla (`PUT /api/public/settings/email`) |
 | **2FA Desteği** | Admin hesapları için TOTP tabanlı iki faktörlü doğrulama (OTPLib + QRCode) |
 | **JWT Güçlendirme** | Yedek gizli anahtar yok; açıkça `NEXTAUTH_SECRET` yapılandırması gerekli |
 | **Middleware Güvenliği** | IP engelleme, rate limiting, CSP başlıkları ve kötü amaçlı URL/UA engelleme (`src/proxy.ts`) |
 | **CSRF Koruması** | CSRF token üretimi ve doğrulaması |
 | **API Ayrımı** | Herkese açık ve admin API rotaları bağımsız auth guard'larla |
 | **Content Security Policy** | Sayfa tipine göre dinamik CSP başlıkları |
-| **Rate Limiting** | Giriş, kayıt ve kimlik doğrulama rotalarında istek sınırlama |
+| **Rate Limiting** | Giriş, kayıt, kimlik doğrulama ve iletişim rotalarında istek sınırlama (bellek içi — serverless örnekler arasında paylaşılmaz) |
 | **Güvenlik Başlıkları** | X-Frame-Options, X-Content-Type-Options, Referrer-Policy, X-Robots-Tag |
 | **İçerik Güvenliği** | Uygun ARIA nitelikleriyle semantik HTML |
 | **Ortam Güvenliği** | Hassas env dosyaları (`.env.local`, `.env.production`) versiyon kontrolünden hariç |
@@ -810,23 +863,27 @@ Haberler, Portföyler, Hizmetler, Slider'lar, Kategoriler, Videolar, 3D Modeller
 ## Performans ve SEO
 
 ### Performans Optimizasyonları
-- **ISR (Incremental Static Regeneration):** Hızlı TTFB için statik sayfa yeniden oluşturma
-- **Görsel Optimizasyon:** Sharp ile WebP dönüşümü, `next/image` ile otomatik optimizasyon
-- **Kod Bölme:** Next.js otomatik code splitting + dynamic imports
-- **SWC Minification:** Üretimde SWC ile hızlı JavaScript minification
+- **ISR (Incremental Static Regeneration):** `/tr/*` sayfaları build'de önceden üretilir (`●`) ve `revalidate` süresiyle arka planda tazelenir. Bunun için:
+  - Kök layout `headers()` / `cookies()` okumaz (`<html lang="tr">` sabit) — aksi halde tüm rotalar dinamikleşir
+  - `[lang]/layout.tsx` `generateStaticParams` + next-intl `setRequestLocale` çağırır — aksi halde next-intl locale'i istek başlığından okur
+  - Haber detayları `force-dynamic` değil `revalidate = 3600`; admin kayıtları `revalidateFx()` ile tüm layout'u anında tazeler
+- **Görsel Optimizasyon:** `next/image` (WebP, 30 gün `minimumCacheTTL`), LCP görsellerinde `priority` + `sizes`
+- **Kod Bölme:** three.js sahneleri, 3D görüntüleyici ve galeri bileşenleri dinamik import ile ayrı chunk; framer-motion `LazyMotion`
+- **Sorgu Sınırları:** Public portföy API'si en fazla 100 kayıt döner
+- **Oturum:** `SessionProvider` pencere odağında oturumu yeniden çekmez
 - **Sıkıştırma:** Sunucu tarafında gzip sıkıştırma aktif
-- **Önbellek Stratejisi:** Çok katmanlı önbellek — bellek içi (1 dakika), HTTP cache başlıkları
+- **Önbellek Stratejisi:** `unstable_cache` + etiket tabanlı geçersizleştirme (`fx-content`, `news-*`), bellek içi site ayarları önbelleği
+- **Fontlar:** `next/font` ile kendi sunucusundan (Inter, Space Grotesk, JetBrains Mono — public; Barlow, Geist — admin); harici font bağlantısı yok
 - **Bundle Analizi:** `ANALYZE=true npm run build` ile bundle görselleştirme
-- **Barlow + Geist Mono:** Optimum web performansı için özel font yüklemesi
 
 ### SEO Özellikleri
-- **Dinamik Sitemap:** `/sitemap.xml` — veritabanından tüm sayfalar, haberler ve portföy projeleri
-- **Robots.txt:** `/robots.txt` — otomatik oluşturma, admin ve API yolları engelleme
-- **Meta Yönetimi:** Her sayfa için özel meta başlıklar, açıklamalar ve anahtar kelimeler
-- **Open Graph:** Facebook/Twitter kartları için OG meta etiketleri
-- **JSON-LD:** Organizasyon, makale ve BreadcrumbList yapılandırılmış verileri
-- **Hreflang:** Çoklu dil sayfaları için hreflang alternate bağlantıları
-- **Canonical URL'ler:** Sayfa bazında bağımsız canonical URL yönetimi
+- **Dinamik Sitemap:** `/sitemap.xml` — statik sayfalar + hizmet, yazılım, FX 3D, haber ve portföy detayları
+- **Robots.txt:** `/robots.txt` — `/admin`, `/api/`, `/tr/account`, `/tr/login`, `/tr/register`, `/tr/offline` engellenir (`trailingSlash: false` ile uyumlu, eğik çizgisiz)
+- **noindex:** Özel sayfalar (`login`, `register`, `account`, `offline`) ve bulunamayan haber/portföy kayıtları `robots: { index: false }`
+- **Meta Yönetimi:** Her sayfa için başlık, açıklama, canonical ve Open Graph
+- **JSON-LD:** Organization (site ayarlarındaki gerçek sosyal profiller + `logo.png`), WebSite, NewsArticle (boş alan ve e-posta içermez), sayfa bazında BreadcrumbList, hizmet listesi
+- **Tek URL Kaynağı:** Tüm mutlak URL'ler `SITE_URL` (`src/lib/seo-utils.ts`) üzerinden
+- **Eski Adresler:** Eski hizmet slug'ları ve `/es/*`, `/tr/noticias` adresleri 301 ile güncel karşılıklarına yönlenir
 
 ---
 
@@ -842,6 +899,8 @@ Fixral CMS, Progressive Web App (PWA) olarak çalışabilir:
 | `PWAInstallPrompt` | `src/components/PWAInstallPrompt.tsx` | Yükleme istemi bileşeni |
 | `offline` | `src/app/[lang]/offline/` | Çevrimdışı sayfası |
 
+> Service Worker, Next.js RSC yüklerini (`?_rsc=`, `RSC` başlığı) ve `/_next/image` isteklerini önbelleğe almaz; böylece istemci tarafı gezinmede eski sayfa verisi gösterilmez. Önbellek sürümü (`CACHE_VERSION`) değiştiğinde eski önbellekler `activate` aşamasında silinir.
+
 ---
 
 ## Çoklu Dil (i18n)
@@ -849,23 +908,24 @@ Fixral CMS, Progressive Web App (PWA) olarak çalışabilir:
 ### Yapılandırma
 - **Kütüphane:** next-intl 4.8
 - **Varsayılan Dil:** Türkçe (tr)
-- **Desteklenen Diller:** Türkçe (tr), İspanyolca (es)
-- **Çeviri Dosyaları:** `messages/tr.json`, `messages/es.json`
+- **Desteklenen Diller:** Türkçe (tr)
+- **Çeviri Dosyaları:** `messages/tr.json`
 - **Yapılandırma:** `src/i18n/request.ts`
 
 ### URL Yapısı
 ```
 fixral-cms.vercel.app/tr/           → Türkçe anasayfa
-fixral-cms.vercel.app/es/           → İspanyolca anasayfa
 fixral-cms.vercel.app/tr/haberler   → Türkçe haberler
-fixral-cms.vercel.app/es/noticias   → İspanyolca haberler
-fixral-cms.vercel.app/tr/portfolio  → Portföy (her iki dilde aynı)
+fixral-cms.vercel.app/tr/portfolio  → Portföy
+fixral-cms.vercel.app/es/...        → 301 → /tr/... (kaldırılan İspanyolca adresler)
 ```
 
 ### Yerelleştirilmiş Rotalar
-Proxy katmanı, dile özel URL takma adlarını otomatik yönlendirir:
-- `tr`: `/noticias` → `/haberler` (301 redirect)
-- `es`: `/haberler` → `/noticias` (301 redirect)
+Proxy katmanı eski adresleri kalıcı olarak yönlendirir:
+- `/es/...` → `/tr/...` (301; `/es/noticias` → `/tr/haberler`)
+- `/tr/noticias` → `/tr/haberler` (301)
+
+Dil seçici, veritabanında aktif kalmış olsa bile rotası olmayan dilleri (`src/i18n.ts` → `locales` dışındakileri) göstermez.
 
 ---
 
@@ -881,7 +941,7 @@ Proxy katmanı, dile özel URL takma adlarını otomatik yönlendirir:
 6. **Kötü Amaçlı İstek Engelleme:** Şüpheli URL desenleri ve User-Agent'lar için 403
 7. **Rate Limiting:** Giriş, kayıt ve kimlik doğrulama rotalarında istek sınırlama
 8. **Güvenlik Başlıkları:** CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy
-9. **Önbellek Kontrolleri:** Admin/API için `no-store`, herkese açık sayfalar için ISR uyumlu başlıklar
+9. **Önbellek Kontrolleri:** Admin/API için `no-store` ve `X-Robots-Tag: noindex, nofollow`; herkese açık sayfalara indeksleme başlığı eklenmez (sayfa bazlı `noindex` metadata'sı geçerli olur)
 
 ---
 
@@ -903,11 +963,47 @@ npm run test:coverage
 ### Test Yapılandırması
 - **Ortam:** jsdom (jest-environment-jsdom)
 - **Yol Alias'ları:** `@/*` → `./src/*`
-- **Mevcut Testler:** `src/lib/__tests__/` altında — `seo-utils`, `rate-limit`, `validation`
+- **Mevcut Testler:** `src/lib/__tests__/` altında — `seo-utils`, `rate-limit`, `validation`, `fx-data` (6 suite, 71 test)
 
 ---
 
 ## Değişiklik Günlüğü
+
+### v5.2.0 — FIXRAL Web 2026 Yeniden Tasarımı, Güvenlik Sertleştirme, ISR ve SEO Denetimi
+
+**Yeniden tasarım (public site)**
+- FIXRAL marka sistemi: koyu varsayılan tema, Fixral Turuncu `#F97316`, Space Grotesk · Inter · JetBrains Mono, "teknik resim paftası" görsel dili; header `sticky` 64px
+- Yeni anasayfa: hizmet şeridi, disiplin dizini, kaydırmaya bağlı three.js süreç sahnesi (nokta bulutu → tel kafes → sapma haritası → katmanlı baskı), yazılımlar, teslimat örnekleri, haber + video şeridi, kısa teklif formu
+- Yeni yüzeyler: `/tr/services/[slug]` (8 hizmet), `/tr/software` + `[slug]`, `/tr/fx-3d` + `[slug]` (Cults3D); iletişimde 4 adımlı teklif formu; Ctrl+K arama hizmet/yazılım kataloğunu da kapsar
+- Yeni admin sayfaları: Site İçeriği, Yazılımlar, FX 3D (38 sayfa); yeni API'ler: `admin/fx-content`, `admin/fx-3d`, `admin/videos/bulk-status`, `public/fx-data`
+- FX veri katmanı (`fx-data-server`, `fx-revalidate`): admin kayıtları site önbelleğini anında tazeler
+- İspanyolca (`es`) kaldırıldı; site tek dilli. `/es/*`, `/tr/noticias` ve eski 8 hizmet slug'ı 301 ile yönlenir
+- Marka varlıkları (`brand/`, `public/brand/`, `public/logo.png`), yenilenen favicon/PWA ikonları ve OG görseli
+
+**Güvenlik**
+- *Kritik:* `api/public/` altındaki yazma uç noktaları yalnızca oturum kontrolü yapıyordu; kayıt herkese açık olduğundan her kullanıcı haber oluşturup/silebiliyor, toplu haber işlemi yapabiliyor, hizmet ve iletişim bilgilerini değiştirebiliyor, mesaj güncelleyebiliyor ve AI metadata ucunu kullanabiliyordu. Tümüne `role === 'admin'` şartı eklendi; taslak haberler yalnızca admin'e görünür
+- Haber gövdesi sunucuda `sanitize-html` ile temizlenir (stored XSS); JSON-LD çıktılarında `<` kaçışlanır
+- Cron uç noktaları yalnızca `CRON_SECRET` ile çalışır (taklit edilebilir `x-vercel-cron` başlığı kabul edilmez)
+- Kullanılmayan, şifresiz e-posta değiştiren `POST /api/public/settings/email` kaldırıldı
+
+**Performans**
+- Kök layout'taki `headers()` çağrısı ve next-intl'in başlıktan locale okuması tüm public sayfaları dinamikleştiriyordu; kaldırıldı/düzeltildi — `/tr/*` sayfaları artık ISR (`●`)
+- Haber detayı `force-dynamic` → `revalidate = 3600`
+- Portföy API'sinde sınırsız sorgu (adapter `$sample` desteklemiyordu) → en fazla 100 kayıt
+- Service Worker RSC yüklerini ve `/_next/image`'ı önbelleğe almıyor; `CACHE_VERSION` 1.0.2
+- `SessionProvider` odakta yeniden çekmiyor; kullanılmayan Google Fonts preconnect'leri kaldırıldı; videolar sayfası kendi API'sine HTTP yerine doğrudan veritabanından okuyor
+
+**SEO**
+- Eski domain'i gösteren statik `public/sitemap.xml` kaldırıldı (dinamik sitemap'i gölgeliyordu); `vercel.json`'daki var olmayan `/api/sitemap` ve `/api/robots` rewrite'ları silindi
+- `robots.ts` eğik çizgi uyumsuzluğu nedeniyle özel sayfaları engellemiyordu — düzeltildi, `/tr/offline` eklendi
+- Özel sayfalar ve bulunamayan haber/portföy kayıtları `noindex`; proxy'nin her sayfaya bastığı `X-Robots-Tag: index, follow` kaldırıldı
+- Organization/WebSite JSON-LD: geçersiz `sameAs` ve çalışmayan SearchAction kaldırıldı, gerçek sosyal profiller ve `logo.png`; NewsArticle'dan yazar e-postası ve boş alanlar çıkarıldı
+- Hatalı ("Tr" düğümlü) ve sayfalarda çift basılan global breadcrumb kaldırıldı; videolar breadcrumb'ı mutlak URL
+- Tüm mutlak URL'ler `SITE_URL`'den; manifest adı/açıklaması güncellendi, `start_url` `/tr`
+
+**Yapı**
+- Kullanılmayan dosyalar kaldırıldı: `seo-service`, `jwt-middleware`, `api-middleware`, `advanced-logger`, `error-utils`, `image-optimizer`, `image-validation`, `StructuredData`, `GlobalBreadcrumbsJsonLd`, `portfolio/layout-with-schema`, `app/metadata`
+- **Doğrulama:** `tsc --noEmit` temiz, ESLint 0 hata, Jest 71/71, `next build` başarılı
 
 ### v5.1.3 — Depo Temizliği ve Tema Sistemi Bağımsızlaştırma
 - **Depo Temizliği:** QA ekran görüntüsü artıkları (`.qa-baseline/`, `.qa-after/`, `.qa-admin-tmp/`), kök dizindeki geçici/referans PNG dosyaları (`thingiverse-*.png`, `tmp-services-*.png`) ve `scripts/qa-after-screenshots.mjs` kaldırıldı

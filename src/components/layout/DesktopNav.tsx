@@ -1,236 +1,138 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
-import { m, AnimatePresence } from 'framer-motion';
-import PrefetchLink from '../PrefetchLink';
+/**
+ * DesktopNav — FIXRAL header menüsü (redesign 2026).
+ * Linkler yönetim panelindeki sayfa ayarlarından gelir (Header → PageSettingRow);
+ * aktif sayfa turuncu alt çizgiyle işaretlenir. AccountMenu oturum durumuna göre
+ * hesap / yönetim / çıkış ya da giriş / kayıt bağlantılarını gösterir.
+ */
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { User, LogOut as SignOut, Settings as GearSix } from 'lucide-react';
 import { useSession } from 'next-auth/react';
+import PrefetchLink from '../PrefetchLink';
+import { useAppTranslations } from '@/hooks/useAppTranslations';
 
 interface NavLink {
-    href: string;
-    label: string;
-    icon: any;
-    isExternal?: boolean;
+  href: string;
+  label: string;
+  icon?: unknown;
+  isExternal?: boolean;
 }
 
 interface DesktopNavProps {
-    navLinks: NavLink[];
-    pathname: string;
+  navLinks: NavLink[];
+  pathname: string;
 }
 
-/**
- * DesktopNav — precision chrome: token tabanlı zemin üzerinde sade metin linkler,
- * her linkin önünde monospace index mikro-etiketi (TechLabel dili).
- * Metin rengi text-muted-foreground, hover'da turuncu (hover:text-primary),
- * aktif linkte turuncu bottom-border + font-semibold.
- */
+/** Bir nav linkinin aktif olup olmadığı: tam eşleşme ya da alt sayfa (anasayfa hariç) */
+export function isNavActive(href: string, pathname: string) {
+  if (href === pathname) return true;
+  const segs = href.split('/').filter(Boolean);
+  if (segs.length < 2) return false; // /tr gibi dil kökü yalnız tam eşleşir
+  return pathname.startsWith(`${href}/`);
+}
+
 export default function DesktopNav({ navLinks, pathname }: DesktopNavProps) {
-    const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const { t } = useAppTranslations('header');
+  return (
+    <nav className="fx-nav" aria-label={t('mainNav') !== 'mainNav' ? t('mainNav') : 'Ana menü'}>
+      {navLinks.map((link) => {
+        const active = isNavActive(link.href, pathname);
+        if (link.isExternal) {
+          return (
+            <a key={link.href} href={link.href} target="_blank" rel="noopener noreferrer">
+              {link.label}
+            </a>
+          );
+        }
+        return (
+          <PrefetchLink key={link.href} href={link.href} aria-current={active ? 'page' : undefined}>
+            {link.label}
+          </PrefetchLink>
+        );
+      })}
+    </nav>
+  );
+}
 
-    const { data: session } = useSession();
-    const [isAccountOpen, setIsAccountOpen] = useState(false);
-    const accountRef = useRef<HTMLDivElement>(null);
-    const accountTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+export function AccountMenu({ currentLang }: { currentLang: string }) {
+  const { data: session } = useSession();
+  const { t } = useAppTranslations('nav');
+  const { t: tf } = useAppTranslations('fx');
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const isAdmin = Boolean(session?.user && (session.user as { role?: string }).role === 'admin');
+  const initial = (session?.user?.name?.[0] || session?.user?.email?.[0] || 'U').toUpperCase();
 
-    const currentLang = ['tr', 'es'].includes(pathname.split('/')[1]) ? pathname.split('/')[1] : 'tr';
-    const isAdmin = session?.user && (session.user as any).role === 'admin';
+  useEffect(() => {
+    const onDoc = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(false);
+    };
+    document.addEventListener('mousedown', onDoc);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('mousedown', onDoc);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, []);
 
-    useEffect(() => {
-        const handleClick = (e: MouseEvent) => {
-            if (accountRef.current && !accountRef.current.contains(e.target as Node)) setIsAccountOpen(false);
-        };
-        document.addEventListener('mousedown', handleClick);
-        return () => document.removeEventListener('mousedown', handleClick);
-    }, []);
-
-    const handleAccountEnter = () => { clearTimeout(accountTimeoutRef.current); setIsAccountOpen(true); };
-    const handleAccountLeave = () => { accountTimeoutRef.current = setTimeout(() => setIsAccountOpen(false), 200); };
-
-    return (
-        <div className="flex items-center gap-2">
-            <nav role="navigation" aria-label="Ana navigasyon">
-                <div className="flex items-center gap-0.5 relative">
-                    {navLinks.map((link, index) => {
-                        const isActive = pathname === link.href;
-
-                        const content = (
-                            <>
-                                {hoveredIndex === index && !isActive && (
-                                    <m.span
-                                        layoutId="desktop-nav-hover"
-                                        className="absolute inset-0 rounded-xs bg-accent"
-                                        transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                                    />
-                                )}
-                                <span className="relative z-10 inline-flex items-baseline gap-1.5">
-                                    {/* Monospace nav meta — zero-padded index (precision kit dili) */}
-                                    <span
-                                        aria-hidden="true"
-                                        className={`font-mono text-[10px] tabular-nums tracking-tight ${
-                                            isActive ? 'text-primary/80' : 'text-muted-foreground/60'
-                                        }`}
-                                    >
-                                        {String(index + 1).padStart(2, '0')}
-                                    </span>
-                                    {link.label}
-                                </span>
-                                {isActive && (
-                                    <m.span
-                                        layoutId="desktop-nav-active"
-                                        className="absolute bottom-0 left-3.5 right-3.5 h-[2px] bg-primary"
-                                        transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                                        aria-hidden="true"
-                                    />
-                                )}
-                            </>
-                        );
-
-                        const linkClasses = `
-                            relative px-3.5 py-1.5 text-sm
-                            tracking-wide whitespace-nowrap
-                            focus-visible:outline-hidden focus-visible:ring-2
-                            focus-visible:ring-ring focus-visible:ring-offset-0
-                            rounded-xs transition-colors duration-150
-                            ${isActive
-                                ? 'text-primary font-semibold'
-                                : 'text-muted-foreground font-medium hover:text-primary'
-                            }
-                        `;
-
-                        if (link.isExternal) {
-                            return (
-                                <a
-                                    key={index}
-                                    href={link.href}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className={linkClasses}
-                                    aria-current={isActive ? 'page' : undefined}
-                                    onMouseEnter={() => setHoveredIndex(index)}
-                                    onMouseLeave={() => setHoveredIndex(null)}
-                                >
-                                    {content}
-                                </a>
-                            );
-                        }
-
-                        return (
-                            <PrefetchLink
-                                key={index}
-                                href={link.href}
-                                className={linkClasses}
-                                aria-current={isActive ? 'page' : undefined}
-                                onMouseEnter={() => setHoveredIndex(index)}
-                                onMouseLeave={() => setHoveredIndex(null)}
-                            >
-                                {content}
-                            </PrefetchLink>
-                        );
-                    })}
-                </div>
-            </nav>
-
-            <div className="h-4 w-px mx-1 bg-border" aria-hidden="true" />
-
-            {/* Account dropdown */}
-            <div className="flex items-center gap-1">
-                <div ref={accountRef} className="relative" onMouseEnter={handleAccountEnter} onMouseLeave={handleAccountLeave}>
-                    <button
-                        onClick={() => setIsAccountOpen(!isAccountOpen)}
-                        className="p-2 rounded-xs text-muted-foreground hover:text-foreground hover:bg-accent transition-colors duration-150 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0"
-                        aria-label="Hesabım"
-                        aria-expanded={isAccountOpen}
-                    >
-                        {session?.user ? (
-                            <div className="w-5 h-5 rounded-xs bg-primary flex items-center justify-center text-primary-foreground text-[10px] font-bold ring-1 ring-border">
-                                {(session.user.name?.[0] || session.user.email?.[0] || 'U').toUpperCase()}
-                            </div>
-                        ) : (
-                            <User size={18} />
-                        )}
-                    </button>
-                    <AnimatePresence>
-                        {isAccountOpen && (
-                            <m.div
-                                initial={{ opacity: 0, y: 8, scale: 0.96 }}
-                                animate={{ opacity: 1, y: 0, scale: 1 }}
-                                exit={{ opacity: 0, y: 8, scale: 0.96 }}
-                                transition={{ duration: 0.15, ease: [0.4, 0, 0.2, 1] }}
-                                className="absolute right-0 top-full mt-2 w-56 bg-popover rounded-lg overflow-hidden z-60 border border-border shadow-[var(--shadow-lg)]"
-                            >
-                                {session?.user ? (
-                                    <>
-                                        <div className="px-4 py-3 border-b border-border">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-9 h-9 rounded-xs bg-primary flex items-center justify-center text-primary-foreground text-sm font-bold shrink-0">
-                                                    {(session.user.name?.[0] || session.user.email?.[0] || 'U').toUpperCase()}
-                                                </div>
-                                                <div className="min-w-0">
-                                                    <p className="text-sm font-semibold text-popover-foreground truncate">{session.user.name || 'Kullanıcı'}</p>
-                                                    <p className="text-[11px] text-muted-foreground truncate">{session.user.email}</p>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        {isAdmin && (
-                                            <div className="py-1 border-b border-border">
-                                                <Link
-                                                    href="/admin/dashboard"
-                                                    className="flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-popover-foreground/80 hover:bg-accent hover:text-accent-foreground transition-colors duration-150"
-                                                    onClick={() => setIsAccountOpen(false)}
-                                                >
-                                                    <GearSix size={16} />
-                                                    <span>Admin Paneli</span>
-                                                </Link>
-                                            </div>
-                                        )}
-
-                                        <div className="py-1">
-                                            <Link
-                                                href={`/${currentLang}/account`}
-                                                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-popover-foreground/70 hover:bg-accent hover:text-accent-foreground transition-colors duration-150"
-                                                onClick={() => setIsAccountOpen(false)}
-                                            >
-                                                <User size={16} />
-                                                <span>Hesabım</span>
-                                            </Link>
-                                        </div>
-
-                                        <div className="border-t border-border py-1">
-                                            <Link
-                                                href="/api/auth/signout"
-                                                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-destructive hover:bg-destructive/10 transition-colors duration-150"
-                                                onClick={() => setIsAccountOpen(false)}
-                                            >
-                                                <SignOut size={16} />
-                                                <span>Çıkış Yap</span>
-                                            </Link>
-                                        </div>
-                                    </>
-                                ) : (
-                                    <div className="p-3 space-y-2">
-                                        <Link
-                                            href={`/${currentLang}/login`}
-                                            className="flex items-center justify-center w-full px-3 py-2.5 rounded-xs text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors duration-200 active:scale-[0.98] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring"
-                                            onClick={() => setIsAccountOpen(false)}
-                                        >
-                                            Giriş Yap
-                                        </Link>
-                                        <Link
-                                            href={`/${currentLang}/register`}
-                                            className="flex items-center justify-center w-full px-3 py-2.5 rounded-xs text-sm font-medium text-primary border border-primary hover:bg-primary/10 transition-colors duration-200 active:scale-[0.98] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring"
-                                            onClick={() => setIsAccountOpen(false)}
-                                        >
-                                            Kayıt Ol
-                                        </Link>
-                                    </div>
-                                )}
-                            </m.div>
-                        )}
-                    </AnimatePresence>
-                </div>
+  return (
+    <div ref={ref} className="fx-account">
+      <button
+        type="button"
+        className="fx-iconbtn"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        aria-haspopup="menu"
+        aria-label={t('account')}
+      >
+        {session?.user ? (
+          <span className="fx-avatar fx-avatar--sm">{initial}</span>
+        ) : (
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" aria-hidden="true">
+            <circle cx="12" cy="8" r="4" />
+            <path d="M4 21a8 8 0 0 1 16 0" />
+          </svg>
+        )}
+      </button>
+      {open && (
+        <div className="fx-account__menu" role="menu">
+          {session?.user ? (
+            <>
+              <div className="fx-account__who">
+                <span className="fx-avatar">{initial}</span>
+                <span className="fx-minw0">
+                  <b>{session.user.name || t('account')}</b>
+                  <span>{session.user.email}</span>
+                </span>
+              </div>
+              {isAdmin && (
+                <Link role="menuitem" href="/admin/dashboard" onClick={() => setOpen(false)}>
+                  {tf('nav.admin')}
+                </Link>
+              )}
+              <Link role="menuitem" href={`/${currentLang}/account`} onClick={() => setOpen(false)}>
+                {t('account')}
+              </Link>
+              <Link role="menuitem" href="/api/auth/signout" className="is-danger" onClick={() => setOpen(false)}>
+                {t('logout')}
+              </Link>
+            </>
+          ) : (
+            <div className="fx-account__btns">
+              <Link role="menuitem" href={`/${currentLang}/login`} className="fx-btn fx-btn--primary fx-btn--sm" onClick={() => setOpen(false)}>
+                {t('login')}
+              </Link>
+              <Link role="menuitem" href={`/${currentLang}/register`} className="fx-btn fx-btn--ghost fx-btn--sm" onClick={() => setOpen(false)}>
+                {t('register')}
+              </Link>
             </div>
+          )}
         </div>
-    );
+      )}
+    </div>
+  );
 }

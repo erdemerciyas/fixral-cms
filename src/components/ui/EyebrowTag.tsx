@@ -15,13 +15,15 @@ export default function EyebrowTag({
   return (
     <span
       className={cn(
-        'inline-flex items-center rounded-full px-3.5 py-1 text-[11px] uppercase font-medium tracking-[0.15em]',
-        variant === 'default' && 'border border-border text-accent-foreground bg-accent',
-        variant === 'light' && 'border border-white/15 text-white/80 bg-white/5',
-        variant === 'dark' && 'border border-border text-accent-foreground bg-accent',
-        className
+        'inline-flex items-center gap-2 font-mono text-[11px] font-medium uppercase leading-4 tracking-[0.14em]',
+        variant === 'light' ? 'text-white/80' : 'text-muted-foreground',
+        className,
       )}
     >
+      <span
+        aria-hidden
+        className="inline-block size-1.5 shrink-0 border border-current"
+      />
       {children}
     </span>
   )

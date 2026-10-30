@@ -30,6 +30,8 @@ import {
   Moon,
   Sun,
   Monitor,
+  AppWindow,
+  LayoutTemplate,
 } from 'lucide-react'
 import {
   CommandDialog,
@@ -53,10 +55,13 @@ const NAV_ITEMS: PaletteItem[] = [
   { label: 'Haberler', href: '/admin/news', icon: FileText, keywords: ['news', 'blog'] },
   { label: 'Sayfalar', href: '/admin/pages', icon: Layers, keywords: ['pages'] },
   { label: 'Hizmetler', href: '/admin/services', icon: Box, keywords: ['services'] },
+  { label: 'Yazılımlar', href: '/admin/software', icon: AppWindow, keywords: ['software', 'yazılım', 'uygulama'] },
+  { label: 'Site İçeriği', href: '/admin/site-content', icon: LayoutTemplate, keywords: ['hero', 'anasayfa', 'bölüm', 'süreç', 'teslimat', 'başlık'] },
   { label: 'Tüm İçerikler', href: '/admin/content', icon: FolderKanban, keywords: ['content'] },
   { label: 'Portfolyo', href: '/admin/portfolio', icon: GalleryHorizontal, keywords: ['portfolio', 'proje'] },
   { label: 'Kategoriler', href: '/admin/categories', icon: Tags, keywords: ['categories'] },
   { label: '3D Modeller', href: '/admin/models', icon: Boxes, keywords: ['models', '3d'] },
+  { label: 'FX 3D', href: '/admin/fx-3d', icon: Boxes, keywords: ['cults', 'cults3d', 'stl', 'mağaza', '3d'] },
   { label: 'Medya Kütüphanesi', href: '/admin/media', icon: ImageIcon, keywords: ['media', 'görsel', 'resim'] },
   { label: 'Videolar', href: '/admin/videos', icon: Clapperboard, keywords: ['videos', 'youtube'] },
   { label: 'Slider', href: '/admin/slider', icon: GalleryHorizontal, keywords: ['slider', 'carousel'] },

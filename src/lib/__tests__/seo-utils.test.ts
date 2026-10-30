@@ -1,7 +1,6 @@
 import {
   SITE_URL,
   generateAlternates,
-  generateAlternatesForLang,
   generateOgImages,
   getBlogAlternates,
   getPortfolioAlternates,
@@ -18,7 +17,7 @@ describe('SITE_URL', () => {
 });
 
 describe('generateAlternates', () => {
-  const result = generateAlternates('/tr/haberler', '/es/noticias');
+  const result = generateAlternates('/tr/haberler');
 
   it('sets canonical to the TR path', () => {
     expect(result.canonical).toBe(`${SITE_URL}/tr/haberler`);
@@ -28,30 +27,12 @@ describe('generateAlternates', () => {
     expect(result.languages['tr-TR']).toBe(`${SITE_URL}/tr/haberler`);
   });
 
-  it('includes es-ES language', () => {
-    expect(result.languages['es-ES']).toBe(`${SITE_URL}/es/noticias`);
+  it('has no non-Turkish language entries', () => {
+    expect(Object.keys(result.languages)).toEqual(['tr-TR', 'x-default']);
   });
 
   it('sets x-default to TR path', () => {
     expect(result.languages['x-default']).toBe(`${SITE_URL}/tr/haberler`);
-  });
-});
-
-describe('generateAlternatesForLang', () => {
-  it('uses TR canonical when lang is tr', () => {
-    const result = generateAlternatesForLang('tr', '/tr/services', '/es/services');
-    expect(result.canonical).toBe(`${SITE_URL}/tr/services`);
-  });
-
-  it('uses ES canonical when lang is es', () => {
-    const result = generateAlternatesForLang('es', '/tr/services', '/es/services');
-    expect(result.canonical).toBe(`${SITE_URL}/es/services`);
-  });
-
-  it('still includes both language entries regardless of lang', () => {
-    const result = generateAlternatesForLang('es', '/tr/services', '/es/services');
-    expect(result.languages['tr-TR']).toBeDefined();
-    expect(result.languages['es-ES']).toBeDefined();
   });
 });
 
@@ -75,16 +56,16 @@ describe('generateOgImages', () => {
 });
 
 describe('slug-based alternate helpers', () => {
-  it('getBlogAlternates builds haberler/noticias URLs', () => {
+  it('getBlogAlternates builds haberler URLs', () => {
     const result = getBlogAlternates('test-slug');
     expect(result.languages['tr-TR']).toContain('/tr/haberler/test-slug');
-    expect(result.languages['es-ES']).toContain('/es/noticias/test-slug');
+    expect(result.canonical).toBe(`${SITE_URL}/tr/haberler/test-slug`);
   });
 
-  it('getPortfolioAlternates builds symmetric portfolio URLs', () => {
+  it('getPortfolioAlternates builds portfolio URLs', () => {
     const result = getPortfolioAlternates('my-project');
     expect(result.languages['tr-TR']).toContain('/tr/portfolio/my-project');
-    expect(result.languages['es-ES']).toContain('/es/portfolio/my-project');
+    expect(result.canonical).toBe(`${SITE_URL}/tr/portfolio/my-project`);
   });
 
 });

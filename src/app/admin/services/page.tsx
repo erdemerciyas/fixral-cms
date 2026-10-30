@@ -19,11 +19,13 @@ import {
   Save,
   Loader2,
   ArrowUpDown,
+  Globe,
 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { AdminPageLayout } from '@/components/admin/admin-page-layout';
 import { toast } from 'sonner';
 import { useConfirm } from '@/hooks/use-confirm';
+import { ServiceSiteBadge, computeServiceSite, type ServiceSiteSummary, type ServiceSiteStatus } from '@/components/admin/ServiceSiteBadge';
 
 // Reorder (framer-motion) yalnızca sıralama modunda gerekli — izole dynamic import ile yüklenir
 const ServiceReorderList = dynamic(() => import('@/components/admin/ServiceReorderList'), {
@@ -50,6 +52,10 @@ interface ServiceItem {
   category?: string;
   icon?: string;
   image?: string;
+  isActive?: boolean;
+  translations?: unknown;
+  /** Yeni sitedeki durum (mergeServices ile hesaplanır) */
+  site?: ServiceSiteStatus;
   createdAt: string;
   updatedAt: string;
 }
@@ -66,6 +72,7 @@ export default function AdminServicesPage() {
   const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
   const [hasReordered, setHasReordered] = useState(false);
   const [savingOrder, setSavingOrder] = useState(false);
+  const [siteSummary, setSiteSummary] = useState<ServiceSiteSummary | null>(null);
 
   useEffect(() => {
     if (status === 'loading') return;
@@ -94,7 +101,10 @@ export default function AdminServicesPage() {
           image: item.image || ''
         }));
 
-        setServices(mappedData);
+        // Sitenin kendi kuralıyla: hangi kayıt sitede, hangi katalog varsayılanı devrede
+        const summary = computeServiceSite(Array.isArray(data) ? data : []);
+        setSiteSummary(summary);
+        setServices(mappedData.map((item: ServiceItem) => ({ ...item, site: summary.statuses[item._id] })));
       }
     } catch (error) {
       console.error('Hizmetler yüklenirken hata:', error);
@@ -271,6 +281,9 @@ export default function AdminServicesPage() {
         </>
       }
     >
+      {/* Yeni site: hizmetlerin nasıl seçildiği */}
+      <SiteNote summary={siteSummary} />
+
       {/* Toolbar */}
       <div className="bg-card rounded-xl shadow-xs border border-border p-2 sm:p-3 sticky top-24 z-10 transition-all duration-300">
         <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
@@ -402,6 +415,7 @@ export default function AdminServicesPage() {
                   onReorder={handleReorder}
                   onDelete={handleDelete}
                   formatDate={formatDate}
+                  renderBadge={(s) => <ServiceSiteBadge status={s.site} />}
                 />
               ) : (
                 <div className="divide-y divide-border">
@@ -483,6 +497,9 @@ export default function AdminServicesPage() {
                     <h3 className="text-lg font-bold text-foreground mb-2 line-clamp-1 group-hover:text-primary transition-colors">
                       {service.title}
                     </h3>
+                    <div className="mb-2 min-h-5">
+                      <ServiceSiteBadge status={service.site} />
+                    </div>
                     <p className="text-sm text-muted-foreground line-clamp-2 mb-4 h-10">
                       {service.description?.replace(/<[^>]*>/g, '') || ''}
                     </p>
@@ -554,6 +571,7 @@ function StaticServiceItem({
             `}>
               {service.status === 'published' ? 'Yayında' : 'Taslak'}
             </span>
+            <ServiceSiteBadge status={service.site} />
             <span className="text-xs text-muted-foreground hidden sm:inline">{formatDate(service.createdAt)}</span>
           </div>
         </div>
@@ -576,5 +594,31 @@ function StaticServiceItem({
         </button>
       </div>
     </div>
+  );
+}
+
+function SiteNote({ summary }: { summary: ServiceSiteSummary | null }) {
+  return (
+    <section
+      aria-labelledby="svc-site-note"
+      className="bg-card rounded-xl shadow-xs border border-border p-4 sm:p-5 flex gap-3"
+    >
+      <Globe className="w-5 h-5 text-primary shrink-0 mt-0.5" aria-hidden="true" />
+      <div className="min-w-0 space-y-2 text-sm">
+        <h2 id="svc-site-note" className="font-semibold text-foreground">Yeni site hizmetleri nasıl seçer?</h2>
+        <ul className="list-disc pl-4 space-y-1 text-xs text-muted-foreground">
+          <li>
+            Formdaki <span className="font-medium text-foreground">Web sitesi (FIXRAL tasarımı)</span>{' '}bölümünde
+            &quot;Sitede göster&quot; açık ve aktif olan kayıtlar sitede listelenir; sıra buradaki sıralamadır (küçükten büyüğe).
+          </li>
+          <li>Sitedeki hizmet listesi yalnızca bu paneldeki kayıtlardan oluşur; silinen ya da pasife alınan hizmet siteden kalkar.</li>
+        </ul>
+        {summary && (
+          <p className="text-xs text-foreground">
+            Sitede şu an <strong>{summary.site.length}</strong> hizmet listeleniyor.
+          </p>
+        )}
+      </div>
+    </section>
   );
 }

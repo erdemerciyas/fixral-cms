@@ -5,17 +5,17 @@ import { SITE_URL, generateAlternates, generateOgImages } from '@/lib/seo-utils'
 
 export const revalidate = 3600;
 
-export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
-  const { lang } = await params;
-  const canonical = lang === 'es' ? `${SITE_URL}/es` : `${SITE_URL}/tr`;
+export async function generateMetadata(): Promise<Metadata> {
+  const canonical = `${SITE_URL}/tr`;
 
   let title = 'Fixral CMS';
   let description = '';
 
   try {
     const siteSettings = await SiteSettings.getSiteSettings();
-    title = siteSettings.siteName || title;
-    description = siteSettings.slogan || siteSettings.description || '';
+    const seoConfig = siteSettings.seoConfig || {};
+    title = siteSettings.siteName ? `${siteSettings.siteName}${seoConfig.metaTitleSuffix || ''}` : title;
+    description = seoConfig.globalMetaDescription || siteSettings.slogan || siteSettings.description || '';
   } catch {
     // fallback to defaults
   }
@@ -23,14 +23,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   return {
     title,
     description,
-    alternates: {
-      canonical,
-      languages: {
-        'tr-TR': `${SITE_URL}/tr`,
-        'es-ES': `${SITE_URL}/es`,
-        'x-default': `${SITE_URL}/tr`,
-      },
-    },
+    alternates: generateAlternates('/tr'),
     openGraph: {
       title,
       description,

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 362 232" width="362" height="232" role="img" aria-label="Fixral Bracket">
+<title>Fixral — Bracket</title>
+<path d="M4,52L4,4L52,4L52,13L13,13L13,52Z" fill="#F97316"/><path d="M358,52L358,4L310,4L310,13L349,13L349,52Z" fill="#F97316"/><path d="M4,180L4,228L52,228L52,219L13,219L13,180Z" fill="#F97316"/><path d="M358,180L358,228L310,228L310,219L349,219L349,180Z" fill="#F97316"/>
+<g transform="translate(36,36)">
+<g fill="#101828">
+  <polygon points="0,0 90,0 118,28 0,28"/>
+  <rect x="0" y="0" width="28" height="160"/>
+  <polygon points="0,66 86,66 114,94 0,94"/>
+</g>
+<g transform="translate(90,0)">
+  <polygon points="0,0 40,0 100,60 160,0 200,0 120,80 200,160 160,160 100,100 40,160 0,160 80,80" fill="#101828"/>
+  <polygon points="80,80 100,100 40,160 0,160" fill="#F97316"/>
+</g></g>
+</svg>

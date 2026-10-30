@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import Category from '@/models/Category';
 import { authOptions } from '@/lib/auth';
 import slugify from 'slugify';
+import { withFxRevalidate } from '@/lib/fx-revalidate';
 
 /**
  * GET /api/admin/categories - List all categories for admin
@@ -33,7 +34,7 @@ export async function GET(_req: NextRequest) {
 /**
  * POST /api/admin/categories - Create a new category
  */
-export async function POST(req: NextRequest) {
+async function POST__handler(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
 
@@ -78,3 +79,6 @@ export async function POST(req: NextRequest) {
     );
   }
 }
+
+// Panel → site canlı tazeleme (redesign 2026)
+export const POST = withFxRevalidate(POST__handler);

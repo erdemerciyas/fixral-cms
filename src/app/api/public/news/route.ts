@@ -56,7 +56,7 @@ export async function GET(request: NextRequest) {
 
     // Only show active articles to non-authenticated users
     const session = await getServerSession(authOptions);
-    if (!session) {
+    if (session?.user?.role !== 'admin') {
       query.isActive = true;
     } else if (status) {
       query.isActive = status === 'published';
@@ -145,7 +145,7 @@ export async function POST(request: NextRequest) {
   try {
     // Check authentication
     const session = await getServerSession(authOptions);
-    if (!session || !session.user) {
+    if (!session || session.user?.role !== 'admin') {
       return NextResponse.json(
         {
           success: false,

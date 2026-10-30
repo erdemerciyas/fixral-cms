@@ -1,0 +1,83 @@
+/* FIXRAL web — sayfa yükleyici ve rota geçişi (FxRouteLoader).
+ * İki panel karşılıklı ok gibi gelir: sol ">" (açık kenar), sağ "<" (turuncu kenar).
+ * Uçların buluştuğu dikiş, 3D işaretin X çarpışma noktasıyla hizalıdır:
+ * işaret genişliği clamp(180px, 34vw, 340px), çarpışma noktası merkezden %23.08 sağda
+ * (three/loader.ts ile eş). Tema bağımsız: her zaman marka koyu zemini. */
+@layer components {
+
+.fx-loader {
+  --fx-ld-mark: clamp(180px, 34vw, 340px);
+  --fx-ld-x: calc(50% + var(--fx-ld-mark) * .2308);
+  --fx-ld-tip: min(22vh, 18vw);
+  --fx-ld-edge: 4px;
+  position: fixed; inset: 0; z-index: 9990; overflow: hidden; pointer-events: none; visibility: hidden;
+}
+.fx-loader:not([data-state="idle"]) { visibility: visible; pointer-events: auto; }
+.fx-loader[data-state="reveal"] { pointer-events: none; }
+/* JS hiç çalışmazsa açılış perdesi sayfayı kilitlemesin */
+.fx-loader[data-state="boot"] { animation: fx-loader-failsafe 0s linear 8s forwards; }
+@keyframes fx-loader-failsafe { to { visibility: hidden; pointer-events: none; } }
+
+.fx-loader__bg { position: absolute; inset: 0; background: radial-gradient(60% 55% at var(--fx-ld-x) 50%, #1b2436 0%, #0b111d 72%); opacity: 0; transition: opacity .35s ease; }
+.fx-loader:is([data-state="boot"], [data-state="hold"]) .fx-loader__bg { opacity: 1; transition: none; }
+.fx-loader[data-state="cover"] .fx-loader__bg { opacity: 1; transition: opacity .25s ease .32s; }
+
+/* Paneller: dış katman kenar rengi, ::before aynı oku kenar kalınlığı kadar içeride çizer */
+.fx-loader__panel { position: absolute; top: 0; bottom: 0; will-change: transform; transition: transform .62s cubic-bezier(.55, 0, .85, .25); }
+.fx-loader__panel::before { content: ''; position: absolute; inset: 0; }
+.fx-loader__panel--l {
+  left: 0; width: var(--fx-ld-x); transform: translateX(-101%);
+  background: rgba(233, 236, 240, .85);
+  clip-path: polygon(0 0, calc(100% - var(--fx-ld-tip)) 0, 100% 50%, calc(100% - var(--fx-ld-tip)) 100%, 0 100%);
+}
+.fx-loader__panel--l::before {
+  background: #101828;
+  clip-path: polygon(0 0, calc(100% - var(--fx-ld-tip) - var(--fx-ld-edge)) 0, calc(100% - var(--fx-ld-edge)) 50%, calc(100% - var(--fx-ld-tip) - var(--fx-ld-edge)) 100%, 0 100%);
+}
+.fx-loader__panel--r {
+  right: 0; width: calc(100% - var(--fx-ld-x)); transform: translateX(101%);
+  background: #F97316;
+  clip-path: polygon(var(--fx-ld-tip) 0, 100% 0, 100% 100%, var(--fx-ld-tip) 100%, 0 50%);
+}
+.fx-loader__panel--r::before {
+  background: #0d1424;
+  clip-path: polygon(calc(var(--fx-ld-tip) + var(--fx-ld-edge)) 0, 100% 0, 100% 100%, calc(var(--fx-ld-tip) + var(--fx-ld-edge)) 100%, var(--fx-ld-edge) 50%);
+}
+.fx-loader:is([data-state="boot"], [data-state="cover"], [data-state="hold"]) .fx-loader__panel { transform: none; }
+.fx-loader[data-state="boot"] .fx-loader__panel { transition: none; }
+.fx-loader[data-state="reveal"] .fx-loader__panel { transition: transform .76s cubic-bezier(.7, 0, .2, 1); }
+
+.fx-loader__stage { position: absolute; inset: 0; }
+.fx-loader__stage canvas { display: block; width: 100%; height: 100%; }
+
+.fx-loader__brand { position: absolute; left: 50%; top: calc(50% + var(--fx-ld-mark) * .2473 + 40px); transform: translateX(-50%); display: grid; justify-items: center; gap: 14px; opacity: 0; transition: opacity .3s ease; }
+.fx-loader[data-state="boot"] .fx-loader__brand { opacity: 1; }
+.fx-loader__word { width: clamp(120px, 16vw, 180px); height: auto; color: #e9ecf0; }
+.fx-loader__bar { position: relative; width: clamp(120px, 16vw, 180px); height: 2px; overflow: hidden; background: rgba(233, 236, 240, .12); }
+.fx-loader__bar::after { content: ''; position: absolute; inset: 0; background: #F97316; transform-origin: left; animation: fx-loader-bar 1.5s cubic-bezier(.65, 0, .35, 1) forwards; }
+@keyframes fx-loader-bar { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+/* Soft mod: daha önce açılmış bölümler. Paneller/3D yok; tema zemininde hafif
+ * buzlu perde + küçük işaret (oklar kısa mesafeden kenetlenir). 140ms gecikme:
+ * hızlı geçişlerde perde hiç görünmez. */
+.fx-loader__soft { position: absolute; left: 50%; top: 50%; width: 56px; height: auto; color: var(--fx-ink, #e9ecf0); opacity: 0; transform: translate(-50%, -50%); transition: opacity .2s ease; }
+.fx-loader__soft path { transition: transform .45s var(--fx-ease, cubic-bezier(.16, 1, .3, 1)); }
+/* path transform'u viewBox (364) biriminde: 150 ≈ 23px ekranda */
+.fx-loader__soft path:first-child { transform: translateX(-150px); }
+.fx-loader__soft path:not(:first-child) { transform: translateX(150px); }
+.fx-loader[data-mode="soft"] .fx-loader__panel,
+.fx-loader[data-mode="soft"] .fx-loader__stage { display: none; }
+.fx-loader[data-mode="soft"] .fx-loader__bg { background: color-mix(in srgb, var(--fx-bg, #101828) 55%, transparent); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.fx-loader[data-mode="soft"][data-state="cover"] .fx-loader__bg { opacity: 1; transition: opacity .25s ease .14s; }
+.fx-loader[data-mode="soft"][data-state="cover"] .fx-loader__soft { opacity: 1; transition-delay: .14s; animation: fx-loader-soft 1.2s ease-in-out .6s infinite; }
+.fx-loader[data-mode="soft"][data-state="cover"] .fx-loader__soft path { transform: none; transition-delay: .14s; }
+@keyframes fx-loader-soft { 50% { opacity: .55; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .fx-loader__soft path { transition: none; }
+  .fx-loader[data-state] .fx-loader__panel { transform: none; opacity: 0; transition: opacity .3s ease; }
+  .fx-loader:is([data-state="boot"], [data-state="cover"], [data-state="hold"]) .fx-loader__panel { opacity: 1; }
+  .fx-loader__bar::after { animation: none; }
+}
+
+}

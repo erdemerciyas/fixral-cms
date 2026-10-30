@@ -137,7 +137,8 @@ export async function GET(request: Request) {
     const categorySlugs = searchParams.get('categories'); // Çoklu kategori desteği
     const featured = searchParams.get('featured'); // Featured projeler
     const random = searchParams.get('random'); // Random sıralama
-    const limit = searchParams.get('limit'); // Limit
+    // Prisma adapter'ı $sample'ı yok sayar; limit her iki dalda da 100 ile sınırlanır
+    const limit = String(Math.min(Math.max(parseInt(searchParams.get('limit') || '100', 10) || 100, 1), 100));
     
     const query: Record<string, any> = {};
     
@@ -174,7 +175,6 @@ export async function GET(request: Request) {
       // MongoDB'de rastgele sıralama için $sample kullan
       const portfolios = await Portfolio.aggregate([
         { $match: query },
-        { $sample: { size: limit ? parseInt(limit) : 1000 } }, // Limit varsa o kadar, yoksa 1000
         {
           $lookup: {
             from: 'categories',
@@ -197,9 +197,11 @@ export async function GET(request: Request) {
           }
         }
       ]);
-      
-      const response = NextResponse.json(portfolios);
-      
+
+      const response = NextResponse.json(
+        portfolios.sort(() => Math.random() - 0.5).slice(0, parseInt(limit))
+      );
+
       // Random projeler için cache'i tamamen devre dışı bırak
       response.headers.set('Cache-Control', 'no-cache, no-store, must-revalidate');
       response.headers.set('Pragma', 'no-cache');

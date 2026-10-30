@@ -72,9 +72,9 @@ export default function AdminNewsPage() {
         const mappedData = data.map((item: any) => ({
           ...item,
           // Robust title extraction
-          title: item.translations?.tr?.title || item.translations?.es?.title || item.translations?.en?.title || item.title || item.name || 'Başlıksız Haber',
+          title: item.translations?.tr?.title || item.translations?.en?.title || item.title || item.name || 'Başlıksız Haber',
           // Robust excerpt extraction
-          excerpt: item.translations?.tr?.excerpt || item.translations?.es?.excerpt || item.excerpt || 'Özet bulunmuyor.',
+          excerpt: item.translations?.tr?.excerpt || item.excerpt || 'Özet bulunmuyor.',
           // Robust image extraction
           featuredImage: item.featuredImage?.url || (typeof item.featuredImage === 'string' ? item.featuredImage : '') || '',
           // Ensure status exists

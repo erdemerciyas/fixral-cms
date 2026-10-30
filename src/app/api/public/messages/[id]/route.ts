@@ -55,7 +55,7 @@ export async function PUT(request: Request, props: { params: Promise<{ id: strin
   try {
     const session = await getServerSession(authOptions);
     
-    if (!session?.user?.email) {
+    if (!session?.user || session.user.role !== 'admin') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 

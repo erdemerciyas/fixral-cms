@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 290 160" width="290" height="160" role="img" aria-label="Fixral Scan">
+<title>Fixral — Scan</title>
+<defs><clipPath id="sc-fx-scan">
+<polygon points="0,0 90,0 118,28 0,28"/>
+<rect x="0" y="0" width="28" height="160"/>
+<polygon points="0,66 86,66 114,94 0,94"/>
+<polygon points="0,0 40,0 100,60 160,0 200,0 120,80 200,160 160,160 100,100 40,160 0,160 80,80" transform="translate(90,0)"/></clipPath></defs>
+<g clip-path="url(#sc-fx-scan)">
+  <rect x="-10" y="-10" width="320" height="190" fill="#101828"/>
+  <rect x="-10" y="3.0" width="320" height="2.8" fill="#F97316" opacity="0.22"/><rect x="-10" y="10.6" width="320" height="2.8" fill="#F97316" opacity="0.27"/><rect x="-10" y="18.2" width="320" height="2.8" fill="#F97316" opacity="0.32"/><rect x="-10" y="25.8" width="320" height="2.8" fill="#F97316" opacity="0.36"/><rect x="-10" y="33.4" width="320" height="2.8" fill="#F97316" opacity="0.41"/><rect x="-10" y="41.0" width="320" height="2.8" fill="#F97316" opacity="0.46"/><rect x="-10" y="48.6" width="320" height="2.8" fill="#F97316" opacity="0.51"/><rect x="-10" y="56.2" width="320" height="2.8" fill="#F97316" opacity="0.56"/><rect x="-10" y="63.8" width="320" height="2.8" fill="#F97316" opacity="0.60"/><rect x="-10" y="71.4" width="320" height="2.8" fill="#F97316" opacity="0.65"/><rect x="-10" y="79.0" width="320" height="2.8" fill="#F97316" opacity="0.70"/><rect x="-10" y="86.6" width="320" height="2.8" fill="#F97316" opacity="0.75"/><rect x="-10" y="94.2" width="320" height="2.8" fill="#F97316" opacity="0.80"/>
+  <rect x="-10" y="102" width="320" height="9" fill="#F97316"/>
+</g>
+</svg>

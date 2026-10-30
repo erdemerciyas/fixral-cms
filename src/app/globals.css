@@ -3,6 +3,15 @@
 /* TipTap Editor Styles */
 @import '../styles/editor.css' layer(utilities);
 
+/* FIXRAL web tasarım katmanı (public site, redesign 2026) */
+@import '../styles/fx-web.css';
+@import '../styles/fx-services.css';
+@import '../styles/fx-portfolio.css';
+@import '../styles/fx-news.css';
+@import '../styles/fx-contact.css';
+@import '../styles/fx-3d.css';
+@import '../styles/fx-loader.css';
+
 /* Eski tailwind.config.js eritildi: plugin'ler @plugin ile, token'lar @theme ile
    buradan yönetilir. Tek doğruluk kaynağı bu dosyadır. */
 @plugin 'tailwindcss-animate';
@@ -18,11 +27,12 @@
 @theme {
   /* Tipografi: Barlow UI/display; Geist Mono birinci sınıf teknik aksan fontu
      (ölçümler, etiketler, statlar, eyebrow'lar, nav meta). */
-  --font-sans:
-    var(--font-barlow), var(--font-geist-sans), system-ui, sans-serif;
-  --font-display:
-    var(--font-barlow), var(--font-geist-sans), system-ui, sans-serif;
-  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
+  /* Scope'a göre değişen aileler: admin Barlow/Geist, public site
+     marka sistemi (Inter gövde, Space Grotesk başlık, JetBrains Mono teknik).
+     Değerler :root ve .public-theme bloklarındaki --font-ui-* değişkenlerinden gelir. */
+  --font-sans: var(--font-ui-sans);
+  --font-display: var(--font-ui-display);
+  --font-mono: var(--font-ui-mono);
 }
 
 /* ── @theme inline — scope başına swap olan semantik token'lar.
@@ -135,9 +145,11 @@
 }
 
 @utility btn {
-  /* Buttons -- taste-skill: Interactive UI States + Active Press Feedback
-   * Radius token'dan gelir: public 8px, admin 12px. */
-  @apply inline-flex items-center justify-center px-6 py-3 text-sm font-medium cursor-pointer focus:outline-hidden transform-gpu;
+  /* Buttons — Figma: 44px, Barlow Medium 14/20 +0.01em, radius/control */
+  @apply inline-flex items-center justify-center px-6 text-sm font-medium cursor-pointer focus:outline-hidden transform-gpu;
+  min-height: 44px;
+  letter-spacing: 0.01em;
+  line-height: 1.25rem;
   border-radius: var(--radius-button);
   transition: all 150ms ease-in-out;
 
@@ -150,7 +162,7 @@
   @apply btn bg-primary text-primary-foreground border-none hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 w-auto;
 
   &:hover {
-    box-shadow: 0 4px 16px hsl(var(--brand-primary-500-hsl) / 0.3);
+    box-shadow: none;
   }
 }
 
@@ -159,7 +171,11 @@
 }
 
 @utility btn-outline {
-  @apply inline-flex items-center justify-center px-8 py-3.5 bg-transparent border border-primary/20 text-foreground font-medium focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 transform-gpu;
+  @apply inline-flex items-center justify-center px-8 bg-transparent border border-primary/20 text-foreground font-medium focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 transform-gpu;
+  min-height: 44px;
+  letter-spacing: 0.01em;
+  line-height: 1.25rem;
+  font-size: 0.875rem;
   border-radius: var(--radius-button);
   transition: all 150ms ease-in-out;
 
@@ -173,7 +189,11 @@
 }
 
 @utility btn-ghost {
-  @apply inline-flex items-center justify-center px-6 py-3 bg-transparent text-muted-foreground hover:text-foreground hover:bg-muted font-medium focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 transform-gpu;
+  @apply inline-flex items-center justify-center px-6 bg-transparent text-muted-foreground hover:text-foreground hover:bg-muted font-medium focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 transform-gpu;
+  min-height: 44px;
+  letter-spacing: 0.01em;
+  line-height: 1.25rem;
+  font-size: 0.875rem;
   border-radius: var(--radius-button);
   transition: all 150ms ease-in-out;
 
@@ -183,15 +203,14 @@
 }
 
 @utility card {
-  /* Cards -- flat: dinlenimde gölge yok, hover'da tek yumuşak lift */
+  /* Cards — Figma: hairline + zemin; hover'da 1px orange border, lift yok */
   @apply bg-card text-card-foreground p-6 border border-border;
   border-radius: var(--radius-card);
   box-shadow: none;
-  transition: all 150ms ease-in-out;
+  transition: border-color 150ms ease-in-out;
 
   &:hover {
-    box-shadow: var(--shadow-lg);
-    transform: translateY(-2px);
+    border-color: hsl(var(--primary));
   }
 }
 
@@ -199,11 +218,10 @@
   @apply bg-card text-card-foreground p-8 border border-border;
   border-radius: var(--radius-card);
   box-shadow: none;
-  transition: all 150ms ease-in-out;
+  transition: border-color 150ms ease-in-out;
 
   &:hover {
-    box-shadow: var(--shadow-lg);
-    transform: translateY(-2px);
+    border-color: hsl(var(--primary));
   }
 }
 
@@ -249,13 +267,16 @@
 }
 
 @utility input-field {
-  /* Form Elements -- token-based, dark/light uyumlu; radius token'dan gelir */
-  @apply w-full bg-background border border-input px-3 py-3 text-foreground placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-ring focus-visible:outline-hidden focus-visible:ring-offset-2 outline-hidden transition-all duration-200 font-sans text-base;
+  /* Form Elements — Figma: 48px, radius/control 2px */
+  @apply w-full bg-background border border-input px-3 text-foreground placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-ring focus-visible:outline-hidden focus-visible:ring-offset-2 outline-hidden transition-all duration-200 font-sans text-base;
+  min-height: 48px;
+  line-height: 1.625rem;
   border-radius: var(--radius-input);
 }
 
 @utility label-text {
   @apply block text-sm font-medium text-foreground mb-2 font-sans;
+  line-height: 1.25rem;
 }
 
 @utility textarea-field {
@@ -268,105 +289,381 @@
 }
 
 @utility text-display {
-  /* Typography -- taste-skill: Deterministic Typography */
-  @apply text-5xl md:text-7xl lg:text-8xl font-bold;
+  /* Display/Hero — Barlow Bold 72/76 −0.045em (Figma type ramp) */
+  @apply font-bold;
+  font-size: 2.25rem;
+  line-height: 1.05;
   letter-spacing: -0.045em;
-  line-height: 1;
   padding: 0.1em 0;
   text-wrap: balance;
   font-display: swap;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  @media (min-width: 768px) {
+    font-size: 3.75rem;
+    line-height: 1.05;
+  }
+
+  @media (min-width: 1024px) {
+    font-size: 4.5rem;
+    line-height: 4.75rem;
+  }
 }
 
 @utility hero-title {
-  @apply text-4xl md:text-6xl lg:text-7xl font-bold;
+  /* Display/Hero */
+  @apply font-bold;
+  font-size: 2.25rem;
+  line-height: 1.05;
   letter-spacing: -0.045em;
-  line-height: 1;
   padding: 0.15em 0;
+  text-wrap: balance;
   font-display: swap;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  @media (min-width: 768px) {
+    font-size: 3.75rem;
+  }
+
+  @media (min-width: 1024px) {
+    font-size: 4.5rem;
+    line-height: 4.75rem;
+  }
 }
 
 @utility hero-title-responsive {
-  @apply text-4xl md:text-6xl xl:text-7xl font-bold;
-  letter-spacing: -0.04em;
-  line-height: 1.05;
-  padding: 0.15em 0;
+  @apply hero-title;
   word-spacing: -0.1em;
   hyphens: none;
-  font-display: swap;
-  text-rendering: optimizeLegibility;
 }
 
 @utility hero-title-compact {
-  @apply text-3xl md:text-5xl xl:text-5xl font-bold;
+  /* Display/Page Compact — Barlow Bold 40/44 −0.03em */
+  @apply font-bold;
+  font-size: 2rem;
+  line-height: 2.25rem;
   letter-spacing: -0.03em;
-  line-height: 1.1;
   padding: 0.15em 0;
+  text-wrap: balance;
   font-display: swap;
   text-rendering: optimizeLegibility;
+
+  @media (min-width: 768px) {
+    font-size: 2.5rem;
+    line-height: 2.75rem;
+  }
 }
 
 @utility page-title {
-  @apply text-4xl md:text-5xl lg:text-6xl font-bold;
+  /* Display/Page — Barlow Bold 56/62 −0.03em */
+  @apply font-bold;
+  font-size: 2rem;
+  line-height: 1.15;
   letter-spacing: -0.03em;
-  line-height: 1.1;
   padding: 0.05em 0;
+  text-wrap: balance;
   font-display: swap;
   text-rendering: optimizeLegibility;
+
+  @media (min-width: 768px) {
+    font-size: 2.5rem;
+    line-height: 2.75rem;
+  }
+
+  @media (min-width: 1024px) {
+    font-size: 3.5rem;
+    line-height: 3.875rem;
+  }
 }
 
 @utility section-title {
-  @apply text-3xl md:text-5xl font-bold;
+  /* Heading/H2 — Barlow SemiBold 40/48 −0.035em */
+  font-weight: 600;
+  font-size: 1.75rem;
+  line-height: 1.2;
   letter-spacing: -0.035em;
-  line-height: 1.1;
   padding: 0.05em 0;
+  text-wrap: balance;
   font-display: swap;
   text-rendering: optimizeLegibility;
+
+  @media (min-width: 768px) {
+    font-size: 2.5rem;
+    line-height: 3rem;
+  }
 }
 
 @utility section-subtitle {
-  @apply text-base md:text-lg font-normal text-muted-foreground;
-  line-height: 1.6;
+  /* Body/Lead — Barlow Regular 18/28 */
+  @apply font-normal text-muted-foreground;
+  font-size: 1.125rem;
+  line-height: 1.75rem;
   max-width: 65ch;
   padding: 0.05em 0;
+  text-wrap: pretty;
   font-display: swap;
   text-rendering: optimizeLegibility;
 }
 
 @utility text-body {
-  @apply text-base leading-relaxed text-muted-foreground;
+  /* Body/Regular — Barlow Regular 16/26 */
+  @apply text-muted-foreground;
+  font-size: 1rem;
+  line-height: 1.625rem;
   max-width: 65ch;
+  text-wrap: pretty;
 }
 
 @utility text-small {
-  @apply text-sm leading-relaxed text-muted-foreground;
+  /* Body/Small — Barlow Regular 14/22 */
+  @apply text-muted-foreground;
+  font-size: 0.875rem;
+  line-height: 1.375rem;
 }
 
 @utility text-heading {
-  font-size: clamp(1.75rem, 3vw, 2.5rem);
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 1.15;
+  /* Heading/H3 — Barlow SemiBold 22/28 −0.02em */
+  font-size: 1.375rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.75rem;
   text-wrap: balance;
 }
 
 @utility text-subheading {
-  font-size: clamp(1.125rem, 1.5vw, 1.5rem);
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  line-height: 1.3;
+  /* Heading/H4 — Barlow Medium 16/22 −0.01em */
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.375rem;
 }
 
 @utility text-caption {
   font-size: 0.875rem;
   font-weight: 400;
-  line-height: 1.5;
+  line-height: 1.375rem;
   color: hsl(var(--muted-foreground));
+}
+
+@utility public-prose {
+  /* Zengin metin (haber + proje gövdesi) — Figma §3.2, kolon 768px */
+  max-width: 768px;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.625rem;
+  color: hsl(var(--muted-foreground));
+  text-wrap: pretty;
+
+  & > *:first-child {
+    margin-top: 0;
+  }
+
+  & > *:last-child {
+    margin-bottom: 0;
+  }
+
+  & h1 {
+    font-family: var(--font-display);
+    font-size: 1.375rem;
+    font-weight: 600;
+    line-height: 1.75rem;
+    letter-spacing: -0.02em;
+    color: hsl(var(--foreground));
+    text-wrap: balance;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+  }
+
+  & h2 {
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 2.125rem;
+    letter-spacing: -0.02em;
+    color: hsl(var(--foreground));
+    text-wrap: balance;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+  }
+
+  & h3,
+  & h4 {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.375rem;
+    letter-spacing: -0.01em;
+    color: hsl(var(--foreground));
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+  }
+
+  & h5,
+  & h6 {
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    line-height: 1rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: hsl(var(--muted-foreground));
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  & p {
+    font-size: 1rem;
+    line-height: 1.625rem;
+    margin-bottom: 1.25rem;
+  }
+
+  & a {
+    color: hsl(var(--accent-foreground));
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+  }
+
+  & a:hover {
+    color: hsl(var(--primary));
+  }
+
+  & strong,
+  & b {
+    color: hsl(var(--foreground));
+    font-weight: 600;
+  }
+
+  & em,
+  & i {
+    font-style: italic;
+  }
+
+  & blockquote {
+    border-left: 3px solid hsl(var(--primary));
+    padding-left: 1.25rem;
+    margin: 1.5rem 0;
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+    font-style: italic;
+    color: hsl(var(--muted-foreground));
+  }
+
+  & code {
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 0.8125rem;
+    line-height: 1.25rem;
+    background: hsl(var(--accent));
+    color: hsl(var(--accent-foreground));
+    padding: 0.125rem 0.375rem;
+    border-radius: 2px;
+  }
+
+  & pre {
+    background: var(--surface-1);
+    border: 1px solid var(--line);
+    padding: 1.25rem;
+    margin: 1.5rem 0;
+    overflow-x: auto;
+    border-radius: 4px;
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 0.8125rem;
+    line-height: 1.375rem;
+    color: hsl(var(--foreground));
+  }
+
+  & pre code {
+    background: none;
+    color: inherit;
+    padding: 0;
+    border-radius: 0;
+    font-size: inherit;
+  }
+
+  & ul,
+  & ol {
+    font-size: 1rem;
+    line-height: 1.625rem;
+    margin: 0 0 1.25rem;
+    padding-left: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  & ul {
+    list-style-type: disc;
+  }
+
+  & ol {
+    list-style-type: decimal;
+  }
+
+  & ul > li::marker,
+  & ol > li::marker {
+    color: hsl(var(--primary));
+  }
+
+  & img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+    border: 1px solid var(--line);
+    margin: 0 0 1.5rem;
+  }
+
+  & figure {
+    margin: 0 0 1.5rem;
+  }
+
+  & figcaption {
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 0.625rem;
+    line-height: 0.875rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: hsl(var(--muted-foreground));
+    margin-top: 0.5rem;
+  }
+
+  & table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 0 1.5rem;
+    font-size: 1rem;
+    line-height: 1.625rem;
+  }
+
+  & th {
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 0.625rem;
+    line-height: 0.875rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 500;
+    text-align: left;
+    color: hsl(var(--muted-foreground));
+    border: 1px solid var(--line);
+    padding: 0.5rem 0.75rem;
+    background: var(--surface-2);
+  }
+
+  & td {
+    border: 1px solid var(--line);
+    padding: 0.5rem 0.75rem;
+    color: hsl(var(--foreground));
+  }
+
+  & hr {
+    border: 0;
+    border-top: 1px solid var(--line);
+    margin: 2rem 0;
+  }
 }
 
 @utility text-gradient {
@@ -483,15 +780,16 @@
 }
 
 @utility eyebrow-tag {
-  /* Eyebrow tag -- taste-skill: Spatial Rhythm */
-  @apply inline-flex items-center rounded-full px-3 py-1 text-[11px] uppercase font-medium border border-primary/10 text-primary bg-primary/5;
-  letter-spacing: 0.15em;
+  /* Tech/Label — Geist Mono Medium 11/16 +0.14em */
+  @apply inline-flex items-center gap-2 font-mono text-[11px] uppercase font-medium text-muted-foreground;
+  letter-spacing: 0.14em;
+  line-height: 1rem;
 }
 
 @utility section-heading {
-  /* Section heading — shared typographic base */
-  font-weight: 700;
-  letter-spacing: -0.03em;
+  /* Heading/H2 base */
+  font-weight: 600;
+  letter-spacing: -0.035em;
   color: var(--foreground);
   text-wrap: balance;
 }
@@ -637,26 +935,32 @@
 
   :root {
     /* Static brand theme colors — Printables mantığı: 10 kademeli ölçek, ana renk #FA6831 */
-    --theme-primary: #fa6831;
-    --theme-accent: #fa6831;
+    --theme-primary: #f97316;
+    --theme-accent: #f97316;
     --theme-background: #ffffff;
 
-    /* Brand Color System — Printables turuncu ölçeği (hue 16–18 ailesi) */
-    --brand-primary-50: #fff0eb; /* faint — en açık tint */
-    --brand-primary-100: #ffe1d6; /* subtle — seçili chip bg, hover dolgu */
-    --brand-primary-200: #fec7b3;
-    --brand-primary-300: #fda686; /* muted — aktif açık bg */
-    --brand-primary-400: #fc895f;
-    --brand-primary-500: #fa6831; /* MAIN — buton, marka (Printables turuncusu) */
-    --brand-primary-600: #eb6f40; /* strong — hover (Printables hover turuncusu) */
-    --brand-primary-700: #c24e1e; /* bold — active, link metni (beyaz zeminde 4.77:1 AA) */
-    --brand-primary-800: #9e3f17; /* subtle tint üzeri metin (AA) */
-    --brand-primary-900: #7a3011;
+    /* Brand Color System — FIXRAL turuncusu (#F97316, marka sistemi brand-accent).
+       Turuncu üzerine metin koyu (#101828) yazılır; beyaz yazı 2.8:1 ile okunmaz. */
+    --brand-primary-50: #fff7ed;
+    --brand-primary-100: #ffedd5;
+    --brand-primary-200: #fed7aa;
+    --brand-primary-300: #fdba74;
+    --brand-primary-400: #fb923c; /* koyu zeminde turuncu metin (accent-text dark) */
+    --brand-primary-500: #f97316; /* MAIN — Fixral Turuncu */
+    --brand-primary-600: #ea580c; /* açık zeminde turuncu grafik (3:1) */
+    --brand-primary-700: #c2410c; /* açık zeminde turuncu metin (5.2:1) */
+    --brand-primary-800: #9a3412;
+    --brand-primary-900: #7c2d12;
     --brand-primary: var(--brand-primary-500);
 
+    /* Marka çekirdek renkleri (marka sistemi) */
+    --brand-ink: #101828;
+    --brand-graphite: #3a3f46;
+    --brand-light: #f3f4f6;
+
     /* HSL kanal tokenları — alpha ile kullanım için: hsl(var(--brand-primary-500-hsl) / 0.35) */
-    --brand-primary-400-hsl: 16 96% 68%; /* #FC895F */
-    --brand-primary-500-hsl: 16 95% 59%; /* #FA6831 */
+    --brand-primary-400-hsl: 27 96% 61%; /* #FB923C */
+    --brand-primary-500-hsl: 25 95% 53%; /* #F97316 */
 
     /* Font variables */
     --font-geist-sans:
@@ -666,6 +970,11 @@
     /* Thingiverse mantığı: tek kurumsal sans (Barlow) tüm arayüzde */
     --font-barlow: 'Barlow', var(--font-geist-sans);
     --font-inter: var(--font-barlow);
+
+    /* Admin yazı aileleri (public site .public-theme içinde ezer) */
+    --font-ui-sans: var(--font-barlow), var(--font-geist-sans), system-ui, sans-serif;
+    --font-ui-display: var(--font-barlow), var(--font-geist-sans), system-ui, sans-serif;
+    --font-ui-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
 
     /* Premium Motion */
     --ease-premium: cubic-bezier(0.32, 0.72, 0, 1);
@@ -810,93 +1119,121 @@
     --page-bg: #f8f6f4;
   }
 
-  /* ── Public Light Theme — Precision Engineering: sıcak kağıt beyazları ──
- * Sayfa zemini sıcak kağıt (#F9F8F6), kart beyaz, hairline warm-gray border.
- * Derinlik border + zemin farkından gelir; gölgeler near-flat.
- * Radius: teknik skala — kontroller 2px, kartlar 4px, overlay'ler 8px.
+  /* ── Public Light Theme — FIXRAL marka sistemi (açık) ──
+ * Zemin beyaz / brand-light (#F3F4F6), metin brand-primary (#101828).
+ * Turuncu sayfada tek işte: birincil buton, ikon, vurgu. Açık zeminde turuncu
+ * metin #C2410C (5.2:1); turuncu dolgu üzerinde koyu metin (#101828, 6.3:1).
+ * Header, hero, süreç, teklif bandı ve footer `public-theme public-dark` ada
+ * tekniğiyle her temada koyudur.
  */
   .public-theme {
-    /* shadcn/ui tokens — precision light paleti */
-    --background: 40 20% 97%; /* #F9F8F6 — sıcak kağıt sayfa zemini */
-    --foreground: 24 10% 12%; /* #221F1C — sıcak ink (15.4:1) */
-    --card: 0 0% 100%; /* #FFFFFF — kart katmanı */
-    --card-foreground: 24 10% 12%;
+    --background: 0 0% 100%; /* #FFFFFF — surface */
+    --foreground: 221 43% 11%; /* #101828 — ink (17.7:1) */
+    --card: 0 0% 100%;
+    --card-foreground: 221 43% 11%;
     --popover: 0 0% 100%;
-    --popover-foreground: 24 10% 12%;
-    --primary: 16 95% 59%; /* #FA6831 — MAIN (dolgu rengi) */
-    --primary-foreground: 0 0% 11%; /* #1C1C1C — turuncu üzeri koyu ink (5.75:1) */
-    --secondary: 40 14% 93%; /* #EFEDE9 — bölüm bandı */
-    --secondary-foreground: 24 10% 12%;
-    --muted: 40 14% 94%; /* #F1EFEB */
-    --muted-foreground: 24 6% 40%; /* #6C645F — ikincil metin (5.0:1+) */
-    --accent: 16 100% 95%; /* #FFECE6 — brand subtle, hover/seçili dolgu */
-    --accent-foreground: 18 75% 35%; /* #9E3F17 — subtle üzeri metin + link ink */
-    --destructive: 0 64% 48%; /* #CB2C2C */
+    --popover-foreground: 221 43% 11%;
+    --primary: 25 95% 53%; /* #F97316 — Fixral Turuncu (dolgu) */
+    --primary-foreground: 221 43% 11%; /* #101828 — turuncu üzeri koyu (6.3:1) */
+    --secondary: 220 14% 96%; /* #F3F4F6 — surface-alt / bölüm bandı */
+    --secondary-foreground: 221 43% 11%;
+    --muted: 220 13% 92%; /* #E9EBEF — batık zemin */
+    --muted-foreground: 215 14% 34%; /* #4B5563 — ikincil metin (7.5:1) */
+    --accent: 33 100% 96%; /* #FFF7ED — turuncu tint, hover/seçili */
+    --accent-foreground: 17 88% 40%; /* #C2410C — accent-text (5.2:1) */
+    --destructive: 0 72% 42%;
     --destructive-foreground: 0 0% 100%;
-    --success: 88 90% 23%; /* #3E6F06 */
+    --success: 142 72% 26%;
     --success-foreground: 0 0% 100%;
-    --warning: 40 90% 30%; /* #916308 */
+    --warning: 32 95% 30%;
     --warning-foreground: 0 0% 100%;
-    --info: 217 80% 48%; /* #1863DC */
+    --info: 217 80% 45%;
     --info-foreground: 0 0% 100%;
-    --border: 40 12% 87%; /* #E2DFD9 — hairline */
-    --input: 40 12% 87%;
-    --ring: 16 92% 52%; /* #F55014 — focus ring (≥ 3.0) */
-    --chart-1: 16 95% 59%;
-    --chart-2: 191 79% 34%;
-    --chart-3: 18 73% 44%;
-    --chart-4: 40 90% 40%;
-    --chart-5: 16 96% 68%;
+    --border: 220 13% 91%; /* #E5E7EB — line */
+    --input: 216 12% 84%; /* #CDD2DA */
+    --ring: 21 90% 48%; /* #EA580C — odak halkası (3:1+) */
+    --chart-1: 25 95% 53%;
+    --chart-2: 221 43% 11%;
+    --chart-3: 17 88% 40%;
+    --chart-4: 215 14% 34%;
+    --chart-5: 27 96% 61%;
 
-    /* Shape dili — teknik skala: kontrol 2px, kart 4px, overlay 8px */
-    --radius: 0.5rem; /* shadcn rounded-lg → 8px (overlay ölçeği) */
-    --radius-button: 2px;
-    --radius-input: 2px;
-    --radius-card: 4px;
-    --radius-overlay: 8px;
+    /* Şekil dili — marka sistemi: rozet/giriş 4px, buton/kart 8px, panel 16px */
+    --radius: 0.5rem;
+    --radius-button: 8px;
+    --radius-input: 4px;
+    --radius-card: 8px;
+    --radius-overlay: 16px;
 
-    /* Yüzey hiyerarşisi: beyaz kart > sıcak kağıt bölüm > batık */
     --surface-1: #ffffff;
-    --surface-2: #f4f2ee;
-    --surface-3: #edeae5;
-    --line: #e2dfd9;
-    --line-strong: #d5d1c9;
-    --line-subtle: #edeae5;
+    --surface-2: #f3f4f6;
+    --surface-3: #e9ebef;
+    --line: #e5e7eb;
+    --line-strong: #cdd2da;
+    --line-subtle: #eef0f3;
 
-    /* Durum renkleri — soft badge zemini, strong vurgu (AA) */
-    --success-soft: #edf7e1;
-    --success-strong: #2e5304;
-    --warning-soft: #fbf2db;
-    --warning-strong: #6d4a06;
-    --danger-soft: #fcebeb;
-    --danger-strong: #9d2222;
-    --info-soft: #e9f1fd;
-    --info-strong: #124aa6;
+    --success-soft: #ecfdf3;
+    --success-strong: #166534;
+    --warning-soft: #fff7ed;
+    --warning-strong: #9a3412;
+    --danger-soft: #fef2f2;
+    --danger-strong: #991b1b;
+    --info-soft: #eff6ff;
+    --info-strong: #1e40af;
 
-    /* Near-flat shadows — dinlenimde yok, hover'da tek yumuşak lift */
-    --shadow-color: 30 10% 8%;
-    --shadow-sm: 0 1px 2px hsl(var(--shadow-color) / 0.05);
-    --shadow-md:
-      0 1px 3px hsl(var(--shadow-color) / 0.08),
-      0 0 1px hsl(var(--shadow-color) / 0.05);
-    --shadow-lg: 0 2px 20px hsl(var(--shadow-color) / 0.12);
-    --shadow-xl:
-      0 8px 32px hsl(var(--shadow-color) / 0.14),
-      0 2px 8px hsl(var(--shadow-color) / 0.06);
+    /* Tek gölge seviyesi (marka sistemi shadow-card) */
+    --shadow-color: 221 43% 11%;
+    --shadow-sm: 0 1px 2px hsl(var(--shadow-color) / 0.06);
+    --shadow-md: 0 1px 2px hsl(var(--shadow-color) / 0.06), 0 4px 12px hsl(var(--shadow-color) / 0.06);
+    --shadow-lg: 0 1px 2px hsl(var(--shadow-color) / 0.06), 0 8px 24px hsl(var(--shadow-color) / 0.08);
+    --shadow-xl: 0 2px 4px hsl(var(--shadow-color) / 0.08), 0 16px 40px hsl(var(--shadow-color) / 0.12);
 
-    /* Gradient overrides — sıcak kağıt nötrleri */
-    --gradient-surface: linear-gradient(180deg, #ffffff 0%, #f4f2ee 100%);
-    --gradient-hero: linear-gradient(
-      135deg,
-      #f9f8f6 0%,
-      #f4f2ee 60%,
-      #edeae5 100%
-    );
+    --gradient-surface: linear-gradient(180deg, #ffffff 0%, #f3f4f6 100%);
+    --gradient-hero: linear-gradient(135deg, #ffffff 0%, #f3f4f6 100%);
+
+    /* FIXRAL web katmanı yardımcıları */
+    --fx-accent-graphic: #ea580c;
+    --fx-scrim-color: rgba(255, 255, 255, 0.82);
+
+    /* Yazı aileleri — marka sistemi */
+    --font-ui-sans: var(--font-inter-ui), 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --font-ui-display: var(--font-space-grotesk), 'Space Grotesk', var(--font-inter-ui), system-ui, sans-serif;
+    --font-ui-mono: var(--font-jetbrains-mono), 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
 
     color-scheme: light;
+    --page-bg: #ffffff;
 
-    /* Page background — sıcak kağıt */
-    --page-bg: #f9f8f6;
+    /* Type ramp (marka sistemi: display 64/68, h1 40/46, h2 28/34, h3 20/28) */
+    --type-hero-size: 4.5rem;
+    --type-hero-lh: 4.5rem;
+    --type-hero-tracking: -0.03em;
+    --type-page-size: 3.5rem;
+    --type-page-lh: 3.75rem;
+    --type-page-tracking: -0.02em;
+    --type-compact-size: 2.5rem;
+    --type-compact-lh: 2.875rem;
+    --type-h2-size: 2.5rem;
+    --type-h2-lh: 2.75rem;
+    --type-h2-tracking: -0.015em;
+    --type-h3-size: 1.25rem;
+    --type-h3-lh: 1.75rem;
+    --type-h3-tracking: -0.01em;
+    --type-h4-size: 1rem;
+    --type-h4-lh: 1.5rem;
+    --type-h4-tracking: 0;
+    --type-lead-size: 1.125rem;
+    --type-lead-lh: 1.75rem;
+    --type-body-size: 1rem;
+    --type-body-lh: 1.5rem;
+    --type-small-size: 0.875rem;
+    --type-small-lh: 1.25rem;
+    --type-button-tracking: 0;
+    --type-tech-size: 0.75rem;
+    --type-tech-lh: 1rem;
+    --type-tech-tracking: 0.16em;
+    --type-meta-size: 0.6875rem;
+    --type-meta-lh: 1rem;
+    --type-meta-tracking: 0.12em;
   }
 
   /* Dark Mode — katmanlı yüzey hiyerarşisi: background < card < popover */
@@ -973,93 +1310,78 @@
       0 32px 64px hsl(var(--shadow-color) / 0.3);
   }
 
-  /* ── Public Dark Theme — Precision Engineering: soğuk grafit ──
- * .public-theme ile birlikte kullanılır (html'de iki class); iki sınıflı selector
- * specificity'yi 0-2-0'a çıkarıp .public-theme (0-1-0) üzerinde kesin üstünlük sağlar.
- * Dark-first nötrler: sayfa #0B0D10, yüzey #14171B, hairline #262B31.
+  /* ── Public Dark Theme — FIXRAL marka sistemi (koyu, varsayılan) ──
+ * .public-theme ile birlikte kullanılır (html'de iki class; ada bileşenlerinde
+ * aynı iki sınıf). Zemin brand-primary #101828, yüzey #1B2436, çizgi #2A3446.
  */
   .public-theme.public-dark {
-    /* shadcn/ui tokens — precision dark paleti */
-    --background: 216 19% 5%; /* #0A0C0F ≈ #0B0D10 — sayfa zemini */
-    --foreground: 210 14% 91%; /* #E5E9EC — birincil metin (15.8:1) */
-    --card: 214 15% 9%; /* #14171B — kart/yüzey katmanı */
-    --card-foreground: 210 14% 91%;
-    --popover: 213 14% 12%; /* #1A1E23 — en üst katman */
-    --popover-foreground: 210 14% 91%;
-    --primary: 16 95% 59%; /* #FA6831 — MAIN (dolgu rengi) */
-    --primary-foreground: 0 0% 11%; /* #1C1C1C — turuncu üzeri koyu ink (5.75:1) */
-    --secondary: 214 16% 7%; /* #0F1215 — bölüm bandı */
-    --secondary-foreground: 210 14% 91%;
-    --muted: 214 18% 8%; /* #101317 — batık bölüm zemini */
-    --muted-foreground: 213 10% 65%; /* #9BA3AB — ikincil metin (7.3:1) */
-    --accent: 16 45% 18%; /* #432419 — brand subtle, hover/seçili dolgu */
-    --accent-foreground: 16 96% 68%; /* #FC895F — subtle üzeri metin + link ink */
-    --destructive: 0 80% 68%; /* #EF6C6C */
-    --destructive-foreground: 216 19% 5%;
-    --success: 90 88% 36%; /* #5CAD0B */
-    --success-foreground: 216 19% 5%;
-    --warning: 38 92% 55%; /* #F6A823 */
-    --warning-foreground: 216 19% 5%;
-    --info: 191 79% 58%; /* #3FC9E9 */
-    --info-foreground: 216 19% 5%;
-    --border: 213 13% 17%; /* #262B31 — hairline */
-    --input: 213 13% 17%;
-    --ring: 16 95% 59%; /* #FA6831 — focus ring */
-    --chart-1: 16 95% 59%;
-    --chart-2: 191 79% 58%;
-    --chart-3: 16 96% 68%;
-    --chart-4: 38 92% 55%;
-    --chart-5: 90 88% 36%;
+    --background: 221 43% 11%; /* #101828 */
+    --foreground: 220 14% 96%; /* #F3F4F6 (15.9:1) */
+    --card: 221 33% 16%; /* #1B2436 — surface-alt */
+    --card-foreground: 220 14% 96%;
+    --popover: 221 33% 16%;
+    --popover-foreground: 220 14% 96%;
+    --primary: 25 95% 53%; /* #F97316 */
+    --primary-foreground: 221 43% 11%;
+    --secondary: 221 33% 16%; /* #1B2436 — bölüm bandı */
+    --secondary-foreground: 220 14% 96%;
+    --muted: 219 45% 8%; /* #0B111D — derin zemin */
+    --muted-foreground: 218 11% 65%; /* #9CA3AF (6.9:1) */
+    --accent: 22 55% 16%; /* #3F2412 — turuncu tint */
+    --accent-foreground: 27 96% 61%; /* #FB923C — accent-text (7.8:1) */
+    --destructive: 0 84% 70%;
+    --destructive-foreground: 221 43% 11%;
+    --success: 142 60% 55%;
+    --success-foreground: 221 43% 11%;
+    --warning: 38 92% 60%;
+    --warning-foreground: 221 43% 11%;
+    --info: 213 94% 68%;
+    --info-foreground: 221 43% 11%;
+    --border: 219 25% 22%; /* #2A3446 */
+    --input: 218 22% 30%; /* #3B475C */
+    --ring: 25 95% 53%;
+    --chart-1: 25 95% 53%;
+    --chart-2: 220 14% 96%;
+    --chart-3: 27 96% 61%;
+    --chart-4: 218 11% 65%;
+    --chart-5: 22 55% 36%;
 
-    /* Shape dili — light ile aynı teknik skala */
     --radius: 0.5rem;
-    --radius-button: 2px;
-    --radius-input: 2px;
-    --radius-card: 4px;
-    --radius-overlay: 8px;
+    --radius-button: 8px;
+    --radius-input: 4px;
+    --radius-card: 8px;
+    --radius-overlay: 16px;
 
-    /* Yüzey hiyerarşisi: #0B0D10 sayfa > #101317 batık > #14171B yüzey > #191D22 yükseltilmiş */
-    --surface-1: #14171b;
-    --surface-2: #101317;
-    --surface-3: #191d22;
-    --line: #262b31;
-    --line-strong: #333a42;
-    --line-subtle: #1b2026;
+    --surface-1: #1b2436;
+    --surface-2: #0b111d;
+    --surface-3: #222d42;
+    --line: #2a3446;
+    --line-strong: #3b475c;
+    --line-subtle: #1f2839;
 
-    /* Durum renkleri — soft derin tint zemin, strong vurgu (AA) */
-    --success-soft: #16250a;
-    --success-strong: #8fd83f;
-    --warning-soft: #2a1d06;
-    --warning-strong: #fac55f;
-    --danger-soft: #2e1414;
-    --danger-strong: #f7a0a0;
-    --info-soft: #0c2830;
-    --info-strong: #7fdcf0;
+    --success-soft: #0f2a1c;
+    --success-strong: #86efac;
+    --warning-soft: #2c1a08;
+    --warning-strong: #fdba74;
+    --danger-soft: #2e1416;
+    --danger-strong: #fca5a5;
+    --info-soft: #102544;
+    --info-strong: #93c5fd;
 
-    /* Near-flat shadows — koyu zeminde derinlik başlıca border'dan gelir */
-    --shadow-color: 216 15% 2%;
-    --shadow-sm: 0 1px 2px hsl(var(--shadow-color) / 0.3);
-    --shadow-md:
-      0 1px 3px hsl(var(--shadow-color) / 0.4),
-      0 0 1px hsl(var(--shadow-color) / 0.3);
-    --shadow-lg: 0 2px 20px hsl(var(--shadow-color) / 0.5);
-    --shadow-xl:
-      0 8px 32px hsl(var(--shadow-color) / 0.55),
-      0 2px 8px hsl(var(--shadow-color) / 0.35);
+    --shadow-color: 221 50% 3%;
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 1px 2px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.35);
+    --shadow-xl: 0 2px 4px rgba(0, 0, 0, 0.45), 0 16px 40px rgba(0, 0, 0, 0.45);
 
-    /* Gradient overrides — grafit nötrleri */
-    --gradient-surface: linear-gradient(180deg, #14171b 0%, #0b0d10 100%);
-    --gradient-hero: linear-gradient(
-      135deg,
-      #14171b 0%,
-      #0b0d10 60%,
-      #101317 100%
-    );
+    --gradient-surface: linear-gradient(180deg, #1b2436 0%, #101828 100%);
+    --gradient-hero: radial-gradient(120% 90% at 72% 40%, #18233a 0%, #101828 46%, #0b111d 100%);
+
+    --fx-accent-graphic: #f97316;
+    --fx-scrim-color: rgba(11, 17, 29, 0.72);
 
     color-scheme: dark;
-
-    /* Page background — grafit */
-    --page-bg: #0b0d10;
+    --page-bg: #101828;
   }
 
   /* ── Admin: Shimmer Skeleton ── */
@@ -1114,7 +1436,7 @@
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    font-family: var(--font-barlow), var(--font-geist-sans);
+    font-family: var(--font-sans);
     line-height: 1.6;
     font-weight: 400;
     font-display: swap;
@@ -1145,7 +1467,7 @@
   h4,
   h5,
   h6 {
-    font-family: var(--font-barlow), var(--font-geist-sans);
+    font-family: var(--font-display);
     color: inherit;
     font-weight: 600;
     line-height: 1.15;
@@ -1154,6 +1476,83 @@
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Public HTML element defaults — Figma type ramp (size utilities override) */
+  .public-theme body {
+    font-size: 1rem;
+    line-height: 1.6;
+    font-weight: 400;
+    font-family: var(--font-sans);
+  }
+
+  .public-theme h1,
+  .public-theme h2,
+  .public-theme h3,
+  .public-theme h4 {
+    font-family: var(--font-display);
+  }
+
+  .public-theme h1 {
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    text-wrap: balance;
+  }
+
+  .public-theme h2 {
+    font-weight: 600;
+    letter-spacing: -0.035em;
+    line-height: 1.2;
+    text-wrap: balance;
+  }
+
+  .public-theme h3 {
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.27;
+    text-wrap: balance;
+  }
+
+  .public-theme h4 {
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    line-height: 1.375;
+  }
+
+  .public-theme h5,
+  .public-theme h6 {
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    line-height: 1.45;
+  }
+
+  .public-theme p {
+    text-wrap: pretty;
+  }
+
+  .public-theme kbd {
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 0.625rem;
+    line-height: 0.875rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .public-theme form label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.25rem;
+  }
+
+  .public-theme form input:not([type='checkbox']):not([type='radio']):not([type='hidden']):not([type='file']),
+  .public-theme form select {
+    min-height: 48px;
+    border-radius: var(--radius-input);
+    font-size: 1rem;
+    line-height: 1.625rem;
   }
 
   /* Hide scrollbar but keep functionality */
@@ -1613,6 +2012,11 @@ select::-webkit-scrollbar-thumb:hover {
   outline: 3px solid hsl(var(--ring));
   outline-offset: 3px;
   border-radius: var(--radius-button);
+}
+
+.public-theme :focus-visible {
+  outline-width: 2px;
+  outline-offset: 2px;
 }
 
 /* Footer specific styles */

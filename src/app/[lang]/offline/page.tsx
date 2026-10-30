@@ -1,112 +1,58 @@
 'use client';
 
-/* eslint-disable react/no-unescaped-entities */
-import React from 'react';
+/**
+ * Çevrimdışı sayfası (redesign 2026) — service worker bağlantı yokken bu sayfayı
+ * gösterir. Bağlantı durumu canlı izlenir; geri gelince bildirilir.
+ */
+import { useSyncExternalStore } from 'react';
+import { useAppTranslations } from '@/hooks/useAppTranslations';
+import { ArrowRight } from '@/components/fx/FxIcons';
+import { FxSystemPage } from '@/components/fx/FxSystem';
+
+const subscribe = (cb: () => void) => {
+  window.addEventListener('online', cb);
+  window.addEventListener('offline', cb);
+  return () => {
+    window.removeEventListener('online', cb);
+    window.removeEventListener('offline', cb);
+  };
+};
 
 export default function OfflinePage() {
+  const { t } = useAppTranslations('fx');
+  const online = useSyncExternalStore(subscribe, () => navigator.onLine, () => false);
+
   return (
-    <div className="min-h-dvh bg-background flex items-center justify-center p-4">
-      <div className="max-w-md w-full bg-card rounded-2xl p-8 text-center border border-border">
-        {/* Offline Icon */}
-        <div className="mb-6">
-          <div className="w-20 h-20 mx-auto bg-destructive/10 rounded-full flex items-center justify-center">
-            <svg
-              className="w-10 h-10 text-destructive"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M18.364 5.636l-12.728 12.728m0-12.728l12.728 12.728M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2z"
-              />
-            </svg>
+    <FxSystemPage
+      eyebrow={t('system.offline.eyebrow')}
+      title={t('system.offline.title')}
+      lede={t('system.offline.lede')}
+      crumb={t('system.offline.eyebrow')}
+      actions={
+        <>
+          <button type="button" className="fx-btn fx-btn--primary" onClick={() => window.location.reload()}>{t('system.offline.retry')} <ArrowRight /></button>
+          <button type="button" className="fx-btn fx-btn--ghost" onClick={() => window.history.back()}>{t('system.offline.back')}</button>
+        </>
+      }
+    >
+      <div className="fx-sys-grid">
+        <dl className="fx-info-list">
+          <div>
+            <dt><small>{t('system.offline.status')}</small></dt>
+            <dd className="fx-minw0" role="status" aria-live="polite">
+              <span className={`fx-sys-status ${online ? 'is-online' : ''}`}>{online ? t('system.offline.isOnline') : t('system.offline.isOffline')}</span>
+            </dd>
           </div>
-        </div>
-
-        {/* Title */}
-        <h1 className="text-2xl font-bold text-foreground mb-4">
-          You Are Offline
-        </h1>
-
-        {/* Description */}
-        <p className="text-muted-foreground mb-6 leading-relaxed">
-          It looks like you are not connected to the internet. Some features may not be available until you reconnect.
-        </p>
-
-        {/* Status Indicator */}
-        <div className="mb-6">
-          <div className="flex items-center justify-center space-x-2">
-            <div className="w-3 h-3 bg-destructive rounded-full animate-pulse"></div>
-            <span className="text-sm text-muted-foreground">No internet connection</span>
-          </div>
-        </div>
-
-        {/* Actions */}
-        <div className="space-y-3">
-          <button
-            onClick={() => window.location.reload()}
-            className="w-full bg-primary hover:bg-[hsl(var(--primary)/0.85)] text-primary-foreground font-semibold py-3 px-6 rounded-lg transition-colors duration-200 focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background"
-          >
-            Try Again
-          </button>
-
-          <button
-            onClick={() => window.history.back()}
-            className="w-full bg-secondary hover:bg-accent text-secondary-foreground hover:text-accent-foreground font-semibold py-3 px-6 rounded-lg transition-colors duration-200 focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background"
-          >
-            Go Back
-          </button>
-        </div>
-
-        {/* Cached Content Info */}
-        <div className="mt-8 p-4 bg-accent rounded-lg border border-primary/30">
-          <div className="flex items-start space-x-3">
-            <svg
-              className="w-5 h-5 text-primary mt-0.5 shrink-0"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            <div className="text-left">
-              <p className="text-sm font-medium text-accent-foreground mb-1">
-                Cached Content Available
-              </p>
-              <p className="text-xs text-muted-foreground">
-                Some pages you've visited recently may still be accessible.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Connection Tips */}
-        <div className="mt-6 text-left">
-          <h3 className="text-sm font-semibold text-foreground mb-2">
-            Connection Tips:
-          </h3>
-          <ul className="text-xs text-muted-foreground space-y-1">
-            <li>• Check your Wi-Fi or mobile data connection</li>
-            <li>• Try moving to a different location</li>
-            <li>• Restart your network connection</li>
-            <li>• Contact your internet service provider</li>
+        </dl>
+        <div className="fx-stack-22">
+          <h2 className="fx-h3">{t('system.offline.tipsTitle')}</h2>
+          <ul className="fx-ticks">
+            <li>{t('system.offline.tip1')}</li>
+            <li>{t('system.offline.tip2')}</li>
+            <li>{t('system.offline.tip3')}</li>
           </ul>
         </div>
       </div>
-
-      {/* Background Elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-accent rounded-full blur-3xl"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-primary/10 rounded-full blur-3xl"></div>
-      </div>
-    </div>
+    </FxSystemPage>
   );
 }

@@ -1,0 +1,52 @@
+/* FIXRAL web — services sayfaları (redesign 2026). fx-web.css token'larını kullanır. */
+@layer components {
+/* Blok başlığı h3 olduğunda (bölüm başlığının altında) aynı görünüm */
+.fx-block > h3 { font-family: var(--fx-f-display); font-size: 22px; line-height: 28px; font-weight: 700; margin: 0; }
+
+/* Birlikte çalışan hizmetler: Tarama → Tersine mühendislik → 3D baskı */
+.fx-svc-path { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 10px; font-family: var(--fx-f-mono); font-size: 15px; line-height: 24px; }
+.fx-svc-path li { display: inline-flex; align-items: baseline; gap: 10px; }
+.fx-svc-path a { color: var(--fx-ink); text-decoration: underline; text-decoration-color: var(--fx-line-strong); text-underline-offset: 5px; }
+.fx-svc-path a:hover { text-decoration-color: var(--fx-accent); }
+.fx-svc-path__sep { color: var(--fx-accent-text); }
+
+/* Hizmet detay: sağ kolonda teslim dosyaları */
+.fx-svc-files { display: grid; gap: 8px; }
+
+/* "Hizmet hakkında" (yönetim panelinden) */
+.fx-svc-about__img { position: relative; aspect-ratio: 16 / 9; width: 100%; max-width: 820px; border: 1px solid var(--fx-line); border-radius: var(--fx-r-lg); overflow: hidden; background: var(--fx-bg-alt); }
+.fx-svc-about__img img { object-fit: cover; }
+.fx-svc-about__text { max-width: 68ch; color: var(--fx-ink-muted); }
+
+/* Akış: adım sayısına göre sütun (fx-flow varsayılanı 4) */
+.fx-flow--n3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.fx-flow--n4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.fx-flow--n5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.fx-flow--n6 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+@media (max-width: 960px) {
+  .fx-flow--n5, .fx-flow--n6 { grid-template-columns: 1fr; }
+  .fx-flow--n5 li + li, .fx-flow--n6 li + li { padding-left: 0; border-left: 0; border-top: 1px solid var(--fx-line); }
+}
+@media (max-width: 760px) {
+  .fx-flow--n3, .fx-flow--n4 { grid-template-columns: 1fr; }
+}
+
+/* Teknik tablo: dar ekranda yatay kaydırma yerine sarılır */
+@media (max-width: 560px) {
+  .fx-spec-table--fluid { min-width: 0; }
+  .fx-spec-table--fluid th { width: 42%; }
+  .fx-spec-table--fluid td { overflow-wrap: anywhere; }
+}
+
+/* Yazılımlar: "Size özel" bandı */
+.fx-sw-custom { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 20px 40px; }
+.fx-sw-custom__copy { display: grid; gap: 10px; max-width: 60ch; }
+.fx-sw-custom__copy p { margin: 0; }
+
+/* Yazılım detay */
+.fx-sw-source { text-decoration: none; justify-self: start; }
+.fx-sw-source:hover { color: var(--fx-ink); text-decoration: underline; text-underline-offset: 3px; }
+.fx-sw-others__head { margin: 0 0 28px; padding: 0; font-size: inherit; line-height: inherit; }
+.fx-sw-row .fx-spec { max-width: 520px; }
+.fx-phero__aside .fx-sw-viz--gauge { aspect-ratio: 4 / 3; }
+}

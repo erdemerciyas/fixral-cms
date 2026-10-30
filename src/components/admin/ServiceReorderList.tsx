@@ -1,5 +1,6 @@
 'use client';
 
+import type { ReactNode } from 'react';
 import Link from 'next/link';
 import { Reorder, useDragControls } from 'framer-motion';
 import { Box, Pencil, Trash2, GripVertical } from 'lucide-react';
@@ -17,6 +18,8 @@ interface ServiceReorderListProps<T extends ReorderableService> {
   onReorder: (items: T[]) => void;
   onDelete: (id: string) => void;
   formatDate: (d: string) => string;
+  /** Durum rozetinin yanına ek rozet (ör. yeni sitedeki durum) */
+  renderBadge?: (service: T) => ReactNode;
 }
 
 export default function ServiceReorderList<T extends ReorderableService>({
@@ -24,6 +27,7 @@ export default function ServiceReorderList<T extends ReorderableService>({
   onReorder,
   onDelete,
   formatDate,
+  renderBadge,
 }: ServiceReorderListProps<T>) {
   return (
     <Reorder.Group axis="y" values={services} onReorder={onReorder} className="divide-y divide-border">
@@ -34,6 +38,7 @@ export default function ServiceReorderList<T extends ReorderableService>({
           index={index}
           onDelete={onDelete}
           formatDate={formatDate}
+          badge={renderBadge?.(service)}
         />
       ))}
     </Reorder.Group>
@@ -45,11 +50,13 @@ function DraggableServiceItem({
   index,
   onDelete,
   formatDate,
+  badge,
 }: {
   service: ReorderableService;
   index: number;
   onDelete: (id: string) => void;
   formatDate: (d: string) => string;
+  badge?: ReactNode;
 }) {
   const dragControls = useDragControls();
 
@@ -93,6 +100,7 @@ function DraggableServiceItem({
               `}>
                 {service.status === 'published' ? 'Yayında' : 'Taslak'}
               </span>
+              {badge}
               <span className="text-xs text-muted-foreground hidden sm:inline">{formatDate(service.createdAt)}</span>
             </div>
           </div>

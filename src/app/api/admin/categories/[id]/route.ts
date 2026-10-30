@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import Category from '@/models/Category';
 import { authOptions } from '@/lib/auth';
+import { withFxRevalidate } from '@/lib/fx-revalidate';
 /**
  * GET /api/admin/categories/[id] - Get single category
  */
@@ -39,7 +40,7 @@ export async function GET(_req: NextRequest, props: { params: Promise<{ id: stri
 /**
  * PUT /api/admin/categories/[id] - Update category
  */
-export async function PUT(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+async function PUT__handler(req: NextRequest, props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
   try {
     const session = await getServerSession(authOptions);
@@ -78,7 +79,7 @@ export async function PUT(req: NextRequest, props: { params: Promise<{ id: strin
 /**
  * DELETE /api/admin/categories/[id] - Delete category
  */
-export async function DELETE(_req: NextRequest, props: { params: Promise<{ id: string }> }) {
+async function DELETE__handler(_req: NextRequest, props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
   try {
     const session = await getServerSession(authOptions);
@@ -108,3 +109,7 @@ export async function DELETE(_req: NextRequest, props: { params: Promise<{ id: s
     );
   }
 }
+
+// Panel → site canlı tazeleme (redesign 2026)
+export const PUT = withFxRevalidate(PUT__handler);
+export const DELETE = withFxRevalidate(DELETE__handler);

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import Video from "@/models/Video";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { withFxRevalidate } from '@/lib/fx-revalidate';
 
 // Function to get videos from database only (no YouTube API)
 async function getVideosFromDatabase() {
@@ -41,7 +42,7 @@ export async function GET(_req: Request) {
   }
 }
 
-export async function POST(req: Request) {
+async function POST__handler(req: Request) {
   try {
     // Authenticate user
     const session = await getServerSession(authOptions);
@@ -79,3 +80,6 @@ export async function POST(req: Request) {
     );
   }
 }
+
+// Panel → site canlı tazeleme (redesign 2026)
+export const POST = withFxRevalidate(POST__handler);

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { revalidateTag } from 'next/cache';
 import SiteSettings from '../../../../models/SiteSettings';
 import { withSecurity, SecurityConfigs } from '../../../../lib/security-middleware';
+import { withFxRevalidate } from '@/lib/fx-revalidate';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
@@ -23,7 +24,7 @@ export const GET = withSecurity(SecurityConfigs.admin)(async () => {
 });
 
 // PUT: Site ayarlarını güncelle
-export const PUT = withSecurity(SecurityConfigs.admin)(async (request: NextRequest) => {
+const PUT__handler = withSecurity(SecurityConfigs.admin)(async (request: NextRequest) => {
   try {
     const updateData = await request.json();
 
@@ -95,7 +96,7 @@ interface SiteSettingsRequest {
   youtube?: string;
 }
 
-export const POST = withSecurity(SecurityConfigs.admin)(async (request: NextRequest) => {
+const POST__handler = withSecurity(SecurityConfigs.admin)(async (request: NextRequest) => {
   try {
     const body: SiteSettingsRequest = await request.json();
 
@@ -115,3 +116,7 @@ export const POST = withSecurity(SecurityConfigs.admin)(async (request: NextRequ
     }, { status: 500 });
   }
 });
+
+// Panel → site canlı tazeleme (redesign 2026)
+export const POST = withFxRevalidate(POST__handler);
+export const PUT = withFxRevalidate(PUT__handler);

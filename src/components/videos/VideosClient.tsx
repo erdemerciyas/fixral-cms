@@ -1,147 +1,185 @@
 'use client';
 
+/**
+ * Videolar (redesign 2026) — prototip `PAGES.videolar()`.
+ * Tür (Tümü / Video / Kısa) ve kanal filtreleri URL'de (?type=, ?channel=) tutulur;
+ * arama ve etiketler istemci tarafında süzülür. Sonsuz kaydırma + "daha fazla" düğmesi,
+ * modal oynatıcı (youtube-nocookie), yükleniyor / boş / sonuçsuz / hata durumları.
+ */
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
-import { m, AnimatePresence } from 'framer-motion';
-import {
-  Search as MagnifyingGlass,
-  Video as VideoCamera,
-  Tag,
-  X,
-  ChevronDown as CaretDown,
-} from 'lucide-react';
-import { ScrollReveal } from '@/components/ui/ScrollReveal';
-import VideoCard, { SkeletonCard, type Video } from '@/components/videos/VideoCard';
+import { useSearchParams, useRouter, usePathname } from 'next/navigation';
+import { useAppTranslations } from '@/hooks/useAppTranslations';
+import { toFxLocale } from '@/content/fixral';
+import { SearchIcon, CloseIcon, ExternalIcon } from '@/components/fx/FxIcons';
+import VideoCard, { SkeletonCard, normalizeVideo, type Video } from '@/components/videos/VideoCard';
 
-const ease = [0.32, 0.72, 0, 1] as const;
+const CHANNEL_URL = 'https://www.youtube.com/@fixral';
+
+interface Channel { channelId: string; channelName?: string; videoCount?: number }
+
+const FOCUSABLE = 'a[href], button:not([disabled]), iframe, input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
 /* ------------------------------------------------------------------ */
-/*  Skeleton helpers                                                    */
+/*  Modal oynatıcı                                                      */
 /* ------------------------------------------------------------------ */
-function SkeletonFilterPanel() {
+function VideoModal({ video, onClose, labels }: { video: Video; onClose: () => void; labels: { dialog: string; close: string; open: string; blocked: string } }) {
+  const [blocked, setBlocked] = useState(false);
+  const root = useRef<HTMLDivElement>(null);
+  const box = useRef<HTMLDivElement>(null);
+  const closeBtn = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    closeBtn.current?.focus();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') { e.preventDefault(); onClose(); return; }
+      if (e.key !== 'Tab' || !box.current) return;
+      const items = Array.from(box.current.querySelectorAll<HTMLElement>(FOCUSABLE));
+      if (items.length === 0) return;
+      const first = items[0];
+      const last = items[items.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    };
+    // Arka plana tıklama kapatır (yalnızca kutunun dışı)
+    const onDown = (e: MouseEvent) => { if (e.target === root.current) onClose(); };
+    // CSP frame-src YouTube'u engellerse bağlantılı yedek panel gösterilir
+    const onCsp = (e: SecurityPolicyViolationEvent) => {
+      if (/frame-src|child-src/.test(e.violatedDirective || e.effectiveDirective) && /youtube/.test(e.blockedURI)) setBlocked(true);
+    };
+    const r = root.current;
+    document.addEventListener('securitypolicyviolation', onCsp);
+    document.addEventListener('keydown', onKey);
+    r?.addEventListener('mousedown', onDown);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      document.removeEventListener('keydown', onKey);
+      document.removeEventListener('securitypolicyviolation', onCsp);
+      r?.removeEventListener('mousedown', onDown);
+    };
+  }, [onClose]);
+
+  const id = encodeURIComponent(video.videoId);
   return (
-    <div className="rounded-sm bg-card border border-border p-6 md:p-8 mb-10">
-      <div className="flex flex-col lg:flex-row gap-4 mb-6">
-        <div className="flex-1 h-14 rounded-xs bg-muted relative overflow-hidden">
-          <div className="absolute inset-0 bg-linear-to-r from-transparent via-foreground/5 to-transparent animate-[shimmer_2s_infinite] -translate-x-full" />
+    <div
+      className="fx-vmodal public-theme public-dark"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="fx-vmodal-title"
+      ref={root}
+    >
+      <div className={`fx-vmodal__box ${video.type === 'short' ? 'fx-vmodal__box--short' : ''}`} ref={box}>
+        <div className="fx-vmodal__bar">
+          <h2 id="fx-vmodal-title" className="fx-vmodal__title">{video.title || labels.dialog}</h2>
+          <a className="fx-btn fx-btn--ghost fx-btn--sm" href={`https://www.youtube.com/watch?v=${id}`} target="_blank" rel="noopener noreferrer">
+            {labels.open} <ExternalIcon />
+          </a>
+          <button ref={closeBtn} type="button" className="fx-vmodal__close" onClick={onClose} aria-label={labels.close}>
+            <CloseIcon />
+          </button>
         </div>
-        <div className="flex gap-3">
-          <div className="h-14 w-48 rounded-xs bg-muted relative overflow-hidden">
-            <div className="absolute inset-0 bg-linear-to-r from-transparent via-foreground/5 to-transparent animate-[shimmer_2s_infinite] -translate-x-full" />
-          </div>
-          <div className="h-14 w-40 rounded-xs bg-muted relative overflow-hidden">
-            <div className="absolute inset-0 bg-linear-to-r from-transparent via-foreground/5 to-transparent animate-[shimmer_2s_infinite] -translate-x-full" />
-          </div>
+        <div className="fx-vmodal__frame">
+          {blocked ? (
+            <div className="fx-vmodal__blocked">
+              <p>{labels.blocked}</p>
+              <a className="fx-btn fx-btn--primary" href={`https://www.youtube.com/watch?v=${id}`} target="_blank" rel="noopener noreferrer">
+                {labels.open} <ExternalIcon />
+              </a>
+            </div>
+          ) : (
+          <iframe
+            src={`https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0`}
+            title={video.title || labels.dialog}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowFullScreen
+            referrerPolicy="strict-origin-when-cross-origin"
+          />
+          )}
         </div>
-      </div>
-      <div className="flex gap-2">
-        {Array.from({ length: 5 }).map((_, i) => (
-          <div key={i} className="h-9 w-20 rounded-xs bg-muted relative overflow-hidden">
-            <div className="absolute inset-0 bg-linear-to-r from-transparent via-foreground/5 to-transparent animate-[shimmer_2s_infinite] -translate-x-full" />
-          </div>
-        ))}
       </div>
     </div>
   );
 }
 
-function SkeletonGrid() {
-  return (
-    <div className="grid grid-cols-12 gap-5">
-      <SkeletonCard large />
-      <SkeletonCard />
-      {Array.from({ length: 6 }).map((_, i) => (
-        <SkeletonCard key={i} />
-      ))}
-    </div>
-  );
-}
+/* ================================================================== */
+export default function VideosClient({ lang }: { lang?: string }) {
+  const { t, locale } = useAppTranslations('fx');
+  const L = toFxLocale(lang || locale);
+  const dateLocale = 'tr-TR';
 
-/* ================================================================== */
-/*  Main Client Component                                               */
-/* ================================================================== */
-export default function VideosClient() {
   const [videos, setVideos] = useState<Video[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
+  const [hasMore, setHasMore] = useState(false);
   const [nextPageToken, setNextPageToken] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [availableTags, setAvailableTags] = useState<string[]>([]);
-  const [availableChannels, setAvailableChannels] = useState<any[]>([]);
-  const searchInputRef = useRef<HTMLInputElement>(null);
-  const observer = useRef<IntersectionObserver | null>(null);
-  const lastVideoElementRef = useRef<HTMLDivElement>(null);
+  const [availableChannels, setAvailableChannels] = useState<Channel[]>([]);
+  const [playing, setPlaying] = useState<Video | null>(null);
+  const [reload, setReload] = useState(0);
+  const triggerRef = useRef<HTMLElement | null>(null);
+  const sentinelRef = useRef<HTMLDivElement>(null);
 
   const searchParams = useSearchParams();
   const router = useRouter();
+  const pathname = usePathname() || `/${L}/videos`;
   const typeFilter = searchParams?.get('type') || '';
   const channelFilter = searchParams?.get('channel') || '';
 
-  /* ---- Data fetching ---- */
+  /* ---- Veri ---- */
   const loadVideos = useCallback(async () => {
+    const params = new URLSearchParams();
+    if (typeFilter) params.append('type', typeFilter);
+    if (channelFilter) params.append('channelId', channelFilter);
+    params.append('status', 'visible');
+    params.append('limit', '50');
+    const response = await fetch(`/api/public/youtube?${params.toString()}`);
+    if (!response.ok) throw new Error(`youtube ${response.status}`);
+    const data = await response.json();
+    const list: unknown[] = Array.isArray(data?.videos) ? data.videos : Array.isArray(data?.data?.videos) ? data.data.videos : [];
+    setVideos(list.map((v) => normalizeVideo(v as Partial<Video>)).filter((v) => v.videoId));
+    setNextPageToken(data?.nextPageToken || null);
+    setHasMore(!!data?.hasMore && !!data?.nextPageToken);
     try {
-      const params = new URLSearchParams();
-      if (typeFilter) params.append('type', typeFilter);
-      if (channelFilter) params.append('channelId', channelFilter);
-      params.append('status', 'visible');
-      params.append('limit', '50');
-
-      const response = await fetch(`/api/public/youtube?${params.toString()}`);
-      if (response.ok) {
-        const data = await response.json();
-        setVideos(data.videos);
-        setHasMore(data.hasMore);
-        setNextPageToken(data.nextPageToken || null);
-
-        const uniqueTags = [...new Set(data.videos.flatMap((video: any) => video.tags || []))];
-        setAvailableTags(uniqueTags as string[]);
-
-        const channelsRes = await fetch('/api/public/channels');
-        if (channelsRes.ok) {
-          const channelsData = await channelsRes.json();
-          setAvailableChannels(channelsData);
-        }
+      const channelsRes = await fetch('/api/public/channels');
+      if (channelsRes.ok) {
+        const ch = await channelsRes.json();
+        setAvailableChannels(Array.isArray(ch) ? ch.filter((c: Channel) => c?.channelId) : []);
       }
-    } catch (error) {
-      console.error('Error loading videos:', error);
+    } catch {
+      /* kanal listesi isteğe bağlı */
     }
   }, [typeFilter, channelFilter]);
 
   useEffect(() => {
-    // Ertelenmiş başlatma: efekt gövdesinde senkron setState yerine
-    // bir sonraki tick'te yükleme tetiklenir
+    let off = false;
+    // Ertelenmiş başlatma: efekt gövdesinde senkron setState yapılmaz
     const timer = setTimeout(() => {
       setLoading(true);
-      loadVideos().finally(() => setLoading(false));
+      setError(false);
+      loadVideos()
+        .catch((e) => { if (!off) { console.error('Error loading videos:', e); setError(true); } })
+        .finally(() => { if (!off) setLoading(false); });
     }, 0);
-    return () => clearTimeout(timer);
-  }, [loadVideos]);
+    return () => { off = true; clearTimeout(timer); };
+  }, [loadVideos, reload]);
 
-  /* ---- Client-side filtering (türetilmiş değer; efekt gerekmez) ---- */
+  const availableTags = useMemo(() => [...new Set(videos.flatMap((v) => v.tags))].slice(0, 24), [videos]);
+
   const filteredVideos = useMemo(() => {
-    let result = videos;
+    const q = searchTerm.trim().toLocaleLowerCase(dateLocale);
+    return videos.filter((v) => {
+      if (q && !(`${v.title} ${v.description} ${v.tags.join(' ')}`.toLocaleLowerCase(dateLocale).includes(q))) return false;
+      if (selectedTags.length > 0 && !selectedTags.every((tag) => v.tags.includes(tag))) return false;
+      return true;
+    });
+  }, [videos, searchTerm, selectedTags, dateLocale]);
 
-    if (searchTerm) {
-      result = result.filter(
-        (video) =>
-          video.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          video.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          video.tags.some((tag) => tag.toLowerCase().includes(searchTerm.toLowerCase()))
-      );
-    }
-
-    if (selectedTags.length > 0) {
-      result = result.filter((video) => selectedTags.every((tag) => video.tags.includes(tag)));
-    }
-
-    return result;
-  }, [videos, searchTerm, selectedTags]);
-
-  /* ---- Load more (infinite scroll) ---- */
+  /* ---- Daha fazla ---- */
   const loadMoreVideos = useCallback(async () => {
-    if (!hasMore || !nextPageToken) return;
+    if (!hasMore || !nextPageToken || loadingMore) return;
     setLoadingMore(true);
     try {
       const params = new URLSearchParams();
@@ -150,293 +188,205 @@ export default function VideosClient() {
       params.append('status', 'visible');
       params.append('limit', '12');
       params.append('pageToken', nextPageToken);
-
       const response = await fetch(`/api/public/youtube?${params.toString()}`);
       if (response.ok) {
         const data = await response.json();
-        setVideos((prev) => [...prev, ...data.videos]);
-        setNextPageToken(data.nextPageToken || null);
-        setHasMore(!!data.nextPageToken);
+        const list: unknown[] = Array.isArray(data?.videos) ? data.videos : [];
+        setVideos((prev) => {
+          const seen = new Set(prev.map((v) => v.videoId));
+          return [...prev, ...list.map((v) => normalizeVideo(v as Partial<Video>)).filter((v) => v.videoId && !seen.has(v.videoId))];
+        });
+        setNextPageToken(data?.nextPageToken || null);
+        setHasMore(!!data?.nextPageToken);
+      } else {
+        setHasMore(false);
       }
-    } catch (error) {
-      console.error('Error loading more videos:', error);
+    } catch (e) {
+      console.error('Error loading more videos:', e);
+      setHasMore(false);
     } finally {
       setLoadingMore(false);
     }
-  }, [typeFilter, channelFilter, hasMore, nextPageToken]);
+  }, [typeFilter, channelFilter, hasMore, nextPageToken, loadingMore]);
 
   useEffect(() => {
-    if (loading || loadingMore) return;
-    observer.current = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting && hasMore) {
-        loadMoreVideos();
-      }
-    });
-    if (lastVideoElementRef.current) {
-      observer.current.observe(lastVideoElementRef.current);
-    }
-    return () => {
-      if (observer.current) observer.current.disconnect();
-    };
+    if (loading || loadingMore || !hasMore || !sentinelRef.current) return;
+    const io = new IntersectionObserver((entries) => {
+      if (entries[0]?.isIntersecting) loadMoreVideos();
+    }, { rootMargin: '400px 0px' });
+    io.observe(sentinelRef.current);
+    return () => io.disconnect();
   }, [loading, loadingMore, hasMore, loadMoreVideos]);
 
-  /* ---- Helpers ---- */
-  const toggleTag = (tag: string) => {
-    setSelectedTags((prev) => (prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]));
+  /* ---- Yardımcılar ---- */
+  const setParam = (key: 'type' | 'channel', value: string) => {
+    const p = new URLSearchParams(searchParams?.toString() || '');
+    if (value) p.set(key, value); else p.delete(key);
+    const qs = p.toString();
+    router.push(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
   };
+  const toggleTag = (tag: string) => setSelectedTags((prev) => (prev.includes(tag) ? prev.filter((x) => x !== tag) : [...prev, tag]));
+  const clearFilters = () => { setSearchTerm(''); setSelectedTags([]); };
+  const hasLocalFilter = !!searchTerm || selectedTags.length > 0;
 
-  const clearSearch = () => {
-    setSearchTerm('');
-    setSelectedTags([]);
-  };
+  const openPlayer = useCallback((video: Video, trigger: HTMLElement) => { triggerRef.current = trigger; setPlaying(video); }, []);
+  const closePlayer = useCallback(() => {
+    setPlaying(null);
+    const el = triggerRef.current;
+    if (el) setTimeout(() => el.focus(), 0);
+  }, []);
 
   const typeButtons = [
-    { value: '', label: 'Tümü' },
-    { value: 'normal', label: 'Video' },
-    { value: 'short', label: 'Kısa' },
-  ] as const;
-
-  /* ---- Loading State ---- */
-  if (loading) {
-    return (
-      <div className="container-content py-8">
-        <style dangerouslySetInnerHTML={{ __html: `@keyframes shimmer { 100% { transform: translateX(100%); } }` }} />
-        <SkeletonFilterPanel />
-        <SkeletonGrid />
-      </div>
-    );
-  }
+    { value: '', label: t('videos.typeAll') },
+    { value: 'normal', label: t('videos.typeNormal') },
+    { value: 'short', label: t('videos.typeShort') },
+  ];
 
   return (
-    <div id="video-content" className="container-content py-8">
-      <style dangerouslySetInnerHTML={{ __html: `@keyframes shimmer { 100% { transform: translateX(100%); } }` }} />
+    <>
+      <section id="video-content" className="fx-sec fx-sec--tight" aria-labelledby="fx-videos-filters-label">
+        <div className="fx-wrap">
+          <h2 id="fx-videos-filters-label" className="sr-only">{t('videos.filtersLabel')}</h2>
 
-      {/* Glassmorphism filter panel */}
-      <ScrollReveal>
-        <div className="rounded-sm bg-card border border-border p-6 md:p-8 mb-10 shadow-xs">
-          <div className="flex flex-col lg:flex-row gap-4 mb-6">
-            {/* Search */}
-            <div className="flex-1 relative">
-              <MagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-              <input
-                ref={searchInputRef}
-                type="text"
-                placeholder="Video ara..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-12 pr-10 py-3.5 bg-background border border-input rounded-xs text-foreground placeholder:text-muted-foreground focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring outline-hidden shadow-xs transition-[border-color,box-shadow] duration-200 motion-reduce:transition-none"
-              />
-              <AnimatePresence>
-                {searchTerm && (
-                  <m.button
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.8 }}
-                    transition={{ duration: 0.2, ease }}
-                    onClick={() => setSearchTerm('')}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-xs hover:bg-muted"
-                  >
-                    <X className="w-4 h-4 text-muted-foreground" />
-                  </m.button>
-                )}
-              </AnimatePresence>
+          {/* Filtreler */}
+          <div className="fx-vbar">
+            <div className="fx-filters fx-vbar__types" role="group" aria-label={t('videos.typeLabel')}>
+              {typeButtons.map((b) => (
+                <button key={b.value || 'all'} type="button" className="fx-chip" aria-pressed={typeFilter === b.value} onClick={() => setParam('type', b.value)}>
+                  {b.label}
+                </button>
+              ))}
             </div>
-
-            {/* Type toggle + Channel select */}
-            <div className="flex flex-wrap gap-3">
-              <div className="inline-flex rounded-xs border border-border bg-muted p-1">
-                {typeButtons.map((btn) => (
-                  <button
-                    key={btn.value}
-                    onClick={() => {
-                      const url = new URL(window.location.href);
-                      if (btn.value) {
-                        url.searchParams.set('type', btn.value);
-                      } else {
-                        url.searchParams.delete('type');
-                      }
-                      router.push(url.pathname + url.search);
-                    }}
-                    className={`px-4 py-2.5 text-sm font-medium rounded-xs relative transition-colors duration-200 motion-reduce:transition-none ${
-                      typeFilter === btn.value
-                        ? 'text-primary-foreground'
-                        : 'text-muted-foreground hover:text-foreground'
-                    }`}
-                  >
-                    {typeFilter === btn.value && (
-                      <m.span
-                        layoutId="type-pill"
-                        className="absolute inset-0 rounded-xs bg-primary"
-                        transition={{ type: 'spring', stiffness: 380, damping: 32 }}
-                      />
-                    )}
-                    <span className="relative z-10">{btn.label}</span>
-                  </button>
-                ))}
-              </div>
-
+            <div className="fx-vbar__right">
               {availableChannels.length > 0 && (
-                <div className="relative">
-                  <select
-                    value={channelFilter}
-                    onChange={(e) => {
-                      const url = new URL(window.location.href);
-                      if (e.target.value) {
-                        url.searchParams.set('channel', e.target.value);
-                      } else {
-                        url.searchParams.delete('channel');
-                      }
-                      router.push(url.pathname + url.search);
-                    }}
-                    className="appearance-none bg-background border border-input rounded-xs pl-4 pr-10 py-3 text-sm text-foreground focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring outline-hidden cursor-pointer transition-[border-color,box-shadow] duration-200 motion-reduce:transition-none"
-                  >
-                    <option value="">Tüm Kanallar</option>
-                    {availableChannels.map((channel) => (
-                      <option key={channel.channelId} value={channel.channelId}>
-                        {channel.channelName} ({channel.videoCount})
+                <div className="fx-vbar__select">
+                  <label htmlFor="fx-video-channel" className="sr-only">{t('videos.channelLabel')}</label>
+                  <select id="fx-video-channel" value={channelFilter} onChange={(e) => setParam('channel', e.target.value)}>
+                    <option value="">{t('videos.channelAll')}</option>
+                    {availableChannels.map((c) => (
+                      <option key={c.channelId} value={c.channelId}>
+                        {c.channelName || c.channelId}{typeof c.videoCount === 'number' ? ` (${c.videoCount})` : ''}
                       </option>
                     ))}
                   </select>
-                  <CaretDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
                 </div>
               )}
+              <div className="fx-vbar__search">
+                <label htmlFor="fx-video-q" className="sr-only">{t('videos.searchLabel')}</label>
+                <span className="fx-newsbar__icon" aria-hidden="true"><SearchIcon /></span>
+                <input
+                  id="fx-video-q"
+                  type="search"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  placeholder={t('videos.searchPlaceholder')}
+                  autoComplete="off"
+                />
+                {searchTerm && (
+                  <button type="button" className="fx-vbar__x" onClick={() => setSearchTerm('')} aria-label={t('videos.clearSearch')}>
+                    <CloseIcon />
+                  </button>
+                )}
+              </div>
             </div>
           </div>
 
-          {/* Tag pills */}
           {availableTags.length > 0 && (
-            <div className="border-t border-border pt-5">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="flex items-center gap-1.5 font-mono text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground mr-1">
-                  <Tag className="w-3.5 h-3.5" />
-                  Etiketler
-                </span>
+            <div className="fx-vtags" role="group" aria-label={t('videos.tagsLabel')}>
+              <span className="fx-tag">{t('videos.tagsLabel')}</span>
+              <div className="fx-chips">
                 {availableTags.map((tag) => (
-                  <m.button
-                    key={tag}
-                    onClick={() => toggleTag(tag)}
-                    whileTap={{ scale: 0.95 }}
-                    className={`px-4 py-1.5 rounded-xs text-xs font-medium transition-colors duration-200 motion-reduce:transition-none ${
-                      selectedTags.includes(tag)
-                        ? 'bg-primary text-primary-foreground'
-                        : 'bg-secondary text-secondary-foreground hover:bg-accent hover:text-accent-foreground'
-                    }`}
-                  >
-                    {tag}
-                  </m.button>
+                  <button key={tag} type="button" className="fx-chip fx-chip--sm" aria-pressed={selectedTags.includes(tag)} onClick={() => toggleTag(tag)}>
+                    #{tag}
+                  </button>
                 ))}
-                <AnimatePresence>
-                  {(searchTerm || selectedTags.length > 0) && (
-                    <m.button
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.9 }}
-                      transition={{ duration: 0.3, ease }}
-                      onClick={clearSearch}
-                      className="px-4 py-1.5 rounded-xs text-xs font-medium bg-destructive/10 text-destructive border border-destructive/20 hover:bg-destructive/20 ml-1"
-                    >
-                      <X className="w-3 h-3 inline mr-1 -mt-px" />
-                      Temizle
-                    </m.button>
-                  )}
-                </AnimatePresence>
               </div>
             </div>
           )}
 
-          {/* Results summary */}
-          <div className="flex items-center justify-between pt-4 border-t border-border mt-5">
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <VideoCamera className="w-4 h-4" />
-              <span className="font-mono text-sm tabular-nums">
-                {filteredVideos.length} video
-              </span>
+          {!loading && !error && (
+            <p className="fx-newsbar__summary" role="status">
+              <span className="fx-mono">{t('videos.count', { count: filteredVideos.length })}</span>
+              {hasLocalFilter && (
+                <button type="button" className="fx-link fx-newsbar__clear" onClick={clearFilters}>
+                  <CloseIcon /> {t('videos.clear')}
+                </button>
+              )}
+            </p>
+          )}
+
+          {/* İçerik */}
+          {loading ? (
+            <div className="fx-journal" aria-busy="true" aria-label={t('videos.loading')}>
+              {Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)}
             </div>
-            {(searchTerm || selectedTags.length > 0) && (
-              <button
-                onClick={clearSearch}
-                className="text-xs font-medium text-accent-foreground hover:underline underline-offset-2"
-              >
-                Filtreleri Temizle
+          ) : error ? (
+            <div className="fx-empty fx-news-empty" role="alert">
+              <b>{t('videos.errorTitle')}</b>
+              <span>{t('videos.errorText')}</span>
+              <div className="fx-news-empty__cta">
+                <button type="button" className="fx-btn fx-btn--ghost fx-btn--sm" onClick={() => setReload((n) => n + 1)}>{t('videos.retry')}</button>
+              </div>
+            </div>
+          ) : filteredVideos.length === 0 ? (
+            <div className="fx-empty fx-news-empty">
+              <b>{hasLocalFilter || typeFilter || channelFilter ? t('videos.noResultsTitle') : t('videos.emptyTitle')}</b>
+              <span>{hasLocalFilter || typeFilter || channelFilter ? t('videos.noResultsText') : t('videos.emptyText')}</span>
+              {(hasLocalFilter || typeFilter || channelFilter) && (
+                <div className="fx-news-empty__cta">
+                  <button
+                    type="button"
+                    className="fx-btn fx-btn--ghost fx-btn--sm"
+                    onClick={() => { clearFilters(); if (typeFilter || channelFilter) router.push(pathname, { scroll: false }); }}
+                  >
+                    {t('videos.clear')}
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <>
+              <div className="fx-journal">
+                {filteredVideos.map((video) => (
+                  <VideoCard
+                    key={video.videoId}
+                    video={video}
+                    kindLabel={(video.type === 'short' ? t('videos.kindShort') : t('videos.kindVideo')).toLocaleUpperCase(dateLocale)}
+                    dateLocale={dateLocale}
+                    watchLabel={t('videos.watch', { title: video.title })}
+                    onPlay={openPlayer}
+                  />
+                ))}
+                {loadingMore && Array.from({ length: 3 }).map((_, i) => <SkeletonCard key={`more-${i}`} />)}
+              </div>
+              <div ref={sentinelRef} className="fx-vsentinel" aria-hidden="true" />
+              <p className="sr-only" role="status">{loadingMore ? t('videos.loadingMore') : ''}</p>
+            </>
+          )}
+
+          <div className="fx-vfoot">
+            {!loading && !error && hasMore && (
+              <button type="button" className="fx-btn fx-btn--ghost" onClick={loadMoreVideos} disabled={loadingMore}>
+                {loadingMore ? t('videos.loadingMore') : t('videos.loadMore')}
               </button>
             )}
+            {!loading && !error && !hasMore && filteredVideos.length > 6 && (
+              <span className="fx-tag">{t('videos.allLoaded')}</span>
+            )}
+            <a className="fx-btn fx-btn--ghost" href={CHANNEL_URL} target="_blank" rel="noopener noreferrer">
+              {t('videos.channelCta')} <ExternalIcon />
+            </a>
           </div>
         </div>
-      </ScrollReveal>
+      </section>
 
-      {/* Bento grid */}
-      {filteredVideos.length > 0 ? (
-        <>
-          <ScrollReveal stagger className="grid grid-cols-12 gap-5">
-            {filteredVideos.map((video, index) => (
-              <VideoCard
-                key={video.videoId}
-                video={video}
-                index={index}
-                innerRef={index === filteredVideos.length - 1 ? lastVideoElementRef : undefined}
-              />
-            ))}
-          </ScrollReveal>
-
-          {/* Loading more */}
-          <AnimatePresence>
-            {loadingMore && (
-              <m.div
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 16 }}
-                transition={{ duration: 0.4, ease }}
-                className="grid grid-cols-12 gap-5 mt-5"
-              >
-                {Array.from({ length: 3 }).map((_, i) => (
-                  <SkeletonCard key={i} />
-                ))}
-              </m.div>
-            )}
-          </AnimatePresence>
-
-          {!hasMore && !loadingMore && filteredVideos.length > 6 && (
-            <m.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.7, ease }}
-              className="text-center py-10"
-            >
-              <span className="text-sm text-muted-foreground">
-                Tüm videolar yüklendi
-              </span>
-            </m.div>
-          )}
-        </>
-      ) : (
-        <ScrollReveal>
-          <div className="text-center py-20 rounded-sm bg-card border border-border">
-            <div className="w-16 h-16 mx-auto mb-5 rounded-sm bg-muted flex items-center justify-center">
-              <VideoCamera className="w-8 h-8 text-primary" />
-            </div>
-            <h3
-              className="text-lg font-semibold text-foreground mb-2"
-            >
-              Video bulunamadı
-            </h3>
-            <p
-              className="text-sm text-muted-foreground max-w-md mx-auto leading-relaxed"
-            >
-              {searchTerm || selectedTags.length > 0
-                ? 'Aramanızla eşleşen bir video bulunamadı. Farklı anahtar kelimeler kullanmayı veya filtreleri temizlemeyi deneyin.'
-                : 'Henüz hiç video eklenmemiş. Daha sonra tekrar kontrol edin.'}
-            </p>
-            {(searchTerm || selectedTags.length > 0) && (
-              <button
-                onClick={clearSearch}
-                className="mt-5 px-5 py-2.5 rounded-xs text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors duration-200 motion-reduce:transition-none"
-              >
-                Filtreleri Temizle
-              </button>
-            )}
-          </div>
-        </ScrollReveal>
+      {playing && (
+        <VideoModal
+          video={playing}
+          onClose={closePlayer}
+          labels={{ dialog: t('videos.modalLabel'), close: t('videos.close'), open: t('videos.openOnYoutube'), blocked: t('videos.embedBlocked') }}
+        />
       )}
-    </div>
+    </>
   );
 }

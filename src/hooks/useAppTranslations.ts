@@ -3,11 +3,9 @@
 import { useMemo } from 'react';
 import { useLocale } from './useLocale';
 import trMessages from '../../messages/tr.json';
-import esMessages from '../../messages/es.json';
 
 const messagesMap: Record<string, Record<string, any>> = {
   tr: trMessages,
-  es: esMessages,
 };
 
 /**

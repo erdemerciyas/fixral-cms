@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { isValidLocale } from '@/i18n';
 import { ChevronDown as ChevronDownIcon, Globe as GlobeAltIcon } from 'lucide-react';
 
 interface Language {
@@ -18,7 +19,6 @@ const FALLBACK_LANGUAGES: Language[] = [
 
 const ROUTE_SEGMENT_MAP: Record<string, Record<string, string>> = {
   tr: { noticias: 'haberler' },
-  es: { haberler: 'noticias' },
 };
 
 let cachedLanguages: Language[] | null = null;
@@ -27,7 +27,7 @@ const CACHE_TTL = 5 * 60 * 1000; // 5 min
 
 interface LanguageSwitchProps {
   currentLang: string;
-  variant?: 'default' | 'topbar' | 'compact' | 'onbrand';
+  variant?: 'default' | 'topbar' | 'compact' | 'onbrand' | 'segmented';
   className?: string;
   /** @deprecated Use variant="compact" instead */
   compact?: boolean;
@@ -60,11 +60,12 @@ export default function LanguageSwitch({
       .then((res) => res.ok ? res.json() : null)
       .then((data) => {
         if (cancelled || !data?.success) return;
+        // DB'de aktif kalmış ama rotası olmayan diller (ör. kaldırılan 'es') gösterilmez
         const langs: Language[] = (data.data || []).map((l: Record<string, unknown>) => ({
           code: l.code as string,
           label: (l.nativeLabel || l.label) as string,
           flag: (l.flag || '🌐') as string,
-        }));
+        })).filter((l: Language) => isValidLocale(l.code));
         if (langs.length > 0) {
           cachedLanguages = langs;
           cacheTimestamp = Date.now();
@@ -108,6 +109,25 @@ export default function LanguageSwitch({
   const currentLanguage = languages.find((l) => l.code === currentLang) || languages[0];
 
   if (languages.length <= 1) return null;
+
+  /* segmented — FIXRAL header: bölümlü dil anahtarı (fx-lang) */
+  if (effectiveVariant === 'segmented') {
+    return (
+      <div className={`fx-lang ${className}`} role="group" aria-label="Dil / Idioma">
+        {languages.map((lang) => (
+          <Link
+            key={lang.code}
+            href={buildHref(lang.code)}
+            hrefLang={lang.code}
+            aria-current={lang.code === currentLang ? 'true' : undefined}
+            aria-label={lang.label}
+          >
+            {lang.code.toUpperCase()}
+          </Link>
+        ))}
+      </div>
+    );
+  }
 
   /* onbrand — marka renkli (turuncu) header üzerinde ghost buton */
   if (effectiveVariant === 'onbrand') {

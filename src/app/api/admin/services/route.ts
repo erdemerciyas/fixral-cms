@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import Service from '@/models/Service';
 import slugify from 'slugify';
+import { withFxRevalidate } from '@/lib/fx-revalidate';
 
 /**
  * GET /api/admin/services - List all services for admin
@@ -34,7 +35,7 @@ export async function GET(_req: NextRequest) {
 /**
  * POST /api/admin/services - Create a new service
  */
-export async function POST(req: NextRequest) {
+async function POST__handler(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
 
@@ -90,7 +91,7 @@ export async function POST(req: NextRequest) {
 /**
  * PUT /api/admin/services - Batch update service order
  */
-export async function PUT(req: NextRequest) {
+async function PUT__handler(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
 
@@ -117,3 +118,7 @@ export async function PUT(req: NextRequest) {
     );
   }
 }
+
+// Panel → site canlı tazeleme (redesign 2026)
+export const POST = withFxRevalidate(POST__handler);
+export const PUT = withFxRevalidate(PUT__handler);

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { GeistSans } from 'geist/font/sans'
 import { GeistMono } from 'geist/font/mono'
-import { Barlow } from 'next/font/google'
+import { Barlow, Inter, JetBrains_Mono, Space_Grotesk } from 'next/font/google'
 import './globals.css'
 import { config } from '../core/lib/config'
 import Header from '../components/Header'
@@ -10,11 +10,9 @@ import ConditionalFooter from '../components/ConditionalFooter'
 import Providers from '../components/Providers'
 import { hasDatabaseUrl } from '../lib/prisma'
 import { getCachedSiteSettings } from '../lib/site-settings'
+import { SITE_URL } from '../lib/seo-utils'
 import Script from 'next/script'
-import { headers } from 'next/headers'
-import GlobalBreadcrumbsJsonLd from '../components/seo/GlobalBreadcrumbsJsonLd';
 import PageTransitionWrapper from '../components/PageTransitionWrapper';
-import GrainOverlay from '../components/ui/GrainOverlay';
 
 const ENV_GOOGLE_VERIFICATION = process.env.GOOGLE_SITE_VERIFICATION
 const ENV_GA_ID = process.env.NEXT_PUBLIC_GA_ID
@@ -23,12 +21,14 @@ const ENV_GTM_ID = process.env.NEXT_PUBLIC_GTM_ID
 const geistSans = GeistSans
 const geistMono = GeistMono
 
+/* Public tema (light/dark) blocking init — varsayılan KOYU (marka sistemi, redesign 2026);
+ * yalnızca kullanıcı açık temayı seçtiyse ('light') açık uygulanır. */
 /* Public tema (light/dark) blocking init — ThemeScope hydrate olmadan önce
  * <html>'e `public-theme` (+ dark ise `public-dark`) yazar. Admin route'ları
  * aşağıdaki ADMIN_THEME_INIT_SCRIPT'e bırakılır. Anahtar: localStorage['fixral-public-theme'] */
 /* FOUC + hydrate-sonrası yeniden uygulama. React <html> hydrate'i classList'i
    temizleyebilir; bu yüzden load/DOMContentLoaded'da tekrar yazarız. */
-const PUBLIC_THEME_INIT_SCRIPT = `try{if(!location.pathname.startsWith('/admin')){(function(){function a(){var t=localStorage.getItem('fixral-public-theme');var d=document.documentElement;d.classList.add('public-theme');if(t==='dark'){d.classList.add('public-dark');d.style.colorScheme='dark'}else{d.classList.remove('public-dark');d.style.colorScheme='light'}}a();document.addEventListener('DOMContentLoaded',a);window.addEventListener('load',a);setTimeout(a,0);setTimeout(a,50);setTimeout(a,200)})()}}catch(e){}`
+const PUBLIC_THEME_INIT_SCRIPT = `try{if(!location.pathname.startsWith('/admin')){(function(){function a(){var t=localStorage.getItem('fixral-public-theme');var d=document.documentElement;d.classList.add('public-theme');if(t!=='light'){d.classList.add('public-dark');d.style.colorScheme='dark'}else{d.classList.remove('public-dark');d.style.colorScheme='light'}}a();document.addEventListener('DOMContentLoaded',a);window.addEventListener('load',a);setTimeout(a,0);setTimeout(a,50);setTimeout(a,200)})()}}catch(e){}`
 
 /* Admin tema (light/dark/system) blocking init — AdminThemeProvider hydrate
  * olmadan önce <html>'e `dark`/`light` sınıfını yazar (FOUC önleme).
@@ -42,6 +42,28 @@ const barlow = Barlow({
   subsets: ['latin', 'latin-ext'],
   weight: ['300', '400', '500', '600', '700'],
   variable: '--font-barlow',
+  display: 'swap',
+})
+
+/* Public site marka yazı tipleri (FIXRAL marka sistemi): Inter gövde,
+ * Space Grotesk başlık, JetBrains Mono teknik etiket. Değişkenler globals.css
+ * .public-theme içinde --font-ui-* üzerinden kullanılır; admin Barlow'da kalır. */
+const inter = Inter({
+  subsets: ['latin', 'latin-ext'],
+  weight: ['400', '500', '600'],
+  variable: '--font-inter-ui',
+  display: 'swap',
+})
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin', 'latin-ext'],
+  weight: ['400', '500', '700'],
+  variable: '--font-space-grotesk',
+  display: 'swap',
+})
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ['latin', 'latin-ext'],
+  weight: ['400', '500'],
+  variable: '--font-jetbrains-mono',
   display: 'swap',
 })
 
@@ -73,7 +95,7 @@ export async function generateMetadata(): Promise<Metadata> {
       if (siteSettings.seo?.metaDescription) description = siteSettings.seo.metaDescription;
     }
 
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.fixral.com';
+    const baseUrl = SITE_URL;
     const logoUrl = typeof siteSettings.logo === 'string' ? siteSettings.logo : siteSettings.logo?.url;
     const googleVerification = analyticsConfig.googleSiteVerification || siteSettings?.analytics?.googleSiteVerification || ENV_GOOGLE_VERIFICATION;
 
@@ -85,14 +107,13 @@ export async function generateMetadata(): Promise<Metadata> {
       openGraph: {
         title: title,
         description: description,
-        url: baseUrl,
+        url: `${baseUrl}/tr`,
         siteName: siteSettings.siteName,
         locale: 'tr_TR',
-        alternateLocale: ['es_ES'],
         type: 'website',
         images: [
           {
-            url: siteSettings.logo?.url || '/og-image.jpg',
+            url: '/og-image.jpg',
             width: 1200,
             height: 630,
             alt: title,
@@ -103,7 +124,7 @@ export async function generateMetadata(): Promise<Metadata> {
         card: 'summary_large_image',
         title: title,
         description: description,
-        images: [siteSettings.logo?.url || '/og-image.jpg'],
+        images: ['/og-image.jpg'],
       },
       verification: {
         google: googleVerification || undefined,
@@ -111,8 +132,7 @@ export async function generateMetadata(): Promise<Metadata> {
       alternates: {
         languages: {
           'tr-TR': `${baseUrl}/tr`,
-          'es-ES': `${baseUrl}/es`,
-          'x-default': baseUrl,
+          'x-default': `${baseUrl}/tr`,
         },
       },
       icons: {
@@ -132,7 +152,7 @@ export async function generateMetadata(): Promise<Metadata> {
         icon: '/favicon.svg',
         apple: '/favicon.svg',
       },
-      metadataBase: new URL(config.app.url || 'http://localhost:3000'),
+      metadataBase: new URL(SITE_URL),
     };
   }
 }
@@ -141,6 +161,9 @@ import ThemeScope from '../components/providers/ThemeScope';
 import { LoadingBar } from '../components';
 import PublicToaster from '../components/PublicToaster';
 import { ConfirmProvider } from '../hooks/use-confirm';
+import { FxDataProvider } from '../components/fx/FxData';
+import { getFxData } from '../lib/fx-data-server';
+import { defaultFxData } from '../content/fx-data';
 
 export default async function RootLayout({
   children,
@@ -150,13 +173,15 @@ export default async function RootLayout({
   let gaId: string | undefined;
   let gtmId: string | undefined;
   let siteName = config.app.name;
-  let siteUrl = config.app.url;
+  let sameAs: string[] = [];
 
   if (hasDatabaseUrl()) {
     try {
       const siteSettings = await getCachedSiteSettings();
       siteName = siteSettings.siteName || config.app.name;
-      siteUrl = siteSettings.siteUrl || config.app.url;
+      sameAs = Object.values(siteSettings.socialMedia || {}).filter(
+        (u): u is string => typeof u === 'string' && /^https?:\/\/[^/]+\/.+/.test(u)
+      );
 
       const analyticsConfig = siteSettings.analyticsConfig;
       if (analyticsConfig && analyticsConfig.enablePageViewTracking) {
@@ -176,20 +201,25 @@ export default async function RootLayout({
   if (!gaId) gaId = ENV_GA_ID || undefined;
   if (!gtmId) gtmId = ENV_GTM_ID || undefined;
 
-  const headersList = await headers();
-  const locale = headersList.get('x-locale') || 'tr';
+  /* FIXRAL site verisi (panel + varsayılan) — Header, Footer ve tüm sayfalar paylaşır */
+  let fxData = defaultFxData();
+  try {
+    fxData = await getFxData();
+  } catch (e) {
+    console.error('FX data load error:', e);
+  }
 
   return (
     // html className yok: React hydrate FOUC/ThemeScope public-theme sınıflarını ezerdi.
-    // scroll-smooth body'de.
-    <html lang={locale} suppressHydrationWarning>
+    // scroll-smooth body'de. Tek dil (tr): headers() okunmaz, aksi halde tüm rotalar dinamikleşir (ISR kapanır).
+    <html lang="tr" suppressHydrationWarning>
       <head>
         {/* FOUC önleme: public tema sınıfları CSS'ten önce, senkron yazılır */}
         <script dangerouslySetInnerHTML={{ __html: PUBLIC_THEME_INIT_SCRIPT }} />
         {/* Admin tema FOUC koruması (admin route'larında çalışır) */}
         <script dangerouslySetInnerHTML={{ __html: ADMIN_THEME_INIT_SCRIPT }} />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta name="theme-color" content="#FA6831" />
+        <meta name="theme-color" content="#101828" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -202,16 +232,12 @@ export default async function RootLayout({
         <link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-192x192.png" />
         <link rel="apple-touch-startup-image" href="/icons/icon-512x512.png" />
 
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://res.cloudinary.com" />
 
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" href="/favicon.svg" />
 
-        <link rel="dns-prefetch" href="//fonts.googleapis.com" />
-        <link rel="dns-prefetch" href="//fonts.gstatic.com" />
         <link rel="dns-prefetch" href="//res.cloudinary.com" />
 
         <script
@@ -221,13 +247,10 @@ export default async function RootLayout({
               '@context': 'https://schema.org',
               '@type': 'Organization',
               name: siteName,
-              url: siteUrl,
-              logo: `${siteUrl}/favicon.svg`,
-              sameAs: [
-                'https://www.linkedin.com',
-                'https://github.com/erdemerciyas'
-              ]
-            })
+              url: `${SITE_URL}/tr`,
+              logo: `${SITE_URL}/logo.png`,
+              ...(sameAs.length > 0 && { sameAs }),
+            }).replace(/</g, '\\u003c')
           }}
         />
 
@@ -238,13 +261,8 @@ export default async function RootLayout({
               '@context': 'https://schema.org',
               '@type': 'WebSite',
               name: siteName,
-              url: siteUrl,
-              potentialAction: {
-                '@type': 'SearchAction',
-                target: `${siteUrl}/?q={search_term_string}`,
-                'query-input': 'required name=search_term_string'
-              }
-            })
+              url: `${SITE_URL}/tr`,
+            }).replace(/</g, '\\u003c')
           }}
         />
         {gtmId && (
@@ -272,7 +290,7 @@ export default async function RootLayout({
           </>
         )}
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} ${barlow.variable} font-sans min-h-screen bg-page-bg flex flex-col text-foreground antialiased scroll-smooth`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} ${barlow.variable} ${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} font-sans min-h-screen bg-page-bg flex flex-col text-foreground antialiased scroll-smooth`}>
         {gtmId && (
           <noscript>
             <iframe
@@ -284,16 +302,16 @@ export default async function RootLayout({
             />
           </noscript>
         )}
-        <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-10000 focus:bg-background focus:text-foreground focus:px-4 focus:py-2 focus:rounded-lg focus:shadow-sm focus:border focus:border-border" aria-label="Skip to main content">
+        <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-10000 focus:bg-background focus:text-foreground focus:px-4 focus:py-2 focus:rounded-[var(--radius-button)] focus:border focus:border-border focus:outline-2 focus:outline-offset-2 focus:outline-ring" aria-label="Skip to main content">
           Skip to content
         </a>
         <ThemeScope />
+        <FxDataProvider data={fxData}>
         <ConfirmProvider>
           <LoadingBar />
           <Providers>
             <MotionProvider>
               <Header />
-              <GlobalBreadcrumbsJsonLd />
               <PageTransitionWrapper>
                 <div className="relative grow">
                   <main id="main-content" className="relative">
@@ -303,11 +321,11 @@ export default async function RootLayout({
               </PageTransitionWrapper>
 
               <ConditionalFooter />
-              <GrainOverlay />
             </MotionProvider>
           </Providers>
           <PublicToaster />
         </ConfirmProvider>
+        </FxDataProvider>
 
         {config.isDevelopment && (
           <div id="dev-tools" className="hidden md:block fixed bottom-4 right-4 z-50 opacity-50 hover:opacity-100 transition-opacity pointer-events-none">
