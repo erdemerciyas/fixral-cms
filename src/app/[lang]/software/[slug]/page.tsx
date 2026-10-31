@@ -6,6 +6,7 @@ import { SoftwareDetailView } from '@/components/software/FxSoftwareViews';
 import { clampDescription, getFxText } from '@/components/services/fx-server-text';
 import { SOFTWARE, toFxLocale, type SoftwareDef } from '@/content/fixral';
 import { getFxData } from '@/lib/fx-data-server';
+import { SPLITTER_FAQ, SPLITTER_SLUG, SPLITTER_VIDEOS } from '@/content/splitter-showcase';
 
 /** Panelde aktif olan yazılımı bulur (pasif kayıt 404 verir) */
 async function findSoftware(slug: string) {
@@ -106,6 +107,31 @@ export default async function SoftwareDetailPage({ params }: PageProps) {
           ...(sw.version ? { version: sw.version } : {}),
         }}
       />}
+      {sw.slug === SPLITTER_SLUG && <>
+        {SPLITTER_VIDEOS.map((v) => (
+          <SchemaMarkup
+            key={v.id}
+            schema={{
+              '@context': 'https://schema.org',
+              '@type': 'VideoObject',
+              name: v.title,
+              description: `${sw.name}: ${v.title}`,
+              thumbnailUrl: `https://i.ytimg.com/vi/${v.id}/hqdefault.jpg`,
+              uploadDate: v.uploadDate,
+              embedUrl: `https://www.youtube-nocookie.com/embed/${v.id}`,
+              contentUrl: `https://www.youtube.com/watch?v=${v.id}`,
+              inLanguage: v.lang,
+            }}
+          />
+        ))}
+        <SchemaMarkup
+          schema={{
+            '@context': 'https://schema.org',
+            '@type': 'FAQPage',
+            mainEntity: SPLITTER_FAQ.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })),
+          }}
+        />
+      </>}
       <SoftwareDetailView lang={L} slug={sw.slug} />
     </div>
   );

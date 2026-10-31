@@ -6,6 +6,7 @@
 /* FIXRAL web tasarım katmanı (public site, redesign 2026) */
 @import '../styles/fx-web.css';
 @import '../styles/fx-services.css';
+@import '../styles/fx-splitter.css';
 @import '../styles/fx-portfolio.css';
 @import '../styles/fx-news.css';
 @import '../styles/fx-contact.css';

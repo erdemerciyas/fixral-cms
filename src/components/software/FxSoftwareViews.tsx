@@ -16,6 +16,8 @@ import { FxSectionHead } from '@/components/fx/FxSectionHead'
 import { SoftwareVisual } from '@/components/fx/FxVisuals'
 import { QuoteBand, SoftwareCard, useSoftwareLabels } from '@/components/fx/home/HomeSections'
 import { flowClass } from '@/components/services/FxServicesViews'
+import { SplitterShowcase, SplitterVideoSection } from './SplitterShowcase'
+import { SPLITTER_SLUG } from '@/content/splitter-showcase'
 
 const statusLine = (sw: FxSoftware, status: string) => [status, sw.version ? `v${sw.version}` : ''].filter(Boolean).join(' · ')
 
@@ -132,6 +134,9 @@ export function SoftwareDetailView({ lang, slug }: { lang: string; slug: string 
   const v = labels(sw)
   const others = fx.software.filter((x) => x.slug !== sw.slug)
   const related = sw.services.map((k) => fx.service(k)).filter((s): s is NonNullable<typeof s> => !!s)
+  // Splitter: vitrin (video, interaktif kılavuz, galeri…) eklenir; akış kılavuzda anlatıldığından tekrarlanmaz
+  const showcase = sw.slug === SPLITTER_SLUG
+  const flow = showcase ? [] : tx.flow
 
   return (
     <>
@@ -148,6 +153,8 @@ export function SoftwareDetailView({ lang, slug }: { lang: string; slug: string 
         }
       />
 
+      {showcase && <SplitterVideoSection />}
+
       {tx.features.length > 0 && (
         <section className="fx-sec" aria-labelledby="fx-swd-feat">
           <div className="fx-wrap">
@@ -161,15 +168,17 @@ export function SoftwareDetailView({ lang, slug }: { lang: string; slug: string 
         </section>
       )}
 
-      {(tx.flow.length > 0 || tx.facts.length > 0 || related.length > 0) && (
-        <section className="fx-sec fx-sec--alt">
+      {showcase && <SplitterShowcase />}
+
+      {(flow.length > 0 || tx.facts.length > 0 || related.length > 0) && (
+        <section className={`fx-sec ${showcase ? 'fx-sec--tight' : 'fx-sec--alt'}`}>
           <div className="fx-wrap">
-            {tx.flow.length > 0 && (
+            {flow.length > 0 && (
               <div className="fx-block">
                 <h2>{t('software.how')}</h2>
                 <div className="fx-block__body">
-                  <ol className={flowClass(tx.flow.length)}>
-                    {tx.flow.map(([a, b], n) => <li key={n}><b>{a}</b><span>{b}</span></li>)}
+                  <ol className={flowClass(flow.length)}>
+                    {flow.map(([a, b], n) => <li key={n}><b>{a}</b><span>{b}</span></li>)}
                   </ol>
                 </div>
               </div>
