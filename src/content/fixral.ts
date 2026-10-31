@@ -262,24 +262,24 @@ export interface SoftwareDef {
 
 export const SOFTWARE: SoftwareDef[] = [
   {
-    slug: 'fixral-3d-splitter', name: 'Fixral 3D Splitter', viz: 'split',
+    slug: 'fixral-3d-splitter', name: 'Fixral 3D Splitter', version: '0.5.0', viz: 'split',
     url: 'https://fixral3d.github.io/fixral-3d-splitter/', repo: 'https://github.com/fixral3d/fixral-3d-splitter',
     services: ['baski', 'tarama'],
     text: {
       tr: {
         kicker: '3D baskı · tarayıcıda', status: 'Canlı · ücretsiz', tagline: 'Büyük 3D modelleri yazıcınıza sığdırır.',
-        lede: 'Tablaya sığmayan STL modeli yazıcı profilinize göre parçalara böler, kesitlere pim, kavela ya da mıknatıs yuvası ekler, parçaları numaralayıp baskıya hazır dışa aktarır. Model hiçbir sunucuya yüklenmez; bütün geometri işlemleri tarayıcıda, WebAssembly ile yapılır.',
-        chips: ['STL → 3MF', '10 dil', 'Kurulum yok'],
-        facts: [['Girdi', 'STL'], ['Çıktı', 'STL (ZIP) · renkli 3MF · tabla başına STL · teklif.html'], ['Yazıcı profili', 'Bambu Lab · Prusa · Creality · Elegoo · özel'], ['Arayüz', '10 dil · Arapça sağdan sola'], ['Platform', 'Bilgisayar, tablet, telefon']],
+        lede: 'Tablaya sığmayan STL modeli yazıcı profilinize göre parçalara böler, kesitlere pim, kavela ya da mıknatıs yuvası ekler, parçaları numaralayıp tabla başına baskıya hazır dışa aktarır. CAD\'de saatler süren iş yaklaşık bir dakikada biter. Model hiçbir sunucuya yüklenmez; bütün geometri işlemleri tarayıcıda, WebAssembly ile yapılır.',
+        chips: ['v0.5 · stüdyo görünüm', 'STL → renkli 3MF', '10 dil', 'Kurulum yok'],
+        facts: [['Girdi', 'STL'], ['Çıktı', 'STL (ZIP) · tabla başına renkli 3MF ya da STL · teklif.html'], ['Yazıcı profili', 'Bambu Lab · Prusa · Creality · Elegoo · özel'], ['Arayüz', '10 dil · Arapça sağdan sola · sesli asistan Dot'], ['Platform', 'Bilgisayar, tablet, telefon']],
         features: [
-          ['Otomatik bölme', 'Yazıcı profiline göre kesim ve kesim optimizasyonu. Kesit düzlemlerini sürükleyin ya da serbest eğriyle kesin.'],
-          ['Kesiti izleyen bağlantılar', 'Pim, kavela, Ø6 / Ø8 / Ø10 mıknatıs yuvası, ahşap kavela, kırlangıç kuyruğu ve geçme. Elle bağlantı ekleme ve delik açma.'],
-          ['Numaralı parçalar', 'Kesit yüzüne "03-07" gibi eş etiket kazınır: 03 numaralı parça 07\'ye takılır.'],
-          ['Model hazırlığı', 'Mesh onarma, sadeleştirme, ölçek, döndürme, içini boşaltma, akıllı seçip ayırma.'],
-          ['Baskı hazırlığı', 'Tabla yerleşimi, her parça için en iyi baskı yüzü, yüzeyi izleyen skirt ve mouse ear. 8 filament profili.'],
+          ['Otomatik bölme', 'Yazıcı profiline göre kesim; ince şerit bırakmayan kesim optimizasyonu. Kesit düzlemlerini sürükleyin ya da serbest eğriyle kesin.'],
+          ['Kesiti izleyen bağlantılar', 'Piramit ya da silindir pim, Ø6 / Ø8 / Ø10 mıknatıs yuvası, ahşap kavela, kırlangıç kuyruğu ve bindirme; şablon kartında birleşme canlı önizlenir. Kesit yüzüne "03-07" gibi eş etiket kazınır: 03 numaralı parça 07\'ye takılır.'],
+          ['Elle ölçülendirilen pimler', 'Her pim ve kavelanın çapı, boyu, tipi, uç inceltmesi ve boşluğu canlı kesit önizlemesiyle ayrı ayarlanır. Uygula yalnızca etkilenen iki parçayı yeniden üretir; farklı ölçülü kavelalar ayrı STL / 3MF olarak çıkar.'],
+          ['Stüdyo görünüm', 'Sıcak ana ışık, soğuk dolgu ve kenar ışığı, yumuşak gölgeler, seçili parçada kontur. Görünüm menüsü (V), odak modu (P), sahnede X / Y / Z ölçüleri ve 12 klavye kısayolu.'],
+          ['Model ve baskı hazırlığı', 'Mesh onarma, sadeleştirme, ölçek, döndürme, içini boşaltma, akıllı seçip ayırma. Parçalar en iyi yüzleriyle tablalara yerleşir; yüzeyi izleyen skirt, mouse ear ve 8 filament profili.'],
           ['Yerleşik teklif', 'Filament, baskı süresi, makine, montaj, hazırlık ve kâr payından maliyet hesabı; yazdırılabilir montaj kılavuzu.'],
         ],
-        flow: [['Hazırla', 'STL\'i onar, ölçekle'], ['Ön böl', 'Yazıcı profiline göre'], ['Böl', 'Parçalar saniyeler içinde'], ['Birleştir', 'Bağlantı ekle, 3MF / ZIP'], ['Bas', 'Tabla başına STL']],
+        flow: [['Hazırla', 'STL\'i onar, ölçekle'], ['Ön böl', 'Yazıcı profiline göre'], ['Böl', 'Parçalar saniyeler içinde'], ['Parçala', 'Pim ekle, ölçülendir; ZIP / 3MF'], ['Bas', 'Tabla başına STL ya da 3MF']],
       },
     },
   },
