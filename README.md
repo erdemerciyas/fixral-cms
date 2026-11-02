@@ -8,7 +8,7 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-v4-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
 [![shadcn/ui](https://img.shields.io/badge/shadcn/ui-Radix-000?style=for-the-badge)](https://ui.shadcn.com/)
 [![Vercel](https://img.shields.io/badge/Vercel-Deploy-black?style=for-the-badge&logo=vercel)](https://vercel.com/)
-[![Sürüm](https://img.shields.io/badge/Sürüm-5.2.1-blue?style=for-the-badge)]()
+[![Sürüm](https://img.shields.io/badge/Sürüm-5.3.0-blue?style=for-the-badge)]()
 [![Lisans](https://img.shields.io/badge/Lisans-Özel-red?style=for-the-badge)]()
 
 **Fixral CMS**, Next.js 16 (App Router, Turbopack), React 19.2, Prisma ORM ve PostgreSQL üzerine inşa edilmiş, üretime hazır, tam kapsamlı bir İçerik Yönetim Sistemidir.
@@ -62,7 +62,7 @@ Herkese açık site, **FIXRAL web 2026** tasarım diliyle (teknik resim paftası
 - **Kategori Yönetimi:** Haber ve portföy içerikleri için esnek kategori sistemi
 - **3D Model Yönetimi:** GLB/GLTF/STL dosya yükleme, listeleme ve tarayıcı içi görüntüleme
 - **Hizmet Kataloğu:** Marka kitabındaki 8 hizmet için detay sayfaları (`/tr/services/[slug]`); eski hizmet slug'ları kalıcı (301) olarak yeni adreslere yönlenir
-- **Yazılım Vitrini:** Fixral 3D Splitter, Router Studio ve ESP32-S3 OBD-II için liste ve detay sayfaları (`/tr/software`)
+- **Yazılım Vitrini:** Fixral 3D Splitter, Router Studio, Fixral CFD Simulator ve ESP32-S3 OBD-II için liste ve detay sayfaları (`/tr/software`); tarayıcıda açılan üç uygulama anasayfada three.js sahneli "Hızlı erişim" kartlarıyla öne çıkar
 - **FX 3D (Cults3D):** Cults3D GraphQL API'sinden çekilen model galerisi ve detay sayfaları; görünürlük admin panelinden yönetilir
 - **Site İçeriği (FX Data):** Hero, süreç, antet, teklif bandı gibi public site metinleri tek panelden düzenlenir; kayıt anında tüm site önbelleği tazelenir
 
@@ -968,6 +968,12 @@ npm run test:coverage
 ---
 
 ## Değişiklik Günlüğü
+
+### v5.3.0 — Fixral CFD Simulator ve Hızlı Erişim Üçlüsü
+- **Yeni yazılım: Fixral CFD Simulator (v0.2.0):** Tarayıcıda çalışan rüzgâr ve su tüneli katalog'a eklendi (`/tr/software/fixral-cfd-simulator`); özellikler, kullanım akışı, teknik bilgiler (LBM D3Q19 + MLS-MPM, WebGPU) ve CAD / Tersine Mühendislik hizmetleriyle iki yönlü bağlantı
+- **Yeni görsel tipi `flow`:** three.js rüzgâr tüneli sahnesi — potansiyel akış alanında hıza göre renklenen akım çizgileri, Cp ile renklenen gövde yüzeyi, canlı U · Re · Cd göstergesi; admin yazılım düzenleyicisinde seçilebilir
+- **Anasayfa hızlı erişim:** Tarayıcıda açılan (url'si olan) ilk üç yazılım 3'lü kart grubu olarak gösterilir; 1100px altında tek sütun. Detay sayfasındaki "Diğer yazılımlar" ızgarası da üçlüye uyarlandı
+- **Önceki eklemeler:** Fixral 3D Splitter v0.5.0 içeriği ve ürün vitrini (video, interaktif kılavuz, galeri, SSS, VideoObject / FAQPage JSON-LD); hızlı erişim bölümünün ilk sürümü
 
 ### v5.2.1 — Asıl Domain: www.fixral.com
 - **Sitemap / Search Console:** Üretimde `NEXT_PUBLIC_APP_URL` ve `NEXTAUTH_URL` `https://www.fixral.com` yapıldı; sitemap, robots, canonical ve JSON-LD artık `fixral-cms.vercel.app` yerine asıl domain'i gösterir ("Bu URL'ye, bu yerdeki bir Site Haritası için izin verilmiyor" hatası giderildi)

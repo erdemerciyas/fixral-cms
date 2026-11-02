@@ -31,6 +31,7 @@ export function generateStaticParams() {
 const CATEGORY: Record<SoftwareDef['viz'], { category: string; os: string }> = {
   split: { category: 'DesignApplication', os: 'Web' },
   toolpath: { category: 'DesignApplication', os: 'Web' },
+  flow: { category: 'DesignApplication', os: 'Web' },
   gauge: { category: 'UtilitiesApplication', os: 'ESP32-S3 (ESP-IDF 5.3)' },
 };
 

@@ -23,9 +23,10 @@ export interface ServiceOption { value: string; label: string; slug: string }
 export const VIZ_INFO: Record<SoftwareViz, { label: string; desc: string }> = {
   split: { label: '3D bölme sahnesi', desc: 'Model parçalara ayrılıp birleşir (ör. 3D Splitter).' },
   toolpath: { label: 'Takım yolu animasyonu', desc: 'Freze takım yolu çizilir (ör. Router Studio).' },
+  flow: { label: 'Rüzgâr tüneli sahnesi', desc: 'Gövde çevresinde akım çizgileri akar (ör. CFD Simulator).' },
   gauge: { label: 'Yuvarlak gösterge', desc: 'Gösterge ibresi döner (ör. OBD-II ekranı).' },
 }
-const VIZ_KEYS: SoftwareViz[] = ['split', 'toolpath', 'gauge']
+const VIZ_KEYS: SoftwareViz[] = ['split', 'toolpath', 'flow', 'gauge']
 
 export const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 const URL_RE = /^https?:\/\/\S+$/i

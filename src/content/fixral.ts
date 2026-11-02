@@ -71,7 +71,7 @@ export const SERVICES: ServiceDef[] = [
   },
   {
     key: 'tersine', slug: 'tersine-muhendislik', dbSlugs: ['tersine-muhendislik', 'restorasyon-danismanlik'], discipline: 'muhendislik',
-    files: ['STEP', 'IGES', 'Parasolid', 'DWG'], viz: 'wire', part: 'gear', software: [],
+    files: ['STEP', 'IGES', 'Parasolid', 'DWG'], viz: 'wire', part: 'gear', software: ['fixral-cfd-simulator'],
     text: {
       tr: {
         name: 'Tersine Mühendislik', short: 'Taramadan düzenlenebilir, parametrik CAD modeline.',
@@ -97,7 +97,7 @@ export const SERVICES: ServiceDef[] = [
   },
   {
     key: 'cad', slug: 'cad-3d-cizim', dbSlugs: ['cad-3d-cizim', '3d-modelleme-hizmetleri'], discipline: 'tasarim',
-    files: ['STEP', 'DXF', 'DWG', 'PDF'], viz: 'wire', part: 'bracket', software: [],
+    files: ['STEP', 'DXF', 'DWG', 'PDF'], viz: 'wire', part: 'bracket', software: ['fixral-cfd-simulator'],
     text: {
       tr: {
         name: 'CAD ve 3D Çizim', short: 'Eskizden, fotoğraftan ya da ölçüden üretim çizimine.',
@@ -235,8 +235,8 @@ export const SAMPLE_DOCS: { id: 'gcode' | 'bom' | 'report'; file: string; lines:
 
 /* ------------------------------------------------------------------ Yazılımlar */
 
-export type SoftwareSlug = 'fixral-3d-splitter' | 'router-studio' | 'esp32-s3-obd2'
-export type SoftwareViz = 'split' | 'toolpath' | 'gauge'
+export type SoftwareSlug = 'fixral-3d-splitter' | 'router-studio' | 'fixral-cfd-simulator' | 'esp32-s3-obd2'
+export type SoftwareViz = 'split' | 'toolpath' | 'flow' | 'gauge'
 
 export interface SoftwareText {
   kicker: string
@@ -302,6 +302,28 @@ export const SOFTWARE: SoftwareDef[] = [
           ['Simülasyon ve kontrol', '3D simülasyon, jog, Z sıfır / prob, auto-level, ilerleme override, satırdan devam, makine profilleri.'],
         ],
         flow: [['Tasarla', 'Şekil, yazı, DXF / SVG'], ['Takım yolu', 'Cep, V-oyma, 3D'], ['Simüle et', '3D önizleme'], ['Kes', 'GRBL ile Web Serial']],
+      },
+    },
+  },
+  {
+    slug: 'fixral-cfd-simulator', name: 'Fixral CFD Simulator', version: '0.2.0', viz: 'flow',
+    url: 'https://fixral3d.github.io/fixral-cfd-simulator/', repo: 'https://github.com/fixral3d/fixral-cfd-simulator',
+    services: ['cad', 'tersine'],
+    text: {
+      tr: {
+        kicker: 'CFD · rüzgâr ve su tüneli', status: 'Canlı · ücretsiz', tagline: 'Tarayıcıda çalışan rüzgâr ve su tüneli.',
+        lede: 'STL, OBJ, 3MF ya da STEP modelinizi yükleyin; hava ya da su akışında sürükleme ve kaldırma katsayılarını (Cd, Cl), kuvvetleri, basınç dağılımını, akım çizgilerini ve serbest yüzeyli suyu görün. Hesap WebGPU ile kendi cihazınızda yapılır; kurulum, hesap ya da dosya yükleme yok. Tasarımları ve eğilimleri karşılaştırmak için bir ön tasarım aracıdır, sertifikasyon için değildir.',
+        chips: ['v0.2 · WebGPU', 'Hava + su', 'STEP / IGES', 'Kurulum yok'],
+        facts: [['Girdi', 'STL (ikili / ASCII) · OBJ · 3MF · STEP · IGES'], ['Çıktı', 'Cd · Cl · kuvvet · sürükleme gücü; PNG · CSV · JSON'], ['Çözücü', 'D3Q19 Lattice Boltzmann (düzenlenmiş BGK + Smagorinsky LES) · serbest yüzey için MLS-MPM, ~340 bin parçacık'], ['Hesap', 'WebGPU (WGSL) · desteklemeyen tarayıcıda Web Worker ile CPU'], ['Tarayıcı', 'Chrome / Edge · Safari 26+ · Firefox 141+ (macOS 145+)']],
+        features: [
+          ['Model ve örnekler', 'STL, OBJ, 3MF, STEP ve IGES; STEP / IGES için OpenCascade yalnızca gerektiğinde yüklenir. Birim (mm, cm, m, inç), döndürme, hücum ve sapma açısı. Hazır örnekler: otomobil, Ahmed gövdesi, NACA 2412 kanat, silindir, küre, 44 mm küp.'],
+          ['Hava akışı', '3D Lattice Boltzmann (D3Q19), düzenlenmiş BGK ve Smagorinsky LES türbülans modeli. Hız m/s, km/sa, mph, knot ya da ft/s; altı akış yönü.'],
+          ['Su akışı', 'Kanal / havuz, dış akım ve tamamen batık olmak üzere üç mod. Derinlik, genişlik ve viskozite ayarı; serbest yüzeyli su MLS-MPM parçacık çözücüsüyle hesaplanır.'],
+          ['Görselleştirme', 'Akım çizgileri, yüzey basıncı, yüzey hızı, boya / duman ve kesit düzlemi; su yüzeyi için ayrı görünüm modları. Prob (I) bir noktadaki hızı, Cp\'yi ve basıncı okur.'],
+          ['Canlı ölçüm ve sonuç', 'Adım, FPS, MLUPS, Cd, Re ve Cd geçmişi canlı izlenir. Sonuçta Cd, Cl, kuvvetler, sürükleme gücü, yakınsama, hız ve basınç aralıkları; suda kavitasyon riski.'],
+          ['Ekran ve dışa aktarma', 'Performans modları, arka plan, ışık, gölge ve görünürlük ayarları (V). Sonuçlar PNG, CSV ve JSON olarak iner. Kısayollar: Boşluk başlat / duraklat, R sıfırla, P paneli gizle, 1–4 adımlar, S kesit.'],
+        ],
+        flow: [['Model', 'Dosya ya da örnek; birim, yön, açılar'], ['Ortam', 'Hava ya da su, hız, akış yönü'], ['Simülasyon', 'Çözücüyü başlat, görünüm seç'], ['Sonuç', 'Cd, Cl, kuvvet; PNG · CSV · JSON']],
       },
     },
   },

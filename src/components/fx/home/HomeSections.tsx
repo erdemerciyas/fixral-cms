@@ -99,7 +99,7 @@ export function useSoftwareLabels(lang: string) {
   const { t } = useAppTranslations('fx')
   const L = toFxLocale(lang)
   return (s: FxSoftware) => ({
-    label: s.viz === 'split' ? t('software.splitLabel') : s.viz === 'toolpath' ? t('software.toolpathLabel') : t('software.gaugeLabel'),
+    label: s.viz === 'split' ? t('software.splitLabel') : s.viz === 'toolpath' ? t('software.toolpathLabel') : s.viz === 'flow' ? t('software.flowLabel') : t('software.gaugeLabel'),
     hud: s.viz === 'split' ? t('software.build') : undefined,
     gauge: { rpm: 'RPM', speed: 'KM/H', coolant: 'SU °C', volt: 'AKÜ V' },
   })

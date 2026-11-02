@@ -1,6 +1,7 @@
 /**
  * Anasayfa hızlı erişim sahneleri — Fixral 3D Splitter (tablaya sığmayan vazo
- * pimli parçalara ayrılır) ve Router Studio (portal router FX işaretini oyar).
+ * pimli parçalara ayrılır), Router Studio (portal router FX işaretini oyar) ve
+ * CFD Simulator (rüzgâr tünelinde gövde çevresinden akım çizgileri akar).
  * Kartın üzerine gelinince / odaklanınca (drive.current.hover) sahne açılır ve hızlanır;
  * drive.current.x / .y imleç paralaksıdır (-1…1). Görünür değilken çizim durur.
  */
@@ -258,6 +259,151 @@ export function createRouterLaunch(el: HTMLElement, drive: DriveRef, onHud?: (te
     const d = (S.camera.aspect < 1.2 ? 12.5 : 10.2) - heat * 0.8
     S.camera.position.set(Math.sin(yaw) * Math.cos(pitch) * d, Math.sin(pitch) * d, Math.cos(yaw) * Math.cos(pitch) * d)
     S.camera.lookAt(0, 0.4, 0)
+  })
+  return { dispose: S.dispose }
+}
+
+/* ------------------------------------------------------- CFD Simulator */
+
+/**
+ * Rüzgâr tüneli: akış +x yönünde. Akım çizgileri elipsoit çevresindeki potansiyel
+ * akıştan (birim küre, gerilmiş uzay) üretilir; gövdenin arkasında hız kaybı ve
+ * salınan iz eklenir. Çizgiler hıza, gövde yüzeyi basınç katsayısına (Cp) göre renklenir.
+ * Kartın üzerine gelince akış hızlanır, çizgiler uzar ve parlar.
+ */
+export function createFlowLaunch(el: HTMLElement, drive: DriveRef, onHud?: (text: string) => void): SceneHandle {
+  const REDUCED = prefersReducedMotion()
+  const S = stage(el, drive)
+  const root = new THREE.Group()
+  S.scene.add(root)
+
+  const SX = 1.75, SY = 0.56, SZ = 0.7, Y0 = 0.15
+  const slow = new THREE.Color(0x3b82f6), mid = new THREE.Color(0xc9d1dc), fast = new THREE.Color(C.orange)
+  const tmp = new THREE.Color()
+  const ramp = (t: number) => (t < 0.5 ? tmp.copy(slow).lerp(mid, t * 2) : tmp.copy(mid).lerp(fast, (t - 0.5) * 2))
+
+  // Gövde: önü elipsoit, arkası incelen damla; yüzey Cp ile renklenir
+  const geo = new THREE.SphereGeometry(1, 96, 48)
+  const p = geo.attributes.position
+  for (let i = 0; i < p.count; i++) {
+    const x = p.getX(i)
+    if (x > 0) { const k = 1 - 0.38 * x * x; p.setY(i, p.getY(i) * k); p.setZ(i, p.getZ(i) * k) }
+  }
+  geo.scale(SX, SY, SZ)
+  geo.computeVertexNormals()
+  const nrm = geo.attributes.normal
+  const col = new Float32Array(p.count * 3)
+  for (let i = 0; i < p.count; i++) {
+    const nx = nrm.getX(i)
+    const cp = nx < 0 ? 1 - 2.25 * (1 - nx * nx) : lerp(-1.25, -0.3, nx)
+    // Emme bölgesi açık mavi, durma noktası turuncu kalsın diye aralık kaydırılır
+    ramp(0.3 + 0.7 * ((cp + 1.25) / 2.25))
+    col.set([tmp.r, tmp.g, tmp.b], i * 3)
+  }
+  geo.setAttribute('color', new THREE.BufferAttribute(col, 3))
+  const body = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.42, metalness: 0.15 }))
+  body.position.y = Y0
+  const steel = new THREE.MeshStandardMaterial({ color: C.steel, roughness: 0.35, metalness: 0.6 })
+  const sting = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.05, 1.2, 16), steel)
+  sting.position.set(0.2, Y0 - SY - 0.55, 0)
+  root.add(body, sting)
+
+  // Test bölümü ve zemin
+  const frameMat = new THREE.LineBasicMaterial({ color: C.line, transparent: true, opacity: 0.35 })
+  const frame = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(9.6, 3.1, 3.6)), frameMat)
+  frame.position.y = 0.1
+  const grid = new THREE.GridHelper(16, 64, 0x3b475c, 0x223047)
+  grid.position.y = -1.45
+  root.add(frame, grid)
+
+  // Akış alanı (gerilmiş uzayda, serbest akım hızı 1)
+  let time = 0, amp = 0.22
+  const u = new Float32Array(3)
+  const field = (x: number, y: number, z: number) => {
+    const r2 = Math.max(x * x + y * y + z * z, 1)
+    const r = Math.sqrt(r2), k = 1 / (2 * r2 * r), m = 3 / (2 * r2 * r2 * r)
+    let ux = 1 + k - m * x * x, uy = -m * x * y, uz = -m * x * z
+    const w = x > 0.2 ? Math.min(1, (x - 0.2) / 1.2) * Math.exp(-(y * y + z * z) * 1.1) : 0
+    if (w) {
+      ux *= 1 - 0.4 * w
+      uy += amp * w * Math.sin(time * 6 - x * 4)
+      uz += amp * 0.6 * w * Math.cos(time * 5 - x * 3.4)
+    }
+    u[0] = ux; u[1] = uy; u[2] = uz
+    return u
+  }
+
+  const N = 460, K = 10, XMIN = -4.7 / SX, XMAX = 4.7 / SX
+  const P = new Float32Array(N * 3), age = new Float32Array(N)
+  const seed = (i: number, x: number) => {
+    let y = 0, z = 0
+    do { y = (Math.random() * 2 - 1) * 1.35 / SY; z = (Math.random() * 2 - 1) * 1.6 / SZ } while (x * x + y * y + z * z < 1.1)
+    P.set([x, y, z], i * 3)
+    age[i] = 0
+  }
+  for (let i = 0; i < N; i++) seed(i, lerp(XMIN, XMAX, Math.random()))
+
+  const pos = new Float32Array(N * (K - 1) * 6), clr = new Float32Array(N * (K - 1) * 6)
+  const lg = new THREE.BufferGeometry()
+  lg.setAttribute('position', new THREE.BufferAttribute(pos, 3).setUsage(THREE.DynamicDrawUsage))
+  lg.setAttribute('color', new THREE.BufferAttribute(clr, 3).setUsage(THREE.DynamicDrawUsage))
+  const lines = new THREE.LineSegments(lg, new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false }))
+  lines.frustumCulled = false
+  root.add(lines)
+
+  let lastHud = 0
+  S.run((t, dt, { heat, px, py }) => {
+    time = t
+    amp = 0.22 + 0.25 * heat
+    if (!REDUCED) {
+      const v = (0.55 + 1.3 * heat) * dt
+      for (let i = 0; i < N; i++) {
+        const o = i * 3
+        const f = field(P[o], P[o + 1], P[o + 2])
+        P[o] += f[0] * v; P[o + 1] += f[1] * v; P[o + 2] += f[2] * v
+        age[i] += dt
+        const r2 = P[o] * P[o] + P[o + 1] * P[o + 1] + P[o + 2] * P[o + 2]
+        if (r2 < 1.0004) { const s = 1.01 / Math.sqrt(r2); P[o] *= s; P[o + 1] *= s; P[o + 2] *= s }
+        if (P[o] > XMAX || age[i] > 18) seed(i, XMIN)
+      }
+    }
+    // Kuyruk: baştan geriye entegre edilir (kare hızından bağımsız uzunluk)
+    const h = (0.3 + 0.22 * heat) / (K - 1), glow = 0.45 + 0.2 * heat
+    let w = 0
+    for (let i = 0; i < N; i++) {
+      let x = P[i * 3], y = P[i * 3 + 1], z = P[i * 3 + 2]
+      const f0 = field(x, y, z)
+      ramp(clamp((Math.hypot(f0[0], f0[1], f0[2]) - 0.35) / 1.15, 0, 1))
+      const cr = tmp.r, cg = tmp.g, cb = tmp.b
+      // Girişte ve çıkışta yumuşak beliriş / sönüş
+      const edge = clamp((x - XMIN) * 2, 0, 1) * clamp((XMAX - x) * 2, 0, 1) * glow
+      for (let j = 0; j < K - 1; j++) {
+        const f = field(x, y, z)
+        const nx = x - f[0] * h, ny = y - f[1] * h, nz = z - f[2] * h
+        const a = edge * Math.pow(1 - j / (K - 1), 1.4), b = edge * Math.pow(1 - (j + 1) / (K - 1), 1.4)
+        pos.set([x * SX, y * SY + Y0, z * SZ, nx * SX, ny * SY + Y0, nz * SZ], w)
+        clr.set([cr * a, cg * a, cb * a, cr * b, cg * b, cb * b], w)
+        w += 6
+        x = nx; y = ny; z = nz
+      }
+    }
+    lg.attributes.position.needsUpdate = true
+    lg.attributes.color.needsUpdate = true
+    frameMat.opacity = 0.3 + 0.25 * heat
+
+    if (onHud && t - lastHud > 0.15) {
+      lastHud = t
+      const U = lerp(30, 45, heat)
+      const re = ((U * 1.044) / 1.5e-5).toExponential(1).replace('+', '')
+      const cd = 0.295 + 0.006 * Math.sin(t * 1.3) + 0.003 * Math.sin(t * 3.1)
+      onHud(`U ${U.toFixed(1)} m/s · Re ${re} · Cd ${cd.toFixed(3)}`)
+    }
+
+    const yaw = -0.62 + px * 0.35 + (REDUCED ? 0 : Math.sin(t * 0.2) * 0.1)
+    const pitch = 0.32 + py * 0.12
+    const d = (S.camera.aspect < 1.2 ? 13.5 : 10.4) - heat * 0.8
+    S.camera.position.set(Math.sin(yaw) * Math.cos(pitch) * d, Math.sin(pitch) * d, Math.cos(yaw) * Math.cos(pitch) * d)
+    S.camera.lookAt(0, -0.05, 0)
   })
   return { dispose: S.dispose }
 }

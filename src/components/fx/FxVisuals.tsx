@@ -13,6 +13,8 @@ import { FxMark } from './FxLogo'
 
 type Handle = { dispose: () => void }
 
+const FLOW_HUD = 'U 30.0 m/s · Re 2.0e6 · Cd 0.300'
+
 function useMount(factory: (el: HTMLDivElement) => Promise<Handle | null>, deps: unknown[] = []) {
   const ref = useRef<HTMLDivElement>(null)
   const [ready, setReady] = useState(false)
@@ -122,11 +124,13 @@ export function PartViewer({
 /* ------------------------------------------------------------ Hızlı erişim */
 
 export function LaunchStage({ viz, drive, label, hud }: { viz: SoftwareViz; drive: { readonly current: LaunchDrive }; label: string; hud?: string }) {
-  const [read, setRead] = useState(viz === 'toolpath' ? 'X 000.00 Y 000.00 Z +5.00 F800' : hud)
+  const [read, setRead] = useState(viz === 'toolpath' ? 'X 000.00 Y 000.00 Z +5.00 F800' : viz === 'flow' ? FLOW_HUD : hud)
   const { ref, ready } = useMount(async (el) => {
     if (!webglAvailable()) return null
     const m = await import('./three/launch')
-    return viz === 'split' ? m.createSplitLaunch(el, drive) : m.createRouterLaunch(el, drive, setRead)
+    if (viz === 'split') return m.createSplitLaunch(el, drive)
+    if (viz === 'flow') return m.createFlowLaunch(el, drive, setRead)
+    return m.createRouterLaunch(el, drive, setRead)
   }, [viz])
   return (
     <div ref={ref} className="fx-launch__stage" role="img" aria-label={label}>
@@ -155,6 +159,7 @@ export function SoftwareVisual({
 }) {
   if (viz === 'split') return <SplitVisual label={label} hud={hud} />
   if (viz === 'toolpath') return <ToolpathVisual label={label} />
+  if (viz === 'flow') return <FlowVisual label={label} />
   return <GaugeVisual label={label} labels={gaugeLabels ?? { rpm: 'RPM', speed: 'KM/H', coolant: '°C', volt: 'V' }} />
 }
 
@@ -167,6 +172,23 @@ function SplitVisual({ label, hud }: { label: string; hud?: string }) {
   return (
     <div ref={ref} className="fx-sw-viz fx-sw-viz--3d" role="img" aria-label={label}>
       {hud && <span className="fx-sw-hud fx-mono">{hud}</span>}
+    </div>
+  )
+}
+
+/** CFD Simulator: hızlı erişim sahnesinin kendi kendine dönen hali (etkileşim yok) */
+const IDLE_DRIVE = { current: { hover: false, x: 0, y: 0 } } as const
+
+function FlowVisual({ label }: { label: string }) {
+  const [hud, setHud] = useState(FLOW_HUD)
+  const { ref } = useMount(async (el) => {
+    if (!webglAvailable()) return null
+    const m = await import('./three/launch')
+    return m.createFlowLaunch(el, IDLE_DRIVE, setHud)
+  })
+  return (
+    <div ref={ref} className="fx-sw-viz" role="img" aria-label={label}>
+      <span className="fx-sw-hud fx-mono">{hud}</span>
     </div>
   )
 }

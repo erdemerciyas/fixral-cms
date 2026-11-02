@@ -1,8 +1,8 @@
 'use client'
 
 /**
- * Hızlı erişim — hero altında öne çıkan iki yazılım (Fixral 3D Splitter,
- * Router Studio). Kartın tamamı ayrıntı sayfasına gider; "Uygulamayı aç"
+ * Hızlı erişim — hero altında öne çıkan, tarayıcıda açılan üç yazılım (Fixral 3D
+ * Splitter, Router Studio, Fixral CFD Simulator). Kartın tamamı ayrıntı sayfasına gider; "Uygulamayı aç"
  * doğrudan uygulamayı yeni sekmede açar. Sahneler three.js ile çizilir,
  * kartın üzerine gelince açılır / hızlanır.
  */
@@ -62,8 +62,10 @@ function LaunchTile({ sw, lang }: { sw: FxSoftware; lang: string }) {
 export default function ProductLaunch({ lang }: { lang: string }) {
   const { t } = useAppTranslations('fx')
   const fx = useFx(lang)
-  const items = fx.software.filter((s) => s.viz === 'split' || s.viz === 'toolpath').slice(0, 2)
+  // Yalnız tarayıcıda açılan uygulamalar (firmware gibi url'si olmayanlar hariç)
+  const items = fx.software.filter((s) => s.url && s.viz !== 'gauge').slice(0, 3)
   if (!items.length) return null
+  const layout = items.length === 3 ? 'fx-launch__grid--trio' : items.length === 1 ? 'fx-launch__grid--solo' : ''
   return (
     <section className="fx-launch public-theme public-dark" aria-labelledby="fx-launch-title">
       <div className="fx-wrap">
@@ -71,7 +73,7 @@ export default function ProductLaunch({ lang }: { lang: string }) {
           <p className="fx-eyebrow">{t('launch.eyebrow')}</p>
           <h2 id="fx-launch-title">{t('launch.title')}</h2>
         </div>
-        <div className={`fx-launch__grid ${items.length > 1 ? '' : 'fx-launch__grid--solo'}`}>
+        <div className={`fx-launch__grid ${layout}`}>
           {items.map((sw) => <LaunchTile key={sw.slug} sw={sw} lang={lang} />)}
         </div>
       </div>

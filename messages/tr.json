@@ -402,6 +402,7 @@
       "customBody": "Post-işlemci, dilimleyici eklentisi, ölçüm arayüzü ya da kart firmware'i. Aynı yaklaşımla sizin işiniz için yazıyoruz.",
       "splitLabel": "Bir modelin parçalara bölünüp pimlerle birleştirilmesi",
       "toolpathLabel": "FX işaretinin cep ve kontur takım yolunun çizilmesi",
+      "flowLabel": "Rüzgâr tünelinde bir gövdenin çevresinden akan akım çizgileri ve yüzey basıncı",
       "gaugeLabel": "Yuvarlak ekranda devir göstergesi",
       "build": "YAZICI HACMİ 256 × 256 × 256 mm"
     },

@@ -225,7 +225,7 @@ export function SoftwareDetailView({ lang, slug }: { lang: string; slug: string 
             <h2 className="fx-callout__ref fx-sw-others__head" id="fx-swd-others">
               <span className="fx-eyebrow">{t('software.others')}</span>
             </h2>
-            <div className={`fx-sw-pair ${others.length === 1 ? 'fx-sw-pair--solo' : ''}`}>
+            <div className={`fx-sw-pair ${others.length === 1 ? 'fx-sw-pair--solo' : others.length === 3 ? 'fx-sw-pair--trio' : ''}`}>
               {others.map((o) => <SoftwareCard key={o.slug} sw={o} lang={lang} />)}
             </div>
           </div>

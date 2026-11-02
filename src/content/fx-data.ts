@@ -276,7 +276,7 @@ export function normalizeSoftware(stored: unknown): FxSoftware[] | null {
       text: { tr: emptySwText() },
     }
     const merged = mergeDeep(def, raw) as FxSoftware
-    merged.viz = (['split', 'toolpath', 'gauge'] as const).includes(merged.viz) ? merged.viz : 'toolpath'
+    merged.viz = (['split', 'toolpath', 'flow', 'gauge'] as const).includes(merged.viz) ? merged.viz : 'toolpath'
     merged.url = typeof raw.url === 'string' ? raw.url.trim() || undefined : def.url
     merged.version = typeof raw.version === 'string' ? raw.version.trim() || undefined : def.version
     merged.order = typeof raw.order === 'number' ? raw.order : i + 1
