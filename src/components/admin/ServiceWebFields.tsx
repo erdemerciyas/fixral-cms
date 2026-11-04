@@ -70,7 +70,7 @@ export const DISCIPLINE_OPTIONS: { value: DisciplineId; label: string }[] = [
 export const ICON_OPTIONS: { value: ServiceKey; label: string; short: string }[] = [
   { value: 'tarama', label: '3D tarama', short: 'Tarama' },
   { value: 'tersine', label: 'Tersine mühendislik', short: 'Tersine' },
-  { value: 'otomotiv', label: 'Otomotiv elektroniği', short: 'Otomotiv' },
+  { value: 'otomotiv', label: 'Otomotiv teknolojileri', short: 'Otomotiv' },
   { value: 'cad', label: 'CAD / 3D çizim', short: 'CAD' },
   { value: 'pcb', label: 'PCB / Gerber', short: 'PCB' },
   { value: 'gomulu', label: 'Gömülü sistem', short: 'Gömülü' },

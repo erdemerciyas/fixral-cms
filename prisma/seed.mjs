@@ -413,12 +413,12 @@ async function main() {
     {
       title: '3D Baskı Hizmetleri',
       slug: '3d-baski-hizmetleri',
-      description: `<p>FDM, SLA ve SLS teknolojileri ile prototipten seri üretime kadar her ölçekte profesyonel 3D baskı hizmeti. Endüstriyel standart malzemelerden özel mühendislik polimerlerine kadar geniş malzeme yelpazesiyle, fonksiyonel test parçalarından son kullanım ürünlerine kadar yüksek kaliteli katmanlı imalat çözümleri sunuyoruz.</p>`,
+      description: `<p>FDM baskı teknolojisi ile prototipten seri üretime kadar her ölçekte profesyonel 3D baskı hizmeti. Endüstriyel standart malzemelerden özel mühendislik polimerlerine kadar geniş malzeme yelpazesiyle, fonksiyonel test parçalarından son kullanım ürünlerine kadar yüksek kaliteli katmanlı imalat çözümleri sunuyoruz.</p>`,
       icon: 'PrinterIcon',
-      features: ['FDM, SLA ve SLS baskı teknolojileri', 'PLA, ABS, PETG, Nylon, Reçine malzeme seçenekleri', '0.05mm katman kalınlığına kadar hassasiyet', 'Büyük format baskı kapasitesi', 'Post-proses: zımpara, boyama, kaplama', 'Prototipten kısa seri üretime geçiş desteği'],
+      features: ['FDM baskı teknolojisi', 'PLA, ABS, PETG, ASA, Nylon, TPU malzeme seçenekleri', 'Plastik parça tamiri ve restorasyonu', 'Büyük format baskı kapasitesi', 'Post-proses: zımpara, boyama, kaplama', 'Prototipten kısa seri üretime geçiş desteği'],
       image: 'https://res.cloudinary.com/dlgnbhq8l/image/upload/v1775825588/personal-blog/services/1775825587750_7bd3e5bb_3d-print.jpg.jpg',
       translations: {
-        tr: { title: '3D Baskı Hizmetleri', description: `<p>FDM, SLA ve SLS teknolojileri ile prototipten seri üretime kadar her ölçekte profesyonel 3D baskı hizmeti. Endüstriyel standart malzemelerden özel mühendislik polimerlerine kadar geniş malzeme yelpazesiyle, fonksiyonel test parçalarından son kullanım ürünlerine kadar yüksek kaliteli katmanlı imalat çözümleri sunuyoruz.</p>` }
+        tr: { title: '3D Baskı Hizmetleri', description: `<p>FDM baskı teknolojisi ile prototipten seri üretime kadar her ölçekte profesyonel 3D baskı hizmeti. Endüstriyel standart malzemelerden özel mühendislik polimerlerine kadar geniş malzeme yelpazesiyle, fonksiyonel test parçalarından son kullanım ürünlerine kadar yüksek kaliteli katmanlı imalat çözümleri sunuyoruz.</p>` }
       }
     },
     {
@@ -501,12 +501,12 @@ async function main() {
     {
       title: 'Extreme ECU Çözümleri',
       slug: 'extreme-ecu-cozumleri',
-      description: `<p>Araç elektronik kontrol üniteleri (ECU) için profesyonel yazılım ve donanım çözümleri. Motor performans optimizasyonu, chiptuning, DSG şanzıman yazılımları, AdBlue çözümleri, DPF/EGR hizmetleri ve arıza teşhis konularında uzman kadromuzla hizmet veriyoruz. Extreme ECU teknolojileri ile aracınızın performans potansiyelini güvenli sınırlar içinde maksimize ederken, yakıt verimliliği ve sürüş konforunu da artırıyoruz. Detaylı bilgi için extremeecu.com adresini ziyaret edebilirsiniz.</p>`,
+      description: `<p>Araca özel, custom otomotiv teknolojileri: harici beyin (standalone ECU) uygulamaları, custom gösterge (cluster) ve araç dashboard sistemleri, CAN-bus ve K-line iletişim çözümleri. Harici beyin tarafında çözüm ortağımız Extreme ECU ile çalışıyoruz. Detaylı bilgi için extremeecu.com adresini ziyaret edebilirsiniz.</p>`,
       icon: 'CpuChipIcon',
-      features: ['ECU yazılım optimizasyonu ve chiptuning', 'DSG/TCU şanzıman yazılımları', 'Motor performans ve tork optimizasyonu', 'DPF, EGR ve AdBlue çözümleri', 'Arıza teşhis ve elektronik analiz', 'Bireysel ve filo bazlı kalibrasyon hizmetleri'],
+      features: ['Harici beyin (standalone ECU) uygulamaları', 'Custom gösterge (cluster) tasarımı', 'Araç dashboard sistemleri', 'CAN-bus iletişim çözümleri', 'K-line iletişim çözümleri', 'Çözüm ortağı: extremeecu.com'],
       image: 'https://res.cloudinary.com/dlgnbhq8l/image/upload/v1768250346/personal-blog/products/images/extreme.jpg-1768250346463.jpg',
       translations: {
-        tr: { title: 'Extreme ECU Çözümleri', description: `<p>Araç elektronik kontrol üniteleri (ECU) için profesyonel yazılım ve donanım çözümleri. Motor performans optimizasyonu, chiptuning, DSG şanzıman yazılımları, AdBlue çözümleri, DPF/EGR hizmetleri ve arıza teşhis konularında uzman kadromuzla hizmet veriyoruz. Extreme ECU teknolojileri ile aracınızın performans potansiyelini güvenli sınırlar içinde maksimize ederken, yakıt verimliliği ve sürüş konforunu da artırıyoruz. Detaylı bilgi için extremeecu.com adresini ziyaret edebilirsiniz.</p>` }
+        tr: { title: 'Extreme ECU Çözümleri', description: `<p>Araca özel, custom otomotiv teknolojileri: harici beyin (standalone ECU) uygulamaları, custom gösterge (cluster) ve araç dashboard sistemleri, CAN-bus ve K-line iletişim çözümleri. Harici beyin tarafında çözüm ortağımız Extreme ECU ile çalışıyoruz. Detaylı bilgi için extremeecu.com adresini ziyaret edebilirsiniz.</p>` }
       }
     },
     {

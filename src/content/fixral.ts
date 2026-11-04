@@ -87,11 +87,11 @@ export const SERVICES: ServiceDef[] = [
     files: ['CAN log', 'PCB', 'Firmware', 'PDF'], viz: 'solid', part: 'enclosure', software: ['esp32-s3-obd2'],
     text: {
       tr: {
-        name: 'Otomotiv Elektroniği', short: 'ECU, OBD-II ve CAN-bus üzerinde okuma, analiz, yeniden üretim.',
-        lede: 'Araç beyinleri, gösterge ve konfor modülleriyle çalışıyoruz: veri okuma, CAN-bus analizi, arızalı kartın yeniden üretimi ve klasik araçlar için bulunmayan elektronik parçalar.',
-        when: ['Klasik araçta bulunmayan bir elektronik modül var', 'OBD-II / CAN-bus verisini okumak, kaydetmek ya da araç içinde göstermek gerekiyor', 'ECU kutusu ya da konnektör yuvası kırık', 'Araca özel bir ölçüm ya da kontrol kartı gerekiyor'],
-        flow: [['Teşhis', 'Kart ve bağlantı analizi'], ['Okuma', 'OBD-II / CAN kayıt'], ['Tasarım', 'Kart ve kutu'], ['Test', 'Araç üstünde doğrulama']],
-        spec: [['Protokol', 'OBD-II · CAN 2.0B · K-line · LIN'], ['Adaptör', 'ELM327 (BLE) ve doğrudan CAN'], ['Gerilim', '12 V / 24 V sistemler'], ['Çıktı', 'Kart + firmware + rapor']],
+        name: 'Otomotiv Teknolojileri', short: 'Harici beyin, custom cluster, dashboard sistemleri ve CAN-bus / K-line çözümleri.',
+        lede: 'Araca özel, custom işler yapıyoruz: harici beyin (standalone ECU) uygulamaları, custom gösterge (cluster) ve araç dashboard sistemleri, CAN-bus ve K-line iletişim çözümleri. Harici beyin tarafında çözüm ortağımız extremeecu.com ile çalışıyoruz.',
+        when: ['Araca harici beyin (standalone ECU) kurulacak', 'Orijinal gösterge yerine custom cluster ya da dijital dashboard isteniyor', 'CAN-bus / K-line verisini okumak, çevirmek ya da araç içinde göstermek gerekiyor', 'Araca özel bir ölçüm ya da kontrol kartı gerekiyor'],
+        flow: [['Analiz', 'Araç ve bağlantı yapısı'], ['İletişim', 'CAN-bus / K-line kayıt ve çözümleme'], ['Tasarım', 'Kart, ekran ve kutu'], ['Test', 'Araç üstünde doğrulama']],
+        spec: [['Kapsam', 'Harici beyin · custom cluster · dashboard'], ['Protokol', 'CAN 2.0B · K-line · OBD-II · LIN'], ['Çözüm ortağı', 'extremeecu.com'], ['Çıktı', 'Kart + firmware + rapor']],
       },
     },
   },
@@ -139,11 +139,11 @@ export const SERVICES: ServiceDef[] = [
     files: ['3MF', 'STL', 'PDF'], viz: 'print', part: 'impeller', software: ['fixral-3d-splitter'],
     text: {
       tr: {
-        name: '3D Baskı', short: 'FDM, SLA ve SLS ile prototipten küçük seriye.',
-        lede: 'Doğrulanmış modeli, parçanın göreceği yük ve ısıya uygun malzemeyle basıyoruz. Tablaya sığmayan modelleri kendi aracımız Fixral 3D Splitter ile pimli, numaralı parçalara bölüyor, ilk parçayı ölçüp seriye öyle geçiyoruz.',
-        when: ['Fonksiyonel prototip lazım', 'Kalıp açmaya değmeyecek 1 – 200 adetlik iş', 'Restore edilen parçanın üretimi', 'Fikstür, aparat ve atölye ekipmanı'],
+        name: '3D Baskı', short: 'FDM baskı ile prototipten küçük seriye; plastik tamiri ve restorasyonu.',
+        lede: 'Doğrulanmış modeli, parçanın göreceği yük ve ısıya uygun malzemeyle FDM yöntemiyle basıyoruz. Tablaya sığmayan modelleri kendi aracımız Fixral 3D Splitter ile pimli, numaralı parçalara bölüyor, ilk parçayı ölçüp seriye öyle geçiyoruz. Kırık ya da yıpranmış plastik parçaların tamiri ve restorasyonunda da destek veriyoruz.',
+        when: ['Fonksiyonel prototip lazım', 'Kalıp açmaya değmeyecek 1 – 200 adetlik iş', 'Kırık plastik parçanın tamiri ya da restorasyonu', 'Fikstür, aparat ve atölye ekipmanı'],
         flow: [['Kontrol', 'Et kalınlığı, yön'], ['Dilimleme', 'Katman ve dolgu'], ['Baskı', 'İlk parça ölçümü'], ['Son işlem', 'Destek, zımpara, boya']],
-        spec: [['Yöntem', 'FDM · SLA · SLS'], ['Malzeme', 'PLA · PETG · ASA · PA12 · TPU · reçine'], ['Büyük modeller', 'Fixral 3D Splitter ile bölme'], ['Katman', '0,05 – 0,3 mm']],
+        spec: [['Yöntem', 'FDM'], ['Malzeme', 'PLA · PETG · ASA · ABS · PA · TPU'], ['Büyük modeller', 'Fixral 3D Splitter ile bölme'], ['Katman', '0,1 – 0,3 mm']],
       },
     },
   },
@@ -195,7 +195,7 @@ export const PROCESS: Localized<ProcessStep[]> = {
     { title: 'Tara', body: 'Parça yapılandırılmış ışıkla, çok açıdan taranır. Her geçişte yüzey biraz daha noktaya dönüşür.', spec: [['Çözünürlük', '20 µm'], ['Veri', '≈ 2,4 M nokta'], ['Çıktı', 'PLY · STL']] },
     { title: 'Modelle', body: 'Nokta bulutu, ölçüleri değiştirilebilen parametrik bir katı modele çevrilir. Modül, adım, delik çapı yeniden kurulur.', spec: [['Yöntem', 'Parametrik katı'], ['Kenar', 'Özellik tabanlı'], ['Çıktı', 'STEP · IGES']] },
     { title: 'Doğrula', body: 'Model, taramanın üstüne bindirilir. Her nokta için sapma hesaplanır; tolerans dışı bölge kalmayana kadar model düzeltilir.', spec: [['Tolerans', '±0,05 mm'], ['Kontrol', 'Renkli sapma haritası'], ['Çıktı', 'PDF rapor']] },
-    { title: 'Üret', body: 'Doğrulanan model baskıya ya da CNC\'ye gider. İlk parça ölçülür, seri ondan sonra başlar.', spec: [['Yöntem', 'FDM · SLA · SLS · CNC'], ['Katman', '0,1 mm'], ['Çıktı', 'Parça + ölçüm']] },
+    { title: 'Üret', body: 'Doğrulanan model baskıya ya da CNC\'ye gider. İlk parça ölçülür, seri ondan sonra başlar.', spec: [['Yöntem', 'FDM · CNC'], ['Katman', '0,1 mm'], ['Çıktı', 'Parça + ölçüm']] },
   ],
 }
 
